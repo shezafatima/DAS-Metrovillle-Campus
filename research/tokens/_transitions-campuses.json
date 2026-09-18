@@ -1,0 +1,60 @@
+{
+  "page": "campuses",
+  "url": "https://das.edu.pk/campuses-list/",
+  "data": {
+    "mainMenuItem": {
+      "transition": "color 0.2s linear, background-color 0.2s linear, border-color 0.2s linear",
+      "transitionDuration": "0.2s",
+      "transitionTimingFunction": "linear",
+      "transitionDelay": "0s",
+      "animationName": "none",
+      "animationDuration": "0s",
+      "animationTimingFunction": "ease",
+      "animationDelay": "0s"
+    },
+    "dropdownSubmenu": {
+      "transition": "all",
+      "transitionDuration": "0s",
+      "transitionTimingFunction": "ease",
+      "transitionDelay": "0s",
+      "animationName": "none",
+      "animationDuration": "0s",
+      "animationTimingFunction": "ease",
+      "animationDelay": "0s"
+    },
+    "button": null,
+    "card": null,
+    "flipBoxInner": null,
+    "footerLink": {
+      "transition": "color 0.2s linear, background-color 0.2s linear, border-color 0.2s linear",
+      "transitionDuration": "0.2s",
+      "transitionTimingFunction": "linear",
+      "transitionDelay": "0s",
+      "animationName": "none",
+      "animationDuration": "0s",
+      "animationTimingFunction": "ease",
+      "animationDelay": "0s"
+    },
+    "imageRollover": null,
+    "swiperSlide": null,
+    "counterBox": null,
+    "otherNonDefaultTransitions": [
+      {
+        "classes": "skip-link screen-reader-text",
+        "transition": "color 0.2s linear, background-color 0.2s linear, border-color 0.2s linear"
+      },
+      {
+        "classes": "fusion-background-highlight",
+        "transition": "color 0.2s ease-in-out, background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, height, line-height"
+      },
+      {
+        "classes": "paginate_button first disabled",
+        "transition": "0.5s"
+      },
+      {
+        "classes": "fusion-top-top-link",
+        "transition": "opacity 0.4s ease-in-out, background 0.2s ease-in-out"
+      }
+    ]
+  }
+}

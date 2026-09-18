@@ -1,0 +1,1145 @@
+{
+  "ok": true,
+  "page": "photo-gallery",
+  "viewport": "768",
+  "url": "https://das.edu.pk/resources/photo-gallery/",
+  "data": {
+    "colors": [
+      {
+        "value": "rgb(18, 18, 145)",
+        "count": 50
+      },
+      {
+        "value": "rgb(0, 0, 0)",
+        "count": 34
+      },
+      {
+        "value": "rgb(255, 255, 255)",
+        "count": 15
+      },
+      {
+        "value": "rgb(51, 51, 51)",
+        "count": 6
+      },
+      {
+        "value": "rgb(0, 188, 212)",
+        "count": 3
+      },
+      {
+        "value": "rgb(215, 214, 214)",
+        "count": 2
+      },
+      {
+        "value": "rgb(255, 255, 0)",
+        "count": 2
+      },
+      {
+        "value": "rgb(25, 25, 146)",
+        "count": 2
+      },
+      {
+        "value": "rgb(234, 234, 238)",
+        "count": 1
+      }
+    ],
+    "fonts": [
+      {
+        "value": "\"softLINKS Regular\", Arial, Helvetica, sans-serif | weight:400 | style:normal",
+        "count": 73
+      },
+      {
+        "value": "awb-icons | weight:400 | style:normal",
+        "count": 17
+      },
+      {
+        "value": "\"Font Awesome 5 Free\" | weight:900 | style:normal",
+        "count": 6
+      },
+      {
+        "value": "\"Times New Roman\" | weight:400 | style:normal",
+        "count": 1
+      },
+      {
+        "value": "Poppins, Arial, Helvetica, sans-serif | weight:700 | style:normal",
+        "count": 1
+      },
+      {
+        "value": "\"softLINKS Regular\", Arial, Helvetica, sans-serif | weight:700 | style:normal",
+        "count": 1
+      }
+    ],
+    "radii": [
+      {
+        "value": "4px",
+        "count": 4
+      },
+      {
+        "value": "32px",
+        "count": 4
+      }
+    ],
+    "shadows": [
+      {
+        "value": "rgba(0, 0, 0, 0.14) 0px 10px 50px -2px",
+        "count": 1
+      }
+    ],
+    "spacing": [
+      {
+        "value": "padding-x:30px/30px",
+        "count": 4
+      },
+      {
+        "value": "padding-y:20px/20px",
+        "count": 2
+      },
+      {
+        "value": "padding-y:30px/30px",
+        "count": 1
+      }
+    ],
+    "fontFaces": [
+      {
+        "family": "\"Open Sans\"",
+        "weight": "400",
+        "style": "italic",
+        "src": "url(\"https://das.edu.pk/wp-content/uploads/fusion-gfonts/memtYaGs126MiZpBA-UFUIcVXSCEkx2cmqvXlWqWtE6F15M.woff2\") format(\"woff2\")",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      },
+      {
+        "family": "\"Open Sans\"",
+        "weight": "400",
+        "style": "italic",
+        "src": "url(\"https://das.edu.pk/wp-content/uploads/fusion-gfonts/memtYaGs126MiZpBA-UFUIcVXSCEkx2cmqvXlWqWvU6F15M.woff2\") format(\"woff2\")",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      },
+      {
+        "family": "\"Open Sans\"",
+        "weight": "400",
+        "style": "italic",
+        "src": "url(\"https://das.edu.pk/wp-content/uploads/fusion-gfonts/memtYaGs126MiZpBA-UFUIcVXSCEkx2cmqvXlWqWtU6F15M.woff2\") format(\"woff2\")",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      },
+      {
+        "family": "\"Open Sans\"",
+        "weight": "400",
+        "style": "italic",
+        "src": "url(\"https://das.edu.pk/wp-content/uploads/fusion-gfonts/memtYaGs126MiZpBA-UFUIcVXSCEkx2cmqvXlWqWuk6F15M.woff2\") format(\"woff2\")",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      },
+      {
+        "family": "\"Open Sans\"",
+        "weight": "400",
+        "style": "italic",
+        "src": "url(\"https://das.edu.pk/wp-content/uploads/fusion-gfonts/memtYaGs126MiZpBA-UFUIcVXSCEkx2cmqvXlWqWu06F15M.woff2\") format(\"woff2\")",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      },
+      {
+        "family": "\"Open Sans\"",
+        "weight": "400",
+        "style": "italic",
+        "src": "url(\"https://das.edu.pk/wp-content/uploads/fusion-gfonts/memtYaGs126MiZpBA-UFUIcVXSCEkx2cmqvXlWqWxU6F15M.woff2\") format(\"woff2\")",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      },
+      {
+        "family": "\"Open Sans\"",
+        "weight": "400",
+        "style": "italic",
+        "src": "url(\"https://das.edu.pk/wp-content/uploads/fusion-gfonts/memtYaGs126MiZpBA-UFUIcVXSCEkx2cmqvXlWqW106F15M.woff2\") format(\"woff2\")",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      },
+      {
+        "family": "\"Open Sans\"",
+        "weight": "400",
+        "style": "italic",
+        "src": "url(\"https://das.edu.pk/wp-content/uploads/fusion-gfonts/memtYaGs126MiZpBA-UFUIcVXSCEkx2cmqvXlWqWtk6F15M.woff2\") format(\"woff2\")",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      },
+      {
+        "family": "\"Open Sans\"",
+        "weight": "400",
+        "style": "italic",
+        "src": "url(\"https://das.edu.pk/wp-content/uploads/fusion-gfonts/memtYaGs126MiZpBA-UFUIcVXSCEkx2cmqvXlWqWt06F15M.woff2\") format(\"woff2\")",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      },
+      {
+        "family": "\"Open Sans\"",
+        "weight": "400",
+        "style": "italic",
+        "src": "url(\"https://das.edu.pk/wp-content/uploads/fusion-gfonts/memtYaGs126MiZpBA-UFUIcVXSCEkx2cmqvXlWqWuU6F.woff2\") format(\"woff2\")",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      },
+      {
+        "family": "\"Open Sans\"",
+        "weight": "600",
+        "style": "italic",
+        "src": "url(\"https://das.edu.pk/wp-content/uploads/fusion-gfonts/memtYaGs126MiZpBA-UFUIcVXSCEkx2cmqvXlWqWtE6F15M.woff2\") format(\"woff2\")",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      },
+      {
+        "family": "\"Open Sans\"",
+        "weight": "600",
+        "style": "italic",
+        "src": "url(\"https://das.edu.pk/wp-content/uploads/fusion-gfonts/memtYaGs126MiZpBA-UFUIcVXSCEkx2cmqvXlWqWvU6F15M.woff2\") format(\"woff2\")",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      },
+      {
+        "family": "\"Open Sans\"",
+        "weight": "600",
+        "style": "italic",
+        "src": "url(\"https://das.edu.pk/wp-content/uploads/fusion-gfonts/memtYaGs126MiZpBA-UFUIcVXSCEkx2cmqvXlWqWtU6F15M.woff2\") format(\"woff2\")",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      },
+      {
+        "family": "\"Open Sans\"",
+        "weight": "600",
+        "style": "italic",
+        "src": "url(\"https://das.edu.pk/wp-content/uploads/fusion-gfonts/memtYaGs126MiZpBA-UFUIcVXSCEkx2cmqvXlWqWuk6F15M.woff2\") format(\"woff2\")",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      },
+      {
+        "family": "\"Open Sans\"",
+        "weight": "600",
+        "style": "italic",
+        "src": "url(\"https://das.edu.pk/wp-content/uploads/fusion-gfonts/memtYaGs126MiZpBA-UFUIcVXSCEkx2cmqvXlWqWu06F15M.woff2\") format(\"woff2\")",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      },
+      {
+        "family": "\"Open Sans\"",
+        "weight": "600",
+        "style": "italic",
+        "src": "url(\"https://das.edu.pk/wp-content/uploads/fusion-gfonts/memtYaGs126MiZpBA-UFUIcVXSCEkx2cmqvXlWqWxU6F15M.woff2\") format(\"woff2\")",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      },
+      {
+        "family": "\"Open Sans\"",
+        "weight": "600",
+        "style": "italic",
+        "src": "url(\"https://das.edu.pk/wp-content/uploads/fusion-gfonts/memtYaGs126MiZpBA-UFUIcVXSCEkx2cmqvXlWqW106F15M.woff2\") format(\"woff2\")",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      },
+      {
+        "family": "\"Open Sans\"",
+        "weight": "600",
+        "style": "italic",
+        "src": "url(\"https://das.edu.pk/wp-content/uploads/fusion-gfonts/memtYaGs126MiZpBA-UFUIcVXSCEkx2cmqvXlWqWtk6F15M.woff2\") format(\"woff2\")",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      },
+      {
+        "family": "\"Open Sans\"",
+        "weight": "600",
+        "style": "italic",
+        "src": "url(\"https://das.edu.pk/wp-content/uploads/fusion-gfonts/memtYaGs126MiZpBA-UFUIcVXSCEkx2cmqvXlWqWt06F15M.woff2\") format(\"woff2\")",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      },
+      {
+        "family": "\"Open Sans\"",
+        "weight": "600",
+        "style": "italic",
+        "src": "url(\"https://das.edu.pk/wp-content/uploads/fusion-gfonts/memtYaGs126MiZpBA-UFUIcVXSCEkx2cmqvXlWqWuU6F.woff2\") format(\"woff2\")",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      },
+      {
+        "family": "\"Open Sans\"",
+        "weight": "400",
+        "style": "normal",
+        "src": "url(\"https://das.edu.pk/wp-content/uploads/fusion-gfonts/memvYaGs126MiZpBA-UvWbX2vVnXBbObj2OVTSKmu1aB.woff2\") format(\"woff2\")",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      },
+      {
+        "family": "\"Open Sans\"",
+        "weight": "400",
+        "style": "normal",
+        "src": "url(\"https://das.edu.pk/wp-content/uploads/fusion-gfonts/memvYaGs126MiZpBA-UvWbX2vVnXBbObj2OVTSumu1aB.woff2\") format(\"woff2\")",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      },
+      {
+        "family": "\"Open Sans\"",
+        "weight": "400",
+        "style": "normal",
+        "src": "url(\"https://das.edu.pk/wp-content/uploads/fusion-gfonts/memvYaGs126MiZpBA-UvWbX2vVnXBbObj2OVTSOmu1aB.woff2\") format(\"woff2\")",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      },
+      {
+        "family": "\"Open Sans\"",
+        "weight": "400",
+        "style": "normal",
+        "src": "url(\"https://das.edu.pk/wp-content/uploads/fusion-gfonts/memvYaGs126MiZpBA-UvWbX2vVnXBbObj2OVTSymu1aB.woff2\") format(\"woff2\")",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      },
+      {
+        "family": "\"Open Sans\"",
+        "weight": "400",
+        "style": "normal",
+        "src": "url(\"https://das.edu.pk/wp-content/uploads/fusion-gfonts/memvYaGs126MiZpBA-UvWbX2vVnXBbObj2OVTS2mu1aB.woff2\") format(\"woff2\")",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      },
+      {
+        "family": "\"Open Sans\"",
+        "weight": "400",
+        "style": "normal",
+        "src": "url(\"https://das.edu.pk/wp-content/uploads/fusion-gfonts/memvYaGs126MiZpBA-UvWbX2vVnXBbObj2OVTVOmu1aB.woff2\") format(\"woff2\")",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      },
+      {
+        "family": "\"Open Sans\"",
+        "weight": "400",
+        "style": "normal",
+        "src": "url(\"https://das.edu.pk/wp-content/uploads/fusion-gfonts/memvYaGs126MiZpBA-UvWbX2vVnXBbObj2OVTUGmu1aB.woff2\") format(\"woff2\")",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      },
+      {
+        "family": "\"Open Sans\"",
+        "weight": "400",
+        "style": "normal",
+        "src": "url(\"https://das.edu.pk/wp-content/uploads/fusion-gfonts/memvYaGs126MiZpBA-UvWbX2vVnXBbObj2OVTSCmu1aB.woff2\") format(\"woff2\")",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      },
+      {
+        "family": "\"Open Sans\"",
+        "weight": "400",
+        "style": "normal",
+        "src": "url(\"https://das.edu.pk/wp-content/uploads/fusion-gfonts/memvYaGs126MiZpBA-UvWbX2vVnXBbObj2OVTSGmu1aB.woff2\") format(\"woff2\")",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      },
+      {
+        "family": "\"Open Sans\"",
+        "weight": "400",
+        "style": "normal",
+        "src": "url(\"https://das.edu.pk/wp-content/uploads/fusion-gfonts/memvYaGs126MiZpBA-UvWbX2vVnXBbObj2OVTS-muw.woff2\") format(\"woff2\")",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      },
+      {
+        "family": "\"Open Sans\"",
+        "weight": "600",
+        "style": "normal",
+        "src": "url(\"https://das.edu.pk/wp-content/uploads/fusion-gfonts/memvYaGs126MiZpBA-UvWbX2vVnXBbObj2OVTSKmu1aB.woff2\") format(\"woff2\")",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      },
+      {
+        "family": "\"Open Sans\"",
+        "weight": "600",
+        "style": "normal",
+        "src": "url(\"https://das.edu.pk/wp-content/uploads/fusion-gfonts/memvYaGs126MiZpBA-UvWbX2vVnXBbObj2OVTSumu1aB.woff2\") format(\"woff2\")",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      },
+      {
+        "family": "\"Open Sans\"",
+        "weight": "600",
+        "style": "normal",
+        "src": "url(\"https://das.edu.pk/wp-content/uploads/fusion-gfonts/memvYaGs126MiZpBA-UvWbX2vVnXBbObj2OVTSOmu1aB.woff2\") format(\"woff2\")",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      },
+      {
+        "family": "\"Open Sans\"",
+        "weight": "600",
+        "style": "normal",
+        "src": "url(\"https://das.edu.pk/wp-content/uploads/fusion-gfonts/memvYaGs126MiZpBA-UvWbX2vVnXBbObj2OVTSymu1aB.woff2\") format(\"woff2\")",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      },
+      {
+        "family": "\"Open Sans\"",
+        "weight": "600",
+        "style": "normal",
+        "src": "url(\"https://das.edu.pk/wp-content/uploads/fusion-gfonts/memvYaGs126MiZpBA-UvWbX2vVnXBbObj2OVTS2mu1aB.woff2\") format(\"woff2\")",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      },
+      {
+        "family": "\"Open Sans\"",
+        "weight": "600",
+        "style": "normal",
+        "src": "url(\"https://das.edu.pk/wp-content/uploads/fusion-gfonts/memvYaGs126MiZpBA-UvWbX2vVnXBbObj2OVTVOmu1aB.woff2\") format(\"woff2\")",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      },
+      {
+        "family": "\"Open Sans\"",
+        "weight": "600",
+        "style": "normal",
+        "src": "url(\"https://das.edu.pk/wp-content/uploads/fusion-gfonts/memvYaGs126MiZpBA-UvWbX2vVnXBbObj2OVTUGmu1aB.woff2\") format(\"woff2\")",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      },
+      {
+        "family": "\"Open Sans\"",
+        "weight": "600",
+        "style": "normal",
+        "src": "url(\"https://das.edu.pk/wp-content/uploads/fusion-gfonts/memvYaGs126MiZpBA-UvWbX2vVnXBbObj2OVTSCmu1aB.woff2\") format(\"woff2\")",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      },
+      {
+        "family": "\"Open Sans\"",
+        "weight": "600",
+        "style": "normal",
+        "src": "url(\"https://das.edu.pk/wp-content/uploads/fusion-gfonts/memvYaGs126MiZpBA-UvWbX2vVnXBbObj2OVTSGmu1aB.woff2\") format(\"woff2\")",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      },
+      {
+        "family": "\"Open Sans\"",
+        "weight": "600",
+        "style": "normal",
+        "src": "url(\"https://das.edu.pk/wp-content/uploads/fusion-gfonts/memvYaGs126MiZpBA-UvWbX2vVnXBbObj2OVTS-muw.woff2\") format(\"woff2\")",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      },
+      {
+        "family": "Poppins",
+        "weight": "700",
+        "style": "italic",
+        "src": "url(\"https://das.edu.pk/wp-content/uploads/fusion-gfonts/pxiDyp8kv8JHgFVrJJLmy15VFteOcEg.woff2\") format(\"woff2\")",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      },
+      {
+        "family": "Poppins",
+        "weight": "700",
+        "style": "italic",
+        "src": "url(\"https://das.edu.pk/wp-content/uploads/fusion-gfonts/pxiDyp8kv8JHgFVrJJLmy15VGdeOcEg.woff2\") format(\"woff2\")",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      },
+      {
+        "family": "Poppins",
+        "weight": "700",
+        "style": "italic",
+        "src": "url(\"https://das.edu.pk/wp-content/uploads/fusion-gfonts/pxiDyp8kv8JHgFVrJJLmy15VF9eO.woff2\") format(\"woff2\")",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      },
+      {
+        "family": "Poppins",
+        "weight": "700",
+        "style": "normal",
+        "src": "url(\"https://das.edu.pk/wp-content/uploads/fusion-gfonts/pxiByp8kv8JHgFVrLCz7Z11lFc-K.woff2\") format(\"woff2\")",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      },
+      {
+        "family": "Poppins",
+        "weight": "700",
+        "style": "normal",
+        "src": "url(\"https://das.edu.pk/wp-content/uploads/fusion-gfonts/pxiByp8kv8JHgFVrLCz7Z1JlFc-K.woff2\") format(\"woff2\")",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      },
+      {
+        "family": "Poppins",
+        "weight": "700",
+        "style": "normal",
+        "src": "url(\"https://das.edu.pk/wp-content/uploads/fusion-gfonts/pxiByp8kv8JHgFVrLCz7Z1xlFQ.woff2\") format(\"woff2\")",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      },
+      {
+        "family": "\"Roboto Condensed\"",
+        "weight": "700",
+        "style": "italic",
+        "src": "url(\"https://das.edu.pk/wp-content/uploads/fusion-gfonts/ieVW2ZhZI2eCN5jzbjEETS9weq8-19ehAyvMum7nfDB64f8N1XNpLOSK.woff2\") format(\"woff2\")",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      },
+      {
+        "family": "\"Roboto Condensed\"",
+        "weight": "700",
+        "style": "italic",
+        "src": "url(\"https://das.edu.pk/wp-content/uploads/fusion-gfonts/ieVW2ZhZI2eCN5jzbjEETS9weq8-19ehAyvMum7nfDB64f8N1XppLOSK.woff2\") format(\"woff2\")",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      },
+      {
+        "family": "\"Roboto Condensed\"",
+        "weight": "700",
+        "style": "italic",
+        "src": "url(\"https://das.edu.pk/wp-content/uploads/fusion-gfonts/ieVW2ZhZI2eCN5jzbjEETS9weq8-19ehAyvMum7nfDB64f8N1XJpLOSK.woff2\") format(\"woff2\")",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      },
+      {
+        "family": "\"Roboto Condensed\"",
+        "weight": "700",
+        "style": "italic",
+        "src": "url(\"https://das.edu.pk/wp-content/uploads/fusion-gfonts/ieVW2ZhZI2eCN5jzbjEETS9weq8-19ehAyvMum7nfDB64f8N1X1pLOSK.woff2\") format(\"woff2\")",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      },
+      {
+        "family": "\"Roboto Condensed\"",
+        "weight": "700",
+        "style": "italic",
+        "src": "url(\"https://das.edu.pk/wp-content/uploads/fusion-gfonts/ieVW2ZhZI2eCN5jzbjEETS9weq8-19ehAyvMum7nfDB64f8N1XFpLOSK.woff2\") format(\"woff2\")",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      },
+      {
+        "family": "\"Roboto Condensed\"",
+        "weight": "700",
+        "style": "italic",
+        "src": "url(\"https://das.edu.pk/wp-content/uploads/fusion-gfonts/ieVW2ZhZI2eCN5jzbjEETS9weq8-19ehAyvMum7nfDB64f8N1XBpLOSK.woff2\") format(\"woff2\")",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      },
+      {
+        "family": "\"Roboto Condensed\"",
+        "weight": "700",
+        "style": "italic",
+        "src": "url(\"https://das.edu.pk/wp-content/uploads/fusion-gfonts/ieVW2ZhZI2eCN5jzbjEETS9weq8-19ehAyvMum7nfDB64f8N1X5pLA.woff2\") format(\"woff2\")",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      },
+      {
+        "family": "\"Roboto Condensed\"",
+        "weight": "700",
+        "style": "normal",
+        "src": "url(\"https://das.edu.pk/wp-content/uploads/fusion-gfonts/ieVo2ZhZI2eCN5jzbjEETS9weq8-_d6T_POl0fRJeyVVpcBD5XxxKA.woff2\") format(\"woff2\")",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      },
+      {
+        "family": "\"Roboto Condensed\"",
+        "weight": "700",
+        "style": "normal",
+        "src": "url(\"https://das.edu.pk/wp-content/uploads/fusion-gfonts/ieVo2ZhZI2eCN5jzbjEETS9weq8-_d6T_POl0fRJeyVVpcBK5XxxKA.woff2\") format(\"woff2\")",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      },
+      {
+        "family": "\"Roboto Condensed\"",
+        "weight": "700",
+        "style": "normal",
+        "src": "url(\"https://das.edu.pk/wp-content/uploads/fusion-gfonts/ieVo2ZhZI2eCN5jzbjEETS9weq8-_d6T_POl0fRJeyVVpcBC5XxxKA.woff2\") format(\"woff2\")",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      },
+      {
+        "family": "\"Roboto Condensed\"",
+        "weight": "700",
+        "style": "normal",
+        "src": "url(\"https://das.edu.pk/wp-content/uploads/fusion-gfonts/ieVo2ZhZI2eCN5jzbjEETS9weq8-_d6T_POl0fRJeyVVpcBN5XxxKA.woff2\") format(\"woff2\")",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      },
+      {
+        "family": "\"Roboto Condensed\"",
+        "weight": "700",
+        "style": "normal",
+        "src": "url(\"https://das.edu.pk/wp-content/uploads/fusion-gfonts/ieVo2ZhZI2eCN5jzbjEETS9weq8-_d6T_POl0fRJeyVVpcBB5XxxKA.woff2\") format(\"woff2\")",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      },
+      {
+        "family": "\"Roboto Condensed\"",
+        "weight": "700",
+        "style": "normal",
+        "src": "url(\"https://das.edu.pk/wp-content/uploads/fusion-gfonts/ieVo2ZhZI2eCN5jzbjEETS9weq8-_d6T_POl0fRJeyVVpcBA5XxxKA.woff2\") format(\"woff2\")",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      },
+      {
+        "family": "\"Roboto Condensed\"",
+        "weight": "700",
+        "style": "normal",
+        "src": "url(\"https://das.edu.pk/wp-content/uploads/fusion-gfonts/ieVo2ZhZI2eCN5jzbjEETS9weq8-_d6T_POl0fRJeyVVpcBO5Xw.woff2\") format(\"woff2\")",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      },
+      {
+        "family": "\"softLINKS Regular\"",
+        "weight": "400",
+        "style": "normal",
+        "src": "url(\"//das.edu.pk/pidugeq/2019/11/softLINKS-Regular.woff\") format(\"woff\")",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      },
+      {
+        "family": "\"softLINKS Medium\"",
+        "weight": "400",
+        "style": "normal",
+        "src": "url(\"//das.edu.pk/pidugeq/2019/11/softLINKS-Medium.woff\") format(\"woff\")",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      },
+      {
+        "family": "\"softLINKS Bold\"",
+        "weight": "400",
+        "style": "normal",
+        "src": "url(\"//das.edu.pk/pidugeq/2019/11/softLINKS-Bold.woff\") format(\"woff\")",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      },
+      {
+        "family": "\"softLINKS ExtraBold\"",
+        "weight": "400",
+        "style": "normal",
+        "src": "url(\"//das.edu.pk/pidugeq/2019/11/softLINKS-ExtraBold.woff\") format(\"woff\")",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      },
+      {
+        "family": "\"softLINKS Urdu Normal\"",
+        "weight": "400",
+        "style": "normal",
+        "src": "url(\"//das.edu.pk/pidugeq/2019/11/softLINKS-Urdu-Normal.woff\") format(\"woff\")",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      },
+      {
+        "family": "\"softLINKS Urdu Bold\"",
+        "weight": "400",
+        "style": "normal",
+        "src": "url(\"//das.edu.pk/pidugeq/2019/11/softLINKS-Urdu-Bold.woff\") format(\"woff\")",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      },
+      {
+        "family": "awb-icons",
+        "weight": "normal",
+        "style": "normal",
+        "src": "url(\"//das.edu.pk/wp-content/themes/Avada/includes/lib/assets/fonts/icomoon/awb-icons.woff\") format(\"woff\"), url(\"//das.edu.pk/wp-content/themes/Avada/includes/lib/assets/fonts/icomoon/awb-icons.ttf\") format(\"truetype\")",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      },
+      {
+        "family": "\"Font Awesome 5 Brands\"",
+        "weight": "normal",
+        "style": "normal",
+        "src": "url(\"//das.edu.pk/wp-content/themes/Avada/includes/lib/assets/fonts/fontawesome/webfonts/fa-brands-400.woff2\") format(\"woff2\"), url(\"//das.edu.pk/wp-content/themes/Avada/includes/lib/assets/fonts/fontawesome/webfonts/fa-brands-400.woff\") format(\"woff\"), url(\"//das.edu.pk/wp-content/themes/Avada/incl",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      },
+      {
+        "family": "\"Font Awesome 5 Free\"",
+        "weight": "400",
+        "style": "normal",
+        "src": "url(\"//das.edu.pk/wp-content/themes/Avada/includes/lib/assets/fonts/fontawesome/webfonts/fa-regular-400.woff2\") format(\"woff2\"), url(\"//das.edu.pk/wp-content/themes/Avada/includes/lib/assets/fonts/fontawesome/webfonts/fa-regular-400.woff\") format(\"woff\"), url(\"//das.edu.pk/wp-content/themes/Avada/in",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      },
+      {
+        "family": "\"Font Awesome 5 Free\"",
+        "weight": "900",
+        "style": "normal",
+        "src": "url(\"//das.edu.pk/wp-content/themes/Avada/includes/lib/assets/fonts/fontawesome/webfonts/fa-solid-900.woff2\") format(\"woff2\"), url(\"//das.edu.pk/wp-content/themes/Avada/includes/lib/assets/fonts/fontawesome/webfonts/fa-solid-900.woff\") format(\"woff\"), url(\"//das.edu.pk/wp-content/themes/Avada/includ",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7"
+      }
+    ],
+    "mediaQueries": [
+      {
+        "query": "(min-width: 600px)",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/19aedd95beba63109f699f974660c079.css?ver=0c079",
+        "count": 56
+      },
+      {
+        "query": "(min-width: 782px)",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/19aedd95beba63109f699f974660c079.css?ver=0c079",
+        "count": 45
+      },
+      {
+        "query": "(max-width: 600px)",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/19aedd95beba63109f699f974660c079.css?ver=0c079",
+        "count": 1
+      },
+      {
+        "query": "(min-width: 480px)",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/19aedd95beba63109f699f974660c079.css?ver=0c079",
+        "count": 8
+      },
+      {
+        "query": "(min-width: 600px) and (min-width: 600px)",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/19aedd95beba63109f699f974660c079.css?ver=0c079",
+        "count": 1
+      },
+      {
+        "query": "(min-width: 600px) and (min-width: 782px)",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/19aedd95beba63109f699f974660c079.css?ver=0c079",
+        "count": 1
+      },
+      {
+        "query": "(min-width: 960px)",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/19aedd95beba63109f699f974660c079.css?ver=0c079",
+        "count": 4
+      },
+      {
+        "query": "(max-width: 781px)",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/12270a3552a3d09f0322752c951407ac.css?ver=407ac",
+        "count": 2
+      },
+      {
+        "query": "(min-width: 1440px)",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/8a03887c087f5823f02285bc09b46691.css?ver=46691",
+        "count": 2
+      },
+      {
+        "query": "screen and (min-width: 782px)",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/8a03887c087f5823f02285bc09b46691.css?ver=46691",
+        "count": 1
+      },
+      {
+        "query": "(min-width: 1080px)",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/8a03887c087f5823f02285bc09b46691.css?ver=46691",
+        "count": 1
+      },
+      {
+        "query": "(max-width: 959px)",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/8a03887c087f5823f02285bc09b46691.css?ver=46691",
+        "count": 1
+      },
+      {
+        "query": "(min-width: 783px)",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/29b52e8097ac7b310f5d0a3d3aa67a1b.css?ver=67a1b",
+        "count": 4
+      },
+      {
+        "query": "(min-width: 961px)",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/29b52e8097ac7b310f5d0a3d3aa67a1b.css?ver=67a1b",
+        "count": 1
+      },
+      {
+        "query": "screen and (min-width: 782px) and (max-width: 960px)",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/29b52e8097ac7b310f5d0a3d3aa67a1b.css?ver=67a1b",
+        "count": 1
+      },
+      {
+        "query": "screen and (max-width: 600px)",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/29b52e8097ac7b310f5d0a3d3aa67a1b.css?ver=67a1b",
+        "count": 2
+      },
+      {
+        "query": "(min-width: 280px)",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/29b52e8097ac7b310f5d0a3d3aa67a1b.css?ver=67a1b",
+        "count": 1
+      },
+      {
+        "query": "(max-width: 479px)",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/29b52e8097ac7b310f5d0a3d3aa67a1b.css?ver=67a1b",
+        "count": 1
+      },
+      {
+        "query": "screen and (max-width: 782px)",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/29b52e8097ac7b310f5d0a3d3aa67a1b.css?ver=67a1b",
+        "count": 4
+      },
+      {
+        "query": "(min-width: 782px) and (not (prefers-reduced-motion))",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/29b52e8097ac7b310f5d0a3d3aa67a1b.css?ver=67a1b",
+        "count": 1
+      },
+      {
+        "query": "(min-width: 1280px)",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/29b52e8097ac7b310f5d0a3d3aa67a1b.css?ver=67a1b",
+        "count": 3
+      },
+      {
+        "query": "screen and (max-width: 58em)",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/79310d30818589ca9db4a3482969d81f.css?ver=9d81f",
+        "count": 7
+      },
+      {
+        "query": "screen and (max-width: 54em)",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/79310d30818589ca9db4a3482969d81f.css?ver=9d81f",
+        "count": 1
+      },
+      {
+        "query": "screen and (max-width: 720px)",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/963d5731135a6e0d6e172623dd9f8827.css?ver=f8827",
+        "count": 1
+      },
+      {
+        "query": "only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape)",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7",
+        "count": 3
+      },
+      {
+        "query": "only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: portrait)",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7",
+        "count": 6
+      },
+      {
+        "query": "only screen and (max-width: 500px)",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7",
+        "count": 2
+      },
+      {
+        "query": "only screen and (max-width: 850px)",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7",
+        "count": 5
+      },
+      {
+        "query": "only screen and (max-width: 800px)",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7",
+        "count": 3
+      },
+      {
+        "query": "only screen and (max-width: 640px)",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7",
+        "count": 32
+      },
+      {
+        "query": "(min-width: 900px)",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7",
+        "count": 1
+      },
+      {
+        "query": "(max-width: -1px)",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7",
+        "count": 1
+      },
+      {
+        "query": "(min-width: 0px)",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7",
+        "count": 2
+      },
+      {
+        "query": "(min-width: 992px)",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7",
+        "count": 2
+      },
+      {
+        "query": "(min-width: 1200px)",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7",
+        "count": 2
+      },
+      {
+        "query": "screen and (max-width: 860px)",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7",
+        "count": 1
+      },
+      {
+        "query": "only screen and (max-width: 1024px)",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7",
+        "count": 24
+      },
+      {
+        "query": "only screen and (min-width: 640px)",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7",
+        "count": 1
+      },
+      {
+        "query": "only screen and (max-width: 672px)",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7",
+        "count": 2
+      },
+      {
+        "query": "only screen and (min-width: 672px) and (max-width: 704px)",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7",
+        "count": 2
+      },
+      {
+        "query": "only screen and (min-width: 704px) and (max-width: 736px)",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7",
+        "count": 2
+      },
+      {
+        "query": "only screen and (min-width: 736px) and (max-width: 768px)",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7",
+        "count": 2
+      },
+      {
+        "query": "only screen and (min-width: 768px) and (max-width: 800px)",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7",
+        "count": 2
+      },
+      {
+        "query": "only screen and (min-width: 851px)",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7",
+        "count": 2
+      },
+      {
+        "query": "only screen and (max-width: 700px)",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7",
+        "count": 7
+      },
+      {
+        "query": "only screen and (max-width: 832px)",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7",
+        "count": 1
+      },
+      {
+        "query": "only screen and (max-width: 818px)",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7",
+        "count": 1
+      },
+      {
+        "query": "only screen and (min-width: 700px)",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7",
+        "count": 2
+      },
+      {
+        "query": "only screen and (max-device-width: 640px)",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7",
+        "count": 4
+      },
+      {
+        "query": "only screen and (min-device-width: 320px) and (max-device-width: 640px)",
+        "sheet": "https://das.edu.pk/wp-content/litespeed/css/e571469fad09097bb7e72221953fa6a7.css?ver=fa6a7",
+        "count": 1
+      },
+      {
+        "query": "screen and (max-width: 640px)",
+        "sheet": null,
+        "count": 1
+      },
+      {
+        "query": "screen and (min-width: 641px) and (max-width: 1024px)",
+        "sheet": null,
+        "count": 1
+      },
+      {
+        "query": "screen and (min-width: 1025px)",
+        "sheet": null,
+        "count": 1
+      }
+    ],
+    "containers": [
+      {
+        "classes": "fusion-row",
+        "maxWidth": "100%",
+        "width": 768,
+        "paddingLeft": "0px",
+        "paddingRight": "0px"
+      },
+      {
+        "classes": "fusion-row",
+        "maxWidth": "100%",
+        "width": 708,
+        "paddingLeft": "0px",
+        "paddingRight": "0px"
+      },
+      {
+        "classes": "fusion-row",
+        "maxWidth": "1280px",
+        "width": 708,
+        "paddingLeft": "0px",
+        "paddingRight": "0px"
+      },
+      {
+        "classes": "fusion-row",
+        "maxWidth": "1280px",
+        "width": 708,
+        "paddingLeft": "0px",
+        "paddingRight": "0px"
+      },
+      {
+        "classes": "fusion-row",
+        "maxWidth": "100%",
+        "width": 708,
+        "paddingLeft": "0px",
+        "paddingRight": "0px"
+      }
+    ],
+    "elements": {
+      "h1": {
+        "count": 1,
+        "sample": {
+          "classes": "entry-title fusion-responsive-typography-calculated",
+          "text": "Photo Gallery",
+          "style": {
+            "fontFamily": "Poppins, Arial, Helvetica, sans-serif",
+            "fontSize": "35.2145px",
+            "fontWeight": "700",
+            "lineHeight": "35.2145px",
+            "letterSpacing": "-1px",
+            "textTransform": "none",
+            "color": "rgb(255, 255, 0)",
+            "backgroundColor": "rgba(0, 0, 0, 0)",
+            "padding": "0px",
+            "margin": "0px",
+            "border": "0px none rgb(255, 255, 0)",
+            "borderRadius": "0px",
+            "boxShadow": "none"
+          }
+        }
+      },
+      "h2": {
+        "count": 0,
+        "sample": null
+      },
+      "h3": {
+        "count": 0,
+        "sample": null
+      },
+      "h4": {
+        "count": 0,
+        "sample": null
+      },
+      "bodyText": {
+        "count": 0,
+        "sample": null
+      },
+      "smallText": {
+        "count": 0,
+        "sample": null
+      },
+      "link": {
+        "count": 0,
+        "sample": null
+      },
+      "topBar": {
+        "count": 2,
+        "sample": {
+          "classes": "wp-singular page-template-default page page-id-2996 page-child parent-pageid-2991 wp-theme-Avada awb-no-sidebars fusion-image-hovers fusion-pagination-sizing fusion-button_type-flat fusion-button_span-yes fusion-button_gradient-linear avada-image-rollover-circle-no avada-image-rollover-yes avada-image-rollover-direction-fade cp_aff_false fusion-body ltr fusion-sticky-header no-tablet-sticky-header no-mobile-sticky-header no-mobile-slidingbar no-mobile-totop fusion-disable-outline fusion-sub-menu-fade mobile-logo-pos-left layout-wide-mode avada-has-boxed-modal-shadow-none layout-scroll-offset-full avada-has-zero-margin-offset-top fusion-top-header menu-text-align-center mobile-menu-design-modern fusion-hide-pagination-text fusion-header-layout-v3 avada-responsive avada-footer-fx-none avada-menu-highlight-style-background fusion-search-form-classic fusion-main-menu-search-dropdown fusion-avatar-square avada-sticky-shrinkage avada-dropdown-styles avada-blog-layout-timeline avada-blog-archive-layout-grid avada-header-shadow-yes avada-menu-icon-position-left avada-has-megamenu-shadow avada-has-mainmenu-dropdown-divider avada-has-pagetitle-bg-full avada-has-main-nav-search-icon avada-has-100-footer avada-has-breadcrumb-mobile-hidden avada-has-titlebar-bar_and_content avada-has-footer-widget-bg-image avada-has-pagination-padding avada-flyout-menu-direction-top avada-ec-views-v1 do-animate",
+          "text": "Skip to contentDAS PortalePortalStudent LoginMail LoginLMS A",
+          "style": {
+            "fontFamily": "\"softLINKS Regular\", Arial, Helvetica, sans-serif",
+            "fontSize": "16px",
+            "fontWeight": "400",
+            "lineHeight": "24px",
+            "letterSpacing": "normal",
+            "textTransform": "none",
+            "color": "rgb(0, 0, 0)",
+            "backgroundColor": "rgb(215, 214, 214)",
+            "padding": "0px",
+            "margin": "0px",
+            "border": "0px none rgb(0, 0, 0)",
+            "borderRadius": "0px",
+            "boxShadow": "none"
+          }
+        }
+      },
+      "header": {
+        "count": 1,
+        "sample": {
+          "classes": "fusion-header",
+          "text": "HOMEFront PageABOUTWho We are?OverviewSalient FeaturesManage",
+          "style": {
+            "fontFamily": "\"softLINKS Regular\", Arial, Helvetica, sans-serif",
+            "fontSize": "16px",
+            "fontWeight": "400",
+            "lineHeight": "24px",
+            "letterSpacing": "normal",
+            "textTransform": "none",
+            "color": "rgb(0, 0, 0)",
+            "backgroundColor": "rgb(255, 255, 255)",
+            "padding": "20px 30px",
+            "margin": "0px",
+            "border": "",
+            "borderRadius": "0px",
+            "boxShadow": "none"
+          }
+        }
+      },
+      "mainMenuItem": {
+        "count": 0,
+        "sample": null
+      },
+      "dropdownMenu": {
+        "count": 0,
+        "sample": null
+      },
+      "mobileMenu": {
+        "count": 0,
+        "sample": null
+      },
+      "sectionTitle": {
+        "count": 0,
+        "sample": null
+      },
+      "sectionSubtitle": {
+        "count": 0,
+        "sample": null
+      },
+      "formInput": {
+        "count": 0,
+        "sample": null
+      },
+      "formLabel": {
+        "count": 0,
+        "sample": null
+      },
+      "submitButton": {
+        "count": 0,
+        "sample": null
+      },
+      "footerHeading": {
+        "count": 0,
+        "sample": null
+      },
+      "footerLink": {
+        "count": 6,
+        "sample": {
+          "classes": "",
+          "text": "Dar-e-Arqam Schools",
+          "style": {
+            "fontFamily": "\"softLINKS Regular\", Arial, Helvetica, sans-serif",
+            "fontSize": "16px",
+            "fontWeight": "400",
+            "lineHeight": "24px",
+            "letterSpacing": "normal",
+            "textTransform": "none",
+            "color": "rgb(25, 25, 146)",
+            "backgroundColor": "rgba(0, 0, 0, 0)",
+            "padding": "0px",
+            "margin": "0px",
+            "border": "0px none rgb(25, 25, 146)",
+            "borderRadius": "0px",
+            "boxShadow": "none"
+          }
+        }
+      },
+      "footerBottomBar": {
+        "count": 1,
+        "sample": {
+          "classes": "fusion-footer-copyright-area",
+          "text": "© Dar-e-Arqam Schools   |   \nAll Rights Reserved   |   \nCraf",
+          "style": {
+            "fontFamily": "\"softLINKS Regular\", Arial, Helvetica, sans-serif",
+            "fontSize": "16px",
+            "fontWeight": "400",
+            "lineHeight": "24px",
+            "letterSpacing": "normal",
+            "textTransform": "none",
+            "color": "rgb(0, 0, 0)",
+            "backgroundColor": "rgb(234, 234, 238)",
+            "padding": "30px",
+            "margin": "0px",
+            "border": "",
+            "borderRadius": "0px",
+            "boxShadow": "none"
+          }
+        }
+      }
+    },
+    "buttonVariants": [
+      {
+        "variant": "wp-singular page-template-default page page-id-2996 page-child parent-pageid-2991 wp-theme-Avada awb-no-sidebars fusion-image-hovers fusion-pagination-sizing fusion-button_type-flat fusion-button_span-yes fusion-button_gradient-linear avada-image-rollover-circle-no avada-image-rollover-yes avada-image-rollover-direction-fade cp_aff_false fusion-body ltr fusion-sticky-header no-tablet-sticky-header no-mobile-sticky-header no-mobile-slidingbar no-mobile-totop fusion-disable-outline fusion-sub-menu-fade mobile-logo-pos-left layout-wide-mode avada-has-boxed-modal-shadow-none layout-scroll-offset-full avada-has-zero-margin-offset-top fusion-top-header menu-text-align-center mobile-menu-design-modern fusion-hide-pagination-text fusion-header-layout-v3 avada-responsive avada-footer-fx-none avada-menu-highlight-style-background fusion-search-form-classic fusion-main-menu-search-dropdown fusion-avatar-square avada-sticky-shrinkage avada-dropdown-styles avada-blog-layout-timeline avada-blog-archive-layout-grid avada-header-shadow-yes avada-menu-icon-position-left avada-has-megamenu-shadow avada-has-mainmenu-dropdown-divider avada-has-pagetitle-bg-full avada-has-main-nav-search-icon avada-has-100-footer avada-has-breadcrumb-mobile-hidden avada-has-titlebar-bar_and_content avada-has-footer-widget-bg-image avada-has-pagination-padding avada-flyout-menu-direction-top avada-ec-views-v1 do-animate",
+        "classes": "wp-singular page-template-default page page-id-2996 page-child parent-pageid-2991 wp-theme-Avada awb-no-sidebars fusion-image-hovers fusion-pagination-sizing fusion-button_type-flat fusion-button_span-yes fusion-button_gradient-linear avada-image-rollover-circle-no avada-image-rollover-yes avada-image-rollover-direction-fade cp_aff_false fusion-body ltr fusion-sticky-header no-tablet-sticky-header no-mobile-sticky-header no-mobile-slidingbar no-mobile-totop fusion-disable-outline fusion-sub-menu-fade mobile-logo-pos-left layout-wide-mode avada-has-boxed-modal-shadow-none layout-scroll-offset-full avada-has-zero-margin-offset-top fusion-top-header menu-text-align-center mobile-menu-design-modern fusion-hide-pagination-text fusion-header-layout-v3 avada-responsive avada-footer-fx-none avada-menu-highlight-style-background fusion-search-form-classic fusion-main-menu-search-dropdown fusion-avatar-square avada-sticky-shrinkage avada-dropdown-styles avada-blog-layout-timeline avada-blog-archive-layout-grid avada-header-shadow-yes avada-menu-icon-position-left avada-has-megamenu-shadow avada-has-mainmenu-dropdown-divider avada-has-pagetitle-bg-full avada-has-main-nav-search-icon avada-has-100-footer avada-has-breadcrumb-mobile-hidden avada-has-titlebar-bar_and_content avada-has-footer-widget-bg-image avada-has-pagination-padding avada-flyout-menu-direction-top avada-ec-views-v1 do-animate",
+        "style": {
+          "fontFamily": "\"softLINKS Regular\", Arial, Helvetica, sans-serif",
+          "fontSize": "16px",
+          "fontWeight": "400",
+          "lineHeight": "24px",
+          "letterSpacing": "normal",
+          "textTransform": "none",
+          "color": "rgb(0, 0, 0)",
+          "backgroundColor": "rgb(215, 214, 214)",
+          "padding": "0px",
+          "margin": "0px",
+          "border": "0px none rgb(0, 0, 0)",
+          "borderRadius": "0px",
+          "boxShadow": "none"
+        },
+        "text": "Skip to contentDAS PortalePort"
+      }
+    ],
+    "cards": [
+      {
+        "selector": ".fusion-content-boxes .fusion-content-box",
+        "count": 0,
+        "sample": null
+      },
+      {
+        "selector": ".flip-box-front-inner",
+        "count": 0,
+        "sample": null
+      },
+      {
+        "selector": ".fusion-column-wrapper.fusion-column-has-shadow",
+        "count": 0,
+        "sample": null
+      },
+      {
+        "selector": ".fusion-counter-box",
+        "count": 0,
+        "sample": null
+      }
+    ],
+    "sliders": {
+      "flexSliders": [],
+      "swipers": []
+    },
+    "counters": [],
+    "hover": {
+      "mainMenuItem": {
+        "found": false
+      },
+      "button": {
+        "found": false
+      },
+      "footerLink": {
+        "found": true,
+        "before": {
+          "color": "rgb(25, 25, 146)",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "transform": "none",
+          "boxShadow": "none"
+        },
+        "after": {
+          "color": "rgb(3, 169, 244)",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "transform": "none",
+          "boxShadow": "none"
+        }
+      },
+      "card": {
+        "found": false
+      }
+    }
+  }
+}

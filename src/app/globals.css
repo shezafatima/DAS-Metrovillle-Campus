@@ -1,0 +1,216 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-heading: var(--font-sans);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+
+  /* Site-shell design tokens (research/design-tokens.md — das.edu.pk extraction).
+     Tailwind's default `lg:` breakpoint is already 1024px min-width, exactly
+     the desktop/mobile menu gate research.md §1 calls for, so no separate
+     custom breakpoint token is added — `lg:` *is* that token. */
+  --color-primary: #121291;
+  --color-accent: #00bcd4;
+  --color-cta: #f44336;
+  --color-text: #000000;
+  --color-text-muted: #747474;
+  --color-text-muted-2: #999999;
+  --color-surface: #ffffff;
+  --color-neutral-100: #d7d6d6;
+  /* Confirmed by sampling screenshots/das.edu.pk_*.png header crops directly
+     (255,255,0 at 1440/1024/375px) — research/design-tokens.md's own JSON
+     capture recorded this exact value but mischaracterized its role as
+     "minor accent, small elements only"; it is in fact the full-width top
+     bar background on every page. See research/design-tokens.md's updated
+     Cross-check note. */
+  --color-topbar: #ffff00;
+  /* research/tokens/home-1440.json footerBottomBar.sample.style.backgroundColor
+     — rgb(234, 234, 238), distinct from the general --color-neutral-100. */
+  --color-footer-bottom: #eaeaee;
+
+  --font-body: "softLINKS Regular", Arial, Helvetica, sans-serif;
+  --font-body-urdu: "softLINKS Urdu Regular", "Noto Nastaliq Urdu", Tahoma, sans-serif;
+  --font-heading: var(--font-poppins), Arial, Helvetica, sans-serif;
+  --font-nav: var(--font-roboto-condensed), Arial, Helvetica, sans-serif;
+  --font-button: var(--font-open-sans), Arial, Helvetica, sans-serif;
+
+  --text-h2: 30px;
+  --text-h2--line-height: 36px;
+  --text-h2--font-weight: 700;
+  --text-h3: 24px;
+  --text-h3--line-height: 33.6px;
+  --text-h3--font-weight: 700;
+  --text-body: 16px;
+  --text-body--line-height: 24px;
+  --text-nav: 16px;
+  --text-nav--line-height: 16px;
+  --text-nav--font-weight: 700;
+  --text-nav--letter-spacing: 1px;
+  --text-button: 14px;
+  --text-button--line-height: 17px;
+  --text-button--font-weight: 600;
+  --text-button-lg: 18px;
+  --text-button-lg--line-height: 21px;
+  --text-button-lg--font-weight: 600;
+  --text-footer-link: 16px;
+  --text-footer-link--line-height: 24px;
+
+  /* Dropdown sub-nav text, the top bar's portal links, and each top-level
+     item's small tagline (e.g. "Front Page" under HOME) — confirmed
+     present on the live reference site but not captured in
+     research/design-tokens.md's extraction (a gap, like the logo's pixel
+     size). Kept as three separate tokens (not one shared value) so
+     resizing one — e.g. the tagline, per user feedback — never silently
+     resizes the other two. */
+  --text-nav-sub: 14px;
+  --text-nav-sub--line-height: 20px;
+  --text-topbar-link: 14px;
+  --text-topbar-link--line-height: 20px;
+  --text-nav-tagline: 12px;
+  --text-nav-tagline--line-height: 16px;
+
+  --spacing-section-x: 30px;
+  --spacing-section-x-sm: 15px;
+  --spacing-section-y-sm: 20px;
+  --spacing-section-y-md: 30px;
+  --spacing-section-gap-lg: 60px;
+
+  /* radius-sm/radius-lg from research/design-tokens.md collide with the
+     shadcn radius scale above (already consumed by Button etc at different
+     values) — shell-only radii get distinct names instead. */
+  --radius-pill: 32px;
+  --radius-card: 20px;
+
+  --shadow-card: 0 10px 50px -2px rgb(0 0 0 / 0.14);
+
+  --container-max-width: 1280px;
+  --container-gutter-x: 30px;
+
+  --motion-fast: 0.2s;
+  --motion-medium: 0.3s;
+  --motion-slide: 0.45s;
+  --motion-fade: 0.4s;
+}
+
+:root {
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.87 0 0);
+  --chart-2: oklch(0.556 0 0);
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
+  --radius: 0.625rem;
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+  --chart-1: oklch(0.87 0 0);
+  --chart-2: oklch(0.556 0 0);
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0 0);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+}

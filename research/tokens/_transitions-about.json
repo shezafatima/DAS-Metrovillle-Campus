@@ -1,0 +1,69 @@
+{
+  "page": "about",
+  "url": "https://das.edu.pk/about/overview/",
+  "data": {
+    "mainMenuItem": {
+      "transition": "color 0.2s linear, background-color 0.2s linear, border-color 0.2s linear",
+      "transitionDuration": "0.2s",
+      "transitionTimingFunction": "linear",
+      "transitionDelay": "0s",
+      "animationName": "none",
+      "animationDuration": "0s",
+      "animationTimingFunction": "ease",
+      "animationDelay": "0s"
+    },
+    "dropdownSubmenu": {
+      "transition": "all",
+      "transitionDuration": "0s",
+      "transitionTimingFunction": "ease",
+      "transitionDelay": "0s",
+      "animationName": "none",
+      "animationDuration": "0s",
+      "animationTimingFunction": "ease",
+      "animationDelay": "0s"
+    },
+    "button": null,
+    "card": null,
+    "flipBoxInner": null,
+    "footerLink": {
+      "transition": "color 0.2s linear, background-color 0.2s linear, border-color 0.2s linear",
+      "transitionDuration": "0.2s",
+      "transitionTimingFunction": "linear",
+      "transitionDelay": "0s",
+      "animationName": "none",
+      "animationDuration": "0s",
+      "animationTimingFunction": "ease",
+      "animationDelay": "0s"
+    },
+    "imageRollover": null,
+    "swiperSlide": null,
+    "counterBox": {
+      "transition": "all",
+      "transitionDuration": "0s",
+      "transitionTimingFunction": "ease",
+      "transitionDelay": "0s",
+      "animationName": "none",
+      "animationDuration": "0s",
+      "animationTimingFunction": "ease",
+      "animationDelay": "0s"
+    },
+    "otherNonDefaultTransitions": [
+      {
+        "classes": "skip-link screen-reader-text",
+        "transition": "color 0.2s linear, background-color 0.2s linear, border-color 0.2s linear"
+      },
+      {
+        "classes": "fusion-background-highlight",
+        "transition": "color 0.2s ease-in-out, background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, height, line-height"
+      },
+      {
+        "classes": "fusion-column-inner-bg hover-type-liftup",
+        "transition": "transform 0.3s, filter 0.3s, background-color 0.3s, border-color 0.3s"
+      },
+      {
+        "classes": "fusion-top-top-link",
+        "transition": "opacity 0.4s ease-in-out, background 0.2s ease-in-out"
+      }
+    ]
+  }
+}
