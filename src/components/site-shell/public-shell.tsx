@@ -1,0 +1,23 @@
+import { SkipLink } from "@/components/site-shell/skip-link";
+import { Header } from "@/components/site-shell/header";
+import { Footer } from "@/components/site-shell/footer";
+
+/**
+ * The public site's chrome — skip link, header (top bar + nav), the
+ * shared <main>, and footer. Extracted out of the root layout
+ * (specs/002-foundation/research.md §3) so the admin area, which has no
+ * das.edu.pk counterpart and none of this chrome, can share the same
+ * root layout without inheriting it.
+ */
+export function PublicShell({ children }: { children: React.ReactNode }) {
+  return (
+    <>
+      <SkipLink />
+      <Header />
+      <main id="main-content" className="flex flex-1 flex-col">
+        {children}
+      </main>
+      <Footer />
+    </>
+  );
+}

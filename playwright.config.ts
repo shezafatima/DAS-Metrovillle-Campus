@@ -5,6 +5,7 @@ const baseURL = `http://localhost:${PORT}`;
 
 export default defineConfig({
   testDir: "./e2e",
+  globalSetup: "./e2e/global-setup.ts",
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
@@ -20,6 +21,20 @@ export default defineConfig({
   projects: [
     {
       name: "chromium",
+      testIgnore: /admin-.*\.spec\.ts/,
+      use: { ...devices["Desktop Chrome"], channel: "chrome" },
+    },
+    {
+      // Admin specs share one persisted MongoDB `throttle` collection
+      // (login lockout / rate-limit state) and one seeded admin account,
+      // so they cannot safely run in parallel with each other — a
+      // concurrent spec's failed logins would trip another spec's
+      // lockout assertions (specs/002-foundation/tasks.md Phase 2 note;
+      // sp.analyze finding I1).
+      name: "admin",
+      testMatch: /admin-.*\.spec\.ts/,
+      fullyParallel: false,
+      workers: 1,
       use: { ...devices["Desktop Chrome"], channel: "chrome" },
     },
   ],
@@ -28,5 +43,8 @@ export default defineConfig({
     url: baseURL,
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
+    env: {
+      MONGODB_DB_NAME: "dar_e_arqam_test",
+    },
   },
 });

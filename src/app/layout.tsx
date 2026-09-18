@@ -1,8 +1,5 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Poppins, Roboto_Condensed, Open_Sans } from "next/font/google";
-import { SkipLink } from "@/components/site-shell/skip-link";
-import { Header } from "@/components/site-shell/header";
-import { Footer } from "@/components/site-shell/footer";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -46,20 +43,19 @@ export const metadata: Metadata = {
     "Dar-e-Arqam School, Metroville Campus — admissions, academics, campuses, and news.",
 };
 
+// Fonts, globals.css, and the bare <html>/<body> shell only — no header,
+// footer, or <main> here. The public site's chrome moved to
+// src/app/(public)/layout.tsx (PublicShell) so the admin area
+// (src/app/admin/**), which has no das.edu.pk counterpart, can share
+// this one root layout without inheriting public-site chrome
+// (specs/002-foundation/research.md §3).
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} ${poppins.variable} ${robotoCondensed.variable} ${openSans.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">
-        <SkipLink />
-        <Header />
-        <main id="main-content" className="flex flex-1 flex-col">
-          {children}
-        </main>
-        <Footer />
-      </body>
+      <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );
 }

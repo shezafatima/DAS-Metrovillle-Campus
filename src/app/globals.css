@@ -132,6 +132,15 @@
   --motion-medium: 0.3s;
   --motion-slide: 0.45s;
   --motion-fade: 0.4s;
+
+  /* Admin dashboard layout tokens — no das.edu.pk reference exists for the
+     admin area (spec 002-foundation "Deviations from the Reference"), so
+     these are chosen values, not extracted ones. Named here first per
+     Constitution V; see research/design-tokens.md's "Admin dashboard
+     tokens" section and research.md §12 of specs/002-foundation. Admin
+     colors and fonts reuse the tokens above — no new color/font token. */
+  --spacing-admin-sidebar: 240px;
+  --spacing-admin-topbar: 56px;
 }
 
 :root {

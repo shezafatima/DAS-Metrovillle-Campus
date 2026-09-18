@@ -1,36 +1,85 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Dar-e-Arqam School — Metroville Campus Website
 
-## Getting Started
+A public website and admin dashboard for Dar-e-Arqam School, Metroville
+Campus, built with Next.js (App Router), Better Auth, and MongoDB Atlas
+Flex. See `docs/prd.md` for the product requirements and `docs/architecture.md`
+for the technical architecture.
 
-First, run the development server:
+## Getting started
+
+### 1. Configure
+
+```bash
+cp .env.example .env.local
+```
+
+Fill in:
+
+| Variable | Value |
+|---|---|
+| `MONGODB_URI` | Atlas Flex connection string (no database name in the path) |
+| `MONGODB_DB_NAME` | optional, defaults to `dar_e_arqam` |
+| `BETTER_AUTH_SECRET` | ≥ 32 random characters, e.g. `openssl rand -base64 32` |
+| `BETTER_AUTH_URL` | `http://localhost:3000` |
+| `ADMIN_EMAIL` | the single admin's email |
+| `ADMIN_PASSWORD` | at least 12 characters |
+
+Starting the app with any required value missing fails immediately with
+`Missing required environment variable: <NAME>`.
+
+### 2. Install and seed the admin account
+
+```bash
+npm install
+npm run seed:admin            # creates the admin; safe to re-run
+npm run seed:admin -- --reset # changes the password and ends all sessions
+```
+
+There is no public sign-up; the seed command is the only way to create
+or reset the single admin account.
+
+### 3. Run
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- `http://localhost:3000` — the public site
+- `http://localhost:3000/admin` — redirects to login, then to the admin
+  dashboard (Overview, News, Messages, Signups, Settings)
+- `http://localhost:3000/api/health` — `{"status":"ok"}` when the
+  database is reachable
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 4. Verify
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run lint
+npm test          # Vitest — DB-backed suites need MONGODB_URI, otherwise skip with a notice
+npm run test:e2e  # Playwright — seeds a dedicated test database, then runs e2e/*.spec.ts
+```
 
-## Learn More
+## Project structure
 
-To learn more about Next.js, take a look at the following resources:
+See `docs/architecture.md` for the full folder layout, API namespaces,
+and the admin authentication/authorization model. In short:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- `src/app/(public)/` — the public site, sharing one header/footer shell
+- `src/app/admin/` — the admin dashboard, session-protected end to end
+- `src/lib/` — database connection, auth, validation, and shared
+  server-side primitives (rate limiting, soft delete, honeypot)
+- `src/components/` — one component per visual section
+- `src/content/` — typed page copy
+- `scripts/seed-admin.ts` — the admin account setup/reset command
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Spec-driven development
 
-## Deploy on Vercel
+This project follows Spec-Driven Development via SpecKit Plus. Feature
+specs, plans, and tasks live under `specs/<feature>/`, and prompt
+history is recorded under `history/prompts/`. See
+`.specify/memory/constitution.md` for the project's governing
+principles.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Learn more about Next.js
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- [Next.js Documentation](https://nextjs.org/docs)
+- [Learn Next.js](https://nextjs.org/learn)

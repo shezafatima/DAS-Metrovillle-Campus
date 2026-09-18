@@ -19,8 +19,23 @@ Fill in:
 | `ADMIN_EMAIL` | the single admin's email |
 | `ADMIN_PASSWORD` | at least 12 characters |
 
-Starting the app with any of the first four missing fails immediately
-with `Missing required environment variable: <NAME>`.
+Starting the app with any of the first four missing fails with
+`Missing required environment variable: <NAME>`, thrown from
+`src/instrumentation.ts`'s `register()`.
+
+> **Verified discrepancy (T064)**: under `next dev` with Turbopack
+> (Next.js 16), `register()` compiles and runs lazily on the first
+> request that needs it, not before the initial `✓ Ready` line — so the
+> terminal can print "Ready" even with a required variable missing.
+> The failure still surfaces immediately, with the exact message above
+> and a clean stack trace, the moment any page or route is actually
+> requested (in this app, that's any request at all, since `proxy.ts`
+> matches every `/admin/**` path and every other route eventually
+> touches `src/lib/db.ts`/`src/lib/auth.ts`). `next build` / `next
+> start` (production) are expected to gate on `register()` completing
+> before accepting connections at all, per the Next.js instrumentation
+> guide — this project's test suite does not currently exercise a
+> production build to confirm that difference.
 
 ## 2. Install and seed
 
