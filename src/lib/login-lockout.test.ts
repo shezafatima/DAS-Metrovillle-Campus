@@ -8,7 +8,8 @@ const ADMIN_EMAIL = "lockout-test-admin@example.com";
 const ADMIN_PASSWORD = "correct-horse-battery-staple";
 
 async function seedAdmin() {
-  const { auth } = await import("@/lib/auth");
+  const { getAuth } = await import("@/lib/auth");
+  const auth = await getAuth();
   const ctx = await auth.$context;
   const existing = await ctx.internalAdapter.findUserByEmail(ADMIN_EMAIL);
   if (existing) return;
@@ -30,7 +31,8 @@ function headersFor(ip: string): Headers {
 }
 
 async function attempt(email: string, password: string, ip: string) {
-  const { auth } = await import("@/lib/auth");
+  const { getAuth } = await import("@/lib/auth");
+  const auth = await getAuth();
   return auth.api.signInEmail({ body: { email, password }, headers: headersFor(ip) }).catch((e) => e);
 }
 

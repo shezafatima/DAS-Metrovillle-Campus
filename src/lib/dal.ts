@@ -1,6 +1,6 @@
 import { headers as nextHeaders } from "next/headers";
 import { redirect } from "next/navigation";
-import { auth } from "@/lib/auth";
+import { getAuth } from "@/lib/auth";
 import { safeAdminReturnPath } from "@/lib/validation/return-path";
 
 export interface AdminSession {
@@ -16,6 +16,7 @@ export interface AdminSession {
  * the server, never trusting the client or the page-level proxy alone).
  */
 export async function getAdminSession(): Promise<AdminSession | null> {
+  const auth = await getAuth();
   const result = await auth.api.getSession({ headers: await nextHeaders() });
   if (!result?.session || !result.user) return null;
   return { email: result.user.email, sessionId: result.session.id };

@@ -6,7 +6,8 @@ const ADMIN_EMAIL = "session-route-test@example.com";
 const ADMIN_PASSWORD = "correct-horse-battery-staple";
 
 async function seedAdmin() {
-  const { auth } = await import("@/lib/auth");
+  const { getAuth } = await import("@/lib/auth");
+  const auth = await getAuth();
   const ctx = await auth.$context;
   const existing = await ctx.internalAdapter.findUserByEmail(ADMIN_EMAIL);
   if (existing) return;
@@ -37,7 +38,8 @@ describeWithDb("GET /api/admin/session", ["user", "account", "session"], () => {
 
   it("returns 200 with the admin's email for a valid session", async () => {
     await seedAdmin();
-    const { auth } = await import("@/lib/auth");
+    const { getAuth } = await import("@/lib/auth");
+    const auth = await getAuth();
     const { headers: setHeaders } = await auth.api.signInEmail({
       body: { email: ADMIN_EMAIL, password: ADMIN_PASSWORD },
       returnHeaders: true,
@@ -59,7 +61,8 @@ describeWithDb("GET /api/admin/session", ["user", "account", "session"], () => {
 
   it("returns 401 once the session has expired", async () => {
     await seedAdmin();
-    const { auth } = await import("@/lib/auth");
+    const { getAuth } = await import("@/lib/auth");
+    const auth = await getAuth();
     const mongoose = (await import("mongoose")).default;
     const { headers: setHeaders } = await auth.api.signInEmail({
       body: { email: ADMIN_EMAIL, password: ADMIN_PASSWORD },

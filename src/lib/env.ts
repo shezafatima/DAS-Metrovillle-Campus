@@ -13,12 +13,17 @@ const envSchema = z.object({
     .trim()
     .min(32, "BETTER_AUTH_SECRET must be at least 32 characters"),
   BETTER_AUTH_URL: z.url("BETTER_AUTH_URL must be a valid URL"),
+  // .env.local ships this key present-but-empty ("MONGODB_DB_NAME=") when
+  // unset, so an empty/whitespace-only value must fall back to the
+  // default exactly like a genuinely missing key — z.optional().default()
+  // alone only applies the default to `undefined`, not "".
   MONGODB_DB_NAME: z
     .string()
-    .trim()
-    .min(1)
     .optional()
-    .default("dar_e_arqam"),
+    .transform((value) => {
+      const trimmed = value?.trim();
+      return trimmed && trimmed.length > 0 ? trimmed : "dar_e_arqam";
+    }),
 });
 
 export type Env = z.infer<typeof envSchema>;

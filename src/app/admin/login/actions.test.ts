@@ -9,7 +9,7 @@ const redirectMock = vi.fn((url: string) => {
 const logSecurityEventMock = vi.fn();
 
 vi.mock("@/lib/auth", () => ({
-  auth: { api: { signInEmail: (...args: unknown[]) => signInEmailMock(...args) } },
+  getAuth: async () => ({ api: { signInEmail: (...args: unknown[]) => signInEmailMock(...args) } }),
 }));
 vi.mock("next/navigation", () => ({
   redirect: (url: string) => redirectMock(url),

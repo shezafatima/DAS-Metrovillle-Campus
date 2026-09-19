@@ -3,7 +3,7 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { isAPIError } from "better-auth/api";
-import { auth } from "@/lib/auth";
+import { getAuth } from "@/lib/auth";
 import { loginSchema } from "@/lib/validation/login";
 import { safeAdminReturnPath } from "@/lib/validation/return-path";
 import { isHoneypotTripped } from "@/lib/honeypot";
@@ -43,6 +43,7 @@ export async function login(
 
   let redirectTo: string;
   try {
+    const auth = await getAuth();
     await auth.api.signInEmail({ body: { email, password }, headers: requestHeaders });
     logSecurityEvent({ type: "login_success", email, ip });
     redirectTo = safeAdminReturnPath(next);

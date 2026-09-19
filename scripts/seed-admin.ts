@@ -61,8 +61,9 @@ async function main(): Promise<void> {
     // an application-level race window.
     await mongoose.connection.db!.collection("user").createIndex({ email: 1 }, { unique: true });
 
-    const { auth } = await import("@/lib/auth");
+    const { getAuth } = await import("@/lib/auth");
     const { logSecurityEvent } = await import("@/lib/log");
+    const auth = await getAuth();
     const ctx = await auth.$context;
 
     const existing = await ctx.internalAdapter.findUserByEmail(email);

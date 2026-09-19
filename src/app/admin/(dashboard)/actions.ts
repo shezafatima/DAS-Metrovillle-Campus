@@ -2,7 +2,7 @@
 
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { auth } from "@/lib/auth";
+import { getAuth } from "@/lib/auth";
 import { logSecurityEvent } from "@/lib/log";
 
 /**
@@ -15,6 +15,7 @@ export async function logout(): Promise<void> {
   const ip = requestHeaders.get("x-forwarded-for") ?? requestHeaders.get("x-real-ip") ?? undefined;
 
   try {
+    const auth = await getAuth();
     await auth.api.signOut({ headers: requestHeaders });
   } catch {
     // No session to end — proceed to redirect regardless.

@@ -32,10 +32,20 @@ describe("getEnv", () => {
     expect(() => getEnv()).toThrow(/BETTER_AUTH_SECRET must be at least 32 characters/);
   });
 
-  it("defaults MONGODB_DB_NAME to dar_e_arqam", () => {
+  it("defaults MONGODB_DB_NAME to dar_e_arqam when unset", () => {
     Object.assign(process.env, BASE_ENV);
     delete process.env.MONGODB_DB_NAME;
     expect(getEnv().MONGODB_DB_NAME).toBe("dar_e_arqam");
+  });
+
+  it("defaults MONGODB_DB_NAME to dar_e_arqam when present but empty (regression: .env.local ships this key as 'KEY=')", () => {
+    Object.assign(process.env, BASE_ENV, { MONGODB_DB_NAME: "" });
+    expect(getEnv().MONGODB_DB_NAME).toBe("dar_e_arqam");
+  });
+
+  it("uses an explicit MONGODB_DB_NAME when one is set", () => {
+    Object.assign(process.env, BASE_ENV, { MONGODB_DB_NAME: "custom_db" });
+    expect(getEnv().MONGODB_DB_NAME).toBe("custom_db");
   });
 });
 

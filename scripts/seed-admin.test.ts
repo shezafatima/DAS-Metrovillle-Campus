@@ -78,7 +78,8 @@ describeWithDb("seed-admin script", ["user", "account", "session"], () => {
         .countDocuments({ userId: user!._id });
       expect(sessionCount).toBe(0);
 
-      const { auth } = await import("@/lib/auth");
+      const { getAuth } = await import("@/lib/auth");
+      const auth = await getAuth();
       const okWithNew = await auth.api
         .signInEmail({ body: { email: ADMIN_EMAIL, password: newPassword } })
         .then(() => true)

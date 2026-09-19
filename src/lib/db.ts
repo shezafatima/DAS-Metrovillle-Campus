@@ -31,7 +31,7 @@ export async function connectDb(): Promise<typeof mongoose> {
     cache.promise = mongoose
       .connect(env.MONGODB_URI, {
         dbName: env.MONGODB_DB_NAME,
-        serverSelectionTimeoutMS: 5000,
+        serverSelectionTimeoutMS: 15000,
       })
       .then((m) => m);
   }

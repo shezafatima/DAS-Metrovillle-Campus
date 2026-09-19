@@ -40,7 +40,7 @@ export default async function globalSetup() {
   }
 
   try {
-    await mongoose.connect(uri, { dbName: "dar_e_arqam_test", serverSelectionTimeoutMS: 5000 });
+    await mongoose.connect(uri, { dbName: "dar_e_arqam_test", serverSelectionTimeoutMS: 15000 });
     for (const name of ["user", "session", "account", "throttle"]) {
       try {
         await mongoose.connection.db?.collection(name).deleteMany({});
@@ -76,7 +76,7 @@ export async function clearThrottle(): Promise<void> {
   const wasConnected = mongoose.connection.readyState !== 0;
   try {
     if (!wasConnected) {
-      await mongoose.connect(uri, { dbName: "dar_e_arqam_test", serverSelectionTimeoutMS: 5000 });
+      await mongoose.connect(uri, { dbName: "dar_e_arqam_test", serverSelectionTimeoutMS: 15000 });
     }
     await mongoose.connection.db?.collection("throttle").deleteMany({});
   } finally {
