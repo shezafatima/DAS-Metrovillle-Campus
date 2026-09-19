@@ -1,7 +1,5 @@
 "use client";
 
-import Image from "next/image";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LayoutDashboard, Mail, Newspaper, Settings, UserPlus } from "lucide-react";
 import {
@@ -10,13 +8,11 @@ import {
   SidebarFooter,
   SidebarGroup,
   SidebarGroupLabel,
-  SidebarHeader,
   SidebarMenu,
   SidebarMenuBadge,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
-  useSidebar,
 } from "@/components/ui/sidebar";
 import { Badge } from "@/components/ui/badge";
 import { adminNavItems } from "@/content/admin";
@@ -37,30 +33,10 @@ interface AppSidebarProps {
 
 export function AppSidebar({ newMessagesCount = 0 }: AppSidebarProps) {
   const pathname = usePathname();
-  const { state } = useSidebar();
-  const collapsed = state === "collapsed";
 
   return (
     <Sidebar>
-      <SidebarHeader>
-        <Link
-          href="/admin"
-          className="flex items-center gap-2 rounded-md p-1 outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring"
-        >
-          <Image
-            src="/images/logo.svg"
-            alt="Dar-e-Arqam School Metroville Campus"
-            width={32}
-            height={32}
-            className="size-8 shrink-0 rounded-sm bg-white/95 p-0.5"
-          />
-          <span className={collapsed ? "lg:hidden" : "font-bold text-sm text-sidebar-foreground"}>
-            Dar-e-Arqam Admin
-          </span>
-        </Link>
-      </SidebarHeader>
-
-      <SidebarContent>
+      <SidebarContent className="pt-3">
         <SidebarGroup>
           <SidebarGroupLabel>Menu</SidebarGroupLabel>
           <SidebarMenu>

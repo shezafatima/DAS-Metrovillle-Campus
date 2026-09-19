@@ -13,8 +13,14 @@ interface AdminShellProps {
 
 export function AdminShell({ email, defaultSidebarOpen, children }: AdminShellProps) {
   return (
-    <div className="admin-theme min-h-full bg-background text-foreground">
-      <SidebarProvider defaultOpen={defaultSidebarOpen} className="min-h-full">
+    // flex-1 is required here: the root layout's <body> is itself a
+    // flex column, and a flex-col container does NOT stretch its
+    // children along the main (vertical) axis by default — without
+    // flex-1 this whole area only sizes to its content's height
+    // instead of filling the viewport, which is what made the sidebar
+    // look cut off partway down instead of running the full height.
+    <div className="admin-theme flex min-h-full flex-1 flex-col bg-background text-foreground">
+      <SidebarProvider defaultOpen={defaultSidebarOpen} className="h-full flex-1">
         <AppSidebar />
         <SidebarInset>
           <AdminTopBar email={email} />

@@ -42,11 +42,4 @@ describe("AppSidebar", () => {
     }
   });
 
-  it("renders the school logo linking home", () => {
-    vi.mocked(usePathname).mockReturnValue("/admin");
-    renderSidebar();
-    const logo = screen.getByAltText("Dar-e-Arqam School Metroville Campus");
-    expect(logo).toBeInTheDocument();
-    expect(logo.closest("a")).toHaveAttribute("href", "/admin");
-  });
 });
