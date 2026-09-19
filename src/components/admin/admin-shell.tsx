@@ -1,28 +1,29 @@
 import type { ReactNode } from "react";
-import { AdminSidebar } from "@/components/admin/admin-sidebar";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/admin/app-sidebar";
 import { AdminTopBar } from "@/components/admin/admin-top-bar";
-import { AdminMobileNav } from "@/components/admin/admin-mobile-nav";
+import { Toaster } from "@/components/ui/toaster";
 
 interface AdminShellProps {
   email: string;
+  /** Server-read cookie value (FR-023 "remember the choice between visits") — avoids a flash of the wrong state. */
+  defaultSidebarOpen: boolean;
   children: ReactNode;
 }
 
-// Sidebar visible at lg+ (1024px), collapsed behind AdminMobileNav's menu
-// button below it (FR-023) — the same lg: breakpoint the public nav
-// already uses (research.md §12).
-export function AdminShell({ email, children }: AdminShellProps) {
+export function AdminShell({ email, defaultSidebarOpen, children }: AdminShellProps) {
   return (
-    <div className="flex min-h-full">
-      <aside className="hidden lg:block">
-        <AdminSidebar />
-      </aside>
-      <div className="flex min-h-full flex-1 flex-col">
-        <AdminTopBar email={email} menuSlot={<AdminMobileNav />} />
-        <main id="admin-content" className="flex-1 overflow-x-hidden">
-          {children}
-        </main>
-      </div>
+    <div className="admin-theme min-h-full bg-background text-foreground">
+      <SidebarProvider defaultOpen={defaultSidebarOpen} className="min-h-full">
+        <AppSidebar />
+        <SidebarInset>
+          <AdminTopBar email={email} />
+          <main id="admin-content" className="flex-1 overflow-x-hidden">
+            {children}
+          </main>
+        </SidebarInset>
+      </SidebarProvider>
+      <Toaster />
     </div>
   );
 }

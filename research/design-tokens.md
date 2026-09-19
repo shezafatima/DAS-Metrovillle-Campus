@@ -298,10 +298,30 @@ components.
 
 | Token | Value | Role |
 |---|---|---|
-| `spacing-admin-sidebar` | `240px` | Fixed sidebar width at `lg`+ |
+| `spacing-admin-sidebar` | `240px` | Expanded sidebar width at `lg`+ |
+| `spacing-admin-sidebar-icon` | `48px` | Collapsed (icon-rail) sidebar width — shadcn/ui sidebar's own default |
+| `spacing-admin-sidebar-mobile` | `288px` | Sidebar drawer width below `lg` |
 | `spacing-admin-topbar` | `56px` | Fixed top-bar height |
 
-All admin *colors* and *fonts* reuse the existing site tokens above
-(`color-primary`, `color-surface`, `color-accent`, `color-neutral-100`,
-`color-text`, `color-text-muted`, `font-heading`, `font-button`) — no new
-color or font token is introduced for the admin area.
+Admin redesign (visual/structural only — functionality, routes, and
+auth unchanged): the admin area gets its own scoped theme
+(`.admin-theme` in `src/app/globals.css`) built entirely from tokens
+already named here — `color-primary` (#121291, navy — sidebar
+background, primary actions, text) and `color-topbar` (#FFFF00,
+yellow — used narrowly as the shadcn sidebar's `--sidebar-accent`
+active-item color and the `Badge` "highlight" variant only, never as
+a general hover/accent color, and always paired with navy text, never
+white, for contrast). `color-cta` (#F44336) is reused for the
+destructive/error slot. `color-neutral-100`, `color-text`,
+`color-text-muted`, and `color-surface` cover the remaining neutral
+slots. Two new named tokens carry the yellow-on-navy badge pairing
+where it isn't already a shadcn theme slot:
+
+| Token | Value | Role |
+|---|---|---|
+| `color-admin-highlight` | `#FFFF00` (= `color-topbar`) | `Badge` "highlight" variant background |
+| `color-admin-highlight-foreground` | `#121291` (= `color-primary`) | Text on the highlight badge |
+
+Poppins (`font-heading`'s family) is used for all admin text, not just
+headings, at the two weights already loaded site-wide (300, 700) — no
+new font weight/file is added.

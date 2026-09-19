@@ -137,9 +137,10 @@
      admin area (spec 002-foundation "Deviations from the Reference"), so
      these are chosen values, not extracted ones. Named here first per
      Constitution V; see research/design-tokens.md's "Admin dashboard
-     tokens" section and research.md §12 of specs/002-foundation. Admin
-     colors and fonts reuse the tokens above — no new color/font token. */
+     tokens" section. Admin theme colors are in .admin-theme below. */
   --spacing-admin-sidebar: 240px;
+  --spacing-admin-sidebar-icon: 48px;
+  --spacing-admin-sidebar-mobile: 288px;
   --spacing-admin-topbar: 56px;
 }
 
@@ -210,6 +211,57 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+}
+
+/* Admin theme — scoped to .admin-theme (the admin root), never global,
+   so the public site's existing neutral shadcn theme is untouched.
+   Values reused from the site-shell tokens above where they already
+   exist (Constitution V — no new raw values without a named token):
+   navy = --color-primary, yellow = --color-topbar, red = --color-cta,
+   neutral-100/text/text-muted/surface as already defined. Yellow is
+   deliberately wired only into --sidebar-accent (the active nav item)
+   and the two --color-admin-highlight-* tokens (Badge "highlight"
+   variant) — never into the general --accent hover slot, so it can't
+   leak onto ordinary buttons/hovers (user brief: "yellow only as an
+   accent... never yellow text on white or white text on yellow"). */
+.admin-theme {
+  font-family: var(--font-poppins), Arial, Helvetica, sans-serif;
+
+  --background: #ffffff;
+  --foreground: #000000;
+  --card: #ffffff;
+  --card-foreground: #000000;
+  --popover: #ffffff;
+  --popover-foreground: #000000;
+  --primary: #121291;
+  --primary-foreground: #ffffff;
+  --secondary: #d7d6d6;
+  --secondary-foreground: #121291;
+  --muted: #d7d6d6;
+  --muted-foreground: #747474;
+  --accent: #d7d6d6;
+  --accent-foreground: #121291;
+  --destructive: #f44336;
+  --border: #d7d6d6;
+  --input: #d7d6d6;
+  --ring: #121291;
+
+  --sidebar: #121291;
+  --sidebar-foreground: #ffffff;
+  --sidebar-primary: #ffffff;
+  --sidebar-primary-foreground: #121291;
+  --sidebar-accent: #ffff00;
+  --sidebar-accent-foreground: #121291;
+  --sidebar-border: oklch(1 0 0 / 12%);
+  --sidebar-ring: #ffff00;
+}
+
+@theme inline {
+  /* Badge "highlight" variant and the Overview stat-card new-item
+     indicator — the one other place yellow is allowed (small badges),
+     per the admin theme comment above. */
+  --color-admin-highlight: #ffff00;
+  --color-admin-highlight-foreground: #121291;
 }
 
 @layer base {
