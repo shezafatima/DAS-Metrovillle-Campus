@@ -20,6 +20,13 @@ describe("GET /api/health (unreachable)", () => {
   });
 
   it("returns 503 with no technical details when the database is unreachable", async () => {
+    // Reset the module registry before mocking: the "reachable" describe
+    // block above may already have imported the real "./route" (and its
+    // real "@/lib/db"), and a real DB connection outside the sandbox
+    // (unlike this project's usual CI/dev state) makes that describeWithDb
+    // block actually run instead of skip. Without this reset, vi.doMock
+    // below registers too late to affect the already-cached "./route".
+    vi.resetModules();
     const fakeConnectionDetail = "mongodb+srv://user:s3cr3t@cluster0.example.mongodb.net";
     vi.doMock("@/lib/db", () => ({
       connectDb: async () => {

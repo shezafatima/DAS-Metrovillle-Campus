@@ -1,0 +1,49 @@
+{
+  "viewport": "768",
+  "url": "https://das.edu.pk/news/",
+  "columns": 2,
+  "gapBetweenColumnsPx": -1,
+  "cardTitle": {
+    "font-size": "22px",
+    "line-height": "31.9px",
+    "font-weight": "700",
+    "color": "rgb(18, 18, 145)"
+  },
+  "cardMeta": {
+    "font-size": "14px",
+    "line-height": "21px",
+    "color": "rgb(0, 0, 0)"
+  },
+  "cardExcerpt": {
+    "font-size": "16px",
+    "line-height": "24px",
+    "color": "rgb(0, 0, 0)"
+  },
+  "cardReadMore": {
+    "font-size": "14px",
+    "line-height": "24px",
+    "color": "rgb(0, 188, 212)",
+    "font-weight": "400"
+  },
+  "cardWrapperPadding": "30px 25px 20px",
+  "cardBorder": {
+    "top": "1px solid rgb(235, 234, 234)",
+    "bottom": "3px solid rgb(235, 234, 234)",
+    "sides": "1px solid rgb(235, 234, 234)",
+    "radius": "0px",
+    "shadow": "none"
+  },
+  "cardImage": {
+    "renderedWidth": 326,
+    "renderedHeight": 152.390625,
+    "aspectRatio": 2.139
+  },
+  "banner": {
+    "heightPx": 102,
+    "backgroundColor": "rgb(18, 18, 145)",
+    "titleFontSize": "35.2145px",
+    "titleColor": "rgb(255, 255, 0)",
+    "breadcrumbFontSize": "18px",
+    "breadcrumbColor": "rgb(255, 255, 255)"
+  }
+}

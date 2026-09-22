@@ -45,6 +45,10 @@ export default defineConfig({
     timeout: 120_000,
     env: {
       MONGODB_DB_NAME: "dar_e_arqam_test",
+      // e2e specs stub the Cloudinary upload itself (page.route), so the
+      // server can't verify a real resource afterward — skip it here
+      // only; verifyNewsCover ignores this flag outside test/dev anyway.
+      NEWS_COVER_VERIFY: "skip",
     },
   },
 });

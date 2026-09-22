@@ -37,10 +37,17 @@
 - src/components/admin/   admin-only components (AdminShell,
   AdminSidebar, AdminTopBar, AdminMobileNav, AdminPlaceholder,
   LoginForm)
+- src/components/admin/news/   news editor UI (NewsEditor,
+  RichTextEditor, CoverImageField, NewsTable, NewsTableFilters,
+  NewsPagination, DeletePostDialog, useUnsavedChanges) — 003 news
+- src/components/news/   public news UI (NewsBanner, NewsGrid,
+  NewsCard, NewsPagination, NewsEmptyState, CategoryFilter, CoverImage,
+  PostBody) — 003 news
 - src/content/<page>.ts   static page copy (typed)
 - src/models/         Mongoose models. Better Auth owns user/session/
   account/verification/rateLimit directly — no Mongoose model is
-  defined for those. throttle.ts is app-owned (see below).
+  defined for those. throttle.ts and news-post.ts (003 news, collection
+  `news`) are app-owned (see below).
 - src/lib/db.ts       cached Mongoose connection (connectDb, getMongoClient)
 - src/lib/auth.ts     Better Auth instance
 - src/lib/dal.ts      getAdminSession() / requireAdminSession() — the
@@ -56,16 +63,35 @@
 - src/lib/honeypot.ts, src/lib/public-form.ts   spam-trap field +
   rate-limit wrapper for public POST routes
 - src/lib/validation/ Zod schemas (shared client + server)
+- src/lib/news/       003 news domain logic: categories.ts (fixed
+  list), slug.ts, sanitize.ts (server-side HTML allowlist — the
+  authoritative control, not the editor's own extension allowlist),
+  excerpt.ts, dates.ts (publish-date/PKT-visibility helpers),
+  cloudinary-loader.ts (next/image loader), mutations.ts
+  (create/update/publish/unpublish/delete — the one place that
+  validates, sanitises, generates slugs and calls Cloudinary
+  verification), admin-queries.ts, public-queries.ts (the single
+  visibility predicate every public read goes through), route-errors.ts
+- src/lib/cloudinary.ts   configured Cloudinary SDK: signNewsCoverUpload()
+  (signed direct browser upload), verifyNewsCover() (server-side
+  confirmation of an uploaded cover's size/format/folder)
 - src/test/db.ts      describeWithDb() — Vitest DB-suite helper that
   skips with a notice when MONGODB_URI is unset
+- src/test/admin-session.ts   seedTestAdmin()/getTestSessionCookie() —
+  shared by every DB-backed admin route test that needs a real session
 - scripts/seed-admin.ts
 - public/images, public/icons   static assets, kebab-case names
-- research/design-tokens.md, research/tokens/*.json
+- research/design-tokens.md, research/tokens/*.json,
+  research/tokens/news-cards-*.json (003 news — per-element card/banner
+  values, extracted by research/extract-news-tokens.ts)
 - screenshots/        reference captures, named <page>-<viewport>.png
 
 ## API namespaces
 - /api/auth/*   Better Auth only
-- /api/admin/*  session required
+- /api/admin/*  session required — includes /api/admin/news* (post
+  CRUD, publish/unpublish) and /api/admin/uploads/sign (Cloudinary
+  signature for direct browser upload; the API secret never leaves
+  this route)
 - /api/public/* no auth
 
 ## Database and auth
@@ -140,8 +166,29 @@
 - Admin uploads go to Cloudinary; only URLs are stored.
 - Copy not yet supplied by the client uses marked placeholders in
   src/content/.
-- Text that may contain Urdu uses dir="auto" and an Urdu fallback
-  font.
+- Shell/site text of unknown language uses dir="auto" and an Urdu
+  fallback font. News content (003) is the one exception: each post
+  carries an explicit `language: "en" | "ur"` field the admin sets
+  (spec clarification, FR-028/FR-029), and that field — not
+  auto-detection — drives `dir` and the Urdu font everywhere the post
+  is shown (title, editor, admin table, public card, detail page).
+
+## News (003) rendering notes
+- Public news pages (`/news`, `/news/<category>`, `/news/<slug>`) are
+  `export const dynamic = "force-dynamic"` — no ISR/revalidate. A
+  cached page would let an unpublished/deleted post linger past its
+  removal, which the spec requires to be immediate (research.md §6).
+- Every public read (list, category list, detail, metadata) goes
+  through the single visibility predicate in
+  `src/lib/news/public-queries.ts` — status published, publishDate ≤
+  today in Asia/Karachi, not soft-deleted. There is no other public
+  query path; this is what makes "drafts and deleted posts are never
+  returned publicly" a property of the code, not a per-page discipline.
+- Cover images: signed direct browser→Cloudinary upload
+  (`/api/admin/uploads/sign` mints the signature; the API secret never
+  leaves that route); the server independently verifies size/format/
+  folder via the Cloudinary API on save (`verifyNewsCover`,
+  `src/lib/cloudinary.ts`) before accepting a changed `coverImage`.
 
 ## Testing
 - Vitest: unit tests and route handler tests (validation failures,

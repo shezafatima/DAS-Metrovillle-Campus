@@ -147,3 +147,10 @@ export const contactInfo: ContactInfo = {
 export const footerContent: FooterContent = {
   bottomText: "Dar-e-Arqam Schools",
 };
+
+// Fallback social-preview image for pages with no page-specific one (e.g.
+// a news post with no cover image — FR-031 US6 scenario 2). The brand logo
+// is an SVG placeholder pending a proper 1200x630 raster design asset;
+// most modern crawlers (Facebook, X, Slack, Discord) accept SVG, but this
+// should be replaced with a designed PNG/JPEG when one exists.
+export const SITE_OG_IMAGE = "/images/logo.svg";

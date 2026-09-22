@@ -133,6 +133,35 @@
   --motion-slide: 0.45s;
   --motion-fade: 0.4s;
 
+  /* News cards (003 news) — extracted per-element from
+     https://das.edu.pk/news/, not the page-level aggregate scan; see
+     research/design-tokens.md "News cards". Identical at all four
+     reference widths (not fluid/responsive) except the banner tokens
+     below, which are two-tier. No new colors: color-primary,
+     color-accent, color-text, color-topbar already cover every color
+     found. */
+  --text-news-card-title: 22px;
+  --text-news-card-title--line-height: 31.9px;
+  --text-news-card-title--font-weight: 700;
+  --text-news-meta: 14px;
+  --text-news-meta--line-height: 21px;
+  --text-news-read-more: 14px;
+  --text-news-read-more--line-height: 24px;
+  --color-news-card-border: #ebeaea;
+  --aspect-news-card: 400 / 187;
+  /* Asymmetric shorthand (30px 25px 20px), so it isn't named
+     --spacing-news-*: Tailwind's --spacing-* namespace only makes
+     sense for single-dimension scale steps. Applied via .news-card in
+     @layer components below, not a generated utility. */
+  --news-card-padding: 30px 25px 20px;
+  /* Banner height and title size are two-tier, not per-breakpoint —
+     see research/design-tokens.md for the measured values at each of
+     the four widths and why these two steps were chosen. */
+  --spacing-news-banner-height: 102px;
+  --spacing-news-banner-height-lg: 155px;
+  --text-news-banner-title: 25.68px;
+  --text-news-banner-title-md: 36px;
+
   /* Admin dashboard layout tokens — no das.edu.pk reference exists for the
      admin area (spec 002-foundation "Deviations from the Reference"), so
      these are chosen values, not extracted ones. Named here first per
@@ -273,5 +302,47 @@
   }
   html {
     @apply font-sans;
+  }
+}
+
+@layer components {
+  /* Shared body typography for news content (headings, paragraphs,
+     lists, links) — used by both the admin rich-text editor
+     (rich-text-editor.tsx) and the public post body (post-body.tsx),
+     so the two always render identically (spec US1 scenario 9).
+     Built only from existing tokens (Constitution V); news-card-
+     specific values (title, meta, excerpt, "Read More") are extracted
+     separately — see research/design-tokens.md "News cards". Logical
+     properties (padding-inline-start, not padding-left) so RTL Urdu
+     posts get list markers on the right without a separate ruleset. */
+  .prose-news h2 {
+    @apply font-heading text-h3 text-text mt-6 mb-2 font-bold first:mt-0;
+  }
+  .prose-news h3 {
+    @apply font-heading text-body text-text mt-4 mb-2 font-bold;
+  }
+  .prose-news p {
+    @apply mb-4 last:mb-0;
+  }
+  .prose-news ul,
+  .prose-news ol {
+    @apply mb-4 flex flex-col gap-1 ps-6;
+  }
+  .prose-news ul {
+    @apply list-disc;
+  }
+  .prose-news ol {
+    @apply list-decimal;
+  }
+  .prose-news a {
+    @apply text-primary underline underline-offset-4;
+  }
+
+  /* News card content padding — asymmetric shorthand extracted from the
+     reference (research/design-tokens.md "News cards"); see the
+     --news-card-padding comment above for why it isn't a --spacing-*
+     token. */
+  .news-card-padding {
+    padding: var(--news-card-padding);
   }
 }

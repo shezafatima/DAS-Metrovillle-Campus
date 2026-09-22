@@ -325,3 +325,82 @@ where it isn't already a shadcn theme slot:
 Poppins (`font-heading`'s family) is used for all admin text, not just
 headings, at the two weights already loaded site-wide (300, 700) — no
 new font weight/file is added.
+
+## News cards (003 news — extracted per-element, not page aggregates)
+
+`research/extract-news-tokens.ts` targets `https://das.edu.pk/news/`'s
+actual card, meta line, "Read More" link and banner elements
+specifically — the page-level aggregate scan above (news-*.json)
+counts colour/font/spacing *frequency* across the whole page and
+doesn't isolate these values. Raw output:
+`research/tokens/news-cards-{375,768,1024,1440}.json`.
+
+**Identical at all four widths** (375/768/1024/1440 — not fluid, not
+breakpoint-dependent):
+
+| Element | Value |
+|---|---|
+| Card title | `22px` / `700` / `31.9px` line-height / `rgb(18,18,145)` = `color-primary` |
+| Card meta line (date \| category) | `14px` / `400` / `21px` line-height / `rgb(0,0,0)` = `color-text` |
+| Card excerpt | `16px` / `400` / `24px` line-height / `rgb(0,0,0)` — same as `text-body` |
+| "Read More" link | `14px` / `400` / `24px` line-height / `rgb(0,188,212)` = `color-accent` |
+| Card padding | `30px 25px 20px` (top/sides/bottom) |
+| Card border | `1px solid #ebeaea` (top/left/right), **`3px solid #ebeaea` bottom** (thicker accent edge); `border-radius: 0`; `box-shadow: none` |
+| Card cover image aspect ratio | `2.139` (≈ `400 / 187`, the source images' native crop) |
+
+**Finding — no grid gap**: cards are laid out by an absolutely-positioned
+JS grid (Fusion/isotope), not CSS `grid`/`flex`. Measured horizontal
+distance between adjacent card edges is ≈0px at every width
+(`gapBetweenColumnsPx`: 375 n/a single column, 768 `-1px`, 1024
+`-0.66px`, 1440 `-1px` — i.e. cards touch). The visual separation in
+the reference comes entirely from each card's own border, not a grid
+gutter. The rebuild therefore uses a real CSS grid with **no gap**
+(`gap-0`) and keeps the card border — do not add a `spacing-news-grid-gap`
+token; none exists on the reference.
+
+**Columns per width** — confirms Tailwind's *default* breakpoints need
+no override:
+
+| Width | Columns | Tailwind prefix |
+|---|---|---|
+| 375px | 1 | (base) |
+| 768px | 2 | `md:` (768px min-width) |
+| 1024px | 3 | `lg:` (1024px min-width) |
+| 1440px | 3 | `lg:` (unchanged) |
+
+**Banner** ("News" title bar / breadcrumb) — two-tier, not per-width:
+
+| | <768px (375) | ≥768px (768/1024/1440) |
+|---|---|---|
+| Height | `102px` | `155px` (only 1024/1440 measured at 155; 768 measured 102 — see note) |
+| Title font-size | `25.68px` (fluid, Fusion's own responsive-typography calculator) | `35.21px`–`36px` (plateaus at `36px` from 1024px) |
+| Background | `rgb(18,18,145)` = `color-primary` | same |
+| Title color | `rgb(255,255,0)` = `color-topbar` | same |
+| Breadcrumb | `18px` / `rgb(255,255,255)` white | same |
+
+Note: banner height measured `102px` at both 375 *and* 768, jumping to
+`155px` only at 1024+ — so the height break is at `lg:`, not `md:`,
+one width later than the column-count break. Title font-size is a
+continuous fluid calculation in the source (not a fixed breakpoint
+value); the rebuild uses two fixed sizes (`25.68px` below `md:`,
+`36px` from `md:` up) rather than reproducing the fluid formula, since
+the two nearby measured values (35.21px at 768, 36px at 1024) are
+visually indistinguishable.
+
+New tokens (added to `@theme` in `src/app/globals.css`):
+
+| Token | Value |
+|---|---|
+| `--text-news-card-title` | `22px` / `700` / `31.9px` |
+| `--text-news-meta` | `14px` / `400` / `21px` |
+| `--text-news-read-more` | `14px` / `400` / `24px` |
+| `--color-news-card-border` | `#ebeaea` |
+| `--spacing-news-card-padding` | `30px 25px 20px` |
+| `--aspect-news-card-image` | `400 / 187` |
+| `--spacing-news-banner-height` | `102px` (banner height below `lg:`) |
+| `--spacing-news-banner-height-lg` | `155px` (banner height from `lg:`) |
+| `--text-news-banner-title` | `25.68px` (below `md:`) |
+| `--text-news-banner-title-md` | `36px` (from `md:`) |
+
+No new colour tokens: `color-primary`, `color-accent`, `color-text`,
+`color-topbar` already cover every colour above.

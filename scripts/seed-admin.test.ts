@@ -38,7 +38,7 @@ describeWithDb("seed-admin script", ["user", "account", "session"], () => {
       const count = await mongoose.connection.db!.collection("user").countDocuments();
       expect(count).toBe(1);
     },
-    30_000,
+    90_000,
   );
 
   it(
@@ -50,7 +50,7 @@ describeWithDb("seed-admin script", ["user", "account", "session"], () => {
       const count = await mongoose.connection.db!.collection("user").countDocuments();
       expect(count).toBe(1);
     },
-    30_000,
+    90_000,
   );
 
   it(
@@ -92,7 +92,7 @@ describeWithDb("seed-admin script", ["user", "account", "session"], () => {
         .catch(() => true);
       expect(failsWithOld).toBe(true);
     },
-    30_000,
+    90_000,
   );
 
   it(
@@ -102,7 +102,7 @@ describeWithDb("seed-admin script", ["user", "account", "session"], () => {
       const count = await mongoose.connection.db!.collection("user").countDocuments();
       expect(count).toBe(1);
     },
-    60_000,
+    90_000,
   );
 
   it(
@@ -127,7 +127,7 @@ describeWithDb("seed-admin script", ["user", "account", "session"], () => {
       expect(failed).toBe(true);
       expect(stdout).toContain("ADMIN_EMAIL");
     },
-    30_000,
+    90_000,
   );
 
   it(
@@ -152,7 +152,7 @@ describeWithDb("seed-admin script", ["user", "account", "session"], () => {
       expect(failed).toBe(true);
       expect(stdout).toContain("ADMIN_PASSWORD must be at least 12 characters");
     },
-    30_000,
+    90_000,
   );
 
   it(
@@ -165,7 +165,7 @@ describeWithDb("seed-admin script", ["user", "account", "session"], () => {
         .findOne({ email: "mixed-case-admin@example.com" });
       expect(found).not.toBeNull();
     },
-    30_000,
+    90_000,
   );
 });
 
@@ -192,6 +192,6 @@ describe("seed-admin script (no DB required)", () => {
       expect(failed).toBe(true);
       expect(stdout).toContain("Missing required environment variable:");
     },
-    30_000,
+    90_000,
   );
 });

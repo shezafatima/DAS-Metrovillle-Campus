@@ -5,6 +5,9 @@ const BASE_ENV = {
   MONGODB_URI: "mongodb+srv://user:pass@cluster.mongodb.net",
   BETTER_AUTH_SECRET: "a".repeat(32),
   BETTER_AUTH_URL: "http://localhost:3000",
+  CLOUDINARY_CLOUD_NAME: "demo-cloud",
+  CLOUDINARY_API_KEY: "123456789012345",
+  CLOUDINARY_API_SECRET: "s".repeat(24),
 };
 
 describe("getEnv", () => {
@@ -46,6 +49,21 @@ describe("getEnv", () => {
   it("uses an explicit MONGODB_DB_NAME when one is set", () => {
     Object.assign(process.env, BASE_ENV, { MONGODB_DB_NAME: "custom_db" });
     expect(getEnv().MONGODB_DB_NAME).toBe("custom_db");
+  });
+
+  it("throws naming the missing variable when CLOUDINARY_API_SECRET is unset", () => {
+    Object.assign(process.env, BASE_ENV, { CLOUDINARY_API_SECRET: "" });
+    expect(() => getEnv()).toThrow(
+      "Missing required environment variable: CLOUDINARY_API_SECRET",
+    );
+  });
+
+  it("parses successfully with all three Cloudinary variables present", () => {
+    Object.assign(process.env, BASE_ENV);
+    const env = getEnv();
+    expect(env.CLOUDINARY_CLOUD_NAME).toBe("demo-cloud");
+    expect(env.CLOUDINARY_API_KEY).toBe("123456789012345");
+    expect(env.CLOUDINARY_API_SECRET).toBe("s".repeat(24));
   });
 });
 

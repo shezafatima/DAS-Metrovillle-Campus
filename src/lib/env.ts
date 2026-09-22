@@ -24,6 +24,15 @@ const envSchema = z.object({
       const trimmed = value?.trim();
       return trimmed && trimmed.length > 0 ? trimmed : "dar_e_arqam";
     }),
+  // Cover-image uploads (003 news): Cloudinary account the admin uploads
+  // to. Only URLs/ids are ever stored — see src/lib/cloudinary.ts.
+  CLOUDINARY_CLOUD_NAME: z.string().trim().min(1, "CLOUDINARY_CLOUD_NAME is required"),
+  CLOUDINARY_API_KEY: z.string().trim().min(1, "CLOUDINARY_API_KEY is required"),
+  CLOUDINARY_API_SECRET: z.string().trim().min(1, "CLOUDINARY_API_SECRET is required"),
+  // Test-only escape hatch (sp.analyze I2): lets Playwright specs stub the
+  // Cloudinary upload without a live account while still exercising the
+  // real save path. Ignored outside test runs — see verifyNewsCover().
+  NEWS_COVER_VERIFY: z.literal("skip").optional(),
 });
 
 export type Env = z.infer<typeof envSchema>;
@@ -57,6 +66,9 @@ const REQUIRED_ENV_KEYS = [
   "MONGODB_URI",
   "BETTER_AUTH_SECRET",
   "BETTER_AUTH_URL",
+  "CLOUDINARY_CLOUD_NAME",
+  "CLOUDINARY_API_KEY",
+  "CLOUDINARY_API_SECRET",
 ] as const;
 
 const REQUIRED_SEED_ENV_KEYS = ["ADMIN_EMAIL", "ADMIN_PASSWORD"] as const;
