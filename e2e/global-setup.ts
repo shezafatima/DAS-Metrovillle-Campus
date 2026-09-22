@@ -41,7 +41,7 @@ export default async function globalSetup() {
 
   try {
     await mongoose.connect(uri, { dbName: "dar_e_arqam_test", serverSelectionTimeoutMS: 15000 });
-    for (const name of ["user", "session", "account", "throttle", "news"]) {
+    for (const name of ["user", "session", "account", "throttle", "news", "signups"]) {
       try {
         await mongoose.connection.db?.collection(name).deleteMany({});
       } catch {

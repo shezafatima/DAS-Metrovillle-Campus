@@ -4,6 +4,7 @@ import { NewsPost, type NewsPostDoc } from "@/models/news-post";
 import { type NewsCategoryKey, isCategoryKey } from "@/lib/news/categories";
 import { startOfTodayPkt, toDateInput } from "@/lib/news/dates";
 import { cloudinaryLoader } from "@/lib/news/cloudinary-loader";
+import { type Paged, ADMIN_PAGE_SIZE, escapeRegExp } from "@/lib/admin-list";
 
 export interface AdminPost {
   id: string;
@@ -78,26 +79,11 @@ export interface AdminPostRow {
   isScheduled: boolean;
 }
 
-export interface Paged<T> {
-  items: T[];
-  page: number;
-  pageSize: number;
-  total: number;
-  totalPages: number;
-}
-
 export interface ListAdminPostsOptions {
   q?: string;
   status?: "draft" | "published" | "all";
   category?: string;
   page?: number;
-}
-
-const ADMIN_PAGE_SIZE = 20;
-
-/** Escapes regex metacharacters so free-text search can't break or DoS the query. */
-function escapeRegExp(value: string): string {
-  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
 /**

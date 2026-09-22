@@ -2,7 +2,7 @@ import { connectDb } from "@/lib/db";
 import { NewsPost, type NewsPostDoc } from "@/models/news-post";
 import { type NewsCategoryKey, isCategoryKey } from "@/lib/news/categories";
 import { startOfTodayPkt, toDateInput } from "@/lib/news/dates";
-import type { Paged } from "@/lib/news/admin-queries";
+import type { Paged } from "@/lib/admin-list";
 
 export interface PublicPostSummary {
   slug: string;

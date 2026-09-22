@@ -21,7 +21,7 @@ export default defineConfig({
   projects: [
     {
       name: "chromium",
-      testIgnore: /admin-.*\.spec\.ts/,
+      testIgnore: /(admin|signup)-.*\.spec\.ts/,
       use: { ...devices["Desktop Chrome"], channel: "chrome" },
     },
     {
@@ -33,6 +33,19 @@ export default defineConfig({
       // sp.analyze finding I1).
       name: "admin",
       testMatch: /admin-.*\.spec\.ts/,
+      fullyParallel: false,
+      workers: 1,
+      use: { ...devices["Desktop Chrome"], channel: "chrome" },
+    },
+    {
+      // Every Playwright worker shares one source IP (127.0.0.1), so
+      // parallel public-form specs would trip each other's 5-per-10-min
+      // rate limit (src/lib/rate-limit.ts PUBLIC_FORM_POLICY) — the
+      // signup-public.spec.ts rate-limit case deliberately submits past
+      // that threshold and needs the real limit intact, not loosened for
+      // CI (004-signup research.md §8; same rationale as "admin" above).
+      name: "forms",
+      testMatch: /signup-.*\.spec\.ts/,
       fullyParallel: false,
       workers: 1,
       use: { ...devices["Desktop Chrome"], channel: "chrome" },
