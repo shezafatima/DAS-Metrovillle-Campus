@@ -404,3 +404,80 @@ New tokens (added to `@theme` in `src/app/globals.css`):
 
 No new colour tokens: `color-primary`, `color-accent`, `color-text`,
 `color-topbar` already cover every colour above.
+
+## Signup band (004 signup — extracted per-element, not page aggregates)
+
+`research/extract-signup-tokens.ts` targets the signup form on
+`https://das.edu.pk/` (a Contact Form 7 form with fields
+`your-name`/`your-email`/`your-phone`, selected by field name rather
+than Avada's auto-generated per-row/column classes, which are not
+stable identifiers). Raw output:
+`research/tokens/signup-{375,768,1024,1440}.json`.
+
+**Identical at all four widths** (375/768/1024/1440 — not fluid, not
+breakpoint-dependent):
+
+| Element | Value |
+|---|---|
+| Heading | `"Join Over "` (white `#ffffff`) + `"300,000 Students"` (gold, see below) + `" Enjoying Dar-e-Arqam School Now"` (white) — `24px` / `700` / `33.6px` line-height, Poppins — **exact match for the existing `text-h3`/`font-heading` tokens**; reused, not duplicated |
+| Heading highlight colour | `rgb(255,215,0)` = `#ffd700` — **not** `color-topbar` (`#ffff00`); a distinct gold, new token |
+| Supporting line | `"Become Part of Dar-e-Arqam Schools to Further Your Career."` — `15px` / `700` / `25.05px` line-height / `rgb(211,211,211)` = `#d3d3d3` / Poppins (`font-heading`, not `font-body`) — no existing size match, new token |
+| Usage note | **none** — the reference has no note under the form; this feature adds one (spec Deviations) |
+| Band background | `rgb(30,41,75)` = `#1e294b` — a distinct navy, not `color-primary` (`#121291`) or the admin's `#223355` |
+| Band vertical padding | `20px` top and bottom (identical at every width) |
+| Input | height `47px`, padding `0 15px`, font-size `13px`, border `1px solid #d2d2d2`, `border-radius: 0`, background `#ffffff`, typed-text colour `rgb(170,169,169)` = `#aaa9a9` |
+| Input gap (row layout) | `25px` between adjacent fields |
+| Button | background `#f44336` = `color-cta`, padding `13px 29px`, font-size `14px`/`600`/Open Sans, `border-radius: 0`, text white — **exact match for the existing `text-button`/`font-button` tokens**; reused, not duplicated. Hover background `rgb(25,25,144)` = `#191990` (text stays white) — the same red→navy hover already logged under "Observed hover color changes" above, now given a name |
+
+**Layout — live-site observation vs. this feature's requirement**: the
+live reference keeps the three fields and button in one row down to
+768px and only stacks at 375px (`layout: "row"` measured at 768,
+1024, 1440; `"stacked"` at 375 — Avada's percentage-width columns
+don't reflow until a narrower breakpoint than 768). **This feature
+deliberately does not reproduce that** for 768px: no screenshot of
+this section exists at 768 or 375 (the captured references are cut
+off above it), so the spec's clarification session chose a two-field-row
+layout at 768 with the button full-width below, before this
+extraction pass could run. That clarified layout is the requirement
+recorded in spec.md; this observation is logged here per Constitution
+I so the choice is traceable, not silently overwritten by a later,
+more convenient data point.
+
+No usage-note text exists on the reference at any width to extract
+(confirmed empty in the raw capture).
+
+New tokens (added to `@theme` in `src/app/globals.css`):
+
+| Token | Value |
+|---|---|
+| `--color-signup-band` | `#1e294b` |
+| `--color-signup-highlight` | `#ffd700` |
+| `--color-signup-supporting` | `#d3d3d3` |
+| `--color-signup-input-bg` | `#ffffff` |
+| `--color-signup-input-text` | `#aaa9a9` (typed text; stands in for the unreachable `::placeholder` colour too — see "Known extraction gaps") |
+| `--color-signup-input-border` | `#d2d2d2` |
+| `--color-cta-hover` | `#191990` (general — the button's navy hover, now named instead of only logged in prose; reusable by any `color-cta` button) |
+| `--text-signup-supporting` | `15px` / `700` / `25.05px` |
+| `--text-signup-input` | `13px` |
+| `--spacing-signup-band-y` | `20px` |
+| `--spacing-signup-input-height` | `47px` |
+| `--spacing-signup-gap` | `25px` |
+| `--radius-signup-input` | `0px` (sharp corners — do not default to the `4px` form-field radius used elsewhere) |
+| `--radius-signup-button` | `0px` |
+
+## Semantic colours (general — introduced by 004 signup, sp.analyze finding U1)
+
+The reference has no error or success state anywhere on the site (no
+form validation UI exists to extract from), so these two tokens are
+not extracted values — they are assigned from **already-confirmed
+reference colours** so they read as part of the same palette rather
+than an invented one, and are recorded here as a documented deviation
+per spec.md "Deviations from the Reference":
+
+| Token | Value | Source |
+|---|---|---|
+| `--color-error` | `#f44336` | `color-cta` — already the admin's `--destructive` slot (see "Admin redesign" above) |
+| `--color-success` | `#00bcd4` | `color-accent` |
+
+General tokens, not signup-specific — reusable by the contact form
+(008) and any other admin or public form state.

@@ -1,0 +1,61 @@
+{
+  "viewport": "1024",
+  "url": "https://das.edu.pk/",
+  "headingText": "Join Over 300,000 Students Enjoying Dar-e-Arqam School Now",
+  "headingSpanTexts": [
+    "Join Over",
+    "300,000 Students",
+    "Enjoying Dar-e-Arqam School Now"
+  ],
+  "highlightText": "300,000 Students",
+  "highlightColor": "rgb(255, 215, 0)",
+  "headingStyle": {
+    "font-size": "24px",
+    "line-height": "33.6px",
+    "font-weight": "700",
+    "font-family": "Poppins, Arial, Helvetica, sans-serif"
+  },
+  "supportingText": "Become Part of Dar-e-Arqam Schools to Further Your Career.",
+  "supportingStyle": {
+    "font-size": "15px",
+    "line-height": "25.05px",
+    "font-weight": "700",
+    "color": "rgb(211, 211, 211)",
+    "font-family": "Poppins, Arial, Helvetica, sans-serif"
+  },
+  "noteText": "",
+  "bandBackground": "rgb(30, 41, 75)",
+  "bandPaddingTop": "20px",
+  "bandPaddingBottom": "20px",
+  "inputStyle": {
+    "height": "47px",
+    "padding": "0px 15px",
+    "font-size": "13px",
+    "border": "1px solid rgb(210, 210, 210)",
+    "border-radius": "0px",
+    "background-color": "rgb(255, 255, 255)",
+    "color": "rgb(170, 169, 169)"
+  },
+  "inputPlaceholderColor": null,
+  "gapBetweenInputs": 25,
+  "buttonStyle": {
+    "background-color": "rgb(244, 67, 54)",
+    "padding": "13px 29px",
+    "font-size": "14px",
+    "font-weight": "600",
+    "border-radius": "0px",
+    "color": "rgb(255, 255, 255)",
+    "font-family": "\"Open Sans\", Arial, Helvetica, sans-serif"
+  },
+  "layout": "row",
+  "buttonHover": {
+    "before": {
+      "backgroundColor": "rgb(244, 67, 54)",
+      "color": "rgb(255, 255, 255)"
+    },
+    "after": {
+      "backgroundColor": "rgb(25, 25, 144)",
+      "color": "rgb(255, 255, 255)"
+    }
+  }
+}

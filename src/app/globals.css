@@ -162,6 +162,49 @@
   --text-news-banner-title: 25.68px;
   --text-news-banner-title-md: 36px;
 
+  /* Semantic colours (general — 004 signup, sp.analyze finding U1). The
+     reference has no error/success UI to extract; these are assigned
+     from already-confirmed reference colours (color-cta, color-accent)
+     rather than invented, and are reusable by any form's state, not
+     just the signup band — see research/design-tokens.md "Semantic
+     colours". */
+  --color-error: #f44336;
+  --color-success: #00bcd4;
+
+  /* Signup band (004 signup) — extracted per-element from
+     https://das.edu.pk/'s signup form, not the page-level aggregate
+     scan; see research/design-tokens.md "Signup band". Identical at
+     all four reference widths. --color-cta-hover is general (any
+     color-cta button), named here first because this is the first
+     component to need a hover state for it. */
+  --color-signup-band: #1e294b;
+  --color-signup-highlight: #ffd700;
+  --color-signup-supporting: #d3d3d3;
+  --color-signup-input-bg: #ffffff;
+  --color-signup-input-border: #d2d2d2;
+  /* Extracted computed `color` (typed-text colour) on the resting,
+     empty input; the reference's ::placeholder colour couldn't be read
+     via getComputedStyle (pseudo-elements aren't reachable that way —
+     see extract-signup-tokens.browser.js), so this single token stands
+     in for both, matching the muted grey the screenshot shows. */
+  --color-signup-input-text: #aaa9a9;
+  --color-cta-hover: #191990;
+  /* The heading (24px/700/33.6px/Poppins) is an exact match for the
+     existing --text-h3/--font-heading tokens, and the button
+     (14px/600/Open Sans) for --text-button/--font-button — reused
+     directly in the components instead of duplicating near-identical
+     tokens (Constitution V/VI). Only the supporting line has no
+     existing match. */
+  --text-signup-supporting: 15px;
+  --text-signup-supporting--line-height: 25.05px;
+  --text-signup-supporting--font-weight: 700;
+  --text-signup-input: 13px;
+  --spacing-signup-band-y: 20px;
+  --spacing-signup-input-height: 47px;
+  --spacing-signup-gap: 25px;
+  --radius-signup-input: 0px;
+  --radius-signup-button: 0px;
+
   /* Admin dashboard layout tokens — no das.edu.pk reference exists for the
      admin area (spec 002-foundation "Deviations from the Reference"), so
      these are chosen values, not extracted ones. Named here first per
@@ -344,5 +387,20 @@
      token. */
   .news-card-padding {
     padding: var(--news-card-padding);
+  }
+
+  /* Hidden spam-trap field (004 signup, FR-026): visually and
+     positionally off-screen rather than display:none/visibility:hidden
+     — those two are what a bot's own detection most commonly checks
+     for, while an absolutely-positioned, zero-sized, overflow-hidden
+     element still passes a naive "is it in the DOM and not display:none"
+     bot check. Paired with aria-hidden + tabindex="-1" in the component
+     for real assistive tech / keyboard users. */
+  .signup-honeypot {
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
   }
 }
