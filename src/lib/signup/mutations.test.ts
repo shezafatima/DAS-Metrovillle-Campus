@@ -3,6 +3,7 @@ import { expect, it } from "vitest";
 import mongoose from "mongoose";
 import { describeWithDb } from "@/test/db";
 import { upsertSignup, deleteSignup } from "@/lib/signup/mutations";
+import { listSignups } from "@/lib/signup/admin-queries";
 import { signupInputSchema, type SignupInput } from "@/lib/validation/signup";
 import { Signup } from "@/models/signup";
 
@@ -103,5 +104,38 @@ describeWithDb("deleteSignup", ["signups"], () => {
   it("returns null for a well-formed but unknown id", async () => {
     const unknownId = new mongoose.Types.ObjectId().toString();
     await expect(deleteSignup(unknownId)).resolves.toBeNull();
+  });
+
+  it("restores the same record on a re-signup, keeping its id and first date (ADR-0001 restore path)", async () => {
+    const now1 = new Date("2026-09-01T00:00:00Z");
+    const created = await upsertSignup(input({ email: "restore-me@example.com", source: "resources" }), now1);
+    const id = created._id.toString();
+    await deleteSignup(id);
+
+    const deleted = await Signup.findById(id).setOptions({ withDeleted: true });
+    expect(deleted!.deletedAt).not.toBeNull();
+
+    const now2 = new Date("2026-09-10T00:00:00Z");
+    // The production path (upsertSignup) — must not throw. Without
+    // withDeleted:true in its upsert options, this would hit the unique
+    // email index and throw E11000, because the "deleted" record still
+    // holds that email (ADR-0001: uniqueness includes deleted records).
+    const restored = await upsertSignup(
+      input({ email: "restore-me@example.com", name: "Restored Name", source: "home" }),
+      now2,
+    );
+
+    expect(restored._id.toString()).toBe(id);
+    expect(restored.deletedAt).toBeNull();
+    expect(restored.name).toBe("Restored Name");
+    expect(restored.firstSignupAt.getTime()).toBe(now1.getTime());
+    expect(restored.lastSignupAt.getTime()).toBe(now2.getTime());
+    expect(restored.sources.slice().sort()).toEqual(["home", "resources"]);
+
+    const count = await Signup.countDocuments({ email: "restore-me@example.com" }).setOptions({ withDeleted: true });
+    expect(count).toBe(1);
+
+    const list = await listSignups({});
+    expect(list.items.some((i) => i.email === "restore-me@example.com")).toBe(true);
   });
 });

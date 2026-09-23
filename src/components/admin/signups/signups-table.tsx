@@ -1,4 +1,5 @@
 import { Badge } from "@/components/ui/badge";
+import { DeleteSignupDialog } from "@/components/admin/signups/delete-signup-dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { signupsCopy } from "@/content/admin";
 import { sourceLabel, type SignupSource } from "@/lib/signup/sources";
@@ -93,8 +94,7 @@ export function SignupsTable({ rows, filtered }: SignupsTableProps) {
                 {formatSignupDateTime(new Date(row.lastSignupAt))}
               </TableCell>
               <TableCell>
-                {/* TODO(T042): DeleteSignupDialog */}
-                <div />
+                <DeleteSignupDialog id={row.id} name={row.name} />
               </TableCell>
             </TableRow>
           ))}
