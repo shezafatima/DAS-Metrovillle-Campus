@@ -3,6 +3,7 @@
 import { useId, useState } from "react";
 import { signupCopy } from "@/content/signup";
 import { signupInputSchema, fieldErrors as extractFieldErrors } from "@/lib/validation/signup";
+import { HONEYPOT_FIELD } from "@/lib/honeypot";
 import type { SignupSource } from "@/lib/signup/sources";
 
 type FieldName = "name" | "email" | "phone";
@@ -37,6 +38,10 @@ export function SignupForm({ source }: SignupFormProps) {
   const [values, setValues] = useState<FormValues>(EMPTY_VALUES);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [status, setStatus] = useState<Status>({ kind: "idle" });
+  // Hidden spam-trap (FR-025, FR-026): real visitors never see or fill
+  // this, so its value stays empty for them; a filled value means the
+  // request came from an automated submitter.
+  const [website, setWebsite] = useState("");
   const formId = useId();
 
   const submitting = status.kind === "submitting";
@@ -75,7 +80,7 @@ export function SignupForm({ source }: SignupFormProps) {
       const response = await fetch("/api/public/signups", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ ...values, source, website_url: "" }),
+        body: JSON.stringify({ ...values, source, website_url: website }),
       });
 
       if (response.status === 200) {
@@ -127,6 +132,19 @@ export function SignupForm({ source }: SignupFormProps) {
           {status.banner}
         </p>
       )}
+
+      <div aria-hidden="true" className="signup-honeypot">
+        <label htmlFor="signup-website">Website</label>
+        <input
+          id="signup-website"
+          name={HONEYPOT_FIELD}
+          type="text"
+          tabIndex={-1}
+          autoComplete="off"
+          value={website}
+          onChange={(event) => setWebsite(event.target.value)}
+        />
+      </div>
 
       <div className="grid grid-cols-1 gap-(--spacing-signup-gap) md:grid-cols-3 lg:grid-cols-4">
         <Field

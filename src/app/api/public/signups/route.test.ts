@@ -103,6 +103,49 @@ describeWithDb("POST /api/public/signups", ["signups", "throttle"], () => {
     expect(count).toBe(1);
   });
 
+  it("discards a honeypot submission with the same success shape and stores nothing (FR-025)", async () => {
+    const { POST } = await import("./route");
+
+    const validResponse = await POST(postRequest(validBody({ email: "control@example.com" }), "203.0.113.30"));
+    const validText = await validResponse.text();
+
+    const spamResponse = await POST(
+      postRequest({ ...validBody({ email: "spam@example.com" }), website_url: "http://spam.example" }, "203.0.113.31"),
+    );
+    const spamText = await spamResponse.text();
+
+    expect(spamResponse.status).toBe(validResponse.status);
+    expect(spamText).toBe(validText);
+
+    const count = await Signup.countDocuments({ email: "spam@example.com" }).setOptions({ withDeleted: true });
+    expect(count).toBe(0);
+  });
+
+  it("allows 5 submissions per source then refuses the 6th with Retry-After; a different source still succeeds", async () => {
+    const { POST } = await import("./route");
+    const ip = "203.0.113.40";
+
+    for (let i = 0; i < 5; i++) {
+      const response = await POST(postRequest(validBody({ email: `rate-${i}@example.com` }), ip));
+      expect(response.status).toBe(200);
+    }
+
+    const sixth = await POST(postRequest(validBody({ email: "rate-5@example.com" }), ip));
+    expect(sixth.status).toBe(429);
+    expect(await sixth.json()).toEqual({ error: "too_many_requests" });
+    const retryAfter = Number(sixth.headers.get("retry-after"));
+    expect(Number.isFinite(retryAfter)).toBe(true);
+    expect(retryAfter).toBeGreaterThan(0);
+
+    const sixthCount = await Signup.countDocuments({ email: "rate-5@example.com" });
+    expect(sixthCount).toBe(0);
+    const priorCount = await Signup.countDocuments({ email: { $regex: /^rate-\d@example\.com$/ } });
+    expect(priorCount).toBe(5);
+
+    const otherSource = await POST(postRequest(validBody({ email: "other-source@example.com" }), "203.0.113.41"));
+    expect(otherSource.status).toBe(200);
+  });
+
   it("returns 503 when storing the submission fails", async () => {
     vi.doMock("@/lib/signup/mutations", () => ({
       upsertSignup: async () => {

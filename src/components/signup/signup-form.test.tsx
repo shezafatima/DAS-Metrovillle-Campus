@@ -138,4 +138,41 @@ describe("SignupForm", () => {
       website_url: "",
     });
   });
+
+  it("keeps the honeypot field out of the accessibility tree and unfocusable", () => {
+    render(<SignupForm source="home" />);
+    expect(screen.queryByRole("textbox", { name: "Website" })).not.toBeInTheDocument();
+    expect(document.getElementById("signup-website")).toHaveAttribute("tabindex", "-1");
+  });
+
+  it("shows the rate-limited banner and keeps values on a 429", async () => {
+    vi.mocked(fetch).mockResolvedValueOnce(jsonResponse(429, { error: "too_many_requests" }));
+    render(<SignupForm source="home" />);
+
+    fillField("Name", "Ali Khan");
+    fillField("Email", "ali@example.com");
+    fillField("Phone", "03001234567");
+    fireEvent.click(screen.getByRole("button", { name: "Signup" }));
+
+    expect(await screen.findByRole("alert")).toHaveTextContent("Please try again shortly.");
+    expect(screen.getByRole("textbox", { name: "Name" })).toHaveValue("Ali Khan");
+    expect(screen.getByRole("textbox", { name: "Email" })).toHaveValue("ali@example.com");
+    expect(screen.getByRole("textbox", { name: "Phone" })).toHaveValue("03001234567");
+  });
+
+  it("sends a filled honeypot value in the body", async () => {
+    const fetchMock = vi.mocked(fetch).mockResolvedValueOnce(jsonResponse(200, { ok: true }));
+    render(<SignupForm source="home" />);
+
+    fillField("Name", "Ali Khan");
+    fillField("Email", "ali@example.com");
+    fillField("Phone", "03001234567");
+    fireEvent.change(document.getElementById("signup-website")!, { target: { value: "x" } });
+    fireEvent.click(screen.getByRole("button", { name: "Signup" }));
+
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(1));
+    const [, init] = fetchMock.mock.calls[0]!;
+    const body = JSON.parse(init!.body as string);
+    expect(body.website_url).toBe("x");
+  });
 });
