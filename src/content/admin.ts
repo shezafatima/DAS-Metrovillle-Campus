@@ -145,3 +145,43 @@ export const newsCopy = {
     unavailable: loginCopy.errors.unavailable,
   },
 } as const;
+
+// Signup (004) admin copy: list, filters, delete and export.
+export const signupsCopy = {
+  pageTitle: "Signups",
+  export: "Export CSV",
+  table: {
+    headers: {
+      name: "Name",
+      email: "Email",
+      phone: "Phone",
+      pages: "Pages",
+      first: "First signup",
+      latest: "Latest signup",
+      actions: "Actions",
+    },
+    empty: "No signups yet.",
+    emptyFiltered: "No signups match your search.",
+    delete: "Delete",
+  },
+  filters: {
+    searchPlaceholder: "Search by name, email or phone…",
+    sourceAll: "All pages",
+  },
+  pagination: {
+    previous: "Previous",
+    next: "Next",
+    pageOf: (page: number, totalPages: number) => `Page ${page} of ${totalPages}`,
+  },
+  deleteDialog: {
+    title: "Delete this signup?",
+    body: "The signup will be removed from the list. If this person signs up again, their record will be restored.",
+    cancel: "Cancel",
+    confirm: "Delete",
+  },
+  toasts: {
+    deleted: "Signup deleted",
+    gone: "This signup is no longer available",
+    unavailable: loginCopy.errors.unavailable,
+  },
+} as const;
