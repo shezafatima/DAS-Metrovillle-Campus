@@ -125,7 +125,9 @@ test.describe("signup — spam and abuse protection (US5)", () => {
     await page.getByRole("textbox", { name: "Phone" }).fill("03001234567");
     await page.getByRole("button", { name: "Signup" }).click();
 
-    await expect(page.getByRole("alert")).toContainText("Please try again shortly.");
+    // Next.js renders its own empty role="alert" route announcer, so
+    // narrow to the banner by its text rather than by role alone.
+    await expect(page.getByRole("alert").filter({ hasText: "Please try again shortly." })).toBeVisible();
     await expect(page.getByRole("textbox", { name: "Name" })).toHaveValue("Person 5");
     await expect(page.getByRole("textbox", { name: "Email" })).toHaveValue("person-5@example.com");
 

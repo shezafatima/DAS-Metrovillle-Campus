@@ -21,7 +21,7 @@ function postRequest(body: unknown, ip = "203.0.113.1"): Request {
   });
 }
 
-describeWithDb("POST /api/public/signups", ["signups", "throttle"], () => {
+describeWithDb("POST /api/public/signups", ["signups", "throttles"], () => {
   beforeEach(() => {
     vi.resetModules();
     vi.doUnmock("@/lib/signup/mutations");

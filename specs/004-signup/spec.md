@@ -487,6 +487,14 @@ filtered list and an Urdu name reads correctly.
   reference palette values; only their use as state colours is new.
   Field messages sit on a white chip under the input so the red stays
   legible on the navy band.
+- The token-extraction pass against the live reference site (research
+  §11) found the live band keeps the three fields and button in one
+  row down to 768px, stacking only at 375px — narrower than this
+  feature's clarified 768px layout (three fields in a row, button
+  full-width below). No screenshot of this section reaches 375 or
+  768px, so this is a live-site observation, not a screenshot
+  conflict; the clarified layout (chosen deliberately before this
+  extraction ran) remains the requirement per Constitution I.
 
 ## Assumptions
 
