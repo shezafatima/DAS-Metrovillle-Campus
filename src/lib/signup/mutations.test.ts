@@ -3,7 +3,8 @@ import { expect, it } from "vitest";
 import mongoose from "mongoose";
 import { describeWithDb } from "@/test/db";
 import { upsertSignup, deleteSignup } from "@/lib/signup/mutations";
-import type { SignupInput } from "@/lib/validation/signup";
+import { signupInputSchema, type SignupInput } from "@/lib/validation/signup";
+import { Signup } from "@/models/signup";
 
 function input(overrides: Partial<SignupInput> = {}): SignupInput {
   return {
@@ -31,7 +32,53 @@ describeWithDb("upsertSignup", ["signups"], () => {
     expect(doc.email).toBe("ali@example.com");
   });
 
-  // Update/restore/concurrency cases are added in US2 (T027) and US4 (T043).
+  it("updates the same record on a repeat submission with a different casing/spacing of the email (ADR-0001)", async () => {
+    const now1 = new Date("2026-09-01T00:00:00Z");
+    const created = await upsertSignup(input(), now1);
+
+    // The visitor's second submission, as it would arrive after the
+    // shared Zod schema normalises it (schema-parsed, not hand-typed
+    // here) — proves the upsert finds the same document regardless of
+    // how the email was originally cased/spaced.
+    const parsed = signupInputSchema.parse({
+      name: "Ali Ahmed Khan",
+      email: " ALI@example.com ",
+      phone: "0300-1234567",
+      source: "resources",
+    });
+    const now2 = new Date("2026-09-05T00:00:00Z");
+    const updated = await upsertSignup(parsed, now2);
+
+    expect(updated._id.toString()).toBe(created._id.toString());
+    const count = await Signup.countDocuments({ email: "ali@example.com" }).setOptions({ withDeleted: true });
+    expect(count).toBe(1);
+    expect(updated.name).toBe("Ali Ahmed Khan");
+    expect(updated.phone).toBe("+923001234567");
+    expect(updated.firstSignupAt.getTime()).toBe(now1.getTime());
+    expect(updated.lastSignupAt.getTime()).toBe(now2.getTime());
+    expect(updated.sources.slice().sort()).toEqual(["home", "resources"]);
+
+    // A third submission from a page already in `sources` does not duplicate it.
+    const third = await upsertSignup(input({ source: "home" }), new Date("2026-09-06T00:00:00Z"));
+    expect(third.sources.slice().sort()).toEqual(["home", "resources"]);
+  });
+
+  it("leaves exactly one document after 10 concurrent first-time submissions for one new email (research §9)", async () => {
+    const now = new Date();
+    const email = "concurrent@example.com";
+    const attempts = Array.from({ length: 10 }, (_, i) =>
+      upsertSignup(input({ email, name: `Concurrent ${i}` }), now),
+    );
+
+    const results = await Promise.allSettled(attempts);
+    expect(results.every((r) => r.status === "fulfilled")).toBe(true);
+
+    const count = await Signup.countDocuments({ email }).setOptions({ withDeleted: true });
+    expect(count).toBe(1);
+
+    const doc = await Signup.findOne({ email });
+    expect(doc!.firstSignupAt.getTime()).toBeLessThanOrEqual(doc!.lastSignupAt.getTime());
+  });
 });
 
 describeWithDb("deleteSignup", ["signups"], () => {

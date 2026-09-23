@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 import { clearThrottle } from "./global-setup";
-import { clearSignups, findSignupByEmail } from "./helpers/signups";
+import { clearSignups, findSignupByEmail, seedSignups } from "./helpers/signups";
 
 // This file runs in the "forms" Playwright project (playwright.config.ts),
 // which is already serial (workers: 1, fullyParallel: false) — every
@@ -50,5 +50,53 @@ test.describe("signup — visitor signs up (US1)", () => {
     expect(record!.phone).toBe("+923001234567");
     expect(record!.sources).toEqual(["home"]);
     expect(record!.firstSignupAt.getTime()).toBe(record!.lastSignupAt.getTime());
+  });
+});
+
+test.describe("signup — one record per person (US2)", () => {
+  test.beforeEach(async () => {
+    await clearThrottle();
+    await clearSignups();
+  });
+
+  test("a repeat signup with different casing/spacing updates the same record and shows the same thank-you", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await page.getByRole("textbox", { name: "Name" }).fill("Ali Khan");
+    await page.getByRole("textbox", { name: "Email" }).fill("ali@example.com");
+    await page.getByRole("textbox", { name: "Phone" }).fill("03001234567");
+    await page.getByRole("button", { name: "Signup" }).click();
+    await expect(page.getByRole("status")).toContainText("Thank you!");
+    const first = await findSignupByEmail("ali@example.com");
+    const firstSignupAt = first!.firstSignupAt.getTime();
+
+    await page.getByRole("button", { name: "Sign up someone else" }).click();
+    await page.getByRole("textbox", { name: "Name" }).fill("Ali Ahmed Khan");
+    await page.getByRole("textbox", { name: "Email" }).fill(" ALI@example.com ");
+    await page.getByRole("textbox", { name: "Phone" }).fill("+92 300 1234567");
+    await page.getByRole("button", { name: "Signup" }).click();
+    await expect(page.getByRole("status")).toContainText("Thank you!");
+
+    const record = await findSignupByEmail("ali@example.com");
+    expect(record).not.toBeNull();
+    expect(record!.name).toBe("Ali Ahmed Khan");
+    expect(record!.lastSignupAt.getTime()).toBeGreaterThan(firstSignupAt);
+    expect(record!.firstSignupAt.getTime()).toBe(firstSignupAt);
+    expect(record!.sources).toEqual(["home"]);
+  });
+
+  test("signing up from a second page adds it to the existing record's pages", async ({ page }) => {
+    await seedSignups([{ name: "Ali Khan", email: "ali@example.com", phone: "+923001234567", sources: ["resources"] }]);
+
+    await page.goto("/");
+    await page.getByRole("textbox", { name: "Name" }).fill("Ali Khan");
+    await page.getByRole("textbox", { name: "Email" }).fill("ali@example.com");
+    await page.getByRole("textbox", { name: "Phone" }).fill("03001234567");
+    await page.getByRole("button", { name: "Signup" }).click();
+    await expect(page.getByRole("status")).toContainText("Thank you!");
+
+    const record = await findSignupByEmail("ali@example.com");
+    expect(record!.sources.slice().sort()).toEqual(["home", "resources"]);
   });
 });

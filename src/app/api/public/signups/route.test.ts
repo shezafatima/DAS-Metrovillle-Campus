@@ -78,6 +78,31 @@ describeWithDb("POST /api/public/signups", ["signups", "throttle"], () => {
     expect(response.status).toBe(400);
   });
 
+  it("returns an identical response for a new email and a repeat of it (SC-004, spec US2 scenario 4)", async () => {
+    const { POST } = await import("./route");
+
+    const first = await POST(postRequest(validBody({ email: "identical@example.com" }), "203.0.113.20"));
+    const firstText = await first.text();
+
+    const second = await POST(
+      postRequest(
+        validBody({ email: "Identical@Example.COM", name: "Different Name" }),
+        "203.0.113.21",
+      ),
+    );
+    const secondText = await second.text();
+
+    expect(second.status).toBe(first.status);
+    expect(secondText).toBe(firstText);
+    for (const [key, value] of first.headers.entries()) {
+      if (key === "date") continue;
+      expect(second.headers.get(key)).toBe(value);
+    }
+
+    const count = await Signup.countDocuments({ email: "identical@example.com" });
+    expect(count).toBe(1);
+  });
+
   it("returns 503 when storing the submission fails", async () => {
     vi.doMock("@/lib/signup/mutations", () => ({
       upsertSignup: async () => {
