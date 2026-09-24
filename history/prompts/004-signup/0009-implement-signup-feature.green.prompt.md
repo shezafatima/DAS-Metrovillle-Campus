@@ -43,7 +43,8 @@ tests:
  - npx tsc --noEmit — clean
  - npm run lint — 0 errors (11 pre-existing warnings in research/*.browser.js)
  - playwright --project=forms — 12/12, twice consecutively
- - playwright admin-signups-* — passed in isolation; full admin sweep blocked by Atlas IP rotation
+ - playwright --project=admin — 52 passed / 12 failed; all 14 admin-signups tests pass, all 12 failures are 002/003 specs untouched by 004
+ - playwright --project=chromium — 54 passed / 17 failed; all failures are pre-existing (stale 001 footer/contact specs after c4fd327, 003 news races, /news/some-slug now 404)
 ---
 
 ## Prompt
@@ -81,12 +82,12 @@ T056 deviation: the live site keeps a row layout at 768px. This is recorded in t
 - ✅ Impact:
   - Signup capture on Home/Resources, plus admin list, delete/restore and CSV export, are complete.
   - T055, T056 and T059 are done.
-  - T057 is partial: the full admin sweep is blocked by the Atlas IP change 39.34.188.24 → 39.34.189.214.
+  - T057 is done. After Atlas was opened to 0.0.0.0/0 for the test cluster, the delete-restore spec was hardened to wait for the DELETE response, because the dialog closes before the request finishes.
   - T058 is manual: the browser walkthrough and the Excel check.
-- 🧪 Tests: unit and integration tests are all green. The forms project is green. The admin sweep failures come from DB connectivity or are pre-existing (see below).
+- 🧪 Tests: unit and integration tests are all green. The forms project is green. All admin and chromium failures are pre-existing 001-003 issues (see below).
 - 📁 Files: see list above.
 - 🔁 Next prompts:
-  - Whitelist the new IP, then rerun `--project=admin` and `--project=chromium`.
+  - Fix the stale 001/002/003 specs in a separate feature.
   - Do the manual quickstart §4 walkthrough.
 - 🧠 Reflection: a pluralisation mismatch in the test setup looked like a flaky UI bug for a long time. Check real collection names first.
 
@@ -97,7 +98,9 @@ T056 deviation: the live site keeps a row layout at 768px. This is recorded in t
     - The admin-lockout and admin-login-logout specs use a bare getByRole("alert"), which collides with Next's __next-route-announcer__.
     - The NewsTableFilters debounce bugs break news-list "filters by status".
     - The news-public spec races under fullyParallel.
-  - Environmental: the Atlas IP whitelist broke when the dynamic IP rotated mid-run.
+  - The 001 footer/contact/nav specs are stale since the 003 footer content change (footerContent.columns).
+  - The 003 news editor/Urdu/images specs fail independently of 004.
+  - Environmental: the Atlas IP whitelist broke when the dynamic IP rotated mid-run (resolved with 0.0.0.0/0 on the test cluster).
 - Graders run and results (PASS/FAIL): vitest PASS; tsc PASS; lint PASS; e2e forms PASS; e2e admin-signups PASS in isolation.
 - Prompt variant (if applicable): none
 - Next experiment (smallest change to try): use a 0.0.0.0/0 access rule on the dev/test Atlas cluster only, or a local MongoDB for E2E, to remove IP-rotation flakiness.

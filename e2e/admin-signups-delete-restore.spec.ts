@@ -27,7 +27,10 @@ test.describe("admin deletes a signup, restore by re-signup (US4)", () => {
 
     // Confirm: the row disappears and a confirmation toast appears.
     await page.getByRole("button", { name: /Delete: Ali Khan/ }).click();
-    await page.getByRole("button", { name: "Delete", exact: true }).click();
+    await Promise.all([
+      page.waitForResponse((r) => r.request().method() === "DELETE" && r.url().includes("/api/admin/signups/")),
+      page.getByRole("button", { name: "Delete", exact: true }).click(),
+    ]);
     await expect(page.locator("table tbody tr", { hasText: "Ali Khan" })).toHaveCount(0);
     await expect(page.getByText("Signup deleted")).toBeVisible();
 
@@ -49,7 +52,10 @@ test.describe("admin deletes a signup, restore by re-signup (US4)", () => {
     await loginAsAdmin(page);
     await page.goto("/admin/signups");
     await page.getByRole("button", { name: /Delete: Ali Khan/ }).click();
-    await page.getByRole("button", { name: "Delete", exact: true }).click();
+    await Promise.all([
+      page.waitForResponse((r) => r.request().method() === "DELETE" && r.url().includes("/api/admin/signups/")),
+      page.getByRole("button", { name: "Delete", exact: true }).click(),
+    ]);
     await expect(page.locator("table tbody tr", { hasText: "Ali Khan" })).toHaveCount(0);
 
     // Sign up again with the same email — the same visit context.
