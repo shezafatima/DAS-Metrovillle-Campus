@@ -21,7 +21,7 @@ export default defineConfig({
   projects: [
     {
       name: "chromium",
-      testIgnore: /(admin|signup)-.*\.spec\.ts/,
+      testIgnore: /(admin-.*|signup-.*|contact-(public|details|protection|visual))\.spec\.ts/,
       use: { ...devices["Desktop Chrome"], channel: "chrome" },
     },
     {
@@ -44,8 +44,11 @@ export default defineConfig({
       // signup-public.spec.ts rate-limit case deliberately submits past
       // that threshold and needs the real limit intact, not loosened for
       // CI (004-signup research.md §8; same rationale as "admin" above).
+      // Contact specs (008) isolate their own rate-limit budget with a
+      // per-spec X-Forwarded-For header (research §16), so they can share
+      // this serial project with the signup specs without colliding.
       name: "forms",
-      testMatch: /signup-.*\.spec\.ts/,
+      testMatch: /(signup-.*|contact-(public|details|protection|visual))\.spec\.ts/,
       fullyParallel: false,
       workers: 1,
       use: { ...devices["Desktop Chrome"], channel: "chrome" },

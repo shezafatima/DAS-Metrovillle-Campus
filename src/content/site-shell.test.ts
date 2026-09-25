@@ -31,4 +31,12 @@ describe("contactInfo", () => {
   it("has a non-empty email address", () => {
     expect(contactInfo.email.length).toBeGreaterThan(0);
   });
+
+  it("has a mapUrl starting with https://", () => {
+    expect(contactInfo.mapUrl.startsWith("https://")).toBe(true);
+  });
+
+  it("has non-empty office hours", () => {
+    expect(contactInfo.officeHours.length).toBeGreaterThan(0);
+  });
 });

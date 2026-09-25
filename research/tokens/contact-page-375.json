@@ -1,0 +1,197 @@
+{
+  "viewport": "375",
+  "url": "https://das.edu.pk/contact/",
+  "banner": {
+    "bannerImageUrl": "https://das.edu.pk/wp-content/uploads/2019/02/contact.jpg.webp",
+    "titleBarStyle": {
+      "height": "102px",
+      "background-color": "rgb(18, 18, 145)"
+    },
+    "h1Style": {
+      "font-size": "25.6765px",
+      "font-weight": "700",
+      "color": "rgb(255, 255, 0)"
+    },
+    "breadcrumbText": "Home » Contact",
+    "breadcrumbStyle": {
+      "font-size": "18px",
+      "color": "rgb(255, 255, 255)"
+    }
+  },
+  "columns": [
+    {
+      "heading": "BY PHONE",
+      "headingStyle": {
+        "font-size": "24px",
+        "font-weight": "700",
+        "line-height": "33.6px",
+        "font-family": "Poppins, Arial, Helvetica, sans-serif",
+        "color": "rgb(51, 51, 51)",
+        "text-transform": "none"
+      },
+      "subtitleText": "Monday to Saturday 9am to 6pm PST",
+      "subtitleStyle": {
+        "font-size": "14px",
+        "font-weight": "700",
+        "letter-spacing": "3px",
+        "line-height": "28px",
+        "color": "rgb(51, 51, 51)",
+        "font-family": "Poppins, Arial, Helvetica, sans-serif"
+      },
+      "bodyText": "+92 (42) 111-111-896",
+      "bodyStyle": {
+        "font-size": "16px",
+        "line-height": "24px",
+        "color": "rgb(0, 0, 0)"
+      },
+      "imgSrc": "https://das.edu.pk/wp-content/uploads/2019/02/phone-us.png",
+      "imgWidth": 200,
+      "imgHeight": 200
+    },
+    {
+      "heading": "BY EMAIL",
+      "headingStyle": {
+        "font-size": "24px",
+        "font-weight": "700",
+        "line-height": "33.6px",
+        "font-family": "Poppins, Arial, Helvetica, sans-serif",
+        "color": "rgb(51, 51, 51)",
+        "text-transform": "none"
+      },
+      "subtitleText": "Write email on any of the following addresses",
+      "subtitleStyle": {
+        "font-size": "14px",
+        "font-weight": "700",
+        "letter-spacing": "3px",
+        "line-height": "28px",
+        "color": "rgb(51, 51, 51)",
+        "font-family": "Poppins, Arial, Helvetica, sans-serif"
+      },
+      "bodyText": "info@das.edu.pk\nenquiry@das.edu.pk",
+      "bodyStyle": {
+        "font-size": "16px",
+        "line-height": "24px",
+        "color": "rgb(0, 0, 0)"
+      },
+      "imgSrc": "https://das.edu.pk/wp-content/uploads/2019/02/email-us-1.png",
+      "imgWidth": 200,
+      "imgHeight": 200
+    },
+    {
+      "heading": "VISIT US",
+      "headingStyle": {
+        "font-size": "24px",
+        "font-weight": "700",
+        "line-height": "33.6px",
+        "font-family": "Poppins, Arial, Helvetica, sans-serif",
+        "color": "rgb(51, 51, 51)",
+        "text-transform": "none"
+      },
+      "subtitleText": "Visit us in person and meet our representative",
+      "subtitleStyle": {
+        "font-size": "14px",
+        "font-weight": "700",
+        "letter-spacing": "3px",
+        "line-height": "28px",
+        "color": "rgb(51, 51, 51)",
+        "font-family": "Poppins, Arial, Helvetica, sans-serif"
+      },
+      "bodyText": "313 West Canal Bank Road,\nNear PCSIR Society, Lahore",
+      "bodyStyle": {
+        "font-size": "16px",
+        "line-height": "24px",
+        "color": "rgb(0, 0, 0)"
+      },
+      "imgSrc": "https://das.edu.pk/wp-content/uploads/2019/02/visit-us.png",
+      "imgWidth": 200,
+      "imgHeight": 200
+    },
+    {
+      "heading": "WRITE US",
+      "headingStyle": {
+        "font-size": "24px",
+        "font-weight": "700",
+        "line-height": "33.6px",
+        "font-family": "Poppins, Arial, Helvetica, sans-serif",
+        "color": "rgb(51, 51, 51)",
+        "text-transform": "none"
+      },
+      "subtitleText": "Write us an inquiry by filling form below",
+      "subtitleStyle": {
+        "font-size": "14px",
+        "font-weight": "700",
+        "letter-spacing": "3px",
+        "line-height": "28px",
+        "color": "rgb(51, 51, 51)",
+        "font-family": "Poppins, Arial, Helvetica, sans-serif"
+      },
+      "bodyText": "Click this link to view\ninquiry form",
+      "bodyStyle": {
+        "font-size": "16px",
+        "line-height": "24px",
+        "color": "rgb(0, 0, 0)"
+      },
+      "imgSrc": "https://das.edu.pk/wp-content/uploads/2019/02/write-enquiry.png",
+      "imgWidth": 200,
+      "imgHeight": 200
+    }
+  ],
+  "columnsGap": -315.03,
+  "map": {
+    "headingText": "Locate Us on Google Maps",
+    "headingStyle": {
+      "font-size": "27.3529px",
+      "font-weight": "700",
+      "color": "rgb(34, 51, 85)",
+      "text-align": "center"
+    },
+    "areaHeight": 534
+  },
+  "form": {
+    "bandStyle": {
+      "background-color": "rgb(255, 244, 168)",
+      "padding-top": "30px",
+      "padding-bottom": "30px"
+    },
+    "inputStyle": {
+      "height": "47px",
+      "padding": "0px 15px",
+      "font-size": "13px",
+      "border": "1px solid rgb(210, 210, 210)",
+      "border-radius": "0px",
+      "background-color": "rgb(255, 255, 255)"
+    },
+    "inputPlaceholderColor": "rgb(170, 169, 169)",
+    "textareaStyle": {
+      "height": "150px",
+      "padding": "8px 15px",
+      "font-size": "13px",
+      "border": "1px solid rgb(210, 210, 210)",
+      "border-radius": "0px",
+      "background-color": "rgb(255, 255, 255)"
+    },
+    "buttonStyle": {
+      "background-color": "rgb(244, 67, 54)",
+      "height": "47px",
+      "padding": "13px 29px",
+      "font-size": "14px",
+      "font-weight": "600",
+      "border-radius": "0px",
+      "color": "rgb(255, 255, 255)",
+      "font-family": "\"Open Sans\", Arial, Helvetica, sans-serif"
+    },
+    "gapX": -315.03,
+    "gapY": 177,
+    "layout": "stacked"
+  },
+  "buttonHover": {
+    "before": {
+      "backgroundColor": "rgb(244, 67, 54)",
+      "color": "rgb(255, 255, 255)"
+    },
+    "after": {
+      "backgroundColor": "rgb(25, 25, 144)",
+      "color": "rgb(255, 255, 255)"
+    }
+  }
+}

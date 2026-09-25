@@ -3,19 +3,20 @@ import { Mail, Newspaper, UserPlus } from "lucide-react";
 import { StatCard } from "@/components/admin/stat-card";
 import { countPublishedPosts } from "@/lib/news/admin-queries";
 import { countSignups } from "@/lib/signup/admin-queries";
+import { countMessages } from "@/lib/messages/admin-queries";
 
 export const metadata: Metadata = { title: "Overview" };
 
-// TODO(007-contact): replace these hardcoded 0s with real counts once
-// that feature lands — this page (002-foundation) only owns the final
-// card layout. News (003) and Signups (004) are wired to real counts.
-const MESSAGES_COUNT = 0;
-const NEW_MESSAGES_COUNT = 0;
-
+// News, Messages and Signups are all wired to real counts; 011 owns any
+// remaining overview work.
 export const dynamic = "force-dynamic";
 
 export default async function AdminOverviewPage() {
-  const [newsCount, signupsCount] = await Promise.all([countPublishedPosts(), countSignups()]);
+  const [newsCount, signupsCount, messages] = await Promise.all([
+    countPublishedPosts(),
+    countSignups(),
+    countMessages(),
+  ]);
 
   return (
     <div className="flex flex-col gap-6 p-6">
@@ -24,9 +25,9 @@ export default async function AdminOverviewPage() {
         <StatCard title="News" value={newsCount} icon={Newspaper} />
         <StatCard
           title="Messages"
-          value={MESSAGES_COUNT}
+          value={messages.total}
           icon={Mail}
-          highlightCount={NEW_MESSAGES_COUNT}
+          highlightCount={messages.new}
           highlightLabel="new"
         />
         <StatCard title="Signups" value={signupsCount} icon={UserPlus} />

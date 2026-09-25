@@ -8,10 +8,12 @@ interface AdminShellProps {
   email: string;
   /** Server-read cookie value (FR-023 "remember the choice between visits") — avoids a flash of the wrong state. */
   defaultSidebarOpen: boolean;
+  /** Non-deleted messages with status new (008) — passed through to the sidebar's Messages badge. */
+  newMessagesCount?: number;
   children: ReactNode;
 }
 
-export function AdminShell({ email, defaultSidebarOpen, children }: AdminShellProps) {
+export function AdminShell({ email, defaultSidebarOpen, newMessagesCount, children }: AdminShellProps) {
   return (
     // flex-1 is required here: the root layout's <body> is itself a
     // flex column, and a flex-col container does NOT stretch its
@@ -21,7 +23,7 @@ export function AdminShell({ email, defaultSidebarOpen, children }: AdminShellPr
     // look cut off partway down instead of running the full height.
     <div className="admin-theme flex min-h-full flex-1 flex-col bg-background text-foreground">
       <SidebarProvider defaultOpen={defaultSidebarOpen} className="h-full flex-1">
-        <AppSidebar />
+        <AppSidebar newMessagesCount={newMessagesCount} />
         <SidebarInset>
           <AdminTopBar email={email} />
           <main id="admin-content" className="flex-1 overflow-x-hidden">

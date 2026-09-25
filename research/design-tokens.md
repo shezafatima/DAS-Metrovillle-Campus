@@ -481,3 +481,114 @@ per spec.md "Deviations from the Reference":
 
 General tokens, not signup-specific — reusable by the contact form
 (008) and any other admin or public form state.
+
+## Contact page (008 — extracted per-element)
+
+Extracted with `research/extract-contact-tokens.ts` (+
+`.browser.js`) against `https://das.edu.pk/contact/` at 375/768/1024/1440,
+following the same per-element approach as the signup band above. Every
+value below is **identical at all four widths** — this Avada page has no
+responsive step for the columns, map heading or form band (only the
+banner's title/height step, which the News banner already covers — see
+below). Raw captures: `research/tokens/contact-page-<viewport>.json`.
+
+### Banner
+
+`.fusion-page-title-bar` height 102px → 155px (`lg:`), `h1.entry-title`
+font-size 25.68px → 36px, both stepping at the same breakpoint as the News
+banner. Background: `rgb(18, 18, 145)` (`--color-primary`) **plus** a
+background image (`contact.jpg.webp`, downloaded to
+`public/images/contact/banner.webp`) that the News banner doesn't have.
+Title colour `rgb(255, 255, 0)` = `--color-topbar`. Breadcrumb "Home »
+Contact", `font-size: 18px`, white text — identical markup/values to the
+News banner's breadcrumb.
+
+**Reused directly (no new tokens)**: `--spacing-news-banner-height`,
+`--spacing-news-banner-height-lg`, `--text-news-banner-title`,
+`--text-news-banner-title-md`, `--color-primary`, `--color-topbar`. Because
+every value matches, `PageBanner` (lifted from `NewsBanner`, with an added
+optional `backgroundImage` prop) replaces both banners — see contracts/
+contact-page.md and plan.md research §14.
+
+### Detail columns (BY PHONE / BY EMAIL / VISIT US / WRITE US)
+
+| Element | Value | Reuse |
+|---|---|---|
+| Heading (`h3`) | `24px / 700 / 33.6px line-height / Poppins / #333` | Exact match for `--text-h3` + `--font-heading` — no new token |
+| Subtitle (`h5`) | `14px / 700 / letter-spacing 3px / 28px line-height / Poppins / #333` | New — no existing token has this letter-spacing |
+| Body (`p`) | `16px / 24px line-height / #000` | Exact match for `--text-body` + `--color-text` — no new token |
+| Icon | 200×200px rendered | New |
+| Column gap (`lg:`, 1440) | 51px | New |
+
+Icons downloaded to `public/images/contact/{by-phone,by-email,visit-us,write-us}.png`
+from `wp-content/uploads/2019/02/{phone-us,email-us-1,visit-us,write-enquiry}.png`.
+
+Copy (verified against the live page, matching the values already
+drafted in contracts/contact-page.md):
+
+- By Phone — subtitle "Monday to Saturday 9am to 6pm PST" (this is the
+  reference's literal **office hours** text, i.e. `contactInfo.officeHours`
+  rendered as the subtitle — not a static string); body the phone number.
+- By Email — subtitle "Write email on any of the following addresses";
+  body two addresses, `info@das.edu.pk` / `enquiry@das.edu.pk` (content
+  values, not hardcoded — see spec's single-address clarification, kept
+  as one `contactInfo.email`).
+- Visit Us — subtitle "Visit us in person and meet our representative";
+  body the two-line address (kept as spec's single placeholder address).
+- Write Us — subtitle "Write us an inquiry by filling form below"; body
+  "Click this link to view inquiry form" (the `WriteUsLink`).
+
+### Map heading and area
+
+`h2` "Locate Us on Google Maps": `48px / 700 / center / rgb(34, 51, 85)`
+(`#223355`) — no existing token matches this size or colour; new
+`--text-contact-map-heading` / `--color-contact-map-heading`. Reserved map
+area measured at 552px tall at 1440 (`--spacing-contact-map-height`,
+applied uniformly — the reference has no responsive step here either).
+The reference's own map iframe uses the parameterised
+`google.com/maps/embed?pb=...` form tied to a specific My Business listing
+id, not reproducible without that id; `mapEmbedSrc()` uses the documented
+keyless `maps.google.com/maps?q=...&output=embed` alternative instead
+(plan.md "Follow-ups", research §13 — an approved, deliberate substitution,
+not a fidelity gap).
+
+### Form band
+
+| Element | Value | Reuse |
+|---|---|---|
+| Band background | `rgb(255, 244, 168)` (`#fff4a8`) | New — `--color-contact-form-band` |
+| Band vertical padding | `30px` | New — `--spacing-contact-form-band-y` |
+| Input height | `47px` | Exact match for `--spacing-signup-input-height` |
+| Input border | `1px solid #d2d2d2` | Exact match for `--color-signup-input-border` |
+| Input placeholder colour | `rgb(170, 169, 169)` (`#aaa9a9`) | Exact match for `--color-signup-input-text` |
+| Input font-size | `13px` | Exact match for `--text-signup-input` |
+| Input/button radius | `0px` | Exact match for `--radius-signup-input` / `--radius-signup-button` |
+| Textarea height | `150px` | New — `--spacing-contact-textarea-height` |
+| Field gap (row, `md:`) | `51px` horizontal / `60px` vertical | New — `--spacing-contact-form-gap-x` / `-y` |
+| Send button background / hover | `rgb(244, 67, 54)` → `rgb(25, 25, 144)` | Exact match for `--color-cta` / `--color-cta-hover` |
+| Send button text | `14px / 600 / Open Sans / white` | Exact match for `--text-button` |
+
+Layout at 1440: Name/Email share a row (`layout: "row"`, gapX 51.2px
+confirms the reference brief's two-per-row description — contracts/
+contact-page.md "Form layout").
+
+Deviations already recorded in spec.md "Deviations from the Reference"
+(Phone + Subject fields added, no reCAPTCHA badge — the live page still
+shows an invisible reCAPTCHA v2 badge; Constitution II keeps this
+project keyless/dependency-free) apply unchanged; nothing new found here.
+
+New tokens (added to `@theme` in `src/app/globals.css`):
+
+| Token | Value |
+|---|---|
+| `--color-contact-form-band` | `#fff4a8` |
+| `--color-contact-map-heading` | `#223355` |
+| `--text-contact-map-heading` | `48px` / `700` |
+| `--text-contact-column-subtitle` | `14px` / `700` / `28px` line-height / `3px` letter-spacing |
+| `--spacing-contact-form-band-y` | `30px` |
+| `--spacing-contact-textarea-height` | `150px` |
+| `--spacing-contact-form-gap-x` | `51px` |
+| `--spacing-contact-form-gap-y` | `60px` |
+| `--spacing-contact-icon` | `200px` |
+| `--spacing-contact-columns-gap` | `51px` |
+| `--spacing-contact-map-height` | `552px` |

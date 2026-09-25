@@ -8,10 +8,10 @@ vi.mock("next/navigation", () => ({
   usePathname: vi.fn(),
 }));
 
-function renderSidebar() {
+function renderSidebar(newMessagesCount?: number) {
   return render(
     <SidebarProvider>
-      <AppSidebar />
+      <AppSidebar newMessagesCount={newMessagesCount} />
     </SidebarProvider>,
   );
 }
@@ -42,4 +42,16 @@ describe("AppSidebar", () => {
     }
   });
 
+  it("shows a badge with the count on Messages when newMessagesCount is set, and none at 0", () => {
+    vi.mocked(usePathname).mockReturnValue("/admin");
+    const { rerender } = renderSidebar(3);
+    expect(screen.getByText("3")).toBeInTheDocument();
+
+    rerender(
+      <SidebarProvider>
+        <AppSidebar newMessagesCount={0} />
+      </SidebarProvider>,
+    );
+    expect(screen.queryByText("0")).toBeNull();
+  });
 });

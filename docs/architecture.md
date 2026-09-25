@@ -89,13 +89,49 @@
   so signup's admin list imports these instead of the news module or a
   duplicate copy (004 signup, sp.analyze finding D1)
 - src/lib/signup/   004 signup domain logic: sources.ts (fixed Home/
-  Resources list), phone.ts (Pakistani-mobile normalise/format/search-
-  digits), dates.ts (PKT instant formatting — distinct from news'
-  calendar-date dates.ts), mutations.ts (upsertSignup — the one atomic
+  Resources list), phone.ts/dates.ts/route-errors.ts (thin re-export
+  shims — the real implementations moved to src/lib/phone.ts,
+  src/lib/admin-datetime.ts and src/lib/route-errors.ts in 008, since
+  contact messages need them too; every 004 import path and test still
+  works unchanged), mutations.ts (upsertSignup — the one atomic
   natural-key upsert with restore-on-resignup, see ADR-0001;
   deleteSignup), admin-queries.ts (listSignups/countSignups/
   findSignupsForExport — one shared filter builder), csv.ts (RFC 4180
-  export encoding), route-errors.ts
+  export encoding)
+- src/lib/phone.ts, src/lib/admin-datetime.ts, src/lib/route-errors.ts,
+  src/lib/validation/field-errors.ts   shared helpers lifted out of
+  signup-only modules once contact messages (008) needed them too
+  (Pakistani-mobile normalise/format/search-digits; PKT instant
+  formatting; the common route-error envelope + payloadTooLargeResponse;
+  fieldErrors()/collapseSpaces()) — src/lib/signup/* re-exports these so
+  no caller had to change
+- src/components/admin/admin-list-filters.tsx,
+  src/components/admin/admin-delete-dialog.tsx   generic admin-list
+  search+filter and confirm-delete dialog, lifted out of the
+  signup-only versions once messages (008) needed the same UI;
+  signups/signups-table-filters.tsx and signups/delete-signup-dialog.tsx
+  are now thin wrappers over these
+- src/lib/messages/   008 contact-messages domain logic: statuses.ts
+  (fixed New/Read/Responded list), preview.ts (toPreview — code-point-
+  safe one-line truncation), inbox-href.ts (whitelist rebuild of the
+  detail page's back link), mutations.ts (createMessage — append-only,
+  never upsert; markMessageRead/setMessageStatus/deleteMessage),
+  admin-queries.ts (listMessages/getMessage/countMessages/
+  countNewMessages)
+- src/lib/contact-details.ts   getContactDetails() (content today,
+  Settings read in 005 — the only function whose body changes) +
+  mapEmbedSrc() (keyless Google Maps embed URL, derived not stored)
+- src/components/contact/   public Contact page UI (ContactBanner,
+  ContactDetails/ContactDetailColumn, ContactMap/LazyMapFrame,
+  ContactFormSection/ContactForm, WriteUsLink) — 008 contact-messages
+- src/components/admin/messages/   admin inbox/detail UI (MessagesTable,
+  MessageDetail, MessageStatusControl, MarkReadOnOpen,
+  DeleteMessageDialog) — 008 contact-messages
+- src/components/site-shell/page-banner.tsx   shared page-title banner
+  (title + breadcrumb + optional background image), lifted out of
+  news/news-banner.tsx once the Contact page's extracted banner values
+  turned out identical aside from an added background image; NewsBanner
+  is now a thin wrapper over this
 - src/test/db.ts      describeWithDb() — Vitest DB-suite helper that
   skips with a notice when MONGODB_URI is unset
 - src/test/admin-session.ts   seedTestAdmin()/getTestSessionCookie() —
@@ -114,10 +150,16 @@
   CRUD, publish/unpublish), /api/admin/uploads/sign (Cloudinary
   signature for direct browser upload; the API secret never leaves
   this route), /api/admin/signups/[id] (soft delete) and
-  /api/admin/signups/export (filtered CSV) — 004 signup
+  /api/admin/signups/export (filtered CSV) — 004 signup;
+  /api/admin/messages/[id] (PATCH status, DELETE soft delete) and
+  /api/admin/messages/[id]/read (POST — conditional new→read) — 008
+  contact-messages
 - /api/public/* no auth — includes /api/public/signups (004 signup;
   honeypot → rate limit → validate → upsert, identical response for
-  every outcome)
+  every outcome) and /api/public/messages (008 contact-messages; 64 KiB
+  size guard → honeypot → its own `"contact"` rate-limit budget →
+  validate → append-only insert; every valid submission creates a new
+  `messages` document, and the honeypot response is identical)
 
 ## Database and auth
 - One cached Mongoose connection, reused across requests (src/lib/db.ts).
@@ -233,6 +275,27 @@
   submission was silently dropped by the honeypot — nothing in the
   response distinguishes a new signup from a returning one or a bot.
 
+## Contact messages (008) data rules
+- Append-only, the opposite of signup's rule: `messages` has no unique
+  index and the write path (`src/lib/messages/mutations.ts`) never
+  upserts, looks up by email, or passes `withDeleted` — every valid
+  submission is `Message.create(...)`, a brand-new document, even from
+  an email that already has other messages (see
+  `history/adr/0001-signup-upsert-and-restore.md` "Boundary" for why
+  this does **not** follow signup's pattern).
+- "Opened" is a conditional client-driven transition, not a page-render
+  side effect: the detail page always renders `<MarkReadOnOpen>`
+  unconditionally (never gated on the current status), which fires a
+  `POST …/[id]/read` once per mount only if the status *at mount* was
+  `new`. On success it calls `router.refresh()`, which re-renders the
+  Server Component tree — updating the status shown, the sidebar badge
+  and the overview card — without a full page reload. Never mark a
+  message read inside the page's own server render (a GET must have no
+  side effects).
+- Every other mutation (status PATCH, delete) follows the same
+  toast-then-`router.refresh()` pattern, so the sidebar badge and
+  overview card are never more than one refresh stale.
+
 ## Testing
 - Vitest: unit tests and route handler tests (validation failures,
   401 for admin routes). DB-backed suites use describeWithDb()
@@ -257,3 +320,18 @@
   and `signup-*` so a spec never runs twice under two projects.
   `e2e/helpers/signups.ts` follows the same seed/clear/withConnection
   pattern as `e2e/helpers/news.ts`.
+- The `forms` project also carries the four contact specs
+  (`e2e/contact-{public,details,protection,visual}.spec.ts`, 008
+  contact-messages) alongside `signup-*`; `chromium`'s testIgnore names
+  them explicitly rather than a broader `contact-*` pattern, because the
+  pre-existing `e2e/contact-and-social.spec.ts` (001 site-shell) also
+  starts with `contact-` and must keep running under `chromium`. Every
+  spec that submits through a public form (`/api/public/signups` or
+  `/api/public/messages`) sets its own `X-Forwarded-For`
+  (`e2e/helpers/signups.ts`'s IPs / `e2e/helpers/messages.ts`'s
+  `forwardedFor(n)`, both in the TEST-NET-3 `203.0.113.0/24` range) so
+  concurrent specs never share a rate-limit budget by accident. This
+  `X-Forwarded-For` trust (a pre-existing 002 hosting follow-up — verify
+  the real host overwrites the header rather than passing through a
+  client-supplied value) applies equally to both forms and is owned by
+  002's `extractIp`, not by 004 or 008.

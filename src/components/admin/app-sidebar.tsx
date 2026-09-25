@@ -27,7 +27,7 @@ const iconByHref: Record<string, React.ComponentType<{ className?: string }>> = 
 };
 
 interface AppSidebarProps {
-  /** Count of unread messages, shown as a highlight badge on the Messages item. Wired to real data in a later feature — 0 for now. */
+  /** Non-deleted messages with status new (008); refreshed by router.refresh() after every message mutation. */
   newMessagesCount?: number;
 }
 

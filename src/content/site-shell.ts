@@ -21,6 +21,10 @@ export interface ContactInfo {
   phone: string;
   email: string;
   address: string;
+  /** Ordinary Google Maps share link, always present regardless of the embedded map's fate (008 clarification Q2). */
+  mapUrl: string;
+  /** Placeholder until the client confirms Metroville's real office hours (008). */
+  officeHours: string;
   social: Partial<Record<SocialPlatform, string>>;
 }
 
@@ -127,10 +131,15 @@ export const portalLinks: PortalLink[] = [
 // Swapping in the real values later is a content edit only (FR-013). Shown
 // in the footer only — the reference top bar carries portal/social links
 // instead (see spec.md's updated FR-010/FR-025 and Assumptions).
+// mapUrl and officeHours (008) are placeholders too, pending the client's
+// real Metroville address and hours — 005 (Settings) will make all of
+// these admin-editable; getContactDetails() is the only seam that changes.
 export const contactInfo: ContactInfo = {
   phone: "+92-42-0000000",
   email: "metroville@dararqam.edu.pk",
   address: "Dar-e-Arqam School, Metroville Campus — address TBD",
+  mapUrl: "https://maps.google.com/?q=Dar-e-Arqam+School+Metroville",
+  officeHours: "Monday to Saturday, 9am to 6pm PST",
   social: {
     facebook: "https://www.facebook.com/arqam.metroville",
     youtube: "https://www.youtube.com/@DASMetroville",

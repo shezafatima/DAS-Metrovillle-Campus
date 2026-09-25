@@ -205,6 +205,33 @@
   --radius-signup-input: 0px;
   --radius-signup-button: 0px;
 
+  /* Contact page (008-contact-messages) — extracted per-element from
+     https://das.edu.pk/contact/; see research/design-tokens.md "Contact
+     page" for the full per-token reuse table. Identical at all four
+     reference widths. The banner reuses --spacing-news-banner-height(-lg)
+     and --text-news-banner-title(-md) (values match exactly — see
+     PageBanner); the column heading/body reuse --text-h3/--font-heading
+     and --text-body/--color-text; the input/textarea/button chrome reuse
+     --spacing-signup-input-height, --color-signup-input-border,
+     --color-signup-input-text, --text-signup-input,
+     --radius-signup-input/-button and --color-cta/-hover/--text-button.
+     Only the values below have no existing equivalent. */
+  --color-contact-form-band: #fff4a8;
+  --color-contact-map-heading: #223355;
+  --text-contact-map-heading: 48px;
+  --text-contact-map-heading--font-weight: 700;
+  --text-contact-column-subtitle: 14px;
+  --text-contact-column-subtitle--line-height: 28px;
+  --text-contact-column-subtitle--font-weight: 700;
+  --text-contact-column-subtitle--letter-spacing: 3px;
+  --spacing-contact-form-band-y: 30px;
+  --spacing-contact-textarea-height: 150px;
+  --spacing-contact-form-gap-x: 51px;
+  --spacing-contact-form-gap-y: 60px;
+  --spacing-contact-icon: 200px;
+  --spacing-contact-columns-gap: 51px;
+  --spacing-contact-map-height: 552px;
+
   /* Admin dashboard layout tokens — no das.edu.pk reference exists for the
      admin area (spec 002-foundation "Deviations from the Reference"), so
      these are chosen values, not extracted ones. Named here first per
@@ -389,13 +416,14 @@
     padding: var(--news-card-padding);
   }
 
-  /* Hidden spam-trap field (004 signup, FR-026): visually and
-     positionally off-screen rather than display:none/visibility:hidden
-     — those two are what a bot's own detection most commonly checks
-     for, while an absolutely-positioned, zero-sized, overflow-hidden
-     element still passes a naive "is it in the DOM and not display:none"
-     bot check. Paired with aria-hidden + tabindex="-1" in the component
-     for real assistive tech / keyboard users. */
+  /* Hidden spam-trap field, public-form honeypot (004 signup, 008
+     contact; FR-026/FR-031): visually and positionally off-screen rather
+     than display:none/visibility:hidden — those two are what a bot's own
+     detection most commonly checks for, while an absolutely-positioned,
+     zero-sized, overflow-hidden element still passes a naive "is it in
+     the DOM and not display:none" bot check. Paired with aria-hidden +
+     tabindex="-1" in the component for real assistive tech / keyboard
+     users. */
   .signup-honeypot {
     position: absolute;
     left: -10000px;

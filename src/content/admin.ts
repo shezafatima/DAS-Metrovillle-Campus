@@ -185,3 +185,57 @@ export const signupsCopy = {
     unavailable: loginCopy.errors.unavailable,
   },
 } as const;
+
+// Contact messages (008) admin copy: inbox, detail, status and delete.
+export const messagesCopy = {
+  pageTitle: "Messages",
+  table: {
+    headers: {
+      name: "Name",
+      subject: "Subject",
+      preview: "Message",
+      status: "Status",
+      received: "Received",
+      actions: "Actions",
+    },
+    empty: "No messages yet.",
+    emptyFiltered: "No messages match your search or filter.",
+    delete: "Delete message",
+  },
+  filters: {
+    searchPlaceholder: "Search name, email or subject",
+    statusLabel: "Status",
+    statusAll: "All statuses",
+  },
+  pagination: {
+    previous: "Previous",
+    next: "Next",
+    pageOf: (page: number, totalPages: number) => `Page ${page} of ${totalPages}`,
+  },
+  detail: {
+    back: "Back to inbox",
+    from: "From",
+    email: "Email",
+    phone: "Phone",
+    phoneNone: "Not provided",
+    whatsapp: "WhatsApp",
+    received: "Received",
+    status: "Status",
+    markResponded: "Mark as responded",
+    gone: "This message is no longer available.",
+    replyPrefix: "Re: ",
+  },
+  deleteDialog: {
+    title: "Delete this message?",
+    body: "It will be removed from the inbox.",
+    cancel: "Cancel",
+    confirm: "Delete",
+  },
+  toasts: {
+    deleted: "Message deleted",
+    gone: "This message is no longer available",
+    unavailable: loginCopy.errors.unavailable,
+    statusSaved: (label: string) => `Status updated to ${label}`,
+    statusFailed: "Couldn't update the status. Please try again.",
+  },
+} as const;
