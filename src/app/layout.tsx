@@ -41,8 +41,11 @@ export const metadata: Metadata = {
   // Required for relative openGraph.images URLs (news post sharing, FR-031)
   // to resolve to absolute ones. Falls back to localhost in dev; reads the
   // env var directly (not getEnv()) so a page never fails to render over a
-  // metadata-only concern.
-  metadataBase: new URL(process.env.BETTER_AUTH_URL ?? "http://localhost:3000"),
+  // metadata-only concern. `||`, not `??` — a platform can set the var to
+  // an empty string rather than leaving it unset, and `new URL("")` throws
+  // (this crashed every page, including /_not-found, on a build where
+  // BETTER_AUTH_URL was present but empty).
+  metadataBase: new URL(process.env.BETTER_AUTH_URL || "http://localhost:3000"),
   title: "Dar-e-Arqam School — Metroville Campus",
   description:
     "Dar-e-Arqam School, Metroville Campus — admissions, academics, campuses, and news.",

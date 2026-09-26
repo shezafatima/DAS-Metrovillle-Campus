@@ -32,7 +32,14 @@ const envSchema = z.object({
   // Test-only escape hatch (sp.analyze I2): lets Playwright specs stub the
   // Cloudinary upload without a live account while still exercising the
   // real save path. Ignored outside test runs — see verifyNewsCover().
-  NEWS_COVER_VERIFY: z.literal("skip").optional(),
+  // A hosting platform can set an unconfigured var to "" rather than
+  // leaving it truly unset (the same reason MONGODB_DB_NAME above
+  // transforms blank to its default) — z.literal(...).optional() only
+  // tolerates undefined, so "" would otherwise fail parsing in production.
+  NEWS_COVER_VERIFY: z
+    .string()
+    .optional()
+    .transform((value) => (value?.trim() === "skip" ? ("skip" as const) : undefined)),
 });
 
 export type Env = z.infer<typeof envSchema>;
