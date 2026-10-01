@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { requireAdminSession } from "@/lib/dal";
+import { requireAdminPage } from "@/lib/dal";
 import { getAdminPost } from "@/lib/news/admin-queries";
 import { NewsEditor } from "@/components/admin/news/news-editor";
 
@@ -13,7 +13,7 @@ export async function generateMetadata(
 }
 
 export default async function EditNewsPostPage({ params }: PageProps<"/admin/news/[id]">) {
-  await requireAdminSession();
+  await requireAdminPage("news");
   const { id } = await params;
   const post = await getAdminPost(id);
   if (!post) notFound();

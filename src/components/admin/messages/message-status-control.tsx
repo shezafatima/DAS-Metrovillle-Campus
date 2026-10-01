@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/toaster";
 import { messagesCopy } from "@/content/admin";
 import { MESSAGE_STATUSES, statusLabel, type MessageStatus } from "@/lib/messages/statuses";
+import { useNotifications } from "@/components/admin/notifications/notifications-provider";
 
 export interface MessageStatusControlProps {
   id: string;
@@ -22,6 +23,7 @@ export interface MessageStatusControlProps {
  */
 export function MessageStatusControl({ id, status }: MessageStatusControlProps) {
   const router = useRouter();
+  const { refreshNow } = useNotifications();
   const [saved, setSaved] = useState<MessageStatus>(status);
   const [pending, setPending] = useState(false);
 
@@ -38,9 +40,11 @@ export function MessageStatusControl({ id, status }: MessageStatusControlProps) 
         setSaved(body.status);
         toast({ title: messagesCopy.toasts.statusSaved(statusLabel(body.status)), type: "success" });
         router.refresh();
+        refreshNow();
       } else if (response.status === 404) {
         toast({ title: messagesCopy.toasts.gone, type: "error" });
         router.refresh();
+        refreshNow();
       } else {
         toast({ title: messagesCopy.toasts.statusFailed, type: "error" });
       }

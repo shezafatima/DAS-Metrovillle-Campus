@@ -53,6 +53,27 @@ describeWithDb("login lockout", ["user", "account", "session", "throttles"], () 
     expect(isAPIError(sixth) && sixth.body?.code).toBe("LOGIN_BLOCKED");
   });
 
+  it("records lastLoginAt on a successful sign-in only (011)", async () => {
+    await seedAdmin();
+    await clearKeys([`login:ip:198.51.100.7`, `login:email:${ADMIN_EMAIL}`]);
+    const { getAuth } = await import("@/lib/auth");
+    const ctx = await (await getAuth()).$context;
+    const lastLogin = async () =>
+      (
+        (await ctx.internalAdapter.findUserByEmail(ADMIN_EMAIL))?.user as { lastLoginAt?: Date | null } | undefined
+      )?.lastLoginAt ?? null;
+
+    await attempt(ADMIN_EMAIL, "wrong-password", "198.51.100.7");
+    expect(await lastLogin()).toBeNull();
+
+    const before = Date.now();
+    const ok = await attempt(ADMIN_EMAIL, ADMIN_PASSWORD, "198.51.100.7");
+    expect(isAPIError(ok)).toBe(false);
+    const stamped = await lastLogin();
+    expect(stamped).not.toBeNull();
+    expect(new Date(stamped!).getTime()).toBeGreaterThanOrEqual(before - 1000);
+  });
+
   it("blocks the account after 20 failures spread across distinct source addresses", async () => {
     await seedAdmin();
     const email = "per-account-lockout@example.com";

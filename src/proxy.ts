@@ -10,7 +10,7 @@ import { getSessionCookie } from "better-auth/cookies";
  * with Proxy").
  *
  * Also forwards the requested path as `x-pathname` so a page that
- * falls back to requireAdminSession()'s own redirect (a stale cookie
+ * falls back to requireAdminPage()'s own redirect (a stale cookie
  * that passes this check but fails real session verification) can
  * still send the admin back to where they started (FR-016).
  */

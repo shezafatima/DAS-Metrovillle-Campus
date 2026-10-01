@@ -52,7 +52,7 @@ These contain live items only.
 
 1. Access, then input shape.
 2. Verify each image with `verifyUploadedImage(publicId, "settings/gallery")`. A failed image is added to `rejected` and its asset is deleted. If verification is unreachable, the call returns `unavailable` and nothing is stored.
-3. Retry loop (≤ 5): read the document, `room = 8 − live photos`, `accepted = verified.slice(0, room)`, then write with compare-and-set on `version`. If the version moved, go back to the read.
+3. Retry loop (≤ 10 attempts): read the document, `room = 8 − live photos`, `accepted = verified.slice(0, room)`, then write with compare-and-set on `version`. If the version moved, go back to the read.
 4. Assets of the images beyond `room` (`refusedFull`) are deleted from Cloudinary after the write.
 5. `added = accepted.length`. The UI message: "Added {added}. {refusedFull} not added: this album is full (8 photos)." (only the relevant parts).
 

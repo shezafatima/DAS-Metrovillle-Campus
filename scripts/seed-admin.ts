@@ -73,7 +73,8 @@ async function main(): Promise<void> {
       let user;
       try {
         user = await ctx.internalAdapter.createUser(
-          { email, name: email.split("@")[0], emailVerified: true },
+          // 011: the seed account is always the main admin.
+          { email, name: email.split("@")[0], emailVerified: true, role: "main_admin" },
           { method: "email-password" },
         );
       } catch (err) {
@@ -96,12 +97,27 @@ async function main(): Promise<void> {
     }
 
     if (!reset) {
+      // 011 FR-034: an account created before roles existed becomes the
+      // main admin the first time the seed is run after deploying. Nothing
+      // else about the account changes.
+      if ((existing.user as { role?: string }).role !== "main_admin") {
+        await ctx.internalAdapter.updateUser(existing.user.id, { role: "main_admin" });
+        console.log(`Admin role confirmed: ${email} (nothing else changed)`);
+        return;
+      }
       console.log(`Admin already exists: ${email} (nothing changed)`);
       return;
     }
 
     const hash = await ctx.password.hash(password);
     await ctx.internalAdapter.updatePassword(existing.user.id, hash);
+    // 011: --reset is the lock-out recovery path, so it also makes the
+    // account a usable main admin again.
+    await ctx.internalAdapter.updateUser(existing.user.id, {
+      role: "main_admin",
+      disabledAt: null,
+      deletedAt: null,
+    });
     await ctx.internalAdapter.deleteUserSessions(existing.user.id);
     logSecurityEvent({ type: "password_reset", email });
     console.log(`Admin password updated: ${email} (all sessions ended)`);

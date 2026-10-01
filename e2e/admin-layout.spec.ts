@@ -5,7 +5,7 @@ import { adminNavItems } from "../src/content/admin";
 async function login(page: import("@playwright/test").Page) {
   await page.goto("/admin/login");
   await page.getByLabel("Email").fill(E2E_ADMIN.email);
-  await page.getByLabel("Password").fill(E2E_ADMIN.password);
+  await page.getByLabel("Password", { exact: true }).fill(E2E_ADMIN.password);
   await page.getByRole("button", { name: "Sign in" }).click();
   await expect(page).toHaveURL("/admin");
 }
@@ -26,7 +26,8 @@ test.describe("admin layout (US4)", () => {
         "aria-current",
         "page",
       );
-      await expect(page.getByText(E2E_ADMIN.email)).toBeVisible();
+      // 010: the email is in the top bar's profile menu, not the sidebar footer.
+      await expect(page.getByRole("button", { name: "Account menu" })).toBeVisible();
       await expect(page.getByRole("banner")).toHaveCount(0);
       await expect(page.getByRole("contentinfo")).toHaveCount(0);
     });

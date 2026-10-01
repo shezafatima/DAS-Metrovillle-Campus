@@ -1,8 +1,9 @@
-import { requireAdminSession } from "@/lib/dal";
+import { requireAdminAccess } from "@/lib/dal";
+import { accessErrorResponse } from "@/lib/route-errors";
 import { findSignupsForExport } from "@/lib/signup/admin-queries";
 import { signupsToCsv } from "@/lib/signup/csv";
 import { csvDateStamp } from "@/lib/signup/dates";
-import { NO_STORE, unauthorizedResponse, unavailableResponse } from "@/lib/signup/route-errors";
+import { NO_STORE, unavailableResponse } from "@/lib/signup/route-errors";
 
 /**
  * Downloads every signup matching the current search/filter as CSV
@@ -10,10 +11,8 @@ import { NO_STORE, unauthorizedResponse, unavailableResponse } from "@/lib/signu
  * matching record, not just the current page.
  */
 export async function GET(request: Request): Promise<Response> {
-  const session = await requireAdminSession({ mode: "api" });
-  if (!session) {
-    return unauthorizedResponse();
-  }
+  const access = await requireAdminAccess("careers");
+  if (!access.ok) return accessErrorResponse(access.reason);
 
   try {
     const { searchParams } = new URL(request.url);

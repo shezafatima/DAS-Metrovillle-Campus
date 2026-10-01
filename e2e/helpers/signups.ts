@@ -82,6 +82,18 @@ export async function findSignupByEmail(
   });
 }
 
+/**
+ * Bumps one signup's `lastSignupAt` in place — simulates the "repeat
+ * submission" upsert (004/ADR-0001) without going through the public
+ * form, for specs that need to prove a record counts as new again
+ * (009's "what counts as new" story).
+ */
+export async function touchSignupLastSignupAt(id: mongoose.Types.ObjectId, lastSignupAt: Date): Promise<void> {
+  await withConnection(async () => {
+    await mongoose.connection.db?.collection("signups").updateOne({ _id: id }, { $set: { lastSignupAt } });
+  });
+}
+
 /** Removes every document from the `signups` collection. */
 export async function clearSignups(): Promise<void> {
   await withConnection(async () => {

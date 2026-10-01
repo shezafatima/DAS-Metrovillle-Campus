@@ -39,7 +39,7 @@ export async function markMessageRead(
   const updated = await Message.findOneAndUpdate(
     { _id: id, status: "new" },
     { $set: { status: "read", statusChangedAt: new Date() } },
-    { new: true },
+    { returnDocument: "after" },
   );
   if (updated) {
     return { id, status: updated.status as MessageStatus, changed: true };
@@ -61,7 +61,7 @@ export async function setMessageStatus(
   const updated = await Message.findOneAndUpdate(
     { _id: id },
     { $set: { status, statusChangedAt: now } },
-    { new: true },
+    { returnDocument: "after" },
   );
   if (!updated) return null;
   return { id, status: updated.status as MessageStatus, statusChangedAt: now.toISOString() };

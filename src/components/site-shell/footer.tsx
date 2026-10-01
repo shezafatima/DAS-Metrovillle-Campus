@@ -1,12 +1,13 @@
 import Link from "next/link";
-import { contactInfo, footerContent } from "@/content/site-shell";
+import { footerContent, type ContactInfo } from "@/content/site-shell";
 import { SocialLinks } from "./social-links";
 
 // The reference footer (confirmed directly by the user against the live
 // site) is only this bottom bar — no columns, no quick-links row, no
 // phone/email/address. See the comment on footerContent in
-// src/content/site-shell.ts.
-export function Footer() {
+// src/content/site-shell.ts. Its social icons come from Settings (005): the
+// shell reads the contact details once and passes them in.
+export function Footer({ contact }: { contact: ContactInfo }) {
   return (
     <footer className="border-t border-neutral-100 bg-footer-bottom">
       <div className="mx-auto flex max-w-(--container-max-width) flex-wrap items-center justify-between gap-x-2 gap-y-2 px-(--container-gutter-x) py-4 font-body text-footer-link text-text">
@@ -22,7 +23,7 @@ export function Footer() {
           
         </p>
 
-        <SocialLinks social={contactInfo.social} variant="dark" />
+        <SocialLinks social={contact.social} variant="dark" />
       </div>
     </footer>
   );

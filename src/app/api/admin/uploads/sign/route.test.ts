@@ -27,16 +27,32 @@ beforeEach(() => {
 });
 
 it("returns 401 without a session", async () => {
-  vi.doMock("@/lib/dal", () => ({ requireAdminSession: async () => null }));
+  vi.doMock("@/lib/dal", () => ({ requireAdminAccess: async () => ({ ok: false, reason: "unauthorized" }) }));
   vi.resetModules();
   const { POST } = await import("./route");
   const response = await POST(postRequest({ kind: "news-cover" }));
   expect(response.status).toBe(401);
 });
 
+it('returns 403 forbidden for a signed-in user without the news permission, and requires exactly "news"', async () => {
+  const calls: string[] = [];
+  vi.doMock("@/lib/dal", () => ({
+    requireAdminAccess: async (access: string) => {
+      calls.push(access);
+      return { ok: false, reason: "forbidden" };
+    },
+  }));
+  vi.resetModules();
+  const { POST } = await import("./route");
+  const response = await POST(postRequest({ kind: "news-cover" }));
+  expect(response.status).toBe(403);
+  expect(await response.json()).toEqual({ error: "forbidden" });
+  expect(calls).toEqual(["news"]);
+});
+
 it("returns the signed payload with every documented key for an authorized request", async () => {
   vi.doMock("@/lib/dal", () => ({
-    requireAdminSession: async () => ({ email: "admin@example.com", sessionId: "s1" }),
+    requireAdminAccess: async () => ({ ok: true, session: { email: "admin@example.com", sessionId: "s1", userId: "u1", role: "content_manager", permissions: ["news"] } }),
   }));
   vi.resetModules();
   const { POST } = await import("./route");
@@ -56,7 +72,7 @@ it("returns the signed payload with every documented key for an authorized reque
 
 it("returns 400 for an unknown upload kind", async () => {
   vi.doMock("@/lib/dal", () => ({
-    requireAdminSession: async () => ({ email: "admin@example.com", sessionId: "s1" }),
+    requireAdminAccess: async () => ({ ok: true, session: { email: "admin@example.com", sessionId: "s1", userId: "u1", role: "content_manager", permissions: ["news"] } }),
   }));
   vi.resetModules();
   const { POST } = await import("./route");

@@ -1,17 +1,12 @@
-import { requireAdminSession } from "@/lib/dal";
+import { requireAdminAccess } from "@/lib/dal";
+import { accessErrorResponse } from "@/lib/route-errors";
 
 export async function GET() {
-  const session = await requireAdminSession({ mode: "api" });
-
-  if (!session) {
-    return Response.json(
-      { error: "unauthorized" },
-      { status: 401, headers: { "Cache-Control": "no-store" } },
-    );
-  }
+  const access = await requireAdminAccess("any");
+  if (!access.ok) return accessErrorResponse(access.reason);
 
   return Response.json(
-    { email: session.email },
+    { email: access.session.email },
     { headers: { "Cache-Control": "no-store" } },
   );
 }

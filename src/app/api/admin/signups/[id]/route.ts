@@ -1,6 +1,7 @@
-import { requireAdminSession } from "@/lib/dal";
+import { requireAdminAccess } from "@/lib/dal";
+import { accessErrorResponse } from "@/lib/route-errors";
 import { deleteSignup } from "@/lib/signup/mutations";
-import { NO_STORE, notFoundResponse, unauthorizedResponse, unavailableResponse } from "@/lib/signup/route-errors";
+import { NO_STORE, notFoundResponse, unavailableResponse } from "@/lib/signup/route-errors";
 
 /**
  * Soft-deletes one signup (FR-022; contracts/admin-signups-api.md).
@@ -9,10 +10,8 @@ import { NO_STORE, notFoundResponse, unauthorizedResponse, unavailableResponse }
  * the match, so a second delete on the same id correctly 404s.
  */
 export async function DELETE(_request: Request, context: RouteContext<"/api/admin/signups/[id]">) {
-  const session = await requireAdminSession({ mode: "api" });
-  if (!session) {
-    return unauthorizedResponse();
-  }
+  const access = await requireAdminAccess("careers");
+  if (!access.ok) return accessErrorResponse(access.reason);
 
   const { id } = await context.params;
   try {

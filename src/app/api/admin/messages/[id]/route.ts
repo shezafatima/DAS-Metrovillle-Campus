@@ -1,4 +1,5 @@
-import { requireAdminSession } from "@/lib/dal";
+import { requireAdminAccess } from "@/lib/dal";
+import { accessErrorResponse } from "@/lib/route-errors";
 import { messageStatusUpdateSchema } from "@/lib/validation/message";
 import { fieldErrors } from "@/lib/validation/field-errors";
 import { setMessageStatus, deleteMessage } from "@/lib/messages/mutations";
@@ -6,16 +7,13 @@ import {
   NO_STORE,
   validationResponse,
   notFoundResponse,
-  unauthorizedResponse,
   unavailableResponse,
 } from "@/lib/route-errors";
 
 /** Status change (contracts/admin-messages-api.md "PATCH"). */
 export async function PATCH(request: Request, context: RouteContext<"/api/admin/messages/[id]">) {
-  const session = await requireAdminSession({ mode: "api" });
-  if (!session) {
-    return unauthorizedResponse();
-  }
+  const access = await requireAdminAccess("messages");
+  if (!access.ok) return accessErrorResponse(access.reason);
 
   const { id } = await context.params;
 
@@ -44,10 +42,8 @@ export async function PATCH(request: Request, context: RouteContext<"/api/admin/
 
 /** Soft delete (contracts/admin-messages-api.md "DELETE"). */
 export async function DELETE(_request: Request, context: RouteContext<"/api/admin/messages/[id]">) {
-  const session = await requireAdminSession({ mode: "api" });
-  if (!session) {
-    return unauthorizedResponse();
-  }
+  const access = await requireAdminAccess("messages");
+  if (!access.ok) return accessErrorResponse(access.reason);
 
   const { id } = await context.params;
   try {

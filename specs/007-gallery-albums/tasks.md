@@ -32,7 +32,7 @@ description: "Task list for 007 Gallery Albums"
 
 **Purpose**: copy, log types and the shared types every other task imports.
 
-- [ ] T001 [P] Add `galleryCopy` to `src/content/admin.ts`:
+- [X] T001 [P] Add `galleryCopy` to `src/content/admin.ts`:
   - page titles `albums: "Photo gallery"`, `album: (title) => title`
   - `createAlbum: "Create album"`, `albumFull: "The gallery is limited to 6 albums. Delete an album to create a new one."`
   - fields `title: "Album title"`, `description: "Short description (optional)"`, `date: "Date (optional)"`, `caption: "Caption (optional)"`
@@ -46,9 +46,9 @@ description: "Task list for 007 Gallery Albums"
   - delete-dialog copy `deleteAlbum` (body: "The album and its photos will be removed from the site.") and `deletePhoto`
 
   Add `"/admin/settings/gallery/[albumId]"` handling to `adminExtraPageTitles` if titles are keyed there.
-- [ ] T002 [P] Create `src/content/gallery.ts` (public copy): `sectionHeading: "Photo Gallery"`, `photoCount`, `backToGallery: "Back to Photo Gallery"`, `viewer: { label: (title) => \`${title} photos\`, previous: "Previous photo", next: "Next photo", close: "Close", position: (n, total) => \`${n} of ${total}\` }`, `photoAlt: (title, n) => \`${title} — photo ${n}\``, a `formatAlbumDate(iso)` helper giving "12 March 2026" (en-GB, UTC), and `photoGalleryBanner: string | null = null`, marked as placeholder content. When the client supplies the reference banner photograph, save it as `public/images/banners/photo-gallery.jpg` and set the constant to `"/images/banners/photo-gallery.jpg"`.
-- [ ] T003 [P] In `src/lib/log.ts`, add `"gallery_changed"`, `"gallery_migrated"` and `"gallery_read_failed"` to `SecurityEventType`. Add an optional `action?: string` to `SecurityEvent` and to the logged line, documented as the gallery action name only. Reuse `target` for the album title and `outcome` for `migrated=N;not_migrated=M` (research R13).
-- [ ] T004 [P] Create `src/lib/gallery/types.ts` (client-safe, no server imports) exactly per data-model.md: `GalleryData`, `Album`, `Photo`, `RetiredImage`, `AdminGallery`, `AdminAlbum`, `AdminPhoto`, `PublicGallery`, `PublicAlbum`, `GalleryResult<T>`, `MAX_ALBUMS = 6`, `MAX_PHOTOS_PER_ALBUM = 8`, `MAX_MIGRATED_PHOTOS = 48`, `ALBUM_ID_PATTERN = /^[a-z0-9]{12}$/`, `GALLERY_DOC_ID = "gallery"`. Reuse `ImageRef` from `src/lib/settings/types.ts`.
+- [X] T002 [P] Create `src/content/gallery.ts` (public copy): `sectionHeading: "Photo Gallery"`, `photoCount`, `backToGallery: "Back to Photo Gallery"`, `viewer: { label: (title) => \`${title} photos\`, previous: "Previous photo", next: "Next photo", close: "Close", position: (n, total) => \`${n} of ${total}\` }`, `photoAlt: (title, n) => \`${title} — photo ${n}\``, a `formatAlbumDate(iso)` helper giving "12 March 2026" (en-GB, UTC), and `photoGalleryBanner: string | null = null`, marked as placeholder content. When the client supplies the reference banner photograph, save it as `public/images/banners/photo-gallery.jpg` and set the constant to `"/images/banners/photo-gallery.jpg"`.
+- [X] T003 [P] In `src/lib/log.ts`, add `"gallery_changed"`, `"gallery_migrated"` and `"gallery_read_failed"` to `SecurityEventType`. Add an optional `action?: string` to `SecurityEvent` and to the logged line, documented as the gallery action name only. Reuse `target` for the album title and `outcome` for `migrated=N;not_migrated=M` (research R13).
+- [X] T004 [P] Create `src/lib/gallery/types.ts` (client-safe, no server imports) exactly per data-model.md: `GalleryData`, `Album`, `Photo`, `RetiredImage`, `AdminGallery`, `AdminAlbum`, `AdminPhoto`, `PublicGallery`, `PublicAlbum`, `GalleryResult<T>`, `MAX_ALBUMS = 6`, `MAX_PHOTOS_PER_ALBUM = 8`, `MAX_MIGRATED_PHOTOS = 48`, `ALBUM_ID_PATTERN = /^[a-z0-9]{12}$/`, `GALLERY_DOC_ID = "gallery"`. Reuse `ImageRef` from `src/lib/settings/types.ts`.
 
 **Checkpoint**: types and copy compile. Nothing is wired yet.
 
@@ -60,7 +60,7 @@ description: "Task list for 007 Gallery Albums"
 
 ### Tests first
 
-- [ ] T005 [P] Write `src/lib/gallery/rules.test.ts` (pure):
+- [X] T005 [P] Write `src/lib/gallery/rules.test.ts` (pure):
   - `liveAlbums` and `livePhotos` ignore `deletedAt`.
   - `effectiveCover`: the chosen cover if it's live, else the first live photo, else null.
   - `applyCreateAlbum` refuses a 7th live album with `full`, but allows it when one of the 6 is deleted.
@@ -71,14 +71,14 @@ description: "Task list for 007 Gallery Albums"
   - `applyDeleteAlbum` frees a slot.
   - Retention bound: more than 50 deleted albums or 200 deleted photos drops the oldest and reports their `publicId`s for deletion.
   - `newAlbumId()` matches `ALBUM_ID_PATTERN` and 1,000 calls are unique.
-- [ ] T006 [P] Write `src/lib/gallery/schema.test.ts`:
+- [X] T006 [P] Write `src/lib/gallery/schema.test.ts`:
   - title is trimmed and 1–80 characters, with Urdu accepted.
   - description is at most 300 characters and caption at most 150.
   - date accepts empty or a real `YYYY-MM-DD`, and refuses `2026-02-30`, `12/03/2026` and `2026-13-01`.
   - an album id must match the pattern, and a photo id must be a UUID.
   - `addGalleryPhotos` input takes 1–8 photos, each with a `publicId` starting `settings/gallery/`.
   - Error messages equal `galleryCopy`.
-- [ ] T007 [P] Write `src/lib/gallery/migrate.test.ts` (pure `migrateFlatGallery`):
+- [X] T007 [P] Write `src/lib/gallery/migrate.test.ts` (pure `migrateFlatGallery`):
   - 0 live images give `albums: []`.
   - 5 images give one "Gallery" album with order and captions kept and `coverPhotoId: null`.
   - 9 images give "Gallery" (8) and "Gallery 2" (1).
@@ -86,21 +86,21 @@ description: "Task list for 007 Gallery Albums"
   - 50 images give 6 albums, `notMigrated: 2`, and `discardedPublicIds` holding the last two.
   - Soft-deleted old images go to `retired[]`, not into albums, and don't count toward 48.
   - A `schema: 2` input comes back unchanged with `alreadyMigrated: true`.
-- [ ] T008 [P] Write `src/lib/gallery/store.test.ts` (`describeWithDb`, clear `settings` before each):
+- [X] T008 [P] Write `src/lib/gallery/store.test.ts` (`describeWithDb`, clear `settings` before each):
   - `readGallery()` on a missing document returns empty schema 2 at version 0.
   - `writeWithRetry(mutator)` inserts at version 1, then CAS-updates.
   - A mutator returning an error result writes nothing.
   - Retries: a version moved between the read and the write gives a re-read and a re-apply (simulate with a concurrent write).
   - After 5 lost races it returns `unavailable`.
   - `Promise.all` of 10 `writeWithRetry` calls that each append one album into an empty gallery gives exactly 6 albums stored, 6 successes and 4 `full`.
-- [ ] T009 [P] Write `src/lib/gallery/ensure-migrated.test.ts` (`describeWithDb`, mock `deleteUploadedImage`):
+- [X] T009 [P] Write `src/lib/gallery/ensure-migrated.test.ts` (`describeWithDb`, mock `deleteUploadedImage`):
   - It migrates a seeded 005 flat document in place, with `version` + 1 and a `data.migration` record.
   - It logs `gallery_migrated` with the counts.
   - It deletes the discarded assets only after the write succeeds.
   - A second call is a no-op.
   - Two concurrent calls leave exactly one migration, and the assets are deleted once.
   - A missing document is left missing (nothing to migrate).
-- [ ] T010 [P] Update the 005 tests for the retired flat group (research R12):
+- [X] T010 [P] Update the 005 tests for the retired flat group (research R12):
   - In `src/lib/settings/defaults.test.ts`, `GROUP_KEYS` equals `["contact","hero","stats","video"]`, and the gallery defaults case is removed.
   - In `src/lib/settings/mutations.test.ts`, remove the flat-gallery cases, re-home the image-verification and folder cases onto the `hero` group, and add "a `gallery` save is refused".
   - In `src/lib/settings/public.test.ts`, remove the gallery shape cases.
@@ -108,19 +108,19 @@ description: "Task list for 007 Gallery Albums"
 
 ### Implementation
 
-- [ ] T011 Create `src/lib/gallery/schema.ts` (Zod 4, client-safe) with the album details schema, caption schema, id schemas and one input schema per action in contracts/gallery-actions.md. Messages come from `galleryCopy`. Make T006 pass.
-- [ ] T012 Create `src/lib/gallery/rules.ts` (pure, client-safe): `liveAlbums`, `livePhotos`, `effectiveCover`, `newAlbumId` (12 characters `[a-z0-9]` from `crypto.randomUUID()` hex, re-drawn on collision with the existing ids), and one `apply*` function per action returning `{ ok: true, data, discardedPublicIds, summary } | { ok: false, error }`. Also `enforceRetention`, and `toAdminGallery`, `toAdminAlbum` and `toPublicGallery` (live albums with ≥ 1 live photo, in admin order). Reuse `moveItem` from `src/lib/settings/items.ts`. Make T005 pass.
-- [ ] T013 Create `src/lib/gallery/store.ts` (server only): `readGallery()` returns `{ data, version }` from `Settings.findById("gallery")`, treating a missing document as empty schema 2 at version 0. `writeWithRetry(mutate, { actorEmail, attempts = 5 })` reads, calls `mutate(data)`, and writes with `Settings.create` at version 0 (duplicate key means retry) or `findOneAndUpdate({ _id, version }, { $set: { data, updatedBy }, $inc: { version: 1 } })`. A null result means retry. After the attempts run out it returns `unavailable`. It returns the mutator's result together with the stored data. This is the only writer of the document (ADR-0005). Make T008 pass.
-- [ ] T014 Create `src/lib/gallery/migrate.ts`: pure `migrateFlatGallery(oldData)` per data-model.md "Migration", and `ensureGalleryMigrated(actorEmail = "system:migration")`. The latter reads the raw document and returns at once if it's missing or `schema === 2`. Otherwise it migrates through one compare-and-set on the stored version (a lost race means re-read, then it will see schema 2). After success it calls `deleteUploadedImage` for each discarded id, logs `gallery_migrated`, and returns `{ migrated, notMigrated, albums, alreadyMigrated }`. Make T007 and T009 pass.
-- [ ] T015 Retire the flat group (research R12):
+- [X] T011 Create `src/lib/gallery/schema.ts` (Zod 4, client-safe) with the album details schema, caption schema, id schemas and one input schema per action in contracts/gallery-actions.md. Messages come from `galleryCopy`. Make T006 pass.
+- [X] T012 Create `src/lib/gallery/rules.ts` (pure, client-safe): `liveAlbums`, `livePhotos`, `effectiveCover`, `newAlbumId` (12 characters `[a-z0-9]` from `crypto.randomUUID()` hex, re-drawn on collision with the existing ids), and one `apply*` function per action returning `{ ok: true, data, discardedPublicIds, summary } | { ok: false, error }`. Also `enforceRetention`, and `toAdminGallery`, `toAdminAlbum` and `toPublicGallery` (live albums with ≥ 1 live photo, in admin order). Reuse `moveItem` from `src/lib/settings/items.ts`. Make T005 pass.
+- [X] T013 Create `src/lib/gallery/store.ts` (server only): `readGallery()` returns `{ data, version }` from `Settings.findById("gallery")`, treating a missing document as empty schema 2 at version 0. `writeWithRetry(mutate, { actorEmail, attempts = 5 })` reads, calls `mutate(data)`, and writes with `Settings.create` at version 0 (duplicate key means retry) or `findOneAndUpdate({ _id, version }, { $set: { data, updatedBy }, $inc: { version: 1 } })`. A null result means retry. After the attempts run out it returns `unavailable`. It returns the mutator's result together with the stored data. This is the only writer of the document (ADR-0005). Make T008 pass.
+- [X] T014 Create `src/lib/gallery/migrate.ts`: pure `migrateFlatGallery(oldData)` per data-model.md "Migration", and `ensureGalleryMigrated(actorEmail = "system:migration")`. The latter reads the raw document and returns at once if it's missing or `schema === 2`. Otherwise it migrates through one compare-and-set on the stored version (a lost race means re-read, then it will see schema 2). After success it calls `deleteUploadedImage` for each discarded id, logs `gallery_migrated`, and returns `{ migrated, notMigrated, albums, alreadyMigrated }`. Make T007 and T009 pass.
+- [X] T015 Retire the flat group (research R12):
   - Remove `"gallery"` from `GROUP_KEYS` in `src/lib/settings/types.ts`, and remove the `gallery` entry in `src/lib/settings/registry.ts`.
   - Remove the `gallery` case, `PublicGallery` and `PublicGalleryImage` from `src/lib/settings/public.ts`.
   - Delete `src/lib/settings/groups/gallery.ts` and `src/components/admin/settings/gallery-uploader.tsx`, and drop the `addMode: "upload"` branch that used it in `list-editor.tsx` if it now has no user.
   - Keep `"gallery"` as an upload `kind` in `src/app/api/admin/settings/uploads/sign/route.ts` and `ImageFieldDef.kind`.
   - In `src/components/admin/settings/settings-nav.tsx`, keep a "Photo gallery" link to `/admin/settings/gallery` (now outside `GROUP_KEYS`), and make it active for `/admin/settings/gallery/*`.
   - Make T010 pass, and fix every TypeScript reference to the removed key (`npx tsc --noEmit`).
-- [ ] T016 Create `src/lib/gallery/admin.ts` (server only): `getAdminGallery()` runs `ensureGalleryMigrated()`, then returns `toAdminGallery(readGallery())`. `getAdminAlbum(id)` returns `AdminAlbum | null` (null for a bad format, unknown or deleted id).
-- [ ] T017 Create `src/lib/gallery/mutations.ts` (server only), with one function per action in contracts/gallery-actions.md. Each one takes `(input, actorEmail)` and runs `ensureGalleryMigrated()`, then `writeWithRetry(data => apply*(…))`. After a successful write it calls `deleteUploadedImage` for `discardedPublicIds` and returns `{ result, summary }` (the summary carries the album title for logging). `addGalleryPhotos`:
+- [X] T016 Create `src/lib/gallery/admin.ts` (server only): `getAdminGallery()` runs `ensureGalleryMigrated()`, then returns `toAdminGallery(readGallery())`. `getAdminAlbum(id)` returns `AdminAlbum | null` (null for a bad format, unknown or deleted id).
+- [X] T017 Create `src/lib/gallery/mutations.ts` (server only), with one function per action in contracts/gallery-actions.md. Each one takes `(input, actorEmail)` and runs `ensureGalleryMigrated()`, then `writeWithRetry(data => apply*(…))`. After a successful write it calls `deleteUploadedImage` for `discardedPublicIds` and returns `{ result, summary }` (the summary carries the album title for logging). `addGalleryPhotos`:
   - verifies each image first with `verifyUploadedImage(publicId, SETTINGS_GALLERY_FOLDER)`. Rejected images go to `rejected` and their assets are deleted. If Cloudinary is unreachable it returns `unavailable` and stores nothing.
   - applies the room check inside the retry loop.
   - deletes the assets of the `refusedFull` images after the write.
@@ -138,7 +138,7 @@ description: "Task list for 007 Gallery Albums"
 
 ### Tests
 
-- [ ] T018 [P] [US1] Write the album-action cases in `src/app/admin/(dashboard)/settings/gallery/actions.test.ts` (`describeWithDb`, mocks from `src/test/admin-session.ts`):
+- [X] T018 [P] [US1] Write the album-action cases in `src/app/admin/(dashboard)/settings/gallery/actions.test.ts` (`describeWithDb`, mocks from `src/test/admin-session.ts`):
   - For each of `createGalleryAlbum`, `updateGalleryAlbum`, `reorderGalleryAlbums` and `deleteGalleryAlbum`, cover the three cases. No session gives `unauthorized` and nothing stored. A content manager without `settings` gives `forbidden` and nothing stored. A main admin and a content manager with `settings` both succeed.
   - Behaviour: creating when 6 exist gives `full`. Two concurrent creates at 5 give exactly one success. A stale `rev` on update gives `conflict` with the document unchanged. Reorder with a missing id gives `invalid`. Delete frees the slot. `gallery_changed` is logged with `action` and the album title, and never the description.
 - [ ] T019 [P] [US1] Write `e2e/admin-gallery-albums.spec.ts` (with a new helper file `e2e/helpers/gallery.ts` for seeding and reading `settings/_id:"gallery"` in the schema 2 or flat shape and clearing it). It covers:
@@ -153,7 +153,7 @@ description: "Task list for 007 Gallery Albums"
 
 ### Implementation
 
-- [ ] T020 [US1] Create `src/app/admin/(dashboard)/settings/gallery/actions.ts` (`"use server"`) with the four album actions per contracts/gallery-actions.md. Each one:
+- [X] T020 [US1] Create `src/app/admin/(dashboard)/settings/gallery/actions.ts` (`"use server"`) with the four album actions per contracts/gallery-actions.md. Each one:
   1. calls `requireAdminAccess("settings")`,
   2. parses the input with `schema.ts`,
   3. calls the `mutations.ts` function with `access.session.email`,
@@ -162,14 +162,14 @@ description: "Task list for 007 Gallery Albums"
   6. returns `GalleryResult`.
 
   Make the T018 album cases pass.
-- [ ] T021 [P] [US1] Create `src/components/admin/gallery/album-panel.tsx` (client). It's a `Sheet` from the right (full width under md) with a react-hook-form + `zodResolver` form for title, description and date. It's used for Create (`rev` absent) and Edit (`rev` given), and guards a close with changes through `use-sheet-dirty-guard.ts`. On `conflict` it shows the message and keeps the values, and field errors appear under their fields.
-- [ ] T022 [US1] Create `src/components/admin/gallery/album-list.tsx` (client, takes `initial: AdminGallery`):
+- [X] T021 [P] [US1] Create `src/components/admin/gallery/album-panel.tsx` (client). It's a `Sheet` from the right (full width under md) with a react-hook-form + `zodResolver` form for title, description and date. It's used for Create (`rev` absent) and Edit (`rev` given), and guards a close with changes through `use-sheet-dirty-guard.ts`. On `conflict` it shows the message and keeps the values, and field errors appear under their fields.
+- [X] T022 [US1] Create `src/components/admin/gallery/album-list.tsx` (client, takes `initial: AdminGallery`):
   - Album cards in a grid at every width. Each card has the cover thumbnail (or a placeholder block), the title (`dir="auto"`, wrapping), `photoCount`, the date when set, Open (link to `/admin/settings/gallery/<id>`), Edit, Delete (`AdminConfirmDeleteDialog` with `deleteAlbum`), up/down buttons (named with the album title) and a native drag handle (`aria-hidden`).
   - Reorder calls `reorderGalleryAlbums` and rolls back with a toast on failure.
   - The Create button is disabled with the `albumFull` text at 6.
   - Every action result replaces the local state with the returned `AdminGallery`, followed by a 002 toast.
-- [ ] T023 [US1] Replace `src/app/admin/(dashboard)/settings/gallery/page.tsx`. It calls `requireAdminPage("settings")`, then `getAdminGallery()`, and renders `<AlbumList initial={…} />` with `export const dynamic = "force-dynamic"` and metadata title "Photo gallery". Make T019 pass.
-- [ ] T024 [US1] Add two entries to `EXPECTED` in `src/test/access-inventory.test.ts` (keyed per file, per contracts/access-matrix.md): `"admin/(dashboard)/settings/gallery/page.tsx": { kind: "page", access: "settings" }` (it already exists from 005; keep it) and `"admin/(dashboard)/settings/gallery/actions.ts": { kind: "action", access: "settings" }`. The test checks each exported action in the file, so the photo actions added in US2 are covered automatically. Add the page to `src/app/api/admin/access-matrix.test.ts` if it enumerates pages.
+- [X] T023 [US1] Replace `src/app/admin/(dashboard)/settings/gallery/page.tsx`. It calls `requireAdminPage("settings")`, then `getAdminGallery()`, and renders `<AlbumList initial={…} />` with `export const dynamic = "force-dynamic"` and metadata title "Photo gallery". Make T019 pass.
+- [X] T024 [US1] Add two entries to `EXPECTED` in `src/test/access-inventory.test.ts` (keyed per file, per contracts/access-matrix.md): `"admin/(dashboard)/settings/gallery/page.tsx": { kind: "page", access: "settings" }` (it already exists from 005; keep it) and `"admin/(dashboard)/settings/gallery/actions.ts": { kind: "action", access: "settings" }`. The test checks each exported action in the file, so the photo actions added in US2 are covered automatically. Add the page to `src/app/api/admin/access-matrix.test.ts` if it enumerates pages.
 
 **Checkpoint**: US1 works end to end. The album cap holds by UI and by direct call.
 
@@ -183,7 +183,7 @@ description: "Task list for 007 Gallery Albums"
 
 ### Tests
 
-- [ ] T025 [P] [US2] Extend `src/app/admin/(dashboard)/settings/gallery/actions.test.ts` with the photo actions. Cover the three access cases for each of `addGalleryPhotos`, `updateGalleryPhoto`, `reorderGalleryPhotos`, `setGalleryCover` and `deleteGalleryPhoto`, and the following behaviour:
+- [X] T025 [P] [US2] Extend `src/app/admin/(dashboard)/settings/gallery/actions.test.ts` with the photo actions. Cover the three access cases for each of `addGalleryPhotos`, `updateGalleryPhoto`, `reorderGalleryPhotos`, `setGalleryCover` and `deleteGalleryPhoto`, and the following behaviour:
   - 5 photos then 6 give `added: 3, refusedFull: 3`, and the 3 refused assets are deleted.
   - At 8, the call gives `full` and every given asset is deleted.
   - `Promise.all` of two 5-photo calls into an empty album gives 8 stored in total, 2 refused and assets deleted.
@@ -205,14 +205,14 @@ description: "Task list for 007 Gallery Albums"
 
 ### Implementation
 
-- [ ] T027 [US2] Add the five photo actions to `src/app/admin/(dashboard)/settings/gallery/actions.ts`, with the same order of work as T020. `addGalleryPhotos` returns `{ album, added, refusedFull, rejected }`. Make the T025 cases pass.
-- [ ] T028 [P] [US2] Create `src/components/admin/gallery/album-uploader.tsx` (client), adapted from the deleted `gallery-uploader.tsx`:
+- [X] T027 [US2] Add the five photo actions to `src/app/admin/(dashboard)/settings/gallery/actions.ts`, with the same order of work as T020. `addGalleryPhotos` returns `{ album, added, refusedFull, rejected }`. Make the T025 cases pass.
+- [X] T028 [P] [US2] Create `src/components/admin/gallery/album-uploader.tsx` (client), adapted from the deleted `gallery-uploader.tsx`:
   - a multi-file input (`accept="image/jpeg,image/png,image/webp"`) with `precheckImage` for each file, keeping at most `room` files in selection order (the rest are counted as refused-for-space at once).
   - `requestSignature("/api/admin/settings/uploads/sign", "gallery")` and `uploadToCloudinary`, 3 in parallel, with progress rows for each file.
   - when every file has settled, one `addGalleryPhotos` call with the successful uploads in selection order, then a summary notice and toast from `addedSummary` plus a list of each rejected file and its reason.
   - disabled with `photosFull` at 0 room.
-- [ ] T029 [P] [US2] Create `src/components/admin/gallery/album-photos.tsx` (client, takes `initial: AdminAlbum`). It shows photo cards (thumbnail through `cloudinaryLoader`, a caption input with `maxLength` 150 and a counter that saves on blur or Enter through `updateGalleryPhoto`, a "Cover" badge or a "Make cover" button, up/down buttons named with the position, a drag handle, and Delete with `AdminConfirmDeleteDialog`). Above the cards it shows the album header (title, "Edit details" opening `AlbumPanel`, `room`), and it hosts `AlbumUploader`. The state is replaced from each action's returned `AdminAlbum`.
-- [ ] T030 [US2] Create `src/app/admin/(dashboard)/settings/gallery/[albumId]/page.tsx`. It calls `requireAdminPage("settings")`, then `getAdminAlbum(params.albumId)`, which calls `notFound()` when null, and renders a back link to `/admin/settings/gallery` plus `<AlbumPhotos initial={…} />`. It uses `generateMetadata` for the album title and `dynamic = "force-dynamic"`. Add `"admin/(dashboard)/settings/gallery/[albumId]/page.tsx": { kind: "page", access: "settings" }` to `EXPECTED` in `src/test/access-inventory.test.ts`. Make T026 pass.
+- [X] T029 [P] [US2] Create `src/components/admin/gallery/album-photos.tsx` (client, takes `initial: AdminAlbum`). It shows photo cards (thumbnail through `cloudinaryLoader`, a caption input with `maxLength` 150 and a counter that saves on blur or Enter through `updateGalleryPhoto`, a "Cover" badge or a "Make cover" button, up/down buttons named with the position, a drag handle, and Delete with `AdminConfirmDeleteDialog`). Above the cards it shows the album header (title, "Edit details" opening `AlbumPanel`, `room`), and it hosts `AlbumUploader`. The state is replaced from each action's returned `AdminAlbum`.
+- [X] T030 [US2] Create `src/app/admin/(dashboard)/settings/gallery/[albumId]/page.tsx`. It calls `requireAdminPage("settings")`, then `getAdminAlbum(params.albumId)`, which calls `notFound()` when null, and renders a back link to `/admin/settings/gallery` plus `<AlbumPhotos initial={…} />`. It uses `generateMetadata` for the album title and `dynamic = "force-dynamic"`. Add `"admin/(dashboard)/settings/gallery/[albumId]/page.tsx": { kind: "page", access: "settings" }` to `EXPECTED` in `src/test/access-inventory.test.ts`. Make T026 pass.
 
 **Checkpoint**: US1 and US2 give the full admin flow, and both caps hold under concurrency.
 
@@ -226,7 +226,7 @@ description: "Task list for 007 Gallery Albums"
 
 ### Tests
 
-- [ ] T031 [P] [US3] Write `scripts/migrate-gallery.test.ts` (in the style of `scripts/seed-admin.test.ts`, `describeWithDb`). The script's `run()`:
+- [X] T031 [P] [US3] Write `scripts/migrate-gallery.test.ts` (in the style of `scripts/seed-admin.test.ts`, `describeWithDb`). The script's `run()`:
   - prints `Migrated 10 photo(s) into 2 album(s); 0 photo(s) were not migrated.` for 10.
   - prints `Migrated 48 photo(s) into 6 album(s); 2 photo(s) were not migrated.` for 50.
   - prints `Gallery already migrated; nothing to do.` on a second run.
@@ -236,8 +236,8 @@ description: "Task list for 007 Gallery Albums"
 
 ### Implementation
 
-- [ ] T033 [US3] Create `scripts/migrate-gallery.ts` (`tsx`, same env loading as `scripts/seed-admin.ts`). It exports `run()`, which connects, calls `ensureGalleryMigrated("system:migration")`, prints the report line, and disconnects. It has a CLI entry. Add `"migrate:gallery": "tsx scripts/migrate-gallery.ts"` to `package.json` scripts. Make T031 pass.
-- [ ] T034 [US3] Add a "Release step" note for `npm run migrate:gallery` to `docs/architecture.md` (deploy section), including that the lazy fallback exists and that photos past 48 are discarded (spec FR-023).
+- [X] T033 [US3] Create `scripts/migrate-gallery.ts` (`tsx`, same env loading as `scripts/seed-admin.ts`). It exports `run()`, which connects, calls `ensureGalleryMigrated("system:migration")`, prints the report line, and disconnects. It has a CLI entry. Add `"migrate:gallery": "tsx scripts/migrate-gallery.ts"` to `package.json` scripts. Make T031 pass.
+- [X] T034 [US3] Add a "Release step" note for `npm run migrate:gallery` to `docs/architecture.md` (deploy section), including that the lazy fallback exists and that photos past 48 are discarded (spec FR-023).
 
 **Checkpoint**: migration is proven by unit, DB, script and E2E tests.
 
@@ -251,7 +251,7 @@ description: "Task list for 007 Gallery Albums"
 
 ### Tests
 
-- [ ] T035 [P] [US4] Write `src/lib/gallery/public.test.ts`:
+- [X] T035 [P] [US4] Write `src/lib/gallery/public.test.ts`:
   - The public shape only includes live albums with ≥ 1 live photo, in admin order, with no `rev`, `deletedAt` or `retired`.
   - `getPublicAlbum` returns null for a bad format, an unknown, deleted or empty album.
   - A thrown or timed-out (> 3 s, fake timers) read returns the last good value, else `{ albums: [] }`, never throws, and logs `gallery_read_failed`.
@@ -259,7 +259,7 @@ description: "Task list for 007 Gallery Albums"
   - The migration check reads the database at most once per process: after a first call that sees `schema: 2`, ten further `getPublicGallery()` calls within the cache window make no `Settings.findById` call (spy on it).
 
   Mock `unstable_cache` to call through, as `src/lib/settings/public.test.ts` does.
-- [ ] T036 [P] [US4] Write `src/components/gallery/photo-viewer.test.tsx`:
+- [X] T036 [P] [US4] Write `src/components/gallery/photo-viewer.test.tsx`:
   - It opens on the given index with "3 of 8" and the caption.
   - → and ← move, with Previous hidden on the first photo and Next hidden on the last.
   - Escape calls `onClose`.
@@ -281,19 +281,19 @@ description: "Task list for 007 Gallery Albums"
 
 ### Implementation
 
-- [ ] T038 [US4] Create `src/lib/gallery/public.ts`, mirroring `src/lib/settings/public.ts`:
+- [X] T038 [US4] Create `src/lib/gallery/public.ts`, mirroring `src/lib/settings/public.ts`:
   - `getPublicGallery()` runs `ensureGalleryMigrated()` outside the cache (wrapped in try, since failure mustn't break the read) **only while the in-process `migrationDone` flag is false**. `ensureGalleryMigrated()` in `src/lib/gallery/migrate.ts` sets that flag once it sees or writes `schema: 2`, so after the first check the public path makes no database read outside the cache. Then it uses an `unstable_cache` reader keyed `["settings","gallery-albums"]`, with tags `SETTINGS_TAG` and `"settings:gallery"` and `revalidate` 60.
   - It has a 3 s timeout and a last-good fallback, logs `gallery_read_failed`, and uses `unstable_rethrow` for Next control flow.
   - `getPublicAlbum(id)` checks `ALBUM_ID_PATTERN` first, then looks the album up in `getPublicGallery()`.
 
   Make T035 pass.
-- [ ] T039 [P] [US4] Create `src/components/gallery/album-card.tsx` (server). It's one `<Link>` to `/resources/gallery/<id>` containing a `CoverImage`-style `next/image` with `loader={cloudinaryLoader}` and `alt` equal to the title, then the title (`dir="auto"`, `line-clamp-3`), `photoCount` and `formatAlbumDate` when set. Styling uses tokens from `research/design-tokens.md`.
-- [ ] T040 [P] [US4] Create `src/components/gallery/gallery-section.tsx` (server, async). It calls `getPublicGallery()`, returns `null` when there are no albums, and otherwise renders `<section id="photo-gallery" aria-labelledby="photo-gallery-heading">` with the `h2` `sectionHeading` and a grid (1 / md:2 / lg:3 columns) of `AlbumCard`. Document in a comment that feature 016 adds `#downloads` and `#our-books` as siblings, and that this component and its id must not change.
-- [ ] T041 [P] [US4] Create `src/components/gallery/photo-viewer.tsx` (client). It uses `ui/dialog.tsx` full screen with `aria-label` `viewer.label(title)`, and shows an `object-contain` `next/image` (with `cloudinaryLoader`, and `priority` for the current photo only), the caption (`dir="auto"`) and the position. Previous and Next are hidden at the ends and don't wrap. It has a Close button, ←/→ on `keydown`, a pointer-events swipe (> 50 px horizontal, less than 45° off axis), a click on the backdrop to close, hidden `<link rel="preload">`-equivalent neighbour images, and no transition under `prefers-reduced-motion`. Make T036 pass.
-- [ ] T042 [P] [US4] Create `src/components/gallery/album-photo-grid.tsx` (client). It shows a grid of photo buttons (lazy `next/image`, `alt` = caption or `photoAlt(title, n)`) and holds the `openIndex` state for `PhotoViewer`. Focus returns to the button that opened the viewer (Radix does this when the trigger is the button, so verify it).
-- [ ] T043 [US4] Replace `src/app/(public)/resources/page.tsx` with a minimal Resources page. It renders `PageBanner` (`src/components/site-shell/page-banner.tsx`) with `title` "Resources", `trail` `["Resources"]` and the site's `breadcrumbHome` copy, then `<GallerySection />`, and nothing else (016 owns the final banner). Set `export const revalidate = 60`, and add `metadata` (title "Resources").
-- [ ] T044 [US4] Create `src/app/(public)/resources/gallery/[albumId]/page.tsx`. It calls `getPublicAlbum` and then `notFound()` when that returns null. It reproduces the reference Photo Gallery page frame (`screenshots/das.edu.pk_resources_photo-gallery_.png`, `…_(iPad Pro).png`, `…_(Moto G Power).png`): `PageBanner` with `title` "Photo Gallery", `trail` `["Resources", "Photo Gallery"]` and `backgroundImage={photoGalleryBanner ?? undefined}`, where `photoGalleryBanner` is the constant from `src/content/gallery.ts` (T002). No file check at runtime: the constant is `null` until the client supplies the photograph, giving the `bg-primary` fallback. List it in the placeholder-content notes in `docs/architecture.md`. Below the banner it renders a back link to `/resources#photo-gallery` (`backToGallery`), the album title as an `h2` (`dir="auto"`), the description and date when set, and `<AlbumPhotoGrid album={…} />`. Compare the banner and breadcrumb against the three screenshots at 1440, 768 (iPad) and 375 (Moto). `generateMetadata` gives the title and an Open Graph image from `ogImageUrl(cover.url)`. Set `revalidate = 60`, and have no `generateStaticParams` (albums change).
-- [ ] T045 [P] [US4] Create `src/app/(public)/resources/gallery/page.tsx`, which does `redirect("/resources#photo-gallery")`. In `next.config.ts`, add a permanent redirect from `/resources/photo-gallery` to `/resources#photo-gallery`. In `src/content/site-shell.ts`, change the "Photo Gallery" menu `href` to `/resources#photo-gallery`, and update the 001 tests or snapshots that assert the old href (`grep -rn "resources/photo-gallery" src e2e`).
+- [X] T039 [P] [US4] Create `src/components/gallery/album-card.tsx` (server). It's one `<Link>` to `/resources/gallery/<id>` containing a `CoverImage`-style `next/image` with `loader={cloudinaryLoader}` and `alt` equal to the title, then the title (`dir="auto"`, `line-clamp-3`), `photoCount` and `formatAlbumDate` when set. Styling uses tokens from `research/design-tokens.md`.
+- [X] T040 [P] [US4] Create `src/components/gallery/gallery-section.tsx` (server, async). It calls `getPublicGallery()`, returns `null` when there are no albums, and otherwise renders `<section id="photo-gallery" aria-labelledby="photo-gallery-heading">` with the `h2` `sectionHeading` and a grid (1 / md:2 / lg:3 columns) of `AlbumCard`. Document in a comment that feature 016 adds `#downloads` and `#our-books` as siblings, and that this component and its id must not change.
+- [X] T041 [P] [US4] Create `src/components/gallery/photo-viewer.tsx` (client). It uses `ui/dialog.tsx` full screen with `aria-label` `viewer.label(title)`, and shows an `object-contain` `next/image` (with `cloudinaryLoader`, and `priority` for the current photo only), the caption (`dir="auto"`) and the position. Previous and Next are hidden at the ends and don't wrap. It has a Close button, ←/→ on `keydown`, a pointer-events swipe (> 50 px horizontal, less than 45° off axis), a click on the backdrop to close, hidden `<link rel="preload">`-equivalent neighbour images, and no transition under `prefers-reduced-motion`. Make T036 pass.
+- [X] T042 [P] [US4] Create `src/components/gallery/album-photo-grid.tsx` (client). It shows a grid of photo buttons (lazy `next/image`, `alt` = caption or `photoAlt(title, n)`) and holds the `openIndex` state for `PhotoViewer`. Focus returns to the button that opened the viewer (Radix does this when the trigger is the button, so verify it).
+- [X] T043 [US4] Replace `src/app/(public)/resources/page.tsx` with a minimal Resources page. It renders `PageBanner` (`src/components/site-shell/page-banner.tsx`) with `title` "Resources", `trail` `["Resources"]` and the site's `breadcrumbHome` copy, then `<GallerySection />`, and nothing else (016 owns the final banner). Set `export const revalidate = 60`, and add `metadata` (title "Resources").
+- [X] T044 [US4] Create `src/app/(public)/resources/gallery/[albumId]/page.tsx`. It calls `getPublicAlbum` and then `notFound()` when that returns null. It reproduces the reference Photo Gallery page frame (`screenshots/das.edu.pk_resources_photo-gallery_.png`, `…_(iPad Pro).png`, `…_(Moto G Power).png`): `PageBanner` with `title` "Photo Gallery", `trail` `["Resources", "Photo Gallery"]` and `backgroundImage={photoGalleryBanner ?? undefined}`, where `photoGalleryBanner` is the constant from `src/content/gallery.ts` (T002). No file check at runtime: the constant is `null` until the client supplies the photograph, giving the `bg-primary` fallback. List it in the placeholder-content notes in `docs/architecture.md`. Below the banner it renders a back link to `/resources#photo-gallery` (`backToGallery`), the album title as an `h2` (`dir="auto"`), the description and date when set, and `<AlbumPhotoGrid album={…} />`. Compare the banner and breadcrumb against the three screenshots at 1440, 768 (iPad) and 375 (Moto). `generateMetadata` gives the title and an Open Graph image from `ogImageUrl(cover.url)`. Set `revalidate = 60`, and have no `generateStaticParams` (albums change).
+- [X] T045 [P] [US4] Create `src/app/(public)/resources/gallery/page.tsx`, which does `redirect("/resources#photo-gallery")`. In `next.config.ts`, add a permanent redirect from `/resources/photo-gallery` to `/resources#photo-gallery`. In `src/content/site-shell.ts`, change the "Photo Gallery" menu `href` to `/resources#photo-gallery`, and update the 001 tests or snapshots that assert the old href (`grep -rn "resources/photo-gallery" src e2e`).
 - [ ] T046 [US4] Make T037 pass. Verify that the static `gallery` segment wins over `[slug]`, and that the 001 E2E for the other `/resources/[slug]` placeholders still passes.
 
 **Checkpoint**: the public gallery is complete, and 016 can add sections without touching `GallerySection`.
@@ -313,7 +313,7 @@ description: "Task list for 007 Gallery Albums"
 
 ### Implementation
 
-- [ ] T049 [US5] Confirm that the three gallery files (both pages and `actions.ts`) are in `EXPECTED` (T024, T030) and that `src/test/access-inventory.test.ts` passes. It fails if any file under `settings/gallery/` lacks an entry, or if any of the nine exported actions doesn't call `requireAdminAccess("settings")`. Fix any gap.
+- [X] T049 [US5] Confirm that the three gallery files (both pages and `actions.ts`) are in `EXPECTED` (T024, T030) and that `src/test/access-inventory.test.ts` passes. It fails if any file under `settings/gallery/` lacks an entry, or if any of the nine exported actions doesn't call `requireAdminAccess("settings")`. Fix any gap.
 - [ ] T050 [US5] Make T047 and T048 pass. If the lazy loading check fails, set `loading="lazy"` and `sizes` explicitly on the grid images and remove any `priority` outside the viewer's current photo.
 
 **Checkpoint**: Constitution XI access matrix complete for the gallery.
@@ -322,7 +322,7 @@ description: "Task list for 007 Gallery Albums"
 
 ## Phase 8: Polish & cross-cutting
 
-- [ ] T051 [P] Rewrite or remove the 005 E2E that assume the flat gallery:
+- [X] T051 [P] Rewrite or remove the 005 E2E that assume the flat gallery:
   - `e2e/admin-settings-gallery.spec.ts`: delete it, since its coverage has moved to T019 and T026.
   - `e2e/admin-settings-uploads.spec.ts`: re-home the gallery upload rejection cases onto the hero group, or delete them where T026 covers them.
   - `e2e/admin-settings-layout.spec.ts`: remove `"gallery"` from `GROUPS`, and move the seeding of the gallery onto `e2e/helpers/gallery.ts`.
@@ -330,8 +330,8 @@ description: "Task list for 007 Gallery Albums"
   - `e2e/helpers/settings.ts`: drop `"gallery"` from `SettingsGroupKey`.
 - [ ] T052 [P] Write `e2e/admin-gallery-layout.spec.ts`. The album list, the album screen and the details panel show no horizontal scroll (`document.documentElement.scrollWidth <= innerWidth`) and no overlapping controls at 375, 768, 1024 and 1440px, and at the reference site's own layout breakpoints (Constitution XI; `research/design-tokens.md` "Container widths & breakpoints": 480, 640, 782 and 1280px). Check with an 80-character title, an Urdu title and caption, 1 photo and 8 photos. Add the same checks for `/resources` and the album page to `e2e/admin-gallery-public.spec.ts`.
 - [ ] T053 [P] Accessibility pass. Up/down buttons have names including the item ("Move Annual Day up", "Move photo 3 up"), and reorder results are announced through an `aria-live="polite"` region. Drag handles are `aria-hidden`. Captions and titles use `dir="auto"`. The viewer's buttons have names from `galleryCopy`/`content/gallery.ts`. Add assertions to `e2e/admin-gallery-photos.spec.ts` and `e2e/admin-gallery-public.spec.ts`.
-- [ ] T054 [P] Update `docs/architecture.md` with a "Gallery albums (007)" section: the one document with compare-and-set and the retry vs `rev` policies (link ADR-0005 and its validity condition on the 6/8 caps), `src/lib/gallery/` as the only writer, the public routes, and the migration release step. Add `src/lib/gallery/`, `src/components/admin/gallery/` and `src/components/gallery/` to "Folder layout".
-- [ ] T055 [P] Add the 007 rows to `specs/011-roles-and-users/contracts/access-matrix.md`, pointing to `specs/007-gallery-albums/contracts/access-matrix.md`. In `specs/005-settings/spec.md`, add a note under Overview that the Photo gallery group is superseded by 007.
+- [X] T054 [P] Update `docs/architecture.md` with a "Gallery albums (007)" section: the one document with compare-and-set and the retry vs `rev` policies (link ADR-0005 and its validity condition on the 6/8 caps), `src/lib/gallery/` as the only writer, the public routes, and the migration release step. Add `src/lib/gallery/`, `src/components/admin/gallery/` and `src/components/gallery/` to "Folder layout".
+- [X] T055 [P] Add the 007 rows to `specs/011-roles-and-users/contracts/access-matrix.md`, pointing to `specs/007-gallery-albums/contracts/access-matrix.md`. In `specs/005-settings/spec.md`, add a note under Overview that the Photo gallery group is superseded by 007.
 - [ ] T056 Run the full suites in sequence, never alongside a build: `npm test`, then `npx playwright test --project=admin`, `--project=chromium` and `--project=forms`. Diff the admin failures against the known pre-existing baseline and fix only new ones. Then run `npm run build` on its own. Record the results in `specs/007-gallery-albums/quickstart.md` under "Last verified".
 - [ ] T057 Walk through `specs/007-gallery-albums/quickstart.md` §1–§6 by hand against a dev server and tick each item. Time §3 step 0 (SC-005: create an album, upload 5 photos and set a cover in under 3 minutes) and record the time under "Last verified".
 

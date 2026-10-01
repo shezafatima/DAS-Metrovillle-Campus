@@ -1,68 +1,79 @@
 # PRD — Dar-e-Arqam Metroville Campus Website
 
 Status: DRAFT — items marked (TBD) need client confirmation.
-Version: 0.2
+Version: 0.3
 
 ## Change Log
 | Version | Date | Change | Approved by | Affects specs |
 |---|---|---|---|---|
 | 0.1 | — | Initial draft | — | — |
 | 0.2 | — | Settings becomes a real feature (contact, socials, stats, video URL, hero slides with images or videos, gallery); build order updated | — | 001 (contact details move to Settings), 005, 006, 009 |
+| 0.3 | — | Client approved: editable page content; second admin role (content manager); careers page with CV upload replacing the homepage signup form; student registration form | Client | new features; 006 home, 008 resources |
 
 ## 1. Overview
 A public website and admin dashboard for Dar-e-Arqam School,
 Metroville Campus. The public site reproduces the design of
 das.edu.pk, adapted for a single campus. The admin dashboard lets
-campus staff publish news and handle enquiries.
+staff publish news, edit page content, and handle enquiries,
+applications and registrations.
 
 Goals:
 - Give parents a clear, trustworthy view of the campus.
 - Capture admission leads and enquiries.
-- Let staff publish news without developer help.
+- Let staff publish news and edit page content without developer
+  help.
 
 ## 2. Users
-- Visitor: parents, students, and the public. No login.
-- Admin: campus staff. One shared role with full access.
+- Visitor: parents, students, job seekers. No login.
+- Main admin (the client): full access, including user management,
+  student registrations and career applications.
+- Content manager: limited access, granted per section by the main
+  admin. Never sees student registrations.
 
 ## 3. Scope
 
-In scope (this phase):
-- Public pages listed in §4.
-- Admin dashboard: login, news management, enquiry inbox, signup
-  list, site settings (see §6.6).
-- Lead capture (signup) and contact form.
+In scope:
+- Public pages in §4, with most content editable by the admin.
+- Admin dashboard: news, page content, settings, messages, career
+  applications, student registrations, user management.
+- Two roles with per-section permissions.
+- Careers page with CV upload.
+- Student registration form (no document uploads).
 
-Out of scope (this phase):
-- Franchise Offer (card and page removed).
-- Email notifications.
-- Online admission forms or payments (TBD).
+Out of scope this phase:
+- Franchise Offer.
+- Email/SMS notifications of any kind.
+- Online fee payment.
 - Student/parent portals.
-- Self-hosted video (hero videos are uploaded to Cloudinary; the Why
-  Choose video stays an external embed).
+- Self-hosted video (hero videos via media service; Why Choose video
+  is an external embed).
 - RAG chatbot (future phase, separate service).
 
 ## 4. Sitemap
 
 Public:
 - Home — /
-- About — /about (TBD: single page or subpages: Overview, Salient
-  Features, Management, Messages)
+- About — /about (TBD: subpages)
 - Campuses — /campuses
-- Academics — /academics (TBD: subpages such as Curriculum, Syllabus,
-  Uniform)
+- Academics — /academics (TBD: subpages)
 - Admission — /admission
-- Resources — /resources (one page with sections: Photo Gallery,
-  Downloads, Our Books)
-- News — /news and /news/[slug]
+- Student registration — /admission/register
+- Resources — /resources (sections: Photo Gallery, Downloads, Our
+  Books)
+- News — /news, /news/[slug]
+- Careers — /careers (link in the top bar and footer, not the main
+  menu, which already matches the reference at eight items)
 - Contact — /contact
 
 Admin:
-- /admin/login
-- /admin (overview)
+- /admin/login, /admin (overview), /admin/account
 - /admin/news
-- /admin/messages
-- /admin/signups
+- /admin/pages (editable page content)
 - /admin/settings
+- /admin/messages
+- /admin/careers (applications)
+- /admin/registrations (main admin only)
+- /admin/users (main admin only)
 
 Shared on every public page: header (top bar, logo, main menu with
 dropdowns, mobile menu) and footer (links, contact details, social
@@ -71,144 +82,148 @@ links).
 ## 5. Public Page Requirements
 
 ### 5.1 Home
-Sections, in reference order:
-- Hero carousel — admin-managed slides, each an image or a short
-  video (see §6.6).
-- "Find Us Nearby" — links to Campuses (TBD: button or locator).
-- Quick-access cards (4): Admission Procedure, Salient Features,
-  Branch Network, Education Curriculum.
-- Inspiration section — static text + logo.
-- Why Choose Dar-e-Arqam — static text + embedded YouTube/Vimeo video
-  (URL set in Settings).
-- News highlights — latest published news + "View All News" link.
-- Books carousel — static.
-- Salient Features cards — static.
-- Progress dashboard — students, books, teachers, campuses; numbers
-  set in Settings.
-- Icon quick-links — Photo/Videos, Downloads, Our Books (to Resources
-  sections), Call/Mail/Chat (to Contact).
-- Signup section — name, email, phone.
-- Partners carousel — static logos.
+Sections in reference order: hero carousel (admin-managed slides,
+image or video), Find Us Nearby, four quick-access cards, inspiration
+section, Why Choose (text + embedded video), news highlights, books
+carousel, salient features, progress dashboard, icon quick-links,
+careers call-to-action, partners carousel.
 
-### 5.2 About
-Static content: overview, mission/vision, management, messages
-(TBD: exact sections and whether split into subpages).
+The careers call-to-action replaces the old signup form: same
+headings and styling as the reference's signup section, but with a
+"Join Now" button linking to /careers instead of input fields.
+
+### 5.2 About / 5.4 Academics / 5.5 Admission
+Content pages, editable from the admin (§6.4). Admission includes a
+call to action to the student registration form.
 
 ### 5.3 Campuses
-Metroville campus details: address, map, phone, timings (TBD).
-TBD: whether the wider Dar-e-Arqam branch network is also listed,
-and if so, whether it is static or admin-managed.
-
-### 5.4 Academics
-Static content: curriculum, class levels, syllabus/uniform
-information (TBD: exact sections).
-
-### 5.5 Admission
-Static content: admission procedure, requirements, fee structure
-(TBD), prospectus download link, call to action to Contact or the
-signup form.
+Metroville campus details (TBD: whether the wider branch network is
+listed).
 
 ### 5.6 Resources
-One page with anchored sections:
-- Photo Gallery (#photo-gallery) — images managed in Settings.
-- Downloads (#downloads) — prospectus and documents (TBD: static or
-  admin-managed).
-- Our Books (#our-books) — static.
-- Newsletter/updates signup — same signup as Home.
+Photo Gallery, Downloads, Our Books, and the same careers
+call-to-action used on Home.
 
 ### 5.7 News
-- List page: published news only, newest first, paginated.
-- Detail page: title, date, cover image, body.
-- TBD: categories (the reference uses Head Office, Events,
-  Activities, Achievements, Announcements).
-- Supports Urdu titles and text.
+Published posts only, newest first, paginated; detail pages;
+categories (Events, Activities, Achievements, Announcements); English
+and Urdu.
 
 ### 5.8 Contact
-- Campus address, phone, email, map.
-- Contact form: name, email, phone, subject, message.
-- Success message after submission.
+Campus details, map, and the contact form (built).
+
+### 5.9 Careers
+- Introduction text (editable) and the application form: name, email,
+  phone, qualification, CV (PDF only).
+- One application per person, matched on both email and phone. A
+  repeat attempt is refused with a clear message, not merged. The
+  main admin can delete an application to let someone reapply.
+- CV files are private: never publicly reachable, only downloadable
+  by permitted admin users.
+
+### 5.10 Student registration
+- Form reached from Admission: student name, date of birth, class
+  applying for, guardian name, relationship, phone, email, address,
+  previous school (TBD: final field list with the client).
+- No document uploads.
+- Confirmation message after submission; no email is sent.
+- A short privacy notice and consent checkbox, with wording approved
+  by the client.
 
 ## 6. Admin Requirements
 
-### 6.1 Login
-- Email + password; a single admin account created at setup.
-- No public registration or password-reset email this phase (TBD).
+### 6.1 Roles and permissions
+- Main admin: everything, including users, registrations and
+  permissions.
+- Content manager: only the sections the main admin has ticked when
+  creating or editing their account (news, pages, settings, messages,
+  careers).
+- Student registrations and user management are never available to a
+  content manager.
+- Permissions are enforced on the server for every page and route;
+  hiding menu items is presentation only.
+- Permission changes are recorded (who changed what, and when).
 
-### 6.2 Overview
-- Counts: new messages, total signups, published news.
+### 6.2 User management (main admin only)
+- Create a content-manager account with an email, a temporary
+  password and ticked permissions.
+- Edit permissions, disable, re-enable and delete accounts.
+- New users must set their own password at first login.
 
 ### 6.3 News
-- Create, edit, publish/unpublish, delete (soft).
-- Fields: title, slug, cover image, body, publish date, status
-  (draft/published), category (TBD).
-- List with search and status filter.
+As built: create, edit, publish/unpublish, soft delete, categories,
+images, English and Urdu.
 
-### 6.4 Messages
-- Inbox of contact form submissions, newest first.
-- Status: new, read, responded; admin can change it.
-- Filter by status; delete (soft).
+### 6.4 Page content
+- Edit the text, images and links of the content pages (About,
+  Academics, Admission, Campuses, Careers intro, and the fixed
+  sections of Home and Resources).
+- Fixed layout: content is edited through defined fields per section;
+  sections cannot be added, removed or reordered.
+- Changes appear on the live site shortly after saving.
 
-### 6.5 Signups
-- List of leads: name, email, phone, source page, first and last
-  submitted dates.
-- Search by name/email; delete (soft).
-- TBD: CSV export.
+### 6.5 Settings
+Contact and social details, stats, Why Choose video URL, hero slides,
+photo gallery. (Feature 005.)
 
-### 6.6 Settings
-Admin-editable site content, organised in groups with fixed fields
-(layout never changes, only content):
-- Contact & social: phone, email, address, map link, social links.
-  Used by the header, footer and Contact page.
-- Stats: students, books, teachers, campuses (home progress
-  dashboard).
-- Why Choose video: external YouTube/Vimeo URL.
-- Hero slides: ordered list; each slide is an image or a short video,
-  with optional mobile version, alt text, optional heading and
-  optional button (label + link); slides can be hidden.
-- Photo gallery: ordered images with captions. Changes appear on the
-  live site shortly after saving.
+### 6.6 Messages
+As built: inbox, statuses, search, soft delete.
 
-## 7. Data (conceptual)
-- News — see §6.3.
-- Message — contact form submission with status.
-- Signup — one record per email; a repeat submission updates it;
-  records the page it came from.
-- Admin — managed by the auth system.
-- Campus — TBD (depends on §5.3).
-- Settings — one record per group in §6.6.
+### 6.7 Career applications
+- List: name, email, phone, qualification, applied date.
+- Search and filter; download the CV; soft delete.
+- CSV export of the list (without files).
+
+### 6.8 Student registrations (main admin only)
+- List and detail view of submitted registrations.
+- Search by student or guardian name; soft delete; CSV export.
+- Registrations are deleted automatically after an agreed retention
+  period (TBD with the client).
+
+### 6.9 Overview and notifications
+Counts and indicators for messages, career applications and, for the
+main admin, student registrations.
+
+## 7. Data
+- Users (with role and permissions), sessions — auth system.
+- News, Messages — as built.
+- Career applications — one per person; CV stored privately, not on
+  the public media service.
+- Student registrations — no files.
+- Page content — per page and section, defined fields.
+- Settings — one record per group.
 
 ## 8. Quality Requirements
-- Visual match with das.edu.pk reference on mobile, tablet and
-  desktop.
-- Content editable by staff where marked admin-managed; all other
-  copy supplied by the client.
+- Visual match with the reference on mobile, tablet and desktop.
+- Personal data (CVs, registrations) is reachable only by permitted
+  admin users, never by public URL.
 - Accessible menus and forms; fast-loading images.
 
-## 9. Build Order (one spec each)
-1. 001-site-shell — header, footer, layout (done)
-2. 002-foundation — database, admin login, admin layout (done)
-3. 003-news — admin news management + public news pages
-4. 004-signup — signup form, storage, admin signup list
-5. 005-settings — site settings (§6.6); header/footer contact details
-   switch to Settings
-6. 006-home — reads from Settings and News
-7. 007-campuses
-8. 008-contact — contact form + admin messages inbox
-9. 009-resources — gallery reads from Settings
-10. 010-about-academics-admission — static content pages
-11. 011-admin-overview — real counts on the overview cards
+## 9. Build Order
+
+Built: 001 site shell, 002 foundation, 003 news, 004 signup (to be
+reworked as careers), 008 contact & messages, 009 notifications,
+010 admin account, 011 roles and users.
+
+Next:
+1. 005-settings
+2. 006-home — includes the careers call-to-action
+4. 012-careers — careers page, CV upload, admin list
+5. 013-student-registration — form and main-admin-only section
+6. 014-page-content — editable page content
+7. 015-campuses, 016-resources, 017-about-academics-admission
+8. 018-admin-overview — final counts and polish
 
 ## 10. Future Phases
-- RAG chatbot answering questions about the school.
-- Possibly: real-time stats, email notifications, online admission.
+RAG chatbot; email notifications; online admission and fees.
 
 ## 11. Open Questions
 1. About and Academics: single pages or subpages? Which sections?
 2. Campuses: Metroville only, or the full branch network?
-   "Find Us Nearby": button or locator?
-3. Downloads: static or admin-managed? (gallery now in Settings)
-4. News categories: keep, change, or drop?
-5. Admission: information only, or an online form?
-6. Signups: is CSV export needed?
-7. Admin password reset: needed this phase?
-8. Domain, hosting, and who supplies copy and images, by when?
+3. Downloads section: static or admin-managed?
+4. Student registration: final field list, and how long records are
+   kept before automatic deletion.
+5. Careers: may a rejected applicant reapply later, or only if the
+   admin deletes their application?
+6. Privacy notice wording for the careers and registration forms.
+7. Domain, hosting, and who supplies remaining copy and images.

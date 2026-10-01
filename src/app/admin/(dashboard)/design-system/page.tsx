@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { requireAdminSession } from "@/lib/dal";
+import { requireAdminPage } from "@/lib/dal";
 import { DesignSystemDemo } from "./design-system-demo";
 
 export const metadata: Metadata = { title: "Design system (temporary)" };
@@ -12,6 +12,6 @@ export const metadata: Metadata = { title: "Design system (temporary)" };
 // by URL to whoever has admin access. Delete once those features have
 // their own real pages built on these patterns.
 export default async function DesignSystemPage() {
-  await requireAdminSession();
+  await requireAdminPage("main_admin");
   return <DesignSystemDemo />;
 }

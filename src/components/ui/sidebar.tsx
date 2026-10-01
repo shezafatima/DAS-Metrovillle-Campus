@@ -282,6 +282,10 @@ export const SidebarMenuButton = React.forwardRef<HTMLAnchorElement, SidebarMenu
         data-slot="sidebar-menu-button"
         data-active={isActive}
         aria-current={isActive ? "page" : undefined}
+        // The label span below becomes display:none when collapsed
+        // (lg:hidden), which drops it from the accessible name — restore
+        // it explicitly so the link stays labelled with just an icon.
+        aria-label={state === "collapsed" && !isMobile ? tooltip : undefined}
         onClick={(event) => {
           onClick?.(event);
           if (isMobile) setOpenMobile(false);

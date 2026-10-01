@@ -19,8 +19,9 @@ requires `MONGODB_URI`, `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`,
 | `ADMIN_EMAIL` not a valid email | `1` | `ADMIN_EMAIL is not a valid email address` | none |
 | Database unreachable | `1` | `Could not connect to the database` | none; the connection error is not printed |
 | No admin exists (with or without `--reset`) | `0` | `Admin created: <email>` | one `user` + one `account` |
-| Admin exists, no `--reset` | `0` | `Admin already exists: <email> (nothing changed)` | none |
-| Admin exists, `--reset` | `0` | `Admin password updated: <email> (all sessions ended)` | `account.password` replaced; all `session` rows for the user deleted |
+| Admin exists, already a main admin, no `--reset` | `0` | `Admin already exists: <email> (nothing changed)` | none |
+| Admin exists but is not yet a main admin (created before 011), no `--reset` | `0` | `Admin role confirmed: <email> (nothing else changed)` | `user.role` set to `main_admin` (011 FR-034) |
+| Admin exists, `--reset` | `0` | `Admin password updated: <email> (all sessions ended)` | `account.password` replaced; all `session` rows for the user deleted; since 011 also `role: main_admin` and `mustChangePassword`, `tempPasswordIssuedAt`, `disabledAt`, `deletedAt` cleared (the lock-out recovery path) |
 | Concurrent run loses the unique-index race | `0` | `Admin already exists: <email> (nothing changed)` | none |
 | Unexpected error | `1` | `Seed failed` | error logged to stderr **without** the password |
 

@@ -1,23 +1,23 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { Button } from "@/components/ui/button";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
-import { adminNavItems, loginCopy } from "@/content/admin";
+import { adminExtraPageTitles, adminNavItems } from "@/content/admin";
 import { isAdminNavItemActive } from "@/lib/admin-nav-active";
-import { logout } from "@/app/admin/(dashboard)/actions";
-
-interface AdminTopBarProps {
-  email: string;
-}
+import { NotificationBell } from "@/components/admin/notifications/notification-bell";
+import { ProfileMenu } from "@/components/admin/profile-menu";
 
 function currentPageTitle(pathname: string): string {
   const match = adminNavItems.find((item) => isAdminNavItemActive(pathname, item.href));
-  return match?.label ?? "Admin";
+  return match?.label ?? adminExtraPageTitles[pathname] ?? "Admin";
 }
 
-export function AdminTopBar({ email }: AdminTopBarProps) {
+/**
+ * The page title, then at the right corner the profile menu (email,
+ * Account, Logout — 010) immediately left of the bell (009).
+ */
+export function AdminTopBar({ email }: { email: string }) {
   const pathname = usePathname();
   const title = currentPageTitle(pathname);
 
@@ -28,13 +28,9 @@ export function AdminTopBar({ email }: AdminTopBarProps) {
         <Separator orientation="vertical" className="h-5" />
         <h2 className="truncate font-bold text-base text-foreground">{title}</h2>
       </div>
-      <div className="flex shrink-0 items-center gap-4">
-        <span className="max-w-32 truncate font-light text-sm text-muted-foreground sm:max-w-none">{email}</span>
-        <form action={logout}>
-          <Button type="submit" variant="outline" size="sm">
-            {loginCopy.logout}
-          </Button>
-        </form>
+      <div className="flex shrink-0 items-center gap-1">
+        <ProfileMenu email={email} />
+        <NotificationBell />
       </div>
     </div>
   );

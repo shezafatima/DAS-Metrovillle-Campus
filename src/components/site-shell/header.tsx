@@ -1,3 +1,4 @@
+import type { ContactInfo } from "@/content/site-shell";
 import { Logo } from "./logo";
 import { NavDesktop } from "./nav-desktop";
 import { NavMobile } from "./nav-mobile";
@@ -10,11 +11,11 @@ import { SearchBox } from "./search-box";
 // no-tablet-sticky-header no-mobile-sticky-header avada-sticky-shrinkage"
 // — sticky positioning with a shrink-on-scroll top bar at desktop only; the
 // header scrolls away normally below the lg breakpoint (FR-016).
-export function Header() {
+export function Header({ contact }: { contact: ContactInfo }) {
   return (
     <header className="z-30 border-b border-neutral-100 bg-surface lg:sticky lg:top-0">
       <HeaderScrollCollapse>
-        <TopBar />
+        <TopBar contact={contact} />
       </HeaderScrollCollapse>
       <div className="relative mx-auto flex max-w-(--container-max-width) items-center justify-between gap-6 px-(--container-gutter-x) py-5">
         <Logo />

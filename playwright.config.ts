@@ -65,6 +65,15 @@ export default defineConfig({
       // server can't verify a real resource afterward — skip it here
       // only; verifyNewsCover ignores this flag outside test/dev anyway.
       NEWS_COVER_VERIFY: "skip",
+      // 007: the gallery specs seed the database directly, so the public
+      // gallery must read past its 60 s cache and its once-per-process
+      // migration flag. Ignored outside test/dev (src/lib/gallery/migrate.ts).
+      GALLERY_E2E_FRESH_READS: "1",
+      // Shortens NotificationsProvider's poll interval (009) so
+      // admin-notifications-live.spec.ts doesn't wait a real 60s;
+      // harmless everywhere else — nothing else depends on the exact
+      // interval length (research §3; plan.md's testability seam).
+      NEXT_PUBLIC_NOTIFICATIONS_POLL_MS: "3000",
     },
   },
 });

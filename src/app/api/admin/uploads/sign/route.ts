@@ -1,13 +1,12 @@
-import { requireAdminSession } from "@/lib/dal";
+import { requireAdminAccess } from "@/lib/dal";
+import { accessErrorResponse } from "@/lib/route-errors";
 import { signNewsCoverUpload } from "@/lib/cloudinary";
 
 const NO_STORE = { "Cache-Control": "no-store" };
 
 export async function POST(request: Request) {
-  const session = await requireAdminSession({ mode: "api" });
-  if (!session) {
-    return Response.json({ error: "unauthorized" }, { status: 401, headers: NO_STORE });
-  }
+  const access = await requireAdminAccess("news");
+  if (!access.ok) return accessErrorResponse(access.reason);
 
   let body: unknown;
   try {

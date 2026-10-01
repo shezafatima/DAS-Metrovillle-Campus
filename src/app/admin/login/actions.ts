@@ -50,6 +50,7 @@ export async function login(
   } catch (err) {
     if (isAPIError(err)) {
       if (err.statusCode === 401) {
+        // A wrong password, a disabled account and a deleted one all look the same (011 FR-028).
         return { error: "generic" };
       }
       if (err.statusCode === 429) {

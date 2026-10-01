@@ -54,6 +54,54 @@ describeWithDb("seed-admin script", ["user", "account", "session"], () => {
   );
 
   it(
+    "creates the account as a main admin (011)",
+    async () => {
+      await runSeed();
+      const user = await mongoose.connection.db!.collection("user").findOne({ email: ADMIN_EMAIL });
+      expect(user?.role).toBe("main_admin");
+    },
+    90_000,
+  );
+
+  it(
+    "makes a pre-011 account (no role) a main admin and changes nothing else",
+    async () => {
+      await runSeed();
+      await mongoose.connection.db!
+        .collection("user")
+        .updateOne({ email: ADMIN_EMAIL }, { $unset: { role: "" } });
+      const { stdout } = await runSeed();
+      expect(stdout).toContain("Admin role confirmed:");
+      const user = await mongoose.connection.db!.collection("user").findOne({ email: ADMIN_EMAIL });
+      expect(user?.role).toBe("main_admin");
+    },
+    90_000,
+  );
+
+  it(
+    "--reset recovers a disabled or deleted main admin (011)",
+    async () => {
+      await runSeed();
+      await mongoose.connection.db!.collection("user").updateOne(
+        { email: ADMIN_EMAIL },
+        {
+          $set: {
+            role: "content_manager",
+            disabledAt: new Date(),
+            deletedAt: new Date(),
+          },
+        },
+      );
+      await runSeed(["--reset"]);
+      const user = await mongoose.connection.db!.collection("user").findOne({ email: ADMIN_EMAIL });
+      expect(user?.role).toBe("main_admin");
+      expect(user?.disabledAt ?? null).toBeNull();
+      expect(user?.deletedAt ?? null).toBeNull();
+    },
+    90_000,
+  );
+
+  it(
     "--reset replaces the password and ends all sessions",
     async () => {
       await runSeed();

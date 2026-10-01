@@ -1,11 +1,10 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Mail, Newspaper, Settings, UserPlus } from "lucide-react";
+import { LayoutDashboard, Mail, Newspaper, Settings, UserPlus, Users } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
   SidebarGroup,
   SidebarGroupLabel,
   SidebarMenu,
@@ -14,9 +13,10 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import { Badge } from "@/components/ui/badge";
 import { adminNavItems } from "@/content/admin";
 import { isAdminNavItemActive } from "@/lib/admin-nav-active";
+import { NotificationBadge } from "@/components/admin/notifications/notification-badge";
+import { useNotifications } from "@/components/admin/notifications/notifications-provider";
 
 const iconByHref: Record<string, React.ComponentType<{ className?: string }>> = {
   "/admin": LayoutDashboard,
@@ -24,15 +24,26 @@ const iconByHref: Record<string, React.ComponentType<{ className?: string }>> = 
   "/admin/messages": Mail,
   "/admin/signups": UserPlus,
   "/admin/settings": Settings,
+  "/admin/users": Users,
 };
 
-interface AppSidebarProps {
-  /** Non-deleted messages with status new (008); refreshed by router.refresh() after every message mutation. */
-  newMessagesCount?: number;
-}
+/** Counts for the Messages and Signups badges — both from the one shared NotificationsProvider (spec FR-014). */
+const badgeCountByHref: Record<string, "messagesNew" | "signupsNew"> = {
+  "/admin/messages": "messagesNew",
+  "/admin/signups": "signupsNew",
+};
 
-export function AppSidebar({ newMessagesCount = 0 }: AppSidebarProps) {
+/**
+ * Email + logout moved to the top bar's profile menu (010 FR-004) — one logout control.
+ *
+ * 011: `allowedHrefs` is the server-computed list of sections this user may
+ * use. It only decides what to SHOW — every page, route and action enforces
+ * access itself (Constitution III), so a missing item here is presentation.
+ */
+export function AppSidebar({ allowedHrefs }: { allowedHrefs: readonly string[] }) {
   const pathname = usePathname();
+  const { messagesNew, signupsNew, loading } = useNotifications();
+  const countByHref = { messagesNew, signupsNew };
 
   return (
     <Sidebar>
@@ -40,10 +51,11 @@ export function AppSidebar({ newMessagesCount = 0 }: AppSidebarProps) {
         <SidebarGroup>
           <SidebarGroupLabel>Menu</SidebarGroupLabel>
           <SidebarMenu>
-            {adminNavItems.map((item) => {
+            {adminNavItems.filter((item) => allowedHrefs.includes(item.href)).map((item) => {
               const Icon = iconByHref[item.href];
               const isActive = isAdminNavItemActive(pathname, item.href);
-              const showBadge = item.href === "/admin/messages" && newMessagesCount > 0;
+              const countKey = badgeCountByHref[item.href];
+              const count = countKey ? countByHref[countKey] : 0;
               return (
                 <SidebarMenuItem key={item.href}>
                   <SidebarMenuButton
@@ -54,9 +66,9 @@ export function AppSidebar({ newMessagesCount = 0 }: AppSidebarProps) {
                   >
                     {item.label}
                   </SidebarMenuButton>
-                  {showBadge && (
+                  {countKey && (
                     <SidebarMenuBadge>
-                      <Badge variant="highlight">{newMessagesCount}</Badge>
+                      <NotificationBadge count={count} pending={loading} />
                     </SidebarMenuBadge>
                   )}
                 </SidebarMenuItem>
@@ -66,7 +78,6 @@ export function AppSidebar({ newMessagesCount = 0 }: AppSidebarProps) {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter />
       <SidebarRail />
     </Sidebar>
   );

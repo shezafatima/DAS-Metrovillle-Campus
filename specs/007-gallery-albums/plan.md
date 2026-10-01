@@ -16,7 +16,7 @@ Replace 005's flat Photo gallery group with albums (at most 6 albums, at most 8 
 **Target Platform**: Node server hosting the Next.js app, evergreen browsers, 375/768/1024/1440px.
 **Project Type**: Single Next.js web app (public site and admin in one `src/`).
 **Performance Goals**: No per-request database read on public pages (60 s cache plus tag revalidation; the migration check runs at most once per process after it has seen `schema: 2`). A change is visible at once after an admin action, and ≤ 60 s otherwise. Public read timeout is 3 s, then the fallback. Album-page images are lazy, and the viewer preloads only its neighbours.
-**Constraints**: Caps 6 and 8 fixed. JPG/PNG/WebP up to 5 MB, verified by content. No video. `cacheComponents` stays off. There is at most one writer path to the `gallery` document (the flat group save is removed). At most 5 compare-and-set retries per action.
+**Constraints**: Caps 6 and 8 fixed. JPG/PNG/WebP up to 5 MB, verified by content. No video. `cacheComponents` stays off. There is at most one writer path to the `gallery` document (the flat group save is removed). At most 10 compare-and-set attempts per action.
 **Scale/Scope**: At most 48 live photos, 2 admin pages, 9 Server Actions, 3 public routes (plus 1 redirect), 1 CLI script.
 
 ## Constitution Check
@@ -147,7 +147,7 @@ Decisions 1–3 and 5–7 are recorded in [ADR-0005](../../history/adr/0005-gall
 
 ## Risks and follow-ups
 
-- **Retries exhausted under heavy contention** gives `unavailable` and a "try again" toast. With a handful of admins this is effectively never, and a DB test covers the 5-way concurrent case.
+- **Retries exhausted under heavy contention** gives `unavailable` and a "try again" toast. With a handful of admins this is effectively never, and a DB test covers 10 creates racing for the 6-album cap.
 - **005 tests and E2E that target the flat gallery** must be rewritten or removed in the same change, or the suite goes red. The tasks list each file (`defaults.test.ts`, `mutations.test.ts`, `public.test.ts`, `admin-settings-gallery.spec.ts`, `admin-settings-uploads.spec.ts`, `admin-settings-layout.spec.ts`, `admin-settings-access.spec.ts`, `e2e/helpers/settings.ts`). This is the known pre-existing E2E baseline, so failure sets must be diffed rather than read raw.
 - **Feature 006's "Photo/Videos" link** should target `/resources#photo-gallery`. It's recorded in 006's open Q2 and not changed here.
 

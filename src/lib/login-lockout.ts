@@ -63,6 +63,14 @@ export const loginLockoutAfter = createAuthMiddleware(async (ctx) => {
   if (ctx.context.newSession) {
     // Successful login clears both counters (FR-029).
     await clearKeys(emailKey ? [ipKey, emailKey] : [ipKey]);
+    // 011: "last login" on the Users page. Only a real sign-in reaches this
+    // branch (a password change's new session does not go through
+    // /sign-in/email). A failure here must never fail the login.
+    try {
+      await ctx.context.internalAdapter.updateUser(ctx.context.newSession.user.id, { lastLoginAt: new Date() });
+    } catch (err) {
+      console.error("lastLoginAt update failed:", err instanceof Error ? err.name : typeof err);
+    }
     return;
   }
 

@@ -28,7 +28,7 @@ async function runUpsert(input: SignupInput, now: Date): Promise<SignupDoc> {
       $addToSet: { sources: input.source },
       $setOnInsert: { firstSignupAt: now },
     },
-    { upsert: true, new: true, withDeleted: true, runValidators: true },
+    { upsert: true, returnDocument: "after", withDeleted: true, runValidators: true },
   );
 }
 

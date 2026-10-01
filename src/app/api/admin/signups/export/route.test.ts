@@ -3,6 +3,7 @@ import { it, expect, vi, beforeEach } from "vitest";
 import { describeWithDb } from "@/test/db";
 import { seedTestAdmin, getTestSessionCookie } from "@/test/admin-session";
 import { Signup } from "@/models/signup";
+import { mockNextHeaders } from "@/test/next-headers";
 
 const ADMIN_EMAIL = "signup-export-route-test@example.com";
 const ADMIN_PASSWORD = "correct-horse-battery-staple";
@@ -18,7 +19,7 @@ describeWithDb("GET /api/admin/signups/export", ["signups", "user", "account", "
   });
 
   it("returns 401 without a session", async () => {
-    vi.doMock("next/headers", () => ({ headers: async () => new Headers() }));
+    vi.doMock("next/headers", () => mockNextHeaders(new Headers()));
     const { GET } = await import("./route");
 
     const response = await GET(request());
@@ -57,7 +58,7 @@ describeWithDb("GET /api/admin/signups/export", ["signups", "user", "account", "
     });
     await Signup.softDeleteById(deleted._id);
 
-    vi.doMock("next/headers", () => ({ headers: async () => new Headers({ cookie }) }));
+    vi.doMock("next/headers", () => mockNextHeaders(new Headers({ cookie })));
     vi.resetModules();
     const { GET } = await import("./route");
 
@@ -101,7 +102,7 @@ describeWithDb("GET /api/admin/signups/export", ["signups", "user", "account", "
       lastSignupAt: now,
     });
 
-    vi.doMock("next/headers", () => ({ headers: async () => new Headers({ cookie }) }));
+    vi.doMock("next/headers", () => mockNextHeaders(new Headers({ cookie })));
     vi.resetModules();
     const { GET } = await import("./route");
 
@@ -115,7 +116,7 @@ describeWithDb("GET /api/admin/signups/export", ["signups", "user", "account", "
     await seedTestAdmin(ADMIN_EMAIL, ADMIN_PASSWORD);
     const cookie = await getTestSessionCookie(ADMIN_EMAIL, ADMIN_PASSWORD);
 
-    vi.doMock("next/headers", () => ({ headers: async () => new Headers({ cookie }) }));
+    vi.doMock("next/headers", () => mockNextHeaders(new Headers({ cookie })));
     vi.resetModules();
     const { GET } = await import("./route");
 

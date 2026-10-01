@@ -1,16 +1,15 @@
-import { requireAdminSession } from "@/lib/dal";
+import { requireAdminAccess } from "@/lib/dal";
+import { accessErrorResponse } from "@/lib/route-errors";
 import { markMessageRead } from "@/lib/messages/mutations";
-import { NO_STORE, notFoundResponse, unauthorizedResponse, unavailableResponse } from "@/lib/route-errors";
+import { NO_STORE, notFoundResponse, unavailableResponse } from "@/lib/route-errors";
 
 /**
  * Conditional "opened" transition: `new → read` only (contracts/
  * admin-messages-api.md). `null` covers unknown, malformed and deleted ids.
  */
 export async function POST(_request: Request, context: RouteContext<"/api/admin/messages/[id]/read">) {
-  const session = await requireAdminSession({ mode: "api" });
-  if (!session) {
-    return unauthorizedResponse();
-  }
+  const access = await requireAdminAccess("messages");
+  if (!access.ok) return accessErrorResponse(access.reason);
 
   const { id } = await context.params;
   try {

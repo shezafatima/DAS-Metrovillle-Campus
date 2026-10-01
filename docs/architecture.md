@@ -51,6 +51,13 @@
 - src/components/admin/admin-pagination.tsx   shared admin-list
   pagination (lifted out of news/news-pagination.tsx, which is now a
   thin wrapper over it — 004 signup, sp.analyze finding D1)
+- src/components/admin/gallery/   admin gallery albums UI (AlbumList,
+  AlbumPanel, AlbumPhotos, AlbumUploader, useReorder) — 007 gallery albums
+- src/components/gallery/   public gallery UI (GallerySection `#photo-gallery`,
+  AlbumCard, AlbumPhotoGrid, PhotoViewer, GalleryImage) — 007
+- src/lib/gallery/   007 gallery domain: types, schema (shared client +
+  server), rules (pure caps/cover/retention), store (the ONLY writer of the
+  gallery document), migrate (005 flat → albums), mutations, admin, public
 - src/content/<page>.ts   static page copy (typed)
 - src/models/         Mongoose models. Better Auth owns user/session/
   account/verification/rateLimit directly — no Mongoose model is
@@ -118,9 +125,28 @@
   never upsert; markMessageRead/setMessageStatus/deleteMessage),
   admin-queries.ts (listMessages/getMessage/countMessages/
   countNewMessages)
-- src/lib/contact-details.ts   getContactDetails() (content today,
-  Settings read in 005 — the only function whose body changes) +
+- src/lib/contact-details.ts   getContactDetails() (reads the Settings
+  `contact` group since 005; same shape as before) +
   mapEmbedSrc() (keyless Google Maps embed URL, derived not stored)
+- src/lib/settings/   005 settings domain logic: types.ts (the field-
+  definition format), groups/{contact,hero,stats,video,gallery}.ts (one
+  definition per group), registry.ts (GROUPS, the only way a group key is
+  resolved), schema.ts (schemaFor/parseGroup — one Zod schema per group,
+  shared by the browser form and the Server Action), defaults.ts (starting
+  values; contact defaults are imported from contactInfo), items.ts (live
+  items, reorder, soft-delete reconciliation), youtube.ts, mutations.ts
+  (saveGroup — validate, reconcile, verify new images, version
+  compare-and-set), admin.ts (getAdminSettings), public.ts
+  (getPublicSettings — cached, never throws), form-state.ts
+- src/models/settings.ts   collection `settings`, one document per group
+- src/lib/uploads/   image-limits.ts (JPG/PNG/WebP, 5 MB, real leading
+  bytes) and direct-upload.ts (signed browser→Cloudinary upload), lifted
+  out of the news CoverImageField so news and Settings share them
+- src/components/admin/settings/   the one generated group form
+  (SettingsGroupForm, FieldControl), ListEditor + SlidePanel (right-hand
+  Sheet), ImageField, GalleryUploader, SettingsNav — 005 settings.
+  AdminConfirmDeleteDialog (admin-delete-dialog.tsx) is the confirm step
+  on its own; AdminDeleteDialog is built on it
 - src/components/contact/   public Contact page UI (ContactBanner,
   ContactDetails/ContactDetailColumn, ContactMap/LazyMapFrame,
   ContactFormSection/ContactForm, WriteUsLink) — 008 contact-messages
@@ -145,7 +171,12 @@
 - screenshots/        reference captures, named <page>-<viewport>.png
 
 ## API namespaces
-- /api/auth/*   Better Auth only
+- /api/auth/*   Better Auth only. Since 010 its password, session and
+  user mutation routes (/change-password, /revoke-other-sessions,
+  /revoke-sessions, /revoke-session, /update-user, /change-email,
+  /set-password) are closed over HTTP (`disabledPaths`, 404); the
+  Account page (/admin/account) reaches change-password and
+  revoke-other-sessions through Server Actions via auth.api.*
 - /api/admin/*  session required — includes /api/admin/news* (post
   CRUD, publish/unpublish), /api/admin/uploads/sign (Cloudinary
   signature for direct browser upload; the API secret never leaves
@@ -153,7 +184,13 @@
   /api/admin/signups/export (filtered CSV) — 004 signup;
   /api/admin/messages/[id] (PATCH status, DELETE soft delete) and
   /api/admin/messages/[id]/read (POST — conditional new→read) — 008
-  contact-messages
+  contact-messages; /api/admin/notifications (GET — combined counts +
+  panel items), /api/admin/notifications/read (POST — mark all as
+  read) and /api/admin/signups/opened (POST — Signups-list "opened"
+  marker) — 009 admin-notifications
+- /api/admin/settings/uploads/sign  (005, access `settings`) signs a
+  direct Cloudinary upload into settings/hero or settings/gallery. Saving a
+  settings group is a Server Action (`saveSettingsGroup`), not a route.
 - /api/public/* no auth — includes /api/public/signups (004 signup;
   honeypot → rate limit → validate → upsert, identical response for
   every outcome) and /api/public/messages (008 contact-messages; 64 KiB
@@ -181,12 +218,14 @@
   env vars (ADMIN_EMAIL, ADMIN_PASSWORD); it is never exposed as a
   route. A unique index on user.email (created by the script) makes
   "exactly one admin" hold under concurrent runs.
-- Every admin page and every /api/admin/* route calls
-  requireAdminSession() itself (src/lib/dal.ts) and returns 401 /
-  redirects on its own — never relies on src/proxy.ts or a parent
+- Every admin page, /api/admin/* route and Server Action checks access
+  itself through the one DAL check in src/lib/dal.ts (011: pages call
+  requireAdminPage(access), routes and actions call
+  requireAdminAccess(access)) — never relies on src/proxy.ts or a parent
   layout as the sole guard (Constitution III). proxy.ts only does an
   optimistic, cookie-presence redirect for unauthenticated page
-  requests; it never touches the database.
+  requests; it never touches the database. See "Roles and permissions
+  (011)" below.
 - Login lockout (src/lib/login-lockout.ts) is implemented as Better
   Auth hooks.before/after on /sign-in/email, not just in the login
   Server Action — hooks run for both auth.api.signInEmail() calls and
@@ -199,6 +238,68 @@
   (a per-IP request counter, not a failure counter) and is disabled
   outside production so it doesn't interfere with parallel test runs;
   it is not the mechanism that implements the lockout above.
+
+## Roles and permissions (011)
+- Two roles: main_admin and content_manager. Role, grants and account
+  state are Better Auth user.additionalFields (input: false, so no
+  Better Auth endpoint accepts them): role, permissions (string[]),
+  disabledAt, deletedAt, lastLoginAt. Defaults are the least privilege (content_manager, no
+  grants). They change only through src/lib/users/mutations.ts.
+- Permission keys live in one registry, src/lib/permissions.ts:
+  news, messages, careers, settings, pages. Registrations and users are
+  main-admin only and are not keys. A new section = one new key.
+  Signups (004) is governed by `careers` until 012 replaces it.
+- One access check. getAdminSession() returns role, permissions and
+  mustChangePassword, and returns null for a disabled or deleted account.
+  The pure decideAccess(session, access) decides; access is a key,
+  "main_admin", or "any". requireAdminPage redirects (login,
+  /admin/set-password, /admin?denied=1); requireAdminAccess returns
+  401/403 for routes and actions. The old requireAdminSession is gone.
+  src/test/access-inventory.test.ts fails if an admin page, route or
+  action is missing from the access matrix or checks the wrong access.
+- Forbidden requests get 403 { error: "forbidden" } (or
+  "password_change_required"), never data; no session stays 401. The
+  sidebar, overview cards and notification bell are filtered by
+  canAccess — presentation only.
+- session.cookieCache MUST stay off: every request reads the user record
+  fresh, so a grant change, disable or delete applies on the next
+  request in every browser. login-gate.test.ts fails if it is enabled.
+- Login gate (src/lib/login-gate.ts, via databaseHooks.session.create.before):
+  runs after the password is verified, for every sign-in path. A disabled
+  or deleted account gets the same 401 and code as a wrong password.
+- Disable, delete and reset end sessions with Better Auth's own
+  internalAdapter.deleteUserSessions; the first password set uses
+  api.revokeOtherSessions. The Better Auth admin plugin is deliberately
+  NOT installed (extra HTTP surface, a second permission model, a login
+  error that reveals a ban).
+- The main admin controls every password (Constitution III, v2.0.0).
+  A password is typed or generated by the admin in the user panel (12 to
+  128 characters) and is hashed and returned/logged/recorded nowhere. There
+  is no forced first-login change, no temporary state and no expiry. A
+  content manager cannot change any password, their own included: the
+  Account page shows them a note instead of the form, and the
+  changePassword action requires the main_admin role. A main admin changes
+  their own on the Account page (current password required).
+- At least one active main admin always remains (write, recount, undo if
+  none; no transactions assumed). A user can never change their own role
+  or grants, or disable/delete themselves.
+- The record of changes is the append-only `userChanges` collection
+  (src/models/user-change.ts): actor, target, type, details, at. No
+  password can be in it. Viewed at /admin/users/activity, newest first.
+- Unique index on user.email is created by the seed script AND by
+  ensureUserEmailIndex() (src/lib/users/indexes.ts) before any user
+  create, so it never depends on the seed having run.
+- Deploy step: after deploying 011 run `npm run seed:admin` once. It
+  makes the pre-011 account a main admin ("Admin role confirmed"). Until
+  then that account is a content manager with no grants (fails safe).
+  `--reset` is the lock-out recovery path: it also sets role main_admin
+  and clears disabledAt and deletedAt.
+- One shared password input (src/components/ui/password-input.tsx, eye
+  toggle, hidden by default, hidden again on submit/close) is used for
+  every password field in the admin (login, the main admin's Account page,
+  the user panel).
+- The user panel is a right-hand sheet (src/components/ui/sheet.tsx +
+  src/components/admin/users/user-panel.tsx); full width on phones.
 
 ## Validation and data rules
 - Zod normalizes input: emails lowercased and trimmed; phones stored
@@ -232,7 +333,9 @@
 ## Media and content
 - Admin uploads go to Cloudinary; only URLs are stored.
 - Copy not yet supplied by the client uses marked placeholders in
-  src/content/.
+  src/content/. Current placeholders include `photoGalleryBanner`
+  (src/content/gallery.ts, 007): null until the client supplies the
+  reference's camera banner photograph for the album pages.
 - Shell/site text of unknown language uses dir="auto" and an Urdu
   fallback font. News content (003) is the one exception: each post
   carries an explicit `language: "en" | "ur"` field the admin sets
@@ -296,7 +399,141 @@
   toast-then-`router.refresh()` pattern, so the sidebar badge and
   overview card are never more than one refresh stale.
 
+## Admin notifications (009) data rules
+- One new collection, `adminNotificationStates` — one document per
+  admin, `_id` = the admin's Better Auth user id (a string, not an
+  ObjectId), holding only `signupsLastOpenedAt`. It is never soft-
+  deleted, only overwritten (`src/lib/notifications/state.ts`). Messages
+  need no equivalent state: 008's `status` field already is their "new"
+  state.
+- Lazy creation defaults to **now**, never the epoch: the first time
+  `getSignupsLastOpenedAt(adminId)` runs for a given admin, it atomically
+  upserts (`findOneAndUpdate` with `$setOnInsert`, never find-then-create
+  — avoids a duplicate-key race between two tabs' first poll) a document
+  stamped with the current moment. Pre-existing signups therefore never
+  flood in as "new" the day this feature ships — see
+  `history/adr/0002-admin-notifications-live-state-and-shared-popover.md`.
+- "New" is computed, never stored, for both kinds: a message is new
+  when `status === "new"` (reuses 008 unchanged); a signup is new when
+  `lastSignupAt > signupsLastOpenedAt` — because 004 already bumps
+  `lastSignupAt` on every accepted submission including a repeat one,
+  "a repeat submission counts as new again" falls out for free
+  (`src/lib/notifications/queries.ts`).
+- Client-side live state is one shared React Context
+  (`NotificationsProvider`), not props threaded separately per
+  consumer — the bell, both sidebar badges and the page-title prefix
+  all read it, so they cannot disagree. It polls `GET
+  /api/admin/notifications` on a ~60s timer (paused while
+  `document.visibilityState === "hidden"`, with an immediate refresh on
+  becoming visible again) and exposes `refreshNow()` for mutation sites
+  to call directly after their own request succeeds — this is the
+  reference pattern for the next feature that needs a live admin
+  indicator; reuse the Provider shape rather than inventing another.
+  This is a pattern precedent, not a dependency: no data-fetching
+  library was added (Constitution II) — plain `fetch` +
+  `document.visibilityState`.
+- The Overview's "new" highlights are computed server-side, at render
+  time, from the same query functions the sidebar's initial SSR seed
+  uses — not read from the client Provider. They agree with the sidebar
+  because both hit the same database state in the same request, not
+  because they are kept live in sync afterward; Out of Scope rules out
+  server-pushed live updates for that page.
+- `src/components/ui/popover.tsx` is the first Popover primitive in the
+  design system (wraps `@base-ui/react/popover`, the same pattern
+  `dialog.tsx` uses for `@base-ui/react/dialog`) — reuse it for the next
+  dropdown-style UI rather than adding a second implementation.
+
+## Settings (005) data rules
+- One document per group in `settings`, `_id` = the group key. That makes
+  "one record per group" a database guarantee. A group with no document has
+  never been saved and reads as its definition defaults (version 0); nothing
+  is seeded and no migration is needed when a field is added.
+- Each group is a typed field definition. The admin form, the client and
+  server validation and the defaults are all derived from it
+  (src/lib/settings/); adding a field means editing that one definition.
+- A save (`saveSettingsGroup`) stores the whole group or nothing: validate
+  with the group schema, reconcile list items, re-verify any image new since
+  the stored version (Cloudinary size/format/folder), then one atomic write
+  guarded by the version the form was loaded with (insert at version 0,
+  `findOneAndUpdate({_id, version})` otherwise). A stale version is a
+  conflict and stores nothing; no transactions are assumed.
+- List items (hero slides) carry a UUID `id` and `deletedAt`
+  inside the group document. The editor sends live items only; absent ones
+  are marked deleted, deleted items are kept (soft delete, developer
+  restore) and cannot be brought back by a save.
+- "At least one visible slide" is a rule in the hero definition, enforced on
+  the server for every save, not only in the UI.
+- Public reads go through `getPublicSettings(group)`: `unstable_cache`
+  (60 s, tags `settings` and `settings:<group>`) around a read that throws on
+  failure (so a failure is never cached), called with a 3 s timeout and a
+  catch outside the cache; on failure it returns the last value read in the
+  process, else the definition defaults, and logs `settings_read_failed`.
+  It returns only what the site shows (no deleted items, hidden slides,
+  version or author). A save calls `revalidateTag(tag, { expire: 0 })` for
+  both tags and `revalidatePath("/", "layout")`; `(public)/layout.tsx` has
+  `revalidate = 60`. `cacheComponents` is deliberately off (it would change
+  every page's rendering model); `unstable_cache` is the previous caching
+  model and is isolated in public.ts.
+- The top bar and footer social icons and the Contact page read the contact
+  group through `getContactDetails()`; PublicShell reads it once. Contact
+  defaults are imported from `contactInfo` (src/content/site-shell.ts), so a
+  never-saved group looks exactly like the site did before 005.
+  SocialLinks renders in a fixed order (Facebook, YouTube, Instagram, TikTok).
+- Settings images are public media in Cloudinary folders settings/hero and
+  settings/gallery, uploaded straight from the browser with a signature from
+  `/api/admin/settings/uploads/sign`. The bundled placeholder slide images
+  (public/images/hero/) are the only images allowed without a publicId.
+- `NEXT_DIST_DIR` (optional) moves the Next build folder, so a second `next
+  dev` (the Playwright one on the test database) can run beside a developer's
+  own dev server.
+
+## Gallery albums (007) data rules
+- The gallery left the Settings group engine: `GROUP_KEYS` is contact, hero,
+  stats, video. It is ONE document, `settings/_id: "gallery"`, with
+  `data = { schema: 2, albums[], retired[] }`; albums embed their photos.
+  Caps: 6 live albums, 8 live photos per album.
+- src/lib/gallery/store.ts is the only writer. Every write reads the
+  document, applies a pure rule (src/lib/gallery/rules.ts) that checks the
+  cap against the live counts, and writes with a compare-and-set on
+  `version`; a lost race re-reads and re-applies (up to 10 attempts), so the
+  caps hold under simultaneous requests with no transactions. Album detail
+  edits (title, description, date) instead carry the album's own `rev` and
+  are refused when stale. See [ADR-0005](../history/adr/0005-gallery-albums-single-document-cas.md):
+  this design is valid only while the 6/8 caps keep the record small; raising
+  them means revisiting the ADR first.
+- Album and photo actions save immediately (nine Server Actions in
+  admin/(dashboard)/settings/gallery/actions.ts, permission `settings`).
+  Uploads go straight to Cloudinary (folder settings/gallery); one
+  `addGalleryPhotos` call per selection verifies each image, keeps the ones
+  that fit and deletes every refused or rejected asset.
+- Deletes are soft (`deletedAt`); at most 50 deleted albums and 200 deleted
+  photos are kept, the oldest are then removed with their images.
+- Public: `/resources` (minimal until 016) shows `#photo-gallery`, hidden when
+  no album has photos; `/resources/gallery/<12-char id>` is an album page
+  (404 when unknown, deleted or empty); `/resources/gallery` and the old
+  `/resources/photo-gallery` redirect to `/resources#photo-gallery`. Feature
+  016 adds `#downloads` and `#our-books` around the gallery section.
+  `getPublicGallery()` mirrors `getPublicSettings`: 60 s cache (tags
+  `settings`, `settings:gallery`), 3 s timeout, last-good fallback, never
+  throws.
+- **Release step**: run `npm run migrate:gallery` once after deploying 007.
+  It moves the 005 flat gallery into "Gallery", "Gallery 2" … (8 each, at
+  most 6 albums) and prints how many photos were not migrated: photos past
+  the 48th are discarded and their images deleted (owner's decision, 007
+  FR-023). Images already soft-deleted in 005 stay deleted, kept in
+  `retired`. The same migration also runs lazily on the first gallery read
+  (checked once per server process), so a forgotten run loses nothing, but
+  only the command prints the report.
+- Test-only: `GALLERY_E2E_FRESH_READS=1` (set by playwright.config.ts,
+  ignored in production) makes the public gallery skip its cache and its
+  once-per-process migration flag, because the gallery specs seed the
+  database directly.
+
 ## Testing
+- 011: every admin route has the three access cases in
+  src/app/api/admin/access-matrix.test.ts (real sessions); every user
+  Server Action in its own actions.test.ts; every page in
+  e2e/admin-roles-access-matrix.spec.ts.
 - Vitest: unit tests and route handler tests (validation failures,
   401 for admin routes). DB-backed suites use describeWithDb()
   (src/test/db.ts), which connects to MONGODB_DB_NAME=dar_e_arqam_test

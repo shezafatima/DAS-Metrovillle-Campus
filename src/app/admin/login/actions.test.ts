@@ -45,6 +45,17 @@ describe("login action", () => {
     expect(result).toEqual({ error: "generic" });
   });
 
+  it("returns 'generic' for a disabled or deleted account — same code as a wrong password (011 FR-028)", async () => {
+    signInEmailMock.mockRejectedValue(
+      new APIError("UNAUTHORIZED", { message: "Invalid email or password", code: "INVALID_EMAIL_OR_PASSWORD" }),
+    );
+    const result = await login(
+      { error: null },
+      formDataFor({ email: "disabled@example.com", password: "correct-but-disabled" }),
+    );
+    expect(result).toEqual({ error: "generic" });
+  });
+
   it("returns 'blocked' on a 429 APIError", async () => {
     signInEmailMock.mockRejectedValue(new APIError("TOO_MANY_REQUESTS", { message: "slow down" }));
     const result = await login(

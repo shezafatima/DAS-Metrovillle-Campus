@@ -87,7 +87,7 @@ export const navigationItems: NavigationItem[] = [
     href: "/resources",
     tagline: "Gallery & Download",
     children: [
-      { label: "Photo Gallery", href: "/resources/photo-gallery" },
+      { label: "Photo Gallery", href: "/resources#photo-gallery" },
       { label: "Prospectus", href: "/resources/prospectus" },
       { label: "Our Books", href: "/resources/our-books" },
       { label: "Monthly Arqam", href: "/resources/monthly-arqam" },

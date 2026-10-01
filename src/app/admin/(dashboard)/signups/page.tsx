@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
-import { requireAdminSession } from "@/lib/dal";
+import { requireAdminPage } from "@/lib/dal";
 import { listSignups } from "@/lib/signup/admin-queries";
 import { SignupsTable } from "@/components/admin/signups/signups-table";
 import { SignupsTableFilters } from "@/components/admin/signups/signups-table-filters";
+import { MarkSignupsOpened } from "@/components/admin/signups/mark-signups-opened";
 import { AdminPagination } from "@/components/admin/admin-pagination";
 import { buttonVariants } from "@/components/ui/button";
 import { signupsCopy } from "@/content/admin";
@@ -13,7 +14,7 @@ export const dynamic = "force-dynamic";
 export default async function AdminSignupsPage({
   searchParams,
 }: PageProps<"/admin/signups">) {
-  await requireAdminSession();
+  await requireAdminPage("careers");
 
   const params = await searchParams;
   const q = typeof params.q === "string" ? params.q : undefined;
@@ -34,6 +35,7 @@ export default async function AdminSignupsPage({
 
   return (
     <div className="flex flex-col gap-4 p-6">
+      <MarkSignupsOpened />
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="font-bold text-2xl text-foreground">{signupsCopy.pageTitle}</h1>
         <a href={exportHref} download className={buttonVariants({ variant: "outline" })}>

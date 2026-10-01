@@ -3,6 +3,8 @@ import type { IconType } from "react-icons";
 import { cn } from "cn";
 import type { ContactInfo, SocialPlatform } from "@/content/site-shell";
 
+const SOCIAL_ORDER: SocialPlatform[] = ["facebook", "youtube", "instagram", "tiktok"];
+
 const SOCIAL_LABELS: Record<SocialPlatform, string> = {
   facebook: "Facebook",
   youtube: "YouTube",
@@ -36,9 +38,13 @@ export function SocialLinks({
   variant = "light",
   className,
 }: SocialLinksProps) {
-  const entries = (
-    Object.entries(social) as [SocialPlatform, string | undefined][]
-  ).filter((entry): entry is [SocialPlatform, string] => Boolean(entry[1]));
+  // Fixed order (Facebook, YouTube, Instagram, TikTok — the reference's), not
+  // the order the values happen to arrive in: Settings (005) stores them as a
+  // plain object, and a cleared platform must leave the rest where they were.
+  const entries = SOCIAL_ORDER.flatMap((platform): [SocialPlatform, string][] => {
+    const url = social[platform];
+    return url ? [[platform, url]] : [];
+  });
 
   if (entries.length === 0) return null;
 

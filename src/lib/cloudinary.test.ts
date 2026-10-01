@@ -3,12 +3,14 @@ import { describe, expect, it, vi, beforeEach } from "vitest";
 const mockConfig = vi.fn();
 const mockApiSignRequest = vi.fn(() => "mock-signature");
 const mockResource = vi.fn();
+const mockDestroy = vi.fn();
 
 vi.mock("cloudinary", () => ({
   v2: {
     config: mockConfig,
     utils: { api_sign_request: mockApiSignRequest },
     api: { resource: mockResource },
+    uploader: { destroy: mockDestroy },
   },
 }));
 
@@ -104,5 +106,45 @@ describe("verifyNewsCover", () => {
     mockResource.mockRejectedValue(new Error("network down"));
     const { verifyNewsCover } = await import("./cloudinary");
     expect(await verifyNewsCover("news/covers/abc")).toEqual({ ok: false, reason: "unavailable" });
+  });
+});
+
+describe("settings image folders (005)", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    vi.resetModules();
+  });
+
+  it("signs for the requested settings folder and nothing else", async () => {
+    const { signImageUpload, SETTINGS_HERO_FOLDER, SETTINGS_GALLERY_FOLDER } = await import("./cloudinary");
+    expect(signImageUpload(SETTINGS_HERO_FOLDER).folder).toBe("settings/hero");
+    expect(signImageUpload(SETTINGS_GALLERY_FOLDER).folder).toBe("settings/gallery");
+    expect(mockApiSignRequest).toHaveBeenLastCalledWith(
+      expect.objectContaining({ folder: "settings/gallery", allowed_formats: "jpg,png,webp" }),
+      "demo-secret",
+    );
+  });
+
+  it("accepts an image in its own folder and refuses one from another folder", async () => {
+    mockResource.mockResolvedValue({ bytes: 1024, format: "png", public_id: "settings/hero/abc" });
+    const { verifyUploadedImage } = await import("./cloudinary");
+    expect(await verifyUploadedImage("settings/hero/abc", "settings/hero")).toEqual({ ok: true });
+    expect(await verifyUploadedImage("settings/hero/abc", "settings/gallery")).toEqual({
+      ok: false,
+      reason: "wrong_folder",
+    });
+    expect(await verifyUploadedImage("news/covers/abc", "settings/hero")).toEqual({
+      ok: false,
+      reason: "wrong_folder",
+    });
+  });
+
+  it("deleteUploadedImage destroys the asset and never throws", async () => {
+    mockDestroy.mockResolvedValueOnce({ result: "ok" });
+    const { deleteUploadedImage } = await import("./cloudinary");
+    await deleteUploadedImage("settings/hero/abc");
+    expect(mockDestroy).toHaveBeenCalledWith("settings/hero/abc");
+    mockDestroy.mockRejectedValueOnce(new Error("boom"));
+    await expect(deleteUploadedImage("settings/hero/abc")).resolves.toBeUndefined();
   });
 });

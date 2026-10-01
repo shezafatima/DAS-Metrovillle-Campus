@@ -18,7 +18,7 @@ All Technical Context unknowns resolved below. Format per decision: Decision / R
 ## R2 — Concurrency: caps vs. edit conflicts
 
 **Decision**: Two kinds of write:
-1. **Structural actions** (create album, add photos, delete, reorder, set cover, caption) re-read and retry on a version mismatch, up to 5 attempts. Each attempt re-applies the rule to the fresh document, so the cap check always runs against the latest state. A caller whose attempt would exceed a cap gets the "full" result. It is never merged past the cap.
+1. **Structural actions** (create album, add photos, delete, reorder, set cover, caption) re-read and retry on a version mismatch, up to 10 attempts with a short random pause between them (5 could run out before the cap is reached when 10 writers race). Each attempt re-applies the rule to the fresh document, so the cap check always runs against the latest state. A caller whose attempt would exceed a cap gets the "full" result. It is never merged past the cap.
 2. **Album detail edits** (title, description, date) carry the album's own `rev` (from when the panel was opened). If the stored album's `rev` differs, the edit is refused with the 005 conflict message (FR-026). Unrelated writes to other albums don't cause false conflicts.
 
 **Rationale**: Retrying structural actions means two admins working on *different* albums never see spurious "someone else changed this" errors, while the cap is still decided serially. Detail edits are the only place where one admin's typing could silently overwrite another's, so only they use the refuse-on-conflict rule the spec requires.

@@ -1,6 +1,7 @@
 import type { ComponentType } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { formatCount } from "@/lib/format-count";
 
 interface StatCardProps {
   title: string;
@@ -22,7 +23,7 @@ export function StatCard({ title, value, icon: Icon, highlightCount, highlightLa
         <span className="font-bold text-3xl text-foreground">{value}</span>
         {!!highlightCount && highlightCount > 0 && (
           <Badge variant="highlight">
-            {highlightCount} {highlightLabel ?? "new"}
+            {formatCount(highlightCount)} {highlightLabel ?? "new"}
           </Badge>
         )}
       </CardContent>

@@ -180,7 +180,7 @@ export async function setPostStatus(
 ): Promise<StatusDTO | null> {
   if (!mongoose.isValidObjectId(id)) return null;
   await connectDb();
-  const doc = await NewsPost.findByIdAndUpdate(id, { $set: { status } }, { new: true });
+  const doc = await NewsPost.findByIdAndUpdate(id, { $set: { status } }, { returnDocument: "after" });
   if (!doc) return null;
   return { id: doc._id.toString(), status: doc.status as "draft" | "published" };
 }
