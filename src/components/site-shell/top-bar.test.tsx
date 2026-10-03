@@ -27,6 +27,13 @@ describe("TopBar", () => {
     ).toHaveAttribute("href", "/portal/student-login");
   });
 
+  it("shows Careers as the first default link, pointing at /careers (012)", () => {
+    render(<TopBar contact={baseContact} />);
+    const links = screen.getAllByRole("link");
+    expect(links[0]).toHaveTextContent("Careers");
+    expect(links[0]).toHaveAttribute("href", "/careers");
+  });
+
   it("omits a social platform entirely when it has no configured value", () => {
     render(<TopBar portalLinks={portalLinks} contact={baseContact} />);
     expect(screen.queryByText("Facebook")).not.toBeInTheDocument();

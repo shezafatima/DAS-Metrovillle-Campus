@@ -1,7 +1,7 @@
 # PRD — Dar-e-Arqam Metroville Campus Website
 
 Status: DRAFT — items marked (TBD) need client confirmation.
-Version: 0.3
+Version: 0.4
 
 ## Change Log
 | Version | Date | Change | Approved by | Affects specs |
@@ -9,6 +9,7 @@ Version: 0.3
 | 0.1 | — | Initial draft | — | — |
 | 0.2 | — | Settings becomes a real feature (contact, socials, stats, video URL, hero slides with images or videos, gallery); build order updated | — | 001 (contact details move to Settings), 005, 006, 009 |
 | 0.3 | — | Client approved: editable page content; second admin role (content manager); careers page with CV upload replacing the homepage signup form; student registration form | Client | new features; 006 home, 008 resources |
+| 0.4 | 2026-10-02 | Careers: a repeat applicant is matched on email OR phone (was "both"); a person may apply again 30 days after their last application, or sooner if the main admin deletes it (answers Open Question 5); CV limit 4 MB, down from the brief's 5 MB, because of the host's 4.5 MB request limit (ADR-0007) | Owner (client confirmation pending: earlier applications are kept as separate records) | 012 careers (ADR-0008) |
 
 ## 1. Overview
 A public website and admin dashboard for Dar-e-Arqam School,
@@ -113,11 +114,19 @@ and Urdu.
 Campus details, map, and the contact form (built).
 
 ### 5.9 Careers
-- Introduction text (editable) and the application form: name, email,
-  phone, qualification, CV (PDF only).
-- One application per person, matched on both email and phone. A
-  repeat attempt is refused with a clear message, not merged. The
-  main admin can delete an application to let someone reapply.
+- Introduction text (editable once 014 page content ships; static
+  text until then) and the application form: name, email, phone,
+  qualification, CV (PDF only, at most 4 MB).
+- A person is matched on email OR phone: either one matching counts
+  as the same person.
+- A person may not apply again within 30 days of their last
+  application. A repeat attempt inside that window is refused with a
+  clear message giving the date they may apply again; it is never
+  merged into or overwrites the earlier application.
+- After 30 days they may apply again without any admin action; the
+  earlier application is kept as a separate record (TBD: client to
+  confirm). The main admin can delete an application to let someone
+  reapply sooner.
 - CV files are private: never publicly reachable, only downloadable
   by permitted admin users.
 
@@ -187,7 +196,7 @@ main admin, student registrations.
 ## 7. Data
 - Users (with role and permissions), sessions — auth system.
 - News, Messages — as built.
-- Career applications — one per person; CV stored privately, not on
+- Career applications — at most one per person in any 30 days; CV stored privately, not on
   the public media service.
 - Student registrations — no files.
 - Page content — per page and section, defined fields.
@@ -223,7 +232,8 @@ RAG chatbot; email notifications; online admission and fees.
 3. Downloads section: static or admin-managed?
 4. Student registration: final field list, and how long records are
    kept before automatic deletion.
-5. Careers: may a rejected applicant reapply later, or only if the
-   admin deletes their application?
+5. ~~Careers: may a rejected applicant reapply later, or only if the
+   admin deletes their application?~~ Resolved in v0.4: after 30 days,
+   or sooner if the main admin deletes the application (§5.9).
 6. Privacy notice wording for the careers and registration forms.
 7. Domain, hosting, and who supplies remaining copy and images.

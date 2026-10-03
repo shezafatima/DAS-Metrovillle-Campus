@@ -148,6 +148,51 @@ Sync Impact Report (amendment 4)
 - Follow-up TODOs: none
 -->
 
+<!--
+Sync Impact Report (amendment 5)
+- Version change: 2.0.0 → 3.0.0
+- Modified principles:
+  - VI. Data Integrity — two bullets redefined:
+    1. "Records keyed by a natural identifier (e.g. email) MUST be upserted,
+       never duplicated" → natural-key records MUST NOT be silently
+       duplicated; each spec states the write rule for its collection
+       (upsert, refuse on conflict, or refuse within a stated time window)
+       and an ADR records the choice.
+    2. "Where a spec states a person may have only one record, that
+       uniqueness MUST be enforced by the database (e.g. a unique index),
+       never by an application-level check-then-insert" → any per-person
+       limit (ever, or within a time window) MUST hold under concurrent
+       requests and be enforced by the database: a unique index, or, only
+       when an index cannot express the rule, a check-then-insert performed
+       while holding a lock whose exclusivity is itself a database unique
+       key. A check-then-insert without such a lock remains forbidden.
+       Concurrency tests are now mandatory for such limits.
+- Added sections: none
+- Removed sections: none
+- Version bump rationale: MAJOR (2.0.0 → 3.0.0) per the versioning policy:
+  a MUST ("natural-key records MUST be upserted") is loosened to allow
+  refuse-on-conflict and time-windowed rules, and the uniqueness bullet is
+  redefined. The race-safety guarantee itself is kept (still database-
+  enforced). Prompted by /sp.analyze 2026-10-03 findings C1/C2 on
+  012-careers (ADR-0008, 30-day reapply window) and approved by the project
+  owner by running /sp.constitution on that finding.
+- Templates requiring updates:
+  - ✅ .specify/templates/plan-template.md, spec-template.md,
+    tasks-template.md — generic; no principle text hardcoded. No edit.
+  - ✅ .claude/commands/sp.*.md — no references to the changed bullets.
+  - ✅ specs/012-careers/plan.md — Constitution Check VI row now PASS under
+    v3.0.0; spec FR-011 wording aligned.
+  - ✅ history/adr/0008-career-application-30-day-reapply-window.md — the
+    "Constitution VI wording strain" consequence now points to this
+    amendment.
+  - ✅ docs/architecture.md — "Validation and data rules" upsert line
+    generalised.
+  - ✅ Earlier features unaffected: 004 signup (upsert, being retired),
+    008 messages (append-only, no natural key), 011 users (unique index on
+    email) all satisfy the new wording.
+- Follow-up TODOs: none
+-->
+
 # Dar-e-Arqam Metroville Campus Website Constitution
 
 ## Core Principles
@@ -266,19 +311,29 @@ indefinite, unaccountable store of other people's personal information.
   validation rules cannot drift between layers.
 - Deletes are soft by default (a `deletedAt` marker) unless a spec requires a
   confirmed hard delete.
-- Records keyed by a natural identifier (e.g. email) MUST be upserted, never
-  duplicated.
-- Where a spec states a person may have only one record, that uniqueness
-  MUST be enforced by the database (e.g. a unique index), never by an
-  application-level check-then-insert, which races under concurrent
-  requests.
+- Records keyed by a natural identifier (e.g. email or phone) MUST NOT be
+  silently duplicated. The feature's spec states the write rule for each
+  such collection (upsert into one record, refuse on conflict, or refuse
+  within a stated time window), and an ADR records the choice.
+- Where a spec limits how many records a person may have, whether ever or
+  within a time window, that limit MUST hold under concurrent requests and
+  MUST be enforced by the database:
+  - by a unique index; or
+  - only when a unique index cannot express the rule (e.g. a time window),
+    by a check-then-insert performed while holding a lock whose
+    exclusivity is itself a database unique key, acquired before the check
+    and released after the insert.
+  A check-then-insert without such a lock is never allowed. The limit's
+  tests MUST include concurrent submissions.
 - No email notifications are sent in this phase.
 
 **Rationale**: Shared Zod schemas prevent client/server validation skew.
 Soft deletes protect against accidental data loss for a client with no
-dedicated ops team to recover from mistakes. Natural-key upserts and
-database-enforced uniqueness keep records deduplicated without relying on
-application logic that can race or be bypassed by a second code path.
+dedicated ops team to recover from mistakes. Stating each collection's
+write rule up front, and backing every per-person limit with a database
+unique key (an index, or a lock when the rule needs a time window), keeps
+records deduplicated without relying on application logic that can race
+or be bypassed by a second code path.
 
 ### VII. Design System
 
@@ -382,4 +437,4 @@ before a feature is marked done (Principle XI). Any violation found during
 either check is either fixed or escalated for an explicit, approved
 exception — it is never silently waived.
 
-**Version**: 2.0.0 | **Ratified**: 2026-09-16 | **Last Amended**: 2026-09-30
+**Version**: 3.0.0 | **Ratified**: 2026-09-16 | **Last Amended**: 2026-10-03

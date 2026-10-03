@@ -304,8 +304,11 @@
 ## Validation and data rules
 - Zod normalizes input: emails lowercased and trimmed; phones stored
   as +923XXXXXXXXX (accept 03XXXXXXXXX and +92 formats).
-- Upserts use findOneAndUpdate with upsert: true, backed by a unique
-  index on the natural key.
+- Natural-key collections state their write rule in the spec and an ADR
+  (Constitution VI v3.0.0): upserts use findOneAndUpdate with upsert: true
+  backed by a unique index; per-person limits a unique index can't express
+  (e.g. 012's 30-day reapply window) use check-then-insert only under a
+  database-unique lock (ADR-0008).
 - Soft delete: deletedAt: Date | null, excluded by default through a
   shared Mongoose plugin.
 - Public POST routes: per-IP rate limit + hidden honeypot field.

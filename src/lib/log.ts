@@ -40,7 +40,11 @@ export type SecurityEventType =
   | "settings_read_failed"
   | "gallery_changed"
   | "gallery_migrated"
-  | "gallery_read_failed";
+  | "gallery_read_failed"
+  // 012 careers: `target` carries the application id only, never a name, file key or URL.
+  | "career_cv_missing"
+  | "career_cv_delete_failed"
+  | "careers_sweep_failed";
 
 export interface SecurityEvent {
   type: SecurityEventType;

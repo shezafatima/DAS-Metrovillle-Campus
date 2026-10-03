@@ -2,7 +2,7 @@
 
 > **Scope**: Document decision clusters, not individual technology choices. Group related decisions that work together (e.g., "Frontend Stack" not separate ADRs for framework, styling, deployment).
 
-- **Status:** Accepted
+- **Status:** Superseded by [ADR-0008](0008-career-application-30-day-reapply-window.md) (2026-10-02). Its identity rule was first replaced by ADR-0006; its permanent one-per-person rule is now a 30-day reapply window. The refuse-never-merge principle carries forward in ADR-0008.
 - **Date:** 2026-09-28
 - **Feature:** 012-careers (planned — PRD §5.9, §6.7; spec not yet created)
 - **Supersedes:** [ADR-0001](0001-signup-upsert-and-restore.md), for the "one person, one record" write model. ADR-0001's mechanism (natural-key upsert + automatic restore-on-resubmit) was written to be "reusable verbatim for any future one-per-person collection." Career applications are that next collection, and the PRD's rules for them (§5.9, §6.7) require the opposite write behavior on every point that matters, so this ADR replaces that reuse claim rather than extending it.

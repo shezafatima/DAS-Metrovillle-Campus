@@ -52,6 +52,8 @@ const routes: RouteCase[] = [
   { name: "DELETE /api/admin/signups/[id]", load: () => import("@/app/api/admin/signups/[id]/route") as never, method: "DELETE", access: "careers" },
   { name: "POST /api/admin/signups/opened", load: () => import("@/app/api/admin/signups/opened/route") as never, method: "POST", access: "careers" },
   { name: "GET /api/admin/signups/export", load: () => import("@/app/api/admin/signups/export/route") as never, method: "GET", access: "careers" },
+  // 012 careers: an unknown id ends in a 404, not 401/403, so case 3 never touches the document store.
+  { name: "GET /api/admin/careers/[id]/cv", load: () => import("@/app/api/admin/careers/[id]/cv/route") as never, method: "GET", access: "careers" },
   { name: "GET /api/admin/session", load: () => import("@/app/api/admin/session/route") as never, method: "GET", access: "any" },
   { name: "GET /api/admin/notifications", load: () => import("@/app/api/admin/notifications/route") as never, method: "GET", access: "any" },
   { name: "POST /api/admin/notifications/read", load: () => import("@/app/api/admin/notifications/read/route") as never, method: "POST", access: "any" },
@@ -78,7 +80,7 @@ function allExcept(key: Permission): Permission[] {
   return PERMISSION_KEYS.filter((k) => k !== key);
 }
 
-describeWithDb("admin route access matrix (three cases per route)", ["user", "account", "session", "messages", "signups", "news"], () => {
+describeWithDb("admin route access matrix (three cases per route)", ["user", "account", "session", "messages", "signups", "news", "careerApplications"], () => {
   beforeEach(() => {
     vi.doUnmock("next/headers");
     vi.resetModules();

@@ -21,7 +21,12 @@ export default defineConfig({
   projects: [
     {
       name: "chromium",
-      testIgnore: /(admin-.*|signup-.*|contact-(public|details|protection|visual))\.spec\.ts/,
+      testIgnore: [
+        /(admin-.*|signup-.*|contact-(public|details|protection|visual))\.spec\.ts/,
+        // 012 careers public specs run in the serial `forms` project. Anchored on the
+        // file name so admin-careers-*.spec.ts is not caught here or in `forms`.
+        /(^|[\\/])careers-[^\\/]*\.spec\.ts$/,
+      ],
       use: { ...devices["Desktop Chrome"], channel: "chrome" },
     },
     {
@@ -48,7 +53,10 @@ export default defineConfig({
       // per-spec X-Forwarded-For header (research §16), so they can share
       // this serial project with the signup specs without colliding.
       name: "forms",
-      testMatch: /(signup-.*|contact-(public|details|protection|visual))\.spec\.ts/,
+      testMatch: [
+        /(signup-.*|contact-(public|details|protection|visual))\.spec\.ts/,
+        /(^|[\\/])careers-[^\\/]*\.spec\.ts$/,
+      ],
       fullyParallel: false,
       workers: 1,
       use: { ...devices["Desktop Chrome"], channel: "chrome" },
@@ -74,6 +82,11 @@ export default defineConfig({
       // harmless everywhere else — nothing else depends on the exact
       // interval length (research §3; plan.md's testability seam).
       NEXT_PUBLIC_NOTIFICATIONS_POLL_MS: "3000",
+      // 012 careers: CVs go to a local directory outside public/ instead of
+      // Vercel Blob (getEnv() refuses this driver in production). Specs
+      // write and inspect the same directory (e2e/helpers/careers.ts).
+      DOCUMENT_STORE_DRIVER: "local",
+      DOCUMENT_STORE_LOCAL_DIR: ".data/e2e-documents",
     },
   },
 });

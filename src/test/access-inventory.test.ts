@@ -65,6 +65,8 @@ const EXPECTED: Record<string, Expected> = {
   "api/admin/signups/[id]/route.ts": { kind: "route", access: "careers" },
   "api/admin/signups/opened/route.ts": { kind: "route", access: "careers" },
   "api/admin/signups/export/route.ts": { kind: "route", access: "careers" },
+  // 012 careers: the CV download. Only the careers permission may fetch a CV.
+  "api/admin/careers/[id]/cv/route.ts": { kind: "route", access: "careers" },
   // Server Actions
   "admin/(dashboard)/actions.ts": { kind: "none" }, // logout: harmless without a session
   "admin/(dashboard)/account/actions.ts": {

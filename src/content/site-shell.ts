@@ -117,7 +117,11 @@ export const navigationItems: NavigationItem[] = [
 // external URLs that don't exist, each links to an internal placeholder
 // page under /portal/<slug>, consistent with every other not-yet-built page
 // in this feature (FR-017's pattern, extended here by content, not code).
+// Careers (012, PRD §4: "link in the top bar and footer, not the main menu")
+// is the first link in the top (yellow) bar; it is a real page, unlike the
+// portal placeholders after it.
 export const portalLinks: PortalLink[] = [
+  { label: "Careers", href: "/careers" },
   { label: "DAS Portal", href: "/portal/das-portal" },
   { label: "ePortal", href: "/portal/eportal" },
   { label: "Student Login", href: "/portal/student-login" },

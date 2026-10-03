@@ -592,3 +592,19 @@ New tokens (added to `@theme` in `src/app/globals.css`):
 | `--spacing-contact-icon` | `200px` |
 | `--spacing-contact-columns-gap` | `51px` |
 | `--spacing-contact-map-height` | `552px` |
+
+## Careers page (012 careers — no reference page exists)
+
+das.edu.pk has **no careers page**: `/careers` returns 404 and no header, top-bar or footer link mentions careers (checked 2026-10-03). Per spec/plan ("the reference's form styling"), the page reuses the Contact page's already-extracted values and adds **no new token**:
+
+| Part | Source |
+|---|---|
+| Banner | `PageBanner` + `/images/contact/banner.webp` (Contact banner; swap if the client supplies a careers photo) |
+| Intro block | `--spacing-contact-form-band-y`, `text-h3` / `text-body`, `text-foreground` |
+| Form band | `bg-contact-form-band`, `--spacing-contact-form-band-y`, `--spacing-contact-form-gap-x` / `-gap-y`, 1 column below `md` and 2 columns from `md` (as the Contact form) |
+| Text inputs | `--spacing-signup-input-height`, `rounded-signup-input`, `border-signup-input-border`, `bg-signup-input-bg`, `--text-signup-input`, `placeholder:text-signup-input-text` |
+| CV file row | the same input tokens (height, radius, border, background, text size and colour); the native file input is visually hidden and its label is the row |
+| Consent checkbox | `accent-cta` (`--color-cta`), `text-sm`, `text-foreground`; the reference has no checkbox to extract |
+| Errors, button | `text-error` chip as in the Contact form; the Contact submit button |
+
+Deviation (flagged, Constitution I): the file row and the consent checkbox have no reference counterpart; they are composed from the input tokens above rather than extracted values. If the client supplies a design for them, extract it here first.

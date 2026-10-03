@@ -1,27 +1,21 @@
+import { csvField, toCsv } from "@/lib/csv";
 import { sourceLabel, type SignupSource } from "@/lib/signup/sources";
 import { formatSignupDateTime } from "@/lib/signup/dates";
 import type { SignupRow } from "@/lib/signup/admin-queries";
 
 /**
- * CSV export for the admin signup list (FR-027/FR-028; research.md
- * §7). RFC 4180 quoting throughout, a leading UTF-8 BOM so Excel on
- * Windows decodes Urdu names correctly, and a formula-injection guard
- * on any field that would otherwise be interpreted as a spreadsheet
- * formula by Excel/Sheets.
+ * CSV export for the admin signup list (FR-027/FR-028; research.md §7).
+ * The encoding itself (RFC 4180 quoting, UTF-8 BOM for Excel, formula
+ * guard) lives in the shared src/lib/csv.ts; `csvField` is re-exported so
+ * existing imports keep working until signup is retired (012 US7).
  */
 export const CSV_HEADERS = ["Name", "Email", "Phone", "Pages", "First signup", "Latest signup"];
 
-const FORMULA_PREFIX_PATTERN = /^[=+\-@\t\r]/;
+export { csvField };
 
-/** Quotes one CSV field (RFC 4180) and neutralises a leading formula character. */
-export function csvField(value: string): string {
-  const safe = FORMULA_PREFIX_PATTERN.test(value) ? `'${value}` : value;
-  return `"${safe.replace(/"/g, '""')}"`;
-}
-
-function rowToCsvLine(row: SignupRow): string {
+function rowToFields(row: SignupRow): string[] {
   const pages = (row.sources as SignupSource[]).map(sourceLabel).join("; ");
-  const fields = [
+  return [
     row.name,
     row.email,
     row.phoneDisplay,
@@ -29,11 +23,9 @@ function rowToCsvLine(row: SignupRow): string {
     formatSignupDateTime(new Date(row.firstSignupAt)),
     formatSignupDateTime(new Date(row.lastSignupAt)),
   ];
-  return fields.map(csvField).join(",");
 }
 
-/** `﻿` + header + one row per record, CRLF line endings throughout. */
+/** BOM + header + one row per record, CRLF line endings throughout. */
 export function signupsToCsv(rows: SignupRow[]): string {
-  const lines = [CSV_HEADERS.map(csvField).join(","), ...rows.map(rowToCsvLine)];
-  return "﻿" + lines.join("\r\n") + "\r\n";
+  return toCsv(CSV_HEADERS, rows.map(rowToFields));
 }
