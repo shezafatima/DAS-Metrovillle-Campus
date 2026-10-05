@@ -207,10 +207,10 @@ description: "Task list for 012-careers"
 
 **Purpose**: Automatic deletion after `CAREERS_RETENTION_MONTHS`; abandoned pending clean-up (≤ 1 h, unchanged); retry failed CV removals.
 
-- [ ] T082 Create `src/lib/careers/retention.ts`: `sweepCareerApplications(now, store)` per contracts/document-store.md "Retention sweep" (expired live or deleted → delete object → hard delete; deleted with `cv.removedAt` null → retry; pending older than 1 h → delete object if present → hard delete), returning counts; `maybeSweepCareers()` gated by `checkRateLimit({ key: "sweep:careers", max: 1, windowSeconds: 3600 })`
-- [ ] T083 [P] Create `src/lib/careers/retention.test.ts` (`describeWithDb`, fake store): an application 12 months + 1 day old is removed with its file; one a day inside the period is kept; a soft-deleted expired one is removed; a failed removal is retried; pending 61 min removed, pending 59 min kept; `maybeSweepCareers` runs once per hour window
-- [ ] T084 Wire `after(() => maybeSweepCareers())` into `src/app/api/public/careers/route.ts` (success path) and `src/app/admin/(dashboard)/careers/page.tsx`; never let a sweep failure affect the response (catch and log `careers_sweep_failed`)
-- [ ] T085 [P] Create `scripts/sweep-careers.ts` (loads env like `scripts/seed-admin.ts`, runs `sweepCareerApplications` without the gate, prints counts) and add `"sweep:careers": "tsx scripts/sweep-careers.ts"` to `package.json`
+- [X] T082 Create `src/lib/careers/retention.ts`: `sweepCareerApplications(now, store)` per contracts/document-store.md "Retention sweep" (expired live or deleted → delete object → hard delete; deleted with `cv.removedAt` null → retry; pending older than 1 h → delete object if present → hard delete), returning counts; `maybeSweepCareers()` gated by `checkRateLimit({ key: "sweep:careers", max: 1, windowSeconds: 3600 })`
+- [X] T083 [P] Create `src/lib/careers/retention.test.ts` (`describeWithDb`, fake store): an application 12 months + 1 day old is removed with its file; one a day inside the period is kept; a soft-deleted expired one is removed; a failed removal is retried; pending 61 min removed, pending 59 min kept; `maybeSweepCareers` runs once per hour window
+- [X] T084 Wire `after(() => maybeSweepCareers())` into `src/app/api/public/careers/route.ts` (success path) and `src/app/admin/(dashboard)/careers/page.tsx`; never let a sweep failure affect the response (catch and log `careers_sweep_failed`)
+- [X] T085 [P] Create `scripts/sweep-careers.ts` (loads env like `scripts/seed-admin.ts`, runs `sweepCareerApplications` without the gate, prints counts) and add `"sweep:careers": "tsx scripts/sweep-careers.ts"` to `package.json`
 
 ---
 

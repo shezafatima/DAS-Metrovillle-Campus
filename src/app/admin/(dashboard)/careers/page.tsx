@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import { after } from "next/server";
 import { requireAdminPage } from "@/lib/dal";
+import { maybeSweepCareers } from "@/lib/careers/retention";
 import { listApplications } from "@/lib/careers/admin-queries";
 import { ApplicationsTable } from "@/components/admin/careers/applications-table";
 import { MarkCareersOpened } from "@/components/admin/careers/mark-careers-opened";
@@ -17,6 +19,7 @@ export default async function AdminCareersPage({
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   await requireAdminPage("careers");
+  after(() => maybeSweepCareers());
 
   const params = await searchParams;
   const q = typeof params.q === "string" ? params.q : undefined;

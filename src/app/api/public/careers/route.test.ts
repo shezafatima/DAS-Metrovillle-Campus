@@ -10,6 +10,10 @@ import { CareerApplication } from "@/models/career-application";
 import { CareerApplicationLock } from "@/models/career-application-lock";
 import { POST } from "./route";
 
+// `after` only works inside a Next request; here it just records that the sweep was scheduled.
+const afterMock = vi.hoisted(() => vi.fn());
+vi.mock("next/server", () => ({ after: afterMock }));
+
 vi.setConfig({ testTimeout: 120_000, hookTimeout: 120_000 });
 
 const enc = (text: string) => new TextEncoder().encode(text);
@@ -78,6 +82,15 @@ describeWithDb("POST /api/public/careers", ["careerApplications", "careerApplica
     expect(doc!.phone).toBe("+923001234567");
     expect(doc!.cv.storedAt).toBeInstanceOf(Date);
     expect(store.keys()).toEqual([doc!.cv.key]);
+  });
+
+  it("schedules the retention sweep after a successful submission, and not after a refusal", async () => {
+    afterMock.mockClear();
+    await POST(applicationRequest({ ip: "198.51.100.41", fields: { name: "" } }));
+    expect(afterMock).not.toHaveBeenCalled();
+    const ok = await POST(applicationRequest({ ip: "198.51.100.42", fields: { email: "sweep@example.com", phone: "03005550000" } }));
+    expect(ok.status).toBe(200);
+    expect(afterMock).toHaveBeenCalledTimes(1);
   });
 
   it("rejects a request whose Content-Length is over the cap with 413", async () => {

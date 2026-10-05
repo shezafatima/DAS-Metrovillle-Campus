@@ -1,3 +1,4 @@
+import { after } from "next/server";
 import { extractIp, protectPublicForm, tooManyRequestsResponse } from "@/lib/public-form";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { careersCopy } from "@/content/careers";
@@ -8,6 +9,7 @@ import {
   StaleUploadError,
   createCareerApplication,
 } from "@/lib/careers/mutations";
+import { maybeSweepCareers } from "@/lib/careers/retention";
 import { formDataFrom, readCappedBody } from "@/lib/careers/read-capped-body";
 import { alreadyAppliedResponse, storeUnavailableResponse, tryAgainResponse } from "@/lib/careers/route-errors";
 import { DocumentStoreUnavailableError } from "@/lib/documents/store";
@@ -100,5 +102,7 @@ export async function POST(request: Request): Promise<Response> {
     return unavailableResponse();
   }
 
+  // Housekeeping after the response is sent; it never affects it (retention.ts catches and logs).
+  after(() => maybeSweepCareers());
   return Response.json({ ok: true }, { headers: NO_STORE });
 }
