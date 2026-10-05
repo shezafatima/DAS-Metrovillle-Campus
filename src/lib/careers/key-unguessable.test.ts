@@ -7,6 +7,9 @@ import { __setDocumentStoreForTests } from "@/lib/documents/store";
 import { CareerApplication } from "@/models/career-application";
 import { POST } from "@/app/api/public/careers/route";
 
+// `after` only works inside a Next request.
+vi.mock("next/server", () => ({ after: vi.fn() }));
+
 vi.setConfig({ testTimeout: 120_000, hookTimeout: 120_000 });
 
 const PDF = new TextEncoder().encode("%PDF-1.4\n1 0 obj\n<<>>\nendobj\n%%EOF\n");

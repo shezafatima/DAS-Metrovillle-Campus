@@ -31,7 +31,7 @@ function hrefFor(basePath: string, page: number, searchParams: Record<string, st
  * Shared admin-list pagination (moved out of
  * src/components/admin/news/news-pagination.tsx — sp.analyze finding
  * D1 / Constitution VI: one shared component, built once, instead of a
- * second near-identical copy for the signup list). `news-pagination.tsx`
+ * second near-identical copy for the retired signup list). `news-pagination.tsx`
  * is now a thin wrapper over this with `basePath="/admin/news"`.
  */
 export function AdminPagination({ page, totalPages, basePath, searchParams, copy }: AdminPaginationProps) {

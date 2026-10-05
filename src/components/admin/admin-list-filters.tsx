@@ -22,7 +22,7 @@ export interface AdminListFiltersProps {
  * Search + page filters for an admin list table (FR-018). Filters live
  * in the URL's search params, same as NewsTableFilters, with two fixes
  * over that component (found while verifying the AdminPagination lift,
- * signup T034 — logged there, not fixed there since news-table-filters.tsx
+ * the retired signup T034 — logged there, not fixed there since news-table-filters.tsx
  * is out of that feature's scope; this component must not repeat either
  * bug):
  *

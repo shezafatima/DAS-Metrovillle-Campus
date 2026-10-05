@@ -36,7 +36,6 @@ const EXPECTED: Record<string, Expected> = {
   "admin/(dashboard)/news/[id]/page.tsx": { kind: "page", access: "news" },
   "admin/(dashboard)/messages/page.tsx": { kind: "page", access: "messages" },
   "admin/(dashboard)/messages/[id]/page.tsx": { kind: "page", access: "messages" },
-  "admin/(dashboard)/signups/page.tsx": { kind: "page", access: "careers" },
   // 012 careers: the Applications list and one application.
   "admin/(dashboard)/careers/page.tsx": { kind: "page", access: "careers" },
   "admin/(dashboard)/careers/[id]/page.tsx": { kind: "page", access: "careers" },
@@ -65,8 +64,6 @@ const EXPECTED: Record<string, Expected> = {
   "api/admin/settings/uploads/sign/route.ts": { kind: "route", access: "settings" },
   "api/admin/messages/[id]/route.ts": { kind: "route", access: "messages" },
   "api/admin/messages/[id]/read/route.ts": { kind: "route", access: "messages" },
-  "api/admin/signups/[id]/route.ts": { kind: "route", access: "careers" },
-  "api/admin/signups/export/route.ts": { kind: "route", access: "careers" },
   // 012 careers: the CV download. Only the careers permission may fetch a CV.
   "api/admin/careers/[id]/cv/route.ts": { kind: "route", access: "careers" },
   // Deleting is main-admin only: it is what lets a person apply again inside the reapply window.

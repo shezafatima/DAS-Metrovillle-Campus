@@ -6,7 +6,7 @@ import type { MessageStatus } from "@/lib/messages/statuses";
 
 /**
  * The append-only write path for contact messages (ADR-0001's "Boundary"
- * — this rule does NOT extend to messages the way it does to signups).
+ * — this rule does NOT extend to messages the way it did to the retired signups).
  * It must never upsert, look up by email, or pass `withDeleted`.
  */
 

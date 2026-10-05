@@ -1,5 +1,5 @@
 /**
- * CSV encoding shared by admin exports (lifted out of src/lib/signup/csv.ts
+ * CSV encoding shared by admin exports (lifted out of the retired signup export
  * for 012 careers). RFC 4180 quoting throughout, a leading UTF-8 BOM so
  * Excel on Windows decodes Urdu names correctly, CRLF line endings, and a
  * formula-injection guard on any field that Excel or Sheets would otherwise

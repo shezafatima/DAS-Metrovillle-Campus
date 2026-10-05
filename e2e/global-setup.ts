@@ -48,7 +48,6 @@ export default async function globalSetup() {
       "account",
       "throttles",
       "news",
-      "signups",
       "messages",
       "adminNotificationStates",
       "userChanges",

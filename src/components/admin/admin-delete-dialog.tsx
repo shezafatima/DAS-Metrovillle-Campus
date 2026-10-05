@@ -93,7 +93,7 @@ export interface AdminDeleteDialogProps {
 }
 
 /**
- * Generic confirm-delete dialog, lifted from DeleteSignupDialog (research
+ * Generic confirm-delete dialog, lifted from the retired signup delete dialog (research
  * §2 / Constitution VI) so every admin list/detail page shares one
  * implementation instead of a near-identical copy per feature.
  */

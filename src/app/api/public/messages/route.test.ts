@@ -128,28 +128,17 @@ describeWithDb("POST /api/public/messages", ["messages", "throttles"], () => {
     expect(count).toBe(5);
   });
 
-  it("a contact budget is separate from the signup budget on the same source", async () => {
+  it("a contact budget is separate from the careers form budget on the same source", async () => {
     const { POST: postMessage } = await import("@/app/api/public/messages/route");
-    const { POST: postSignup } = await import("@/app/api/public/signups/route");
+    const { checkRateLimit } = await import("@/lib/rate-limit");
     const ip = "203.0.113.110";
 
-    for (let i = 0; i < 5; i++) {
-      const signupResponse = await postSignup(
-        new Request("http://localhost/api/public/signups", {
-          method: "POST",
-          headers: { "content-type": "application/json", "x-forwarded-for": ip },
-          body: JSON.stringify({
-            name: "Ali",
-            email: `signup-${i}@example.com`,
-            phone: "03001234567",
-            source: "home",
-          }),
-        }),
-      );
-      expect(signupResponse.status).toBe(200);
+    for (let i = 0; i < 6; i++) {
+      await checkRateLimit({ key: `form:careers:ip:${ip}`, max: 5, windowSeconds: 600 });
     }
+    expect((await checkRateLimit({ key: `form:careers:ip:${ip}`, max: 5, windowSeconds: 600 })).allowed).toBe(false);
 
-    const contactResponse = await postMessage(postRequest(validBody({ email: "after-signup@example.com" }), ip));
+    const contactResponse = await postMessage(postRequest(validBody({ email: "after-careers@example.com" }), ip));
     expect(contactResponse.status).toBe(200);
   });
 

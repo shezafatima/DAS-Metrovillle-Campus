@@ -7,7 +7,7 @@ import { MESSAGE_STATUS_KEYS } from "@/lib/messages/statuses";
  * `messages`". Append-only: one document per submission, no unique
  * index on purpose (a person can write in more than once) — see
  * research §1 and ADR-0001's "Boundary" for why this does NOT follow
- * signup's upsert-by-email rule.
+ * the retired signup's upsert-by-email rule.
  */
 const messageSchema = new Schema(
   {

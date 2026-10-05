@@ -347,8 +347,8 @@ export function DesignSystemDemo() {
         }
       />
       <p className="font-light text-sm text-muted-foreground">
-        One real example of each shared pattern later admin pages (003 news, 004 signups, 007
-        messages) reuse. Unlinked from the sidebar — reachable only by URL. Delete once those
+        One real example of each shared pattern later admin pages (003 news, 007
+        messages, 012 applications) reuse. Unlinked from the sidebar — reachable only by URL. Delete once those
         features have their own real pages.
       </p>
 

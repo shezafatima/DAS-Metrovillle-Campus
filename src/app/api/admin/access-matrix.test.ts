@@ -49,8 +49,6 @@ const routes: RouteCase[] = [
   { name: "PATCH /api/admin/messages/[id]", load: () => import("@/app/api/admin/messages/[id]/route") as never, method: "PATCH", access: "messages", body: {} },
   { name: "DELETE /api/admin/messages/[id]", load: () => import("@/app/api/admin/messages/[id]/route") as never, method: "DELETE", access: "messages" },
   { name: "POST /api/admin/messages/[id]/read", load: () => import("@/app/api/admin/messages/[id]/read/route") as never, method: "POST", access: "messages" },
-  { name: "DELETE /api/admin/signups/[id]", load: () => import("@/app/api/admin/signups/[id]/route") as never, method: "DELETE", access: "careers" },
-  { name: "GET /api/admin/signups/export", load: () => import("@/app/api/admin/signups/export/route") as never, method: "GET", access: "careers" },
   // 012 careers: an unknown id ends in a 404, not 401/403, so case 3 never touches the document store.
   { name: "GET /api/admin/careers/[id]/cv", load: () => import("@/app/api/admin/careers/[id]/cv/route") as never, method: "GET", access: "careers" },
   // Deleting an application is main admin only (a content manager holding `careers` is refused).
@@ -83,7 +81,7 @@ function allExcept(key: Permission): Permission[] {
   return PERMISSION_KEYS.filter((k) => k !== key);
 }
 
-describeWithDb("admin route access matrix (three cases per route)", ["user", "account", "session", "messages", "signups", "news", "careerApplications"], () => {
+describeWithDb("admin route access matrix (three cases per route)", ["user", "account", "session", "messages", "news", "careerApplications"], () => {
   beforeEach(() => {
     vi.doUnmock("next/headers");
     vi.resetModules();

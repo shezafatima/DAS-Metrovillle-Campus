@@ -1,6 +1,6 @@
 /**
- * Admin date/time formatting — shared by signup (004) and contact (008)
- * admin tables (research.md §2). Instants (unlike news' calendar-date
+ * Admin date/time formatting — shared by the admin tables for contact (008)
+ * and careers applications (012) (research.md §2). Instants (unlike news' calendar-date
  * publishDate), so this stays deliberately separate from
  * src/lib/news/dates.ts.
  */

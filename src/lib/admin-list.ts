@@ -1,7 +1,7 @@
 /**
  * Shared admin-list building blocks (moved out of
  * src/lib/news/admin-queries.ts — sp.analyze finding D1): both the
- * news admin list and the signup admin list page through these, so
+ * news admin list and the other admin list pages (messages, applications) page through these, so
  * neither feature imports the other's query module just to reuse a
  * pagination shape or a search-string escaper (Constitution VI — one
  * shared helper, built once).

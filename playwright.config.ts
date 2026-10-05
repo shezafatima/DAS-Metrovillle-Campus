@@ -22,7 +22,7 @@ export default defineConfig({
     {
       name: "chromium",
       testIgnore: [
-        /(admin-.*|signup-.*|contact-(public|details|protection|visual))\.spec\.ts/,
+        /(admin-.*|contact-(public|details|protection|visual))\.spec\.ts/,
         // 012 careers public specs run in the serial `forms` project. Anchored on the
         // file name so admin-careers-*.spec.ts is not caught here or in `forms`.
         /(^|[\\/])careers-[^\\/]*\.spec\.ts$/,
@@ -46,15 +46,15 @@ export default defineConfig({
       // Every Playwright worker shares one source IP (127.0.0.1), so
       // parallel public-form specs would trip each other's 5-per-10-min
       // rate limit (src/lib/rate-limit.ts PUBLIC_FORM_POLICY) — the
-      // signup-public.spec.ts rate-limit case deliberately submits past
-      // that threshold and needs the real limit intact, not loosened for
-      // CI (004-signup research.md §8; same rationale as "admin" above).
-      // Contact specs (008) isolate their own rate-limit budget with a
-      // per-spec X-Forwarded-For header (research §16), so they can share
-      // this serial project with the signup specs without colliding.
+      // careers-protection.spec.ts rate-limit case deliberately submits
+      // past that threshold and needs the real limit intact, not loosened
+      // for CI (same rationale as "admin" above). Contact (008) and
+      // careers (012) specs isolate their own rate-limit budget with a
+      // per-spec X-Forwarded-For header, so they can share this serial
+      // project without colliding.
       name: "forms",
       testMatch: [
-        /(signup-.*|contact-(public|details|protection|visual))\.spec\.ts/,
+        /contact-(public|details|protection|visual)\.spec\.ts/,
         /(^|[\\/])careers-[^\\/]*\.spec\.ts$/,
       ],
       fullyParallel: false,
