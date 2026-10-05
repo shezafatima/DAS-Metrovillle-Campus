@@ -197,9 +197,9 @@ description: "Task list for 012-careers"
 
 **Independent Test**: Exceed the submission limit and the upload limit from one IP → 429 and nothing stored; fill the honeypot → ordinary success, nothing stored.
 
-- [ ] T079 [US6] Add step 5 to `src/app/api/public/careers/route.ts`: when a `cv` part is present, `checkRateLimit({ key: "form:careers-upload:ip:<ip>", max: 10, windowSeconds: 86400 })` → 429 with `Retry-After`, before validation or any store call (extract `extractIp` from `src/lib/public-form.ts` as an export rather than duplicating it)
-- [ ] T080 [P] [US6] Extend `src/app/api/public/careers/route.test.ts`: honeypot → 200 `{ ok: true }`, no document, no store call; 6th submission in 10 minutes → 429; 11th upload in 24 h (submission budget cleared between calls) → 429 and the fake store holds no new key; counters keyed per IP
-- [ ] T081 [US6] Create `e2e/careers-protection.spec.ts` (`forms` project, its own `X-Forwarded-For`): honeypot filled via the DOM → confirmation shown and nothing in DB; repeated submissions → rate-limit alert with typed values kept
+- [X] T079 [US6] Add step 5 to `src/app/api/public/careers/route.ts`: when a `cv` part is present, `checkRateLimit({ key: "form:careers-upload:ip:<ip>", max: 10, windowSeconds: 86400 })` → 429 with `Retry-After`, before validation or any store call (extract `extractIp` from `src/lib/public-form.ts` as an export rather than duplicating it)
+- [X] T080 [P] [US6] Extend `src/app/api/public/careers/route.test.ts`: honeypot → 200 `{ ok: true }`, no document, no store call; 6th submission in 10 minutes → 429; 11th upload in 24 h (submission budget cleared between calls) → 429 and the fake store holds no new key; counters keyed per IP
+- [X] T081 [US6] Create `e2e/careers-protection.spec.ts` (`forms` project, its own `X-Forwarded-For`): honeypot filled via the DOM → confirmation shown and nothing in DB; repeated submissions → rate-limit alert with typed values kept
 
 ---
 

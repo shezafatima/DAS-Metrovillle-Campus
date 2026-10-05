@@ -251,4 +251,41 @@ describeWithDb("POST /api/public/careers", ["careerApplications", "careerApplica
     expect(await CareerApplication.collection.countDocuments({})).toBe(0);
     expect(store.keys()).toEqual([]);
   });
+  it("answers 429 with Retry-After on the 6th submission in 10 minutes, per address", async () => {
+    const ip = "198.51.100.31";
+    for (let i = 0; i < 5; i++) {
+      const response = await POST(applicationRequest({ ip, fields: { email: `rl${i}@example.com`, phone: `0300000010${i}` } }));
+      expect(response.status).toBe(200);
+    }
+    const sixth = await POST(applicationRequest({ ip, fields: { email: "rl5@example.com", phone: "03000000105" } }));
+    expect(sixth.status).toBe(429);
+    expect(Number(sixth.headers.get("retry-after"))).toBeGreaterThan(0);
+    // Another address has its own count.
+    const other = await POST(applicationRequest({ ip: "198.51.100.32" }));
+    expect(other.status).toBe(200);
+  });
+
+  it("answers 429 on the 11th upload in 24 hours and stores no new file", async () => {
+    const { Throttle } = await import("@/models/throttle");
+    const ip = "198.51.100.33";
+    for (let i = 0; i < 10; i++) {
+      // Invalid fields: nothing is saved, but the upload still counts.
+      await Throttle.deleteMany({ key: `form:careers:ip:${ip}` });
+      const response = await POST(applicationRequest({ ip, fields: { name: "" } }));
+      expect(response.status).toBe(400);
+    }
+    await Throttle.deleteMany({ key: `form:careers:ip:${ip}` });
+    const eleventh = await POST(applicationRequest({ ip }));
+    expect(eleventh.status).toBe(429);
+    expect(Number(eleventh.headers.get("retry-after"))).toBeGreaterThan(0);
+    expect(store.keys()).toEqual([]);
+    expect(await CareerApplication.collection.countDocuments({})).toBe(0);
+  });
+
+  it("does not count a request without a file against the upload budget", async () => {
+    const { Throttle } = await import("@/models/throttle");
+    const ip = "198.51.100.34";
+    await POST(applicationRequest({ ip, files: [] }));
+    expect(await Throttle.findOne({ key: `form:careers-upload:ip:${ip}` })).toBeNull();
+  });
 });

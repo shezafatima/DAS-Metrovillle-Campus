@@ -1,4 +1,5 @@
-import { protectPublicForm, tooManyRequestsResponse } from "@/lib/public-form";
+import { extractIp, protectPublicForm, tooManyRequestsResponse } from "@/lib/public-form";
+import { checkRateLimit } from "@/lib/rate-limit";
 import { careersCopy } from "@/content/careers";
 import { CAREERS_BODY_MAX_BYTES, verifyPdfBytes, type CvFailure } from "@/lib/careers/cv-limits";
 import {
@@ -14,6 +15,9 @@ import { careerApplicationFieldsSchema } from "@/lib/validation/career-applicati
 import { fieldErrors } from "@/lib/validation/field-errors";
 import { NO_STORE, payloadTooLargeResponse, unavailableResponse, validationResponse } from "@/lib/route-errors";
 
+// Uploads per address per day: a second, slower budget on top of the 5-in-10-minutes submission limit.
+const UPLOAD_LIMIT = { max: 10, windowSeconds: 86_400 };
+
 const CV_MESSAGES: Record<CvFailure, string> = {
   empty: careersCopy.fieldErrors.cv.empty,
   too_large: careersCopy.fieldErrors.cv.tooLarge,
@@ -27,7 +31,7 @@ function text(form: FormData, name: string): string {
 
 /**
  * Public application (contracts/public-careers-api.md). Order: size guard →
- * capped read → parse → honeypot → submission limit → validation (fields and
+ * capped read → parse → honeypot → submission limit → upload limit → validation (fields and
  * the PDF's real content) → save. The success body is identical
  * (`{ ok: true }`) whether an application was stored or the honeypot
  * silently dropped the request.
@@ -56,6 +60,12 @@ export async function POST(request: Request): Promise<Response> {
     return Response.json({ ok: true }, { headers: NO_STORE });
   }
   if (check.kind === "limited") return tooManyRequestsResponse(check.retryAfterSeconds);
+
+  // Upload budget: counted only when a file part is present, before any validation or store call.
+  if (form.getAll("cv").some((part) => typeof part !== "string")) {
+    const upload = await checkRateLimit({ key: `form:careers-upload:ip:${extractIp(request)}`, ...UPLOAD_LIMIT });
+    if (!upload.allowed) return tooManyRequestsResponse(upload.retryAfterSeconds);
+  }
 
   const parsed = careerApplicationFieldsSchema.safeParse({
     name: text(form, "name"),
