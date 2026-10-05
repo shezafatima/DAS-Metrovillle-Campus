@@ -6,7 +6,7 @@ import { E2E_ADMIN } from "../global-setup";
  * specs. Inserts directly into `adminNotificationStates` and reads the
  * Better-Auth-owned `user` collection (read-only — app code never
  * writes to it, per 002's data model) so specs can seed a specific
- * "last opened Signups" moment without going through the UI first.
+ * "last opened Applications" moment without going through the UI first.
  */
 
 async function withConnection<T>(fn: () => Promise<T>): Promise<T> {
@@ -34,18 +34,18 @@ export async function getAdminUserId(email: string = E2E_ADMIN.email): Promise<s
   });
 }
 
-/** Upserts this admin's "last opened Signups" moment. */
+/** Upserts this admin's "last opened Applications" moment. */
 export async function seedAdminNotificationState({
   adminId,
-  signupsLastOpenedAt,
+  careersLastOpenedAt,
 }: {
   adminId: string;
-  signupsLastOpenedAt: Date;
+  careersLastOpenedAt: Date;
 }): Promise<void> {
   await withConnection(async () => {
     await mongoose.connection.db
       ?.collection("adminNotificationStates")
-      .updateOne({ _id: adminId as unknown as string }, { $set: { signupsLastOpenedAt } }, { upsert: true });
+      .updateOne({ _id: adminId as unknown as string }, { $set: { careersLastOpenedAt } }, { upsert: true });
   });
 }
 

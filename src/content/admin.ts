@@ -12,12 +12,12 @@ export interface AdminNavItem {
   access: Access;
 }
 
-// Fixed order per FR-021: Overview, News, Messages, Signups, Settings; 011 adds Users (main admin).
+// Fixed order per FR-021: Overview, News, Messages, Applications (012, replaced Signups), Settings; 011 adds Users (main admin).
 export const adminNavItems: AdminNavItem[] = [
   { label: "Overview", href: "/admin", access: "any" },
   { label: "News", href: "/admin/news", access: "news" },
   { label: "Messages", href: "/admin/messages", access: "messages" },
-  { label: "Signups", href: "/admin/signups", access: "careers" },
+  { label: "Applications", href: "/admin/careers", access: "careers" },
   { label: "Settings", href: "/admin/settings", access: "settings" },
   { label: "Users", href: "/admin/users", access: "main_admin" },
 ];
@@ -209,6 +209,53 @@ export const signupsCopy = {
   toasts: {
     deleted: "Signup deleted",
     gone: "This signup is no longer available",
+    unavailable: loginCopy.errors.unavailable,
+  },
+} as const;
+
+// Career applications (012) admin copy: list, detail, CV download, delete and export.
+export const careersAdminCopy = {
+  pageTitle: "Applications",
+  export: "Export CSV",
+  table: {
+    headers: {
+      name: "Name",
+      email: "Email",
+      phone: "Phone",
+      qualification: "Qualification",
+      applied: "Applied",
+    },
+    empty: "No applications yet.",
+    emptyFiltered: "No applications match your search.",
+  },
+  filters: {
+    searchPlaceholder: "Search by name, email or phone…",
+  },
+  pagination: {
+    previous: "Previous",
+    next: "Next",
+    pageOf: (page: number, totalPages: number) => `Page ${page} of ${totalPages}`,
+  },
+  detail: {
+    back: "Back to applications",
+    email: "Email",
+    phone: "Phone",
+    qualification: "Qualification",
+    applied: "Applied",
+    cv: "CV",
+    download: "Download CV",
+    downloadHint: "A PDF file saved to your computer. It is never opened inside the admin.",
+  },
+  deleteDialog: {
+    trigger: "Delete application",
+    title: "Delete this application?",
+    body: "The application and its CV file will be removed. The person will be able to apply again straight away.",
+    cancel: "Cancel",
+    confirm: "Delete",
+  },
+  toasts: {
+    deleted: "Application deleted",
+    gone: "This application is no longer available",
     unavailable: loginCopy.errors.unavailable,
   },
 } as const;
@@ -454,7 +501,7 @@ export const notificationsCopy = {
   empty: "You're all caught up — nothing new.",
   markAllRead: "Mark all as read",
   seeAllMessages: "See all messages",
-  seeAllSignups: "See all signups",
+  seeAllApplications: "See all applications",
   newLabel: "New",
   toasts: {
     markAllReadFailed: "Couldn't mark everything as read. Please try again.",

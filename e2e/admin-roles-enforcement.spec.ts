@@ -2,12 +2,12 @@ import { test, expect, type Page } from "@playwright/test";
 import { E2E_ADMIN } from "./global-setup";
 import {
   adminSession,
-  clearMessagesAndSignups,
+  clearMessagesAndApplications,
   editUserPanel,
   loginSeeded,
   resetUsers,
   seedActiveUser,
-  seedMessageAndSignup,
+  seedMessageAndApplication,
   sidebarLabels,
 } from "./helpers/users";
 import { accessCopy, accountCopy, usersCopy } from "../src/content/admin";
@@ -24,14 +24,14 @@ async function expectDenied(page: Page, path: string) {
 test.describe("roles — permissions are enforced everywhere (011 US3)", () => {
   test.beforeEach(async () => {
     await resetUsers();
-    await clearMessagesAndSignups();
+    await clearMessagesAndApplications();
   });
 
   test("a content manager with only News sees only News, is refused elsewhere, and cannot read other sections' data", async ({
     browser,
   }) => {
     test.setTimeout(300_000);
-    await seedMessageAndSignup();
+    await seedMessageAndApplication();
     const user = await seedActiveUser({ email: "news-only@example.test", permissions: ["news"] });
     const { page } = await loginSeeded(browser, user);
 
@@ -40,11 +40,11 @@ test.describe("roles — permissions are enforced everywhere (011 US3)", () => {
       const main = page.locator("#admin-content");
       await expect(main).toContainText("News");
       await expect(main).not.toContainText("Messages");
-      await expect(main).not.toContainText("Signups");
+      await expect(main).not.toContainText("Applications");
       await expect(main).not.toContainText("Users");
     });
 
-    await test.step("the notification bell carries no message or signup data", async () => {
+    await test.step("the notification bell carries no message or application data", async () => {
       await page.getByRole("button", { name: /Notifications/ }).click();
       const panel = page.getByRole("dialog", { name: /Notifications/ });
       await expect(panel).toBeVisible();
@@ -53,14 +53,15 @@ test.describe("roles — permissions are enforced everywhere (011 US3)", () => {
       await page.keyboard.press("Escape");
       const response = await page.request.get("/api/admin/notifications");
       expect(response.status()).toBe(200);
-      expect(await response.json()).toEqual({ messagesNew: 0, signupsNew: 0, items: [] });
+      expect(await response.json()).toEqual({ messagesNew: 0, applicationsNew: 0, items: [] });
     });
 
     await test.step("pages they lack redirect to the overview with a clear message", async () => {
       for (const path of [
         "/admin/messages",
         `/admin/messages/${UNKNOWN_ID}`,
-        "/admin/signups",
+        "/admin/careers",
+        `/admin/careers/${UNKNOWN_ID}`,
         "/admin/settings",
         "/admin/users",
         "/admin/users/activity",
@@ -72,18 +73,19 @@ test.describe("roles — permissions are enforced everywhere (011 US3)", () => {
 
     await test.step("requests for sections they lack are refused with no data", async () => {
       const refused = [
-        await page.request.get("/api/admin/signups/export"),
+        await page.request.get("/api/admin/careers/export"),
         await page.request.patch(`/api/admin/messages/${UNKNOWN_ID}`, { data: { status: "read" } }),
         await page.request.delete(`/api/admin/messages/${UNKNOWN_ID}`),
         await page.request.post(`/api/admin/messages/${UNKNOWN_ID}/read`),
-        await page.request.delete(`/api/admin/signups/${UNKNOWN_ID}`),
-        await page.request.post("/api/admin/signups/opened"),
+        await page.request.delete(`/api/admin/careers/${UNKNOWN_ID}`),
+        await page.request.get(`/api/admin/careers/${UNKNOWN_ID}/cv`),
+        await page.request.post("/api/admin/careers/opened"),
       ];
       for (const response of refused) {
         expect(response.status(), response.url()).toBe(403);
         expect(await response.json()).toEqual({ error: "forbidden" });
       }
-      const exportBody = await (await page.request.get("/api/admin/signups/export")).text();
+      const exportBody = await (await page.request.get("/api/admin/careers/export")).text();
       expect(exportBody).not.toContain("Leakcheck");
       expect(exportBody).not.toContain("ali-leak@example.test");
     });
@@ -102,7 +104,7 @@ test.describe("roles — permissions are enforced everywhere (011 US3)", () => {
     const user = await seedActiveUser({ email: "all-grants@example.test", permissions: [...PERMISSION_KEYS] });
     const { page } = await loginSeeded(browser, user);
 
-    expect(await sidebarLabels(page)).toEqual(["Overview", "News", "Messages", "Signups", "Settings"]);
+    expect(await sidebarLabels(page)).toEqual(["Overview", "News", "Messages", "Applications", "Settings"]);
     for (const path of ["/admin/users", "/admin/users/activity", "/admin/design-system"]) {
       await expectDenied(page, path);
     }
@@ -121,7 +123,7 @@ test.describe("roles — permissions are enforced everywhere (011 US3)", () => {
     await expect(page.getByRole("heading", { name: accountCopy.pageTitle, level: 1 })).toBeVisible();
     await expect(page.getByText(user.email)).toBeVisible();
 
-    for (const path of ["/admin/news", "/admin/messages", "/admin/signups", "/admin/settings"]) {
+    for (const path of ["/admin/news", "/admin/messages", "/admin/careers", "/admin/settings"]) {
       await expectDenied(page, path);
     }
   });
@@ -153,7 +155,7 @@ test.describe("roles — permissions are enforced everywhere (011 US3)", () => {
       await page.goto("/admin/messages");
       await expect(page).toHaveURL("/admin/messages");
       expect(await sidebarLabels(page)).toEqual(["Overview", "Messages"]);
-      expect((await page.request.get("/api/admin/signups/export")).status()).toBe(403);
+      expect((await page.request.get("/api/admin/careers/export")).status()).toBe(403);
       // Still the same login: no redirect to the login page happened.
       expect(page.url()).not.toContain("/admin/login");
     }
@@ -162,7 +164,7 @@ test.describe("roles — permissions are enforced everywhere (011 US3)", () => {
   test("the seeded main admin still sees everything, Users included", async ({ browser }) => {
     test.setTimeout(240_000);
     const { page } = await adminSession(browser);
-    expect(await sidebarLabels(page)).toEqual(["Overview", "News", "Messages", "Signups", "Settings", "Users"]);
+    expect(await sidebarLabels(page)).toEqual(["Overview", "News", "Messages", "Applications", "Settings", "Users"]);
     await page.goto("/admin/users");
     await expect(page.getByRole("heading", { name: usersCopy.pageTitle, level: 1 })).toBeVisible();
     await expect(page.getByTestId("user-row").filter({ hasText: E2E_ADMIN.email })).toContainText(usersCopy.you);

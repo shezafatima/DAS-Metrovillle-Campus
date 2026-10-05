@@ -13,13 +13,13 @@ export interface NotificationPanelProps {
 }
 
 /**
- * The bell's panel content — empty state, the mixed messages/signups
+ * The bell's panel content — empty state, the mixed messages/applications
  * list (already newest-first, ≤10, from context), the "see all" links
  * and "Mark all as read" (contracts/notification-ui.md).
  */
 export function NotificationPanel({ onChooseItem }: NotificationPanelProps) {
-  const { messagesNew, signupsNew, items, markAllRead } = useNotifications();
-  const total = messagesNew + signupsNew;
+  const { messagesNew, applicationsNew, items, markAllRead } = useNotifications();
+  const total = messagesNew + applicationsNew;
 
   // Deferred to the next tick: closing the popover synchronously in the
   // same click that a Link's own navigation handler processes can race
@@ -64,11 +64,11 @@ export function NotificationPanel({ onChooseItem }: NotificationPanelProps) {
             {notificationsCopy.seeAllMessages}
           </Link>
           <Link
-            href="/admin/signups"
+            href="/admin/careers"
             onClick={chooseItem}
             className="rounded-md bg-primary px-3 py-1.5 text-center font-bold text-primary-foreground text-xs hover:bg-admin-highlight hover:text-admin-highlight-foreground"
           >
-            {notificationsCopy.seeAllSignups}
+            {notificationsCopy.seeAllApplications}
           </Link>
         </div>
         <Button

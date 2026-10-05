@@ -1,18 +1,18 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Mail, Newspaper, UserPlus } from "lucide-react";
+import { Briefcase, Mail, Newspaper } from "lucide-react";
 import { StatCard } from "@/components/admin/stat-card";
 import { requireAdminPage } from "@/lib/dal";
 import { canAccess } from "@/lib/permissions";
 import { countPublishedPosts } from "@/lib/news/admin-queries";
-import { countSignups } from "@/lib/signup/admin-queries";
+import { countApplications } from "@/lib/careers/admin-queries";
 import { countMessages } from "@/lib/messages/admin-queries";
-import { countNewSignups } from "@/lib/notifications/queries";
+import { countNewApplications } from "@/lib/notifications/queries";
 import { accessCopy } from "@/content/admin";
 
 export const metadata: Metadata = { title: "Overview" };
 
-// News, Messages and Signups are all wired to real counts.
+// News, Messages and Applications are all wired to real counts.
 export const dynamic = "force-dynamic";
 
 export default async function AdminOverviewPage({ searchParams }: PageProps<"/admin">) {
@@ -24,16 +24,16 @@ export default async function AdminOverviewPage({ searchParams }: PageProps<"/ad
   // their counts are queried, so nothing about the others is read at all.
   const showNews = canAccess(session, "news");
   const showMessages = canAccess(session, "messages");
-  const showSignups = canAccess(session, "careers");
+  const showApplications = canAccess(session, "careers");
 
-  const [newsCount, messages, signupsCount, signupsNew] = await Promise.all([
+  const [newsCount, messages, applicationsCount, applicationsNew] = await Promise.all([
     showNews ? countPublishedPosts() : 0,
     showMessages ? countMessages() : { total: 0, new: 0 },
-    showSignups ? countSignups() : 0,
-    showSignups ? countNewSignups(session.userId) : 0,
+    showApplications ? countApplications() : 0,
+    showApplications ? countNewApplications(session.userId) : 0,
   ]);
 
-  const hasAnyCard = showNews || showMessages || showSignups;
+  const hasAnyCard = showNews || showMessages || showApplications;
 
   return (
     <div className="flex flex-col gap-6 p-6">
@@ -63,12 +63,12 @@ export default async function AdminOverviewPage({ searchParams }: PageProps<"/ad
               highlightLabel="new"
             />
           )}
-          {showSignups && (
+          {showApplications && (
             <StatCard
-              title="Signups"
-              value={signupsCount}
-              icon={UserPlus}
-              highlightCount={signupsNew}
+              title="Applications"
+              value={applicationsCount}
+              icon={Briefcase}
+              highlightCount={applicationsNew}
               highlightLabel="new"
             />
           )}

@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Mail, Newspaper, Settings, UserPlus, Users } from "lucide-react";
+import { Briefcase, LayoutDashboard, Mail, Newspaper, Settings, Users } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -22,15 +22,15 @@ const iconByHref: Record<string, React.ComponentType<{ className?: string }>> = 
   "/admin": LayoutDashboard,
   "/admin/news": Newspaper,
   "/admin/messages": Mail,
-  "/admin/signups": UserPlus,
+  "/admin/careers": Briefcase,
   "/admin/settings": Settings,
   "/admin/users": Users,
 };
 
-/** Counts for the Messages and Signups badges — both from the one shared NotificationsProvider (spec FR-014). */
-const badgeCountByHref: Record<string, "messagesNew" | "signupsNew"> = {
+/** Counts for the Messages and Applications badges — both from the one shared NotificationsProvider (spec FR-014). */
+const badgeCountByHref: Record<string, "messagesNew" | "applicationsNew"> = {
   "/admin/messages": "messagesNew",
-  "/admin/signups": "signupsNew",
+  "/admin/careers": "applicationsNew",
 };
 
 /**
@@ -42,8 +42,8 @@ const badgeCountByHref: Record<string, "messagesNew" | "signupsNew"> = {
  */
 export function AppSidebar({ allowedHrefs }: { allowedHrefs: readonly string[] }) {
   const pathname = usePathname();
-  const { messagesNew, signupsNew, loading } = useNotifications();
-  const countByHref = { messagesNew, signupsNew };
+  const { messagesNew, applicationsNew, loading } = useNotifications();
+  const countByHref = { messagesNew, applicationsNew };
 
   return (
     <Sidebar>

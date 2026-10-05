@@ -1,21 +1,21 @@
 import { test, expect } from "@playwright/test";
 import { loginAsAdmin, getAdminUserId, seedAdminNotificationState, clearAdminNotificationStates } from "./helpers/notifications";
 import { seedMessages, clearMessages } from "./helpers/messages";
-import { seedSignups, clearSignups } from "./helpers/signups";
+import { seedCareerApplications, clearCareerApplications } from "./helpers/careers";
 
 test.describe("admin notifications — bell", () => {
   test.beforeEach(async ({ page }) => {
     await clearMessages();
-    await clearSignups();
+    await clearCareerApplications();
     await clearAdminNotificationStates();
     await loginAsAdmin(page);
     const adminId = await getAdminUserId();
-    await seedAdminNotificationState({ adminId, signupsLastOpenedAt: new Date(Date.now() - 60 * 60_000) });
+    await seedAdminNotificationState({ adminId, careersLastOpenedAt: new Date(Date.now() - 60 * 60_000) });
   });
 
-  test("lists a new message and a new signup, newest first with a New mark", async ({ page }) => {
+  test("lists a new message and a new application, newest first with a New mark", async ({ page }) => {
     const [messageId] = await seedMessages([{ name: "Ali Khan", email: "ali@example.com", subject: "Admission enquiry", body: "Hi", status: "new" }]);
-    await seedSignups([{ name: "Sara Ahmed", email: "sara@example.com", phone: "+923001234567", sources: ["home"], lastSignupAt: new Date() }]);
+    await seedCareerApplications([{ name: "Sara Ahmed", email: "sara@example.com", phone: "+923001234567", createdAt: new Date() }]);
 
     await page.goto("/admin");
     await page.getByRole("button", { name: "Notifications" }).click();
@@ -30,12 +30,12 @@ test.describe("admin notifications — bell", () => {
     await expect(page.getByText("Sara Ahmed")).not.toBeVisible();
   });
 
-  test("choosing a signup item goes to the Signups list", async ({ page }) => {
-    await seedSignups([{ name: "Sara Ahmed", email: "sara2@example.com", phone: "+923001234567", sources: ["home"], lastSignupAt: new Date() }]);
+  test("choosing an application item opens that application", async ({ page }) => {
+    const [{ id }] = await seedCareerApplications([{ name: "Sara Ahmed", email: "sara2@example.com", phone: "+923001234567", createdAt: new Date() }]);
     await page.goto("/admin");
     await page.getByRole("button", { name: "Notifications" }).click();
     await page.getByRole("link", { name: /Sara Ahmed/ }).click();
-    await expect(page).toHaveURL(/\/admin\/signups$/);
+    await expect(page).toHaveURL(new RegExp(`/admin/careers/${id}$`));
   });
 
   test("Escape and outside click both close the panel", async ({ page }) => {
@@ -55,7 +55,7 @@ test.describe("admin notifications — bell", () => {
 
   test("Mark all as read clears the bell and shows the empty state without closing", async ({ page }) => {
     await seedMessages([{ status: "new" }]);
-    await seedSignups([{ name: "Sara", email: "sara3@example.com", phone: "+923001234567", sources: ["home"], lastSignupAt: new Date() }]);
+    await seedCareerApplications([{ name: "Sara", email: "sara3@example.com", phone: "+923001234567", createdAt: new Date() }]);
     await page.goto("/admin");
     await page.getByRole("button", { name: "Notifications" }).click();
     await page.getByRole("button", { name: "Mark all as read" }).click();

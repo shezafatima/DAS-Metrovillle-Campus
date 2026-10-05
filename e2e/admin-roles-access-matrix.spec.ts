@@ -24,7 +24,9 @@ const pages: PageCase[] = [
   { path: `/admin/news/${UNKNOWN_ID}`, access: "news" },
   { path: "/admin/messages", access: "messages" },
   { path: `/admin/messages/${UNKNOWN_ID}`, access: "messages" },
-  { path: "/admin/signups", access: "careers" },
+  { path: "/admin/careers", access: "careers" },
+  // 012: one application (an unknown id: permitted users get the not-found page).
+  { path: `/admin/careers/${UNKNOWN_ID}`, access: "careers" },
   { path: "/admin/settings", access: "settings" },
   { path: "/admin/settings/contact", access: "settings" },
   { path: "/admin/settings/hero", access: "settings" },

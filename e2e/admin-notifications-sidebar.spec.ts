@@ -1,27 +1,27 @@
 import { test, expect } from "@playwright/test";
 import { loginAsAdmin, getAdminUserId, seedAdminNotificationState, clearAdminNotificationStates } from "./helpers/notifications";
 import { seedMessages, clearMessages } from "./helpers/messages";
-import { seedSignups, clearSignups } from "./helpers/signups";
+import { seedCareerApplications, clearCareerApplications } from "./helpers/careers";
 
 test.describe("admin notifications — sidebar", () => {
   test.beforeEach(async ({ page }) => {
     await clearMessages();
-    await clearSignups();
+    await clearCareerApplications();
     await clearAdminNotificationStates();
     await loginAsAdmin(page);
     const adminId = await getAdminUserId();
-    await seedAdminNotificationState({ adminId, signupsLastOpenedAt: new Date(Date.now() - 60 * 60_000) });
+    await seedAdminNotificationState({ adminId, careersLastOpenedAt: new Date(Date.now() - 60 * 60_000) });
   });
 
   test("sidebar badges sum to the bell's total", async ({ page }) => {
     await seedMessages([{ status: "new" }, { status: "new" }]);
-    await seedSignups([{ name: "Sara", email: "sara@example.com", phone: "+923001234567", sources: ["home"], lastSignupAt: new Date() }]);
+    await seedCareerApplications([{ name: "Sara", email: "sara@example.com", phone: "+923001234567", createdAt: new Date() }]);
 
     await page.goto("/admin");
     const messagesItem = page.getByRole("link", { name: "Messages" }).locator("..");
-    const signupsItem = page.getByRole("link", { name: "Signups" }).locator("..");
+    const applicationsItem = page.getByRole("link", { name: "Applications" }).locator("..");
     await expect(messagesItem.getByText("2")).toBeVisible();
-    await expect(signupsItem.getByText("1")).toBeVisible();
+    await expect(applicationsItem.getByText("1")).toBeVisible();
 
     await page.getByRole("button", { name: "Notifications" }).click();
     await expect(page.getByText("You're all caught up")).not.toBeVisible();

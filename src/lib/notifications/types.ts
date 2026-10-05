@@ -1,20 +1,20 @@
-/** data-model.md "NotificationItem" — a message or signup as shown in the bell panel. */
+/** data-model.md "NotificationItem" — a message or a career application as shown in the bell panel. */
 export interface NotificationItem {
-  kind: "message" | "signup";
+  kind: "message" | "application";
   id: string;
-  /** message: sender's name · signup: name */
+  /** message: sender's name · application: applicant's name */
   title: string;
-  /** message: subject · signup: email */
+  /** message: subject · application: qualification */
   description: string;
-  /** ISO — message: createdAt · signup: lastSignupAt */
+  /** ISO — message: createdAt · application: createdAt */
   timestamp: string;
-  /** message: `/admin/messages/${id}` · signup: `/admin/signups` */
+  /** message: `/admin/messages/${id}` · application: `/admin/careers/${id}` */
   href: string;
 }
 
 /**
  * Who is looking (011 FR-010): a user's id plus what they may use. Message
- * data needs `messages`; signup data needs `careers`; registrations (013)
+ * data needs `messages`; application data needs `careers`; registrations (013)
  * will need the main-admin role and are never part of this summary.
  */
 export interface NotificationViewer {
@@ -25,7 +25,7 @@ export interface NotificationViewer {
 
 export interface NotificationsSummary {
   messagesNew: number;
-  signupsNew: number;
+  applicationsNew: number;
   /** Newest first, at most 10, mixed kinds. */
   items: NotificationItem[];
 }

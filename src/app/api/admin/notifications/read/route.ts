@@ -9,7 +9,7 @@ export async function POST() {
 
   try {
     await markAllNotificationsRead(access.session);
-    return Response.json({ messagesNew: 0, signupsNew: 0 }, { headers: NO_STORE });
+    return Response.json({ messagesNew: 0, applicationsNew: 0 }, { headers: NO_STORE });
   } catch {
     return unavailableResponse();
   }

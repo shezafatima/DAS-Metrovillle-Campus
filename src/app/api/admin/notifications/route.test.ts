@@ -3,8 +3,8 @@ import { it, expect, vi, beforeEach } from "vitest";
 import { describeWithDb } from "@/test/db";
 import { seedTestAdmin, getTestSessionCookie } from "@/test/admin-session";
 import { Message } from "@/models/message";
-import { Signup } from "@/models/signup";
-import { markSignupsOpened } from "@/lib/notifications/state";
+import { seedApplication } from "@/test/career-applications";
+import { markCareersOpened } from "@/lib/notifications/state";
 import { mockNextHeaders } from "@/test/next-headers";
 
 const ADMIN_EMAIL = "notifications-get-route-test@example.com";
@@ -21,7 +21,7 @@ async function getAdminUserId(email: string): Promise<string> {
 
 describeWithDb(
   "GET /api/admin/notifications",
-  ["messages", "signups", "adminNotificationStates", "user", "account", "session"],
+  ["messages", "careerApplications", "adminNotificationStates", "user", "account", "session"],
   () => {
     beforeEach(() => {
       vi.doUnmock("next/headers");
@@ -43,16 +43,9 @@ describeWithDb(
       const cookie = await getTestSessionCookie(ADMIN_EMAIL, ADMIN_PASSWORD);
       const adminId = await getAdminUserId(ADMIN_EMAIL);
 
-      await markSignupsOpened(adminId, new Date(Date.now() - 60 * 60_000));
+      await markCareersOpened(adminId, new Date(Date.now() - 60 * 60_000));
       await Message.create({ name: "Ali", email: "ali@example.com", subject: "Hi", body: "Hello", status: "new" });
-      await Signup.create({
-        name: "Sara",
-        email: "sara@example.com",
-        phone: "+923001234567",
-        sources: ["home"],
-        firstSignupAt: new Date(),
-        lastSignupAt: new Date(),
-      });
+      await seedApplication({ createdAt: new Date() });
 
       vi.doMock("next/headers", () => mockNextHeaders(new Headers({ cookie })));
       vi.resetModules();
@@ -62,7 +55,7 @@ describeWithDb(
       expect(response.status).toBe(200);
       const body = await response.json();
       expect(body.messagesNew).toBe(1);
-      expect(body.signupsNew).toBe(1);
+      expect(body.applicationsNew).toBe(1);
       expect(body.items).toHaveLength(2);
     });
 

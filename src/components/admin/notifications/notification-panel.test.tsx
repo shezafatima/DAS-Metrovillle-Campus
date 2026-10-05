@@ -9,7 +9,7 @@ vi.mock("./notifications-provider", () => ({
 
 describe("NotificationPanel", () => {
   it("shows the empty state when nothing is new", () => {
-    mockUseNotifications.mockReturnValue({ messagesNew: 0, signupsNew: 0, items: [], markAllRead: vi.fn() });
+    mockUseNotifications.mockReturnValue({ messagesNew: 0, applicationsNew: 0, items: [], markAllRead: vi.fn() });
     render(<NotificationPanel />);
     expect(screen.getByText("You're all caught up — nothing new.")).toBeInTheDocument();
   });
@@ -18,10 +18,10 @@ describe("NotificationPanel", () => {
     const now = new Date();
     mockUseNotifications.mockReturnValue({
       messagesNew: 1,
-      signupsNew: 1,
+      applicationsNew: 1,
       items: [
         { kind: "message", id: "1", title: "Ali", description: "Enquiry", timestamp: now.toISOString(), href: "/admin/messages/1" },
-        { kind: "signup", id: "2", title: "Sara", description: "sara@example.com", timestamp: new Date(now.getTime() - 60_000).toISOString(), href: "/admin/signups" },
+        { kind: "application", id: "2", title: "Sara", description: "sara@example.com", timestamp: new Date(now.getTime() - 60_000).toISOString(), href: "/admin/careers" },
       ],
       markAllRead: vi.fn(),
     });
@@ -36,17 +36,17 @@ describe("NotificationPanel", () => {
   });
 
   it("always shows both footer links", () => {
-    mockUseNotifications.mockReturnValue({ messagesNew: 0, signupsNew: 0, items: [], markAllRead: vi.fn() });
+    mockUseNotifications.mockReturnValue({ messagesNew: 0, applicationsNew: 0, items: [], markAllRead: vi.fn() });
     render(<NotificationPanel />);
     expect(screen.getByRole("link", { name: "See all messages" })).toHaveAttribute("href", "/admin/messages");
-    expect(screen.getByRole("link", { name: "See all signups" })).toHaveAttribute("href", "/admin/signups");
+    expect(screen.getByRole("link", { name: "See all applications" })).toHaveAttribute("href", "/admin/careers");
   });
 
   it("disables Mark all as read at zero and calls markAllRead when clicked otherwise", () => {
     const markAllRead = vi.fn();
     mockUseNotifications.mockReturnValue({
       messagesNew: 1,
-      signupsNew: 0,
+      applicationsNew: 0,
       items: [{ kind: "message", id: "1", title: "Ali", description: "Hi", timestamp: new Date().toISOString(), href: "/admin/messages/1" }],
       markAllRead,
     });
@@ -58,7 +58,7 @@ describe("NotificationPanel", () => {
   });
 
   it("disables Mark all as read when nothing is new", () => {
-    mockUseNotifications.mockReturnValue({ messagesNew: 0, signupsNew: 0, items: [], markAllRead: vi.fn() });
+    mockUseNotifications.mockReturnValue({ messagesNew: 0, applicationsNew: 0, items: [], markAllRead: vi.fn() });
     render(<NotificationPanel />);
     expect(screen.getByRole("button", { name: "Mark all as read" })).toBeDisabled();
   });

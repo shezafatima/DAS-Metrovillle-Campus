@@ -1,16 +1,16 @@
 import { test, expect } from "@playwright/test";
 import { loginAsAdmin, getAdminUserId, seedAdminNotificationState, clearAdminNotificationStates } from "./helpers/notifications";
 import { seedMessages, clearMessages } from "./helpers/messages";
-import { clearSignups } from "./helpers/signups";
+import { clearCareerApplications } from "./helpers/careers";
 
 test.describe("admin notifications — page title", () => {
   test.beforeEach(async ({ page }) => {
     await clearMessages();
-    await clearSignups();
+    await clearCareerApplications();
     await clearAdminNotificationStates();
     await loginAsAdmin(page);
     const adminId = await getAdminUserId();
-    await seedAdminNotificationState({ adminId, signupsLastOpenedAt: new Date(Date.now() - 60 * 60_000) });
+    await seedAdminNotificationState({ adminId, careersLastOpenedAt: new Date(Date.now() - 60 * 60_000) });
   });
 
   test("prefixes the title when something is new, and clears it on mark all as read", async ({ page }) => {

@@ -1,18 +1,25 @@
 import { connectDb } from "@/lib/db";
 import { Message, type MessageDoc } from "@/models/message";
-import { Signup, type SignupDoc } from "@/models/signup";
+import { CareerApplication, type CareerApplicationDoc } from "@/models/career-application";
 import { countNewMessages } from "@/lib/messages/admin-queries";
-import { getSignupsLastOpenedAt } from "@/lib/notifications/state";
+import { buildApplicationsFilter } from "@/lib/careers/admin-queries";
+import { getCareersLastOpenedAt } from "@/lib/notifications/state";
 import { canAccess } from "@/lib/permissions";
 import type { NotificationItem, NotificationViewer, NotificationsSummary } from "@/lib/notifications/types";
 
 const ITEM_LIMIT = 10;
 
-/** A signup counts as new when it arrived, or was updated by a repeat submission, after the admin's last Signups visit (research.md §2). */
-export async function countNewSignups(adminId: string): Promise<number> {
+/**
+ * An application counts as new when it arrived after the admin's last
+ * Applications visit. Applications are never edited, so there is no
+ * "updated again" case (unlike the signups this replaces). Only stored,
+ * live applications count: the shared admin filter hides pending and
+ * deleted ones.
+ */
+export async function countNewApplications(adminId: string): Promise<number> {
   await connectDb();
-  const lastOpened = await getSignupsLastOpenedAt(adminId);
-  return Signup.countDocuments({ lastSignupAt: { $gt: lastOpened } });
+  const lastOpened = await getCareersLastOpenedAt(adminId);
+  return CareerApplication.countDocuments({ ...buildApplicationsFilter(), createdAt: { $gt: lastOpened } });
 }
 
 function messageToItem(doc: Pick<MessageDoc, "_id" | "name" | "subject" | "createdAt">): NotificationItem {
@@ -26,27 +33,29 @@ function messageToItem(doc: Pick<MessageDoc, "_id" | "name" | "subject" | "creat
   };
 }
 
-function signupToItem(doc: Pick<SignupDoc, "_id" | "name" | "email" | "lastSignupAt">): NotificationItem {
+function applicationToItem(
+  doc: Pick<CareerApplicationDoc, "_id" | "name" | "qualification" | "createdAt">,
+): NotificationItem {
   return {
-    kind: "signup",
+    kind: "application",
     id: doc._id.toString(),
     title: doc.name,
-    description: doc.email,
-    timestamp: doc.lastSignupAt.toISOString(),
-    href: "/admin/signups",
+    description: doc.qualification,
+    timestamp: doc.createdAt!.toISOString(),
+    href: `/admin/careers/${doc._id.toString()}`,
   };
 }
 
 /** Which kinds a viewer may see (011). Both by default, for callers that already checked. */
 export interface NotificationKinds {
   messages: boolean;
-  signups: boolean;
+  applications: boolean;
 }
 
-const ALL_KINDS: NotificationKinds = { messages: true, signups: true };
+const ALL_KINDS: NotificationKinds = { messages: true, applications: true };
 
 function kindsFor(viewer: NotificationViewer): NotificationKinds {
-  return { messages: canAccess(viewer, "messages"), signups: canAccess(viewer, "careers") };
+  return { messages: canAccess(viewer, "messages"), applications: canAccess(viewer, "careers") };
 }
 
 /** Up to `limit` newest items across the permitted kinds, mixed and re-sorted by arrival time (research.md §2). */
@@ -55,11 +64,11 @@ export async function listNotificationItems(
   limit: number = ITEM_LIMIT,
   kinds: NotificationKinds = ALL_KINDS,
 ): Promise<NotificationItem[]> {
-  if (!kinds.messages && !kinds.signups) return [];
+  if (!kinds.messages && !kinds.applications) return [];
   await connectDb();
-  const lastOpened = kinds.signups ? await getSignupsLastOpenedAt(adminId) : new Date(0);
+  const lastOpened = kinds.applications ? await getCareersLastOpenedAt(adminId) : new Date(0);
 
-  const [messages, signups] = await Promise.all([
+  const [messages, applications] = await Promise.all([
     kinds.messages
       ? Message.find({ status: "new" })
           .sort({ createdAt: -1 })
@@ -67,18 +76,18 @@ export async function listNotificationItems(
           .select({ name: 1, subject: 1, createdAt: 1 })
           .lean()
       : [],
-    kinds.signups
-      ? Signup.find({ lastSignupAt: { $gt: lastOpened } })
-          .sort({ lastSignupAt: -1 })
+    kinds.applications
+      ? CareerApplication.find({ ...buildApplicationsFilter(), createdAt: { $gt: lastOpened } })
+          .sort({ createdAt: -1 })
           .limit(limit)
-          .select({ name: 1, email: 1, lastSignupAt: 1 })
+          .select({ name: 1, qualification: 1, createdAt: 1 })
           .lean()
       : [],
   ]);
 
   const items = [
     ...(messages as unknown as MessageDoc[]).map(messageToItem),
-    ...(signups as unknown as SignupDoc[]).map(signupToItem),
+    ...(applications as unknown as CareerApplicationDoc[]).map(applicationToItem),
   ];
 
   items.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
@@ -91,10 +100,10 @@ export async function listNotificationItems(
  */
 export async function getNotificationsSummary(viewer: NotificationViewer): Promise<NotificationsSummary> {
   const kinds = kindsFor(viewer);
-  const [messagesNew, signupsNew, items] = await Promise.all([
+  const [messagesNew, applicationsNew, items] = await Promise.all([
     kinds.messages ? countNewMessages() : 0,
-    kinds.signups ? countNewSignups(viewer.userId) : 0,
+    kinds.applications ? countNewApplications(viewer.userId) : 0,
     listNotificationItems(viewer.userId, ITEM_LIMIT, kinds),
   ]);
-  return { messagesNew, signupsNew, items };
+  return { messagesNew, applicationsNew, items };
 }

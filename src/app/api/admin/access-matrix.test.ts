@@ -50,10 +50,13 @@ const routes: RouteCase[] = [
   { name: "DELETE /api/admin/messages/[id]", load: () => import("@/app/api/admin/messages/[id]/route") as never, method: "DELETE", access: "messages" },
   { name: "POST /api/admin/messages/[id]/read", load: () => import("@/app/api/admin/messages/[id]/read/route") as never, method: "POST", access: "messages" },
   { name: "DELETE /api/admin/signups/[id]", load: () => import("@/app/api/admin/signups/[id]/route") as never, method: "DELETE", access: "careers" },
-  { name: "POST /api/admin/signups/opened", load: () => import("@/app/api/admin/signups/opened/route") as never, method: "POST", access: "careers" },
   { name: "GET /api/admin/signups/export", load: () => import("@/app/api/admin/signups/export/route") as never, method: "GET", access: "careers" },
   // 012 careers: an unknown id ends in a 404, not 401/403, so case 3 never touches the document store.
   { name: "GET /api/admin/careers/[id]/cv", load: () => import("@/app/api/admin/careers/[id]/cv/route") as never, method: "GET", access: "careers" },
+  // Deleting an application is main admin only (a content manager holding `careers` is refused).
+  { name: "DELETE /api/admin/careers/[id]", load: () => import("@/app/api/admin/careers/[id]/route") as never, method: "DELETE", access: "main_admin" },
+  { name: "GET /api/admin/careers/export", load: () => import("@/app/api/admin/careers/export/route") as never, method: "GET", access: "careers" },
+  { name: "POST /api/admin/careers/opened", load: () => import("@/app/api/admin/careers/opened/route") as never, method: "POST", access: "careers" },
   { name: "GET /api/admin/session", load: () => import("@/app/api/admin/session/route") as never, method: "GET", access: "any" },
   { name: "GET /api/admin/notifications", load: () => import("@/app/api/admin/notifications/route") as never, method: "GET", access: "any" },
   { name: "POST /api/admin/notifications/read", load: () => import("@/app/api/admin/notifications/read/route") as never, method: "POST", access: "any" },
@@ -100,6 +103,28 @@ describeWithDb("admin route access matrix (three cases per route)", ["user", "ac
         const cookie = await getTestSessionCookie(EMAIL, PASSWORD);
         const response = await call(route, cookie);
         expect([401, 403]).not.toContain(response.status);
+      });
+    } else if (route.access === "main_admin") {
+      // No grant can make a content manager a main admin: even one holding every permission is refused.
+      it("2. a content manager holding EVERY grant → 403 forbidden, no data", async () => {
+        await seedTestContentManager(EMAIL, PASSWORD, [...PERMISSION_KEYS]);
+        const cookie = await getTestSessionCookie(EMAIL, PASSWORD);
+        const response = await call(route, cookie);
+        expect(response.status).toBe(403);
+        expect(response.headers.get("cache-control")).toBe("no-store");
+        expect(await response.json()).toEqual({ error: "forbidden" });
+      });
+
+      it("2b. a content manager with no grants at all → 403 forbidden", async () => {
+        await seedTestContentManager(EMAIL, PASSWORD, []);
+        const cookie = await getTestSessionCookie(EMAIL, PASSWORD);
+        expect((await call(route, cookie)).status).toBe(403);
+      });
+
+      it("3. a main admin is not refused", async () => {
+        await seedTestAdmin(EMAIL, PASSWORD);
+        const cookie = await getTestSessionCookie(EMAIL, PASSWORD);
+        expect([401, 403]).not.toContain((await call(route, cookie)).status);
       });
     } else {
       it("2. a content manager holding every grant except the required one → 403 forbidden, no data", async () => {

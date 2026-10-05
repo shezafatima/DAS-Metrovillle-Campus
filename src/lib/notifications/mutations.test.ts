@@ -1,13 +1,17 @@
 // @vitest-environment node
-import { it, expect } from "vitest";
+import { it, expect, vi } from "vitest";
 import { describeWithDb } from "@/test/db";
 import { Message } from "@/models/message";
+import { seedApplication } from "@/test/career-applications";
 import { markAllNotificationsRead } from "@/lib/notifications/mutations";
-import { countNewSignups } from "@/lib/notifications/queries";
+import { countNewApplications } from "@/lib/notifications/queries";
+import { markCareersOpened } from "@/lib/notifications/state";
+
+vi.setConfig({ testTimeout: 120_000, hookTimeout: 120_000 });
 
 const mainAdmin = (userId: string) => ({ userId, role: "main_admin" as const, permissions: [] });
 
-describeWithDb("notifications mutations", ["messages", "signups", "adminNotificationStates"], () => {
+describeWithDb("notifications mutations", ["messages", "careerApplications", "adminNotificationStates"], () => {
   it("moves every new message to read, and leaves responded messages untouched", async () => {
     const newOne = await Message.create({
       name: "Ali",
@@ -36,23 +40,26 @@ describeWithDb("notifications mutations", ["messages", "signups", "adminNotifica
     expect(afterResponded!.statusChangedAt).toEqual(new Date("2026-01-01T00:00:00.000Z"));
   });
 
-  it("advances the admin's signupsLastOpenedAt so the new-signup count drops to zero", async () => {
-    const { Signup } = await import("@/models/signup");
-    const { markSignupsOpened } = await import("@/lib/notifications/state");
-    await markSignupsOpened("admin-2", new Date(Date.now() - 60 * 60_000));
-    await Signup.create({
-      name: "Ali",
-      email: "ali2@example.com",
-      phone: "+923001234567",
-      sources: ["home"],
-      firstSignupAt: new Date(),
-      lastSignupAt: new Date(),
-    });
-    expect(await countNewSignups("admin-2")).toBe(1);
+  it("advances the admin's careersLastOpenedAt so the new-application count drops to zero", async () => {
+    await markCareersOpened("admin-2", new Date(Date.now() - 60 * 60_000));
+    await seedApplication({ createdAt: new Date() });
+    expect(await countNewApplications("admin-2")).toBe(1);
 
     await markAllNotificationsRead(mainAdmin("admin-2"));
 
-    expect(await countNewSignups("admin-2")).toBe(0);
+    expect(await countNewApplications("admin-2")).toBe(0);
+  });
+
+  it("never changes or deletes an application", async () => {
+    await markCareersOpened("admin-keep", new Date(Date.now() - 60 * 60_000));
+    const { id } = await seedApplication({ createdAt: new Date(), name: "Ayesha Khan" });
+
+    await markAllNotificationsRead(mainAdmin("admin-keep"));
+
+    const { CareerApplication } = await import("@/models/career-application");
+    const doc = await CareerApplication.findById(id).lean();
+    expect(doc?.name).toBe("Ayesha Khan");
+    expect(doc?.deletedAt).toBeNull();
   });
 
   it("a content manager without `messages` cannot mark messages read (011)", async () => {
@@ -63,21 +70,12 @@ describeWithDb("notifications mutations", ["messages", "signups", "adminNotifica
     expect((await Message.findById(msg._id))!.status).toBe("new");
   });
 
-  it("a content manager without `careers` does not move their signups marker (011)", async () => {
-    const { Signup } = await import("@/models/signup");
-    const { markSignupsOpened } = await import("@/lib/notifications/state");
-    await markSignupsOpened("cm-2", new Date(Date.now() - 60 * 60_000));
-    await Signup.create({
-      name: "Ali",
-      email: "ali3@example.com",
-      phone: "+923001234567",
-      sources: ["home"],
-      firstSignupAt: new Date(),
-      lastSignupAt: new Date(),
-    });
+  it("a content manager without `careers` does not move their applications marker (011)", async () => {
+    await markCareersOpened("cm-2", new Date(Date.now() - 60 * 60_000));
+    await seedApplication({ createdAt: new Date() });
 
     await markAllNotificationsRead({ userId: "cm-2", role: "content_manager", permissions: ["messages"] });
 
-    expect(await countNewSignups("cm-2")).toBe(1);
+    expect(await countNewApplications("cm-2")).toBe(1);
   });
 });

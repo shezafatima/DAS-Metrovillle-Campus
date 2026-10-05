@@ -25,7 +25,7 @@ export const ROLES: readonly Role[] = ["main_admin", "content_manager"];
 export const PERMISSION_LABELS: Record<Permission, string> = {
   news: "News",
   messages: "Messages",
-  careers: "Careers (Signups)",
+  careers: "Careers (Applications)",
   settings: "Settings",
   pages: "Page content",
 };

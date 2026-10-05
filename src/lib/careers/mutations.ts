@@ -1,5 +1,6 @@
-import type { Types } from "mongoose";
+import { isValidObjectId, type Types } from "mongoose";
 import { connectDb } from "@/lib/db";
+import { logSecurityEvent } from "@/lib/log";
 import { CareerApplication } from "@/models/career-application";
 import { DocumentStoreUnavailableError, getDocumentStore, newCvKey, type DocumentStore } from "@/lib/documents/store";
 import type { CareerApplicationFields } from "@/lib/validation/career-application";
@@ -113,4 +114,42 @@ export async function createCareerApplication(
   }
 
   return { id: pending._id.toString() };
+}
+
+/**
+ * Main-admin delete (spec FR-026): soft-deletes the application, which at
+ * once stops it counting toward the reapply window and hides it from every
+ * admin read, then removes the stored CV. `null` for a malformed, unknown,
+ * pending or already-deleted id. If the file cannot be removed the record
+ * stays deleted, the failure is logged by id only, and the retention sweep
+ * retries it (`cv.removedAt` stays null until it works); the admin still
+ * sees a successful delete.
+ */
+export async function deleteCareerApplication(
+  id: string,
+  store: DocumentStore = getDocumentStore(),
+): Promise<{ id: string } | null> {
+  if (!/^[a-f0-9]{24}$/i.test(id) || !isValidObjectId(id)) return null;
+  await connectDb();
+
+  // The soft-delete plugin adds `deletedAt: null`, so a second delete finds nothing.
+  const deleted = await CareerApplication.findOneAndUpdate(
+    { _id: id, "cv.storedAt": { $ne: null } },
+    { $set: { deletedAt: new Date() } },
+    { returnDocument: "after" },
+  )
+    .select({ "cv.key": 1 })
+    .lean();
+  if (!deleted?.cv?.key) return null;
+
+  try {
+    await store.delete(deleted.cv.key);
+    // The record is already deleted, so this update has to look past the plugin's default filter.
+    await CareerApplication.updateOne({ _id: id }, { $set: { "cv.removedAt": new Date() } }).setOptions({
+      withDeleted: true,
+    });
+  } catch {
+    logSecurityEvent({ type: "career_cv_delete_failed", target: id });
+  }
+  return { id };
 }

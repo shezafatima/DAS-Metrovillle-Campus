@@ -17,7 +17,7 @@ describe("PageTitleBadge", () => {
   });
 
   it("leaves the title unprefixed when nothing is new", () => {
-    mockUseNotifications.mockReturnValue({ messagesNew: 0, signupsNew: 0 });
+    mockUseNotifications.mockReturnValue({ messagesNew: 0, applicationsNew: 0 });
     document.title = "Overview";
     render(<PageTitleBadge />);
     vi.runAllTimers();
@@ -25,7 +25,7 @@ describe("PageTitleBadge", () => {
   });
 
   it("prefixes the title with the combined count", () => {
-    mockUseNotifications.mockReturnValue({ messagesNew: 2, signupsNew: 1 });
+    mockUseNotifications.mockReturnValue({ messagesNew: 2, applicationsNew: 1 });
     document.title = "Overview";
     render(<PageTitleBadge />);
     vi.runAllTimers();
@@ -33,20 +33,20 @@ describe("PageTitleBadge", () => {
   });
 
   it("removes the prefix again once the count returns to zero", () => {
-    mockUseNotifications.mockReturnValue({ messagesNew: 1, signupsNew: 0 });
+    mockUseNotifications.mockReturnValue({ messagesNew: 1, applicationsNew: 0 });
     document.title = "Overview";
     const { rerender } = render(<PageTitleBadge />);
     vi.runAllTimers();
     expect(document.title).toBe("(1) Overview");
 
-    mockUseNotifications.mockReturnValue({ messagesNew: 0, signupsNew: 0 });
+    mockUseNotifications.mockReturnValue({ messagesNew: 0, applicationsNew: 0 });
     rerender(<PageTitleBadge />);
     vi.runAllTimers();
     expect(document.title).toBe("Overview");
   });
 
   it("re-prefixes the new page's own title once it settles after a multi-step external change", async () => {
-    mockUseNotifications.mockReturnValue({ messagesNew: 1, signupsNew: 0 });
+    mockUseNotifications.mockReturnValue({ messagesNew: 1, applicationsNew: 0 });
     document.title = "Overview";
     render(<PageTitleBadge />);
     vi.runAllTimers();

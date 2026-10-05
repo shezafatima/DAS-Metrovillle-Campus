@@ -40,7 +40,7 @@ describe("describeUserChange", () => {
       "Sections: added Messages, Settings",
     );
     expect(describeUserChange({ type: "permissions_changed", details: { added: [], removed: ["careers"] } })).toBe(
-      "Sections: removed Careers (Signups)",
+      "Sections: removed Careers (Applications)",
     );
   });
 

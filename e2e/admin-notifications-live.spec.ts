@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 import { loginAsAdmin, getAdminUserId, seedAdminNotificationState, clearAdminNotificationStates } from "./helpers/notifications";
 import { seedMessages, clearMessages, findMessages } from "./helpers/messages";
-import { seedSignups, clearSignups } from "./helpers/signups";
+import { seedCareerApplications, clearCareerApplications } from "./helpers/careers";
 
 /**
  * US4 — Updating without reloading. Relies on
@@ -12,11 +12,11 @@ import { seedSignups, clearSignups } from "./helpers/signups";
 test.describe("admin notifications — live updates", () => {
   test.beforeEach(async ({ page }) => {
     await clearMessages();
-    await clearSignups();
+    await clearCareerApplications();
     await clearAdminNotificationStates();
     await loginAsAdmin(page);
     const adminId = await getAdminUserId();
-    await seedAdminNotificationState({ adminId, signupsLastOpenedAt: new Date(Date.now() - 60 * 60_000) });
+    await seedAdminNotificationState({ adminId, careersLastOpenedAt: new Date(Date.now() - 60 * 60_000) });
   });
 
   test("a message seeded elsewhere appears within the poll interval, without a reload", async ({ page }) => {
@@ -43,14 +43,18 @@ test.describe("admin notifications — live updates", () => {
     await expect(page.getByRole("link", { name: "Messages" }).locator("..").getByText("1")).not.toBeVisible();
   });
 
-  test("deleting a new signup updates the Signups indicator immediately", async ({ page }) => {
-    await seedSignups([{ name: "Sara", email: "sara-live@example.com", phone: "+923001234567", sources: ["home"], lastSignupAt: new Date() }]);
-    await page.goto("/admin/signups");
-    await expect(page.getByRole("link", { name: "Signups" }).locator("..").getByText("1")).toBeVisible();
+  test("deleting a new application updates the Applications indicator immediately", async ({ page }) => {
+    // The detail page does not mark the list as opened, so the badge is still 1 here.
+    const [{ id }] = await seedCareerApplications([{ name: "Sara", email: "sara-live@example.com", phone: "+923001234567", createdAt: new Date() }]);
+    await page.goto(`/admin/careers/${id}`);
+    // exact: the detail page also has a "Back to applications" link.
+    const sidebarItem = page.getByRole("link", { name: "Applications", exact: true }).locator("..");
+    await expect(sidebarItem.getByText("1")).toBeVisible();
 
-    await page.getByRole("button", { name: /delete/i }).first().click();
+    await page.getByRole("button", { name: "Delete application" }).click();
     await page.getByRole("button", { name: "Delete", exact: true }).click();
 
-    await expect(page.getByRole("link", { name: "Signups" }).locator("..").getByText("1")).not.toBeVisible({ timeout: 3000 });
+    await expect(page).toHaveURL(/\/admin\/careers$/, { timeout: 15000 });
+    await expect(page.getByRole("link", { name: "Applications" }).locator("..").getByText("1")).not.toBeVisible({ timeout: 3000 });
   });
 });

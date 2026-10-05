@@ -9,7 +9,8 @@ const DEBOUNCE_MS = 300;
 
 export interface AdminListFiltersProps {
   searchPlaceholder: string;
-  select: {
+  /** Optional: a list that is search-only (012 Applications) passes none. */
+  select?: {
     param: string;
     label: string;
     allLabel: string;
@@ -89,19 +90,21 @@ export function AdminListFilters({ searchPlaceholder, select }: AdminListFilters
         className="max-w-xs"
         aria-label={searchPlaceholder}
       />
-      <Select
-        aria-label={select.label}
-        defaultValue={searchParams.get(select.param) ?? "all"}
-        onChange={(event) => setParam(select.param, event.target.value)}
-        className="w-auto"
-      >
-        <option value="all">{select.allLabel}</option>
-        {select.options.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </Select>
+      {select && (
+        <Select
+          aria-label={select.label}
+          defaultValue={searchParams.get(select.param) ?? "all"}
+          onChange={(event) => setParam(select.param, event.target.value)}
+          className="w-auto"
+        >
+          <option value="all">{select.allLabel}</option>
+          {select.options.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </Select>
+      )}
     </div>
   );
 }

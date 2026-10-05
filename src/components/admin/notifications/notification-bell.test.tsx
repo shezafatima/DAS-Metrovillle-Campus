@@ -10,7 +10,7 @@ vi.mock("./notifications-provider", () => ({
 function baseState(overrides: Partial<ReturnType<typeof mockUseNotifications>> = {}) {
   return {
     messagesNew: 0,
-    signupsNew: 0,
+    applicationsNew: 0,
     items: [],
     loading: false,
     refresh: vi.fn(),
@@ -28,7 +28,7 @@ describe("NotificationBell", () => {
   });
 
   it("shows a plain dot — never a number — when something is new", () => {
-    mockUseNotifications.mockReturnValue(baseState({ messagesNew: 2, signupsNew: 1 }));
+    mockUseNotifications.mockReturnValue(baseState({ messagesNew: 2, applicationsNew: 1 }));
     render(<NotificationBell />);
     expect(screen.getByTestId("notification-bell-dot")).toBeInTheDocument();
     expect(screen.queryByText(/\d/)).not.toBeInTheDocument();

@@ -20,8 +20,8 @@ const PREFIX_PATTERN = /^\(\d+\+?\) /;
  * (research.md §8).
  */
 export function PageTitleBadge() {
-  const { messagesNew, signupsNew } = useNotifications();
-  const total = messagesNew + signupsNew;
+  const { messagesNew, applicationsNew } = useNotifications();
+  const total = messagesNew + applicationsNew;
 
   useEffect(() => {
     let settleTimer: ReturnType<typeof setTimeout> | null = null;

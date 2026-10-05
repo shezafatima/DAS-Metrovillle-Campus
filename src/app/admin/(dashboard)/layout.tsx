@@ -23,9 +23,9 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   // A count failure must never break every admin page — the bell/sidebar
   // badges just fall back to hidden (0) rather than the whole layout erroring.
-  const { messagesNew, signupsNew } = await getNotificationsSummary(session).catch(() => ({
+  const { messagesNew, applicationsNew } = await getNotificationsSummary(session).catch(() => ({
     messagesNew: 0,
-    signupsNew: 0,
+    applicationsNew: 0,
     items: [],
   }));
 
@@ -35,7 +35,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
       allowedHrefs={visibleNavItems(session).map((item) => item.href)}
       defaultSidebarOpen={defaultSidebarOpen}
       initialMessagesNew={messagesNew}
-      initialSignupsNew={signupsNew}
+      initialApplicationsNew={applicationsNew}
     >
       {children}
     </AdminShell>

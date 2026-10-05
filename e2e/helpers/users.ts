@@ -218,8 +218,8 @@ export async function loginSeeded(
   return { context, page };
 }
 
-/** Puts one raw message and one raw signup into the test database, for the "no leakage" checks. */
-export async function seedMessageAndSignup(): Promise<void> {
+/** Puts one raw message and one raw career application into the test database, for the "no leakage" checks. */
+export async function seedMessageAndApplication(): Promise<void> {
   await withDb(async (db) => {
     const now = new Date();
     await db.collection("messages").insertOne({
@@ -233,23 +233,24 @@ export async function seedMessageAndSignup(): Promise<void> {
       createdAt: now,
       updatedAt: now,
     });
-    await db.collection("signups").insertOne({
+    await db.collection("careerApplications").insertOne({
       name: "Ali Leakcheck",
       email: "ali-leak@example.test",
       phone: "+923001234567",
-      sources: ["home"],
-      firstSignupAt: now,
-      lastSignupAt: now,
+      qualification: "M.Ed",
+      consentAt: now,
+      cv: { key: `cv/${"l".repeat(43)}.pdf`, size: 10, storedAt: now, removedAt: null },
+      deletedAt: null,
       createdAt: now,
       updatedAt: now,
     });
   });
 }
 
-export async function clearMessagesAndSignups(): Promise<void> {
+export async function clearMessagesAndApplications(): Promise<void> {
   await withDb(async (db) => {
     await db.collection("messages").deleteMany({});
-    await db.collection("signups").deleteMany({});
+    await db.collection("careerApplications").deleteMany({});
     await db.collection("adminNotificationStates").deleteMany({});
   });
 }

@@ -3,11 +3,11 @@ import { describe, expect, it, vi, beforeEach } from "vitest";
 import { NotificationsProvider, useNotifications } from "./notifications-provider";
 
 function Consumer() {
-  const { messagesNew, signupsNew, items, markAllRead } = useNotifications();
+  const { messagesNew, applicationsNew, items, markAllRead } = useNotifications();
   return (
     <div>
       <span data-testid="messages">{messagesNew}</span>
-      <span data-testid="signups">{signupsNew}</span>
+      <span data-testid="applications">{applicationsNew}</span>
       <span data-testid="items">{items.length}</span>
       <button type="button" onClick={() => markAllRead()}>
         Mark all as read
@@ -24,15 +24,15 @@ describe("NotificationsProvider", () => {
   it("shows the seeded initial counts immediately", () => {
     vi.stubGlobal(
       "fetch",
-      vi.fn().mockResolvedValue({ ok: true, json: async () => ({ messagesNew: 0, signupsNew: 0, items: [] }) }),
+      vi.fn().mockResolvedValue({ ok: true, json: async () => ({ messagesNew: 0, applicationsNew: 0, items: [] }) }),
     );
     render(
-      <NotificationsProvider initialMessagesNew={3} initialSignupsNew={2}>
+      <NotificationsProvider initialMessagesNew={3} initialApplicationsNew={2}>
         <Consumer />
       </NotificationsProvider>,
     );
     expect(screen.getByTestId("messages")).toHaveTextContent("3");
-    expect(screen.getByTestId("signups")).toHaveTextContent("2");
+    expect(screen.getByTestId("applications")).toHaveTextContent("2");
   });
 
   it("replaces state with the mount-triggered fetch's result once it resolves", async () => {
@@ -40,35 +40,35 @@ describe("NotificationsProvider", () => {
       "fetch",
       vi.fn().mockResolvedValue({
         ok: true,
-        json: async () => ({ messagesNew: 5, signupsNew: 1, items: [{ kind: "message", id: "1", title: "Ali", description: "Hi", timestamp: new Date().toISOString(), href: "/admin/messages/1" }] }),
+        json: async () => ({ messagesNew: 5, applicationsNew: 1, items: [{ kind: "message", id: "1", title: "Ali", description: "Hi", timestamp: new Date().toISOString(), href: "/admin/messages/1" }] }),
       }),
     );
     render(
-      <NotificationsProvider initialMessagesNew={0} initialSignupsNew={0}>
+      <NotificationsProvider initialMessagesNew={0} initialApplicationsNew={0}>
         <Consumer />
       </NotificationsProvider>,
     );
     await waitFor(() => expect(screen.getByTestId("messages")).toHaveTextContent("5"));
-    expect(screen.getByTestId("signups")).toHaveTextContent("1");
+    expect(screen.getByTestId("applications")).toHaveTextContent("1");
     expect(screen.getByTestId("items")).toHaveTextContent("1");
   });
 
   it("leaves the previous state untouched when the fetch fails", async () => {
     vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("network down")));
     render(
-      <NotificationsProvider initialMessagesNew={4} initialSignupsNew={2}>
+      <NotificationsProvider initialMessagesNew={4} initialApplicationsNew={2}>
         <Consumer />
       </NotificationsProvider>,
     );
     await new Promise((r) => setTimeout(r, 10));
     expect(screen.getByTestId("messages")).toHaveTextContent("4");
-    expect(screen.getByTestId("signups")).toHaveTextContent("2");
+    expect(screen.getByTestId("applications")).toHaveTextContent("2");
   });
 
   it("leaves the previous state untouched when the fetch returns a non-200", async () => {
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: false, status: 401 }));
     render(
-      <NotificationsProvider initialMessagesNew={7} initialSignupsNew={0}>
+      <NotificationsProvider initialMessagesNew={7} initialApplicationsNew={0}>
         <Consumer />
       </NotificationsProvider>,
     );
@@ -79,12 +79,12 @@ describe("NotificationsProvider", () => {
   it("markAllRead optimistically zeroes state, then posts to the read endpoint", async () => {
     const fetchMock = vi
       .fn()
-      .mockResolvedValueOnce({ ok: true, json: async () => ({ messagesNew: 2, signupsNew: 1, items: [] }) }) // mount refresh
+      .mockResolvedValueOnce({ ok: true, json: async () => ({ messagesNew: 2, applicationsNew: 1, items: [] }) }) // mount refresh
       .mockResolvedValueOnce({ ok: true }); // markAllRead POST
     vi.stubGlobal("fetch", fetchMock);
 
     render(
-      <NotificationsProvider initialMessagesNew={2} initialSignupsNew={1}>
+      <NotificationsProvider initialMessagesNew={2} initialApplicationsNew={1}>
         <Consumer />
       </NotificationsProvider>,
     );
@@ -92,7 +92,7 @@ describe("NotificationsProvider", () => {
 
     screen.getByRole("button", { name: "Mark all as read" }).click();
     await waitFor(() => expect(screen.getByTestId("messages")).toHaveTextContent("0"));
-    expect(screen.getByTestId("signups")).toHaveTextContent("0");
+    expect(screen.getByTestId("applications")).toHaveTextContent("0");
     expect(fetchMock).toHaveBeenCalledWith("/api/admin/notifications/read", { method: "POST" });
   });
 
@@ -105,12 +105,12 @@ describe("NotificationsProvider", () => {
     vi.useFakeTimers();
     const fetchMock = vi
       .fn()
-      .mockResolvedValue({ ok: true, json: async () => ({ messagesNew: 1, signupsNew: 0, items: [] }) });
+      .mockResolvedValue({ ok: true, json: async () => ({ messagesNew: 1, applicationsNew: 0, items: [] }) });
     vi.stubGlobal("fetch", fetchMock);
     setVisibility("visible");
 
     render(
-      <NotificationsProvider initialMessagesNew={0} initialSignupsNew={0}>
+      <NotificationsProvider initialMessagesNew={0} initialApplicationsNew={0}>
         <Consumer />
       </NotificationsProvider>,
     );
@@ -129,12 +129,12 @@ describe("NotificationsProvider", () => {
     vi.useFakeTimers();
     const fetchMock = vi
       .fn()
-      .mockResolvedValue({ ok: true, json: async () => ({ messagesNew: 0, signupsNew: 0, items: [] }) });
+      .mockResolvedValue({ ok: true, json: async () => ({ messagesNew: 0, applicationsNew: 0, items: [] }) });
     vi.stubGlobal("fetch", fetchMock);
     setVisibility("visible");
 
     render(
-      <NotificationsProvider initialMessagesNew={0} initialSignupsNew={0}>
+      <NotificationsProvider initialMessagesNew={0} initialApplicationsNew={0}>
         <Consumer />
       </NotificationsProvider>,
     );

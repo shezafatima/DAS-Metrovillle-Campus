@@ -37,6 +37,9 @@ const EXPECTED: Record<string, Expected> = {
   "admin/(dashboard)/messages/page.tsx": { kind: "page", access: "messages" },
   "admin/(dashboard)/messages/[id]/page.tsx": { kind: "page", access: "messages" },
   "admin/(dashboard)/signups/page.tsx": { kind: "page", access: "careers" },
+  // 012 careers: the Applications list and one application.
+  "admin/(dashboard)/careers/page.tsx": { kind: "page", access: "careers" },
+  "admin/(dashboard)/careers/[id]/page.tsx": { kind: "page", access: "careers" },
   "admin/(dashboard)/settings/page.tsx": { kind: "page", access: "settings" },
   // 005: one page per settings group; settings/layout.tsx is not an access gate (each page checks).
   "admin/(dashboard)/settings/contact/page.tsx": { kind: "page", access: "settings" },
@@ -63,10 +66,13 @@ const EXPECTED: Record<string, Expected> = {
   "api/admin/messages/[id]/route.ts": { kind: "route", access: "messages" },
   "api/admin/messages/[id]/read/route.ts": { kind: "route", access: "messages" },
   "api/admin/signups/[id]/route.ts": { kind: "route", access: "careers" },
-  "api/admin/signups/opened/route.ts": { kind: "route", access: "careers" },
   "api/admin/signups/export/route.ts": { kind: "route", access: "careers" },
   // 012 careers: the CV download. Only the careers permission may fetch a CV.
   "api/admin/careers/[id]/cv/route.ts": { kind: "route", access: "careers" },
+  // Deleting is main-admin only: it is what lets a person apply again inside the reapply window.
+  "api/admin/careers/[id]/route.ts": { kind: "route", access: "main_admin" },
+  "api/admin/careers/export/route.ts": { kind: "route", access: "careers" },
+  "api/admin/careers/opened/route.ts": { kind: "route", access: "careers" },
   // Server Actions
   "admin/(dashboard)/actions.ts": { kind: "none" }, // logout: harmless without a session
   "admin/(dashboard)/account/actions.ts": {

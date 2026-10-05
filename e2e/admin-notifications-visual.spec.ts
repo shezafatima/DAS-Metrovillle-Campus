@@ -1,25 +1,25 @@
 import { test, expect } from "@playwright/test";
 import { loginAsAdmin, getAdminUserId, seedAdminNotificationState, clearAdminNotificationStates } from "./helpers/notifications";
 import { seedMessages, clearMessages } from "./helpers/messages";
-import { seedSignups, clearSignups } from "./helpers/signups";
+import { seedCareerApplications, clearCareerApplications } from "./helpers/careers";
 
 const WIDTHS = [375, 768, 1024, 1440];
 
 test.describe("admin notifications — visual", () => {
   test.beforeEach(async ({ page }) => {
     await clearMessages();
-    await clearSignups();
+    await clearCareerApplications();
     await clearAdminNotificationStates();
     await loginAsAdmin(page);
     const adminId = await getAdminUserId();
-    await seedAdminNotificationState({ adminId, signupsLastOpenedAt: new Date(Date.now() - 60 * 60_000) });
+    await seedAdminNotificationState({ adminId, careersLastOpenedAt: new Date(Date.now() - 60 * 60_000) });
   });
 
   for (const width of WIDTHS) {
     test(`indicators render correctly at ${width}px`, async ({ page }) => {
       await page.setViewportSize({ width, height: 900 });
       await seedMessages([{ status: "new" }]);
-      await seedSignups([{ name: "Sara", email: `sara-${width}@example.com`, phone: "+923001234567", sources: ["home"], lastSignupAt: new Date() }]);
+      await seedCareerApplications([{ name: "Sara", email: `sara-${width}@example.com`, phone: "+923001234567", createdAt: new Date() }]);
 
       await page.goto("/admin");
       await expect(page.getByTestId("notification-bell-dot")).toBeVisible();
@@ -30,7 +30,7 @@ test.describe("admin notifications — visual", () => {
         await page.locator('[data-slot="sidebar-trigger"]').click();
       }
       await expect(page.getByRole("link", { name: "Messages" }).locator("..").getByText("1")).toBeVisible();
-      await expect(page.getByRole("link", { name: "Signups" }).locator("..").getByText("1")).toBeVisible();
+      await expect(page.getByRole("link", { name: "Applications" }).locator("..").getByText("1")).toBeVisible();
       if (width < 1024) {
         await page.keyboard.press("Escape");
       }

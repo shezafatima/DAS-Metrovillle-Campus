@@ -72,3 +72,43 @@ test.describe("careers — CV download access", () => {
     await session.context.close();
   });
 });
+
+test.describe("careers — admin pages: no session, missing permission, correct permission", () => {
+  test.beforeEach(async () => {
+    await resetUsers();
+    await clearCareerApplications();
+  });
+
+  test("the Applications list and an application page", async ({ browser }) => {
+    test.setTimeout(300_000);
+    const [{ id }] = await seedCareerApplications([{ name: "Ayesha Khan" }]);
+    const withoutCareers = await seedActiveUser({
+      email: "cm-pages-without-careers@example.test",
+      permissions: ["news", "messages", "settings", "pages"],
+    });
+    const withCareers = await seedActiveUser({ email: "cm-pages-with-careers@example.test", permissions: ["careers"] });
+    const denied = await loginSeeded(browser, withoutCareers);
+    const allowed = await loginSeeded(browser, withCareers);
+
+    for (const path of ["/admin/careers", `/admin/careers/${id}`]) {
+      // 1. No session: the login page, remembering where they were going.
+      const context = await browser.newContext();
+      const anonymous = await context.newPage();
+      await anonymous.goto(path);
+      await expect(anonymous, path).toHaveURL(`/admin/login?next=${encodeURIComponent(path)}`);
+      await context.close();
+
+      // 2. A content manager without careers: the overview with the denied message.
+      await denied.page.goto(path);
+      await expect(denied.page, path).toHaveURL("/admin?denied=1");
+
+      // 3. A content manager with careers: the page opens.
+      await allowed.page.goto(path);
+      await expect(allowed.page, path).toHaveURL(path);
+      await expect(allowed.page.locator("main h1").first()).toBeVisible();
+    }
+
+    await denied.context.close();
+    await allowed.context.close();
+  });
+});

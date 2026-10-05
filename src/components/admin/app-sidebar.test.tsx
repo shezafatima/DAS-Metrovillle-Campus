@@ -13,10 +13,10 @@ vi.mock("next/navigation", () => ({
 const ALL_HREFS = adminNavItems.map((item) => item.href);
 const MAIN_ADMIN_HREFS = visibleNavItems({ role: "main_admin", permissions: [] }).map((item) => item.href);
 
-function renderSidebar(initialMessagesNew = 0, initialSignupsNew = 0, allowedHrefs: readonly string[] = MAIN_ADMIN_HREFS) {
+function renderSidebar(initialMessagesNew = 0, initialApplicationsNew = 0, allowedHrefs: readonly string[] = MAIN_ADMIN_HREFS) {
   vi.stubGlobal("fetch", vi.fn(() => new Promise(() => {}))); // never resolves — keeps the seeded values stable
   return render(
-    <NotificationsProvider initialMessagesNew={initialMessagesNew} initialSignupsNew={initialSignupsNew}>
+    <NotificationsProvider initialMessagesNew={initialMessagesNew} initialApplicationsNew={initialApplicationsNew}>
       <SidebarProvider>
         <AppSidebar allowedHrefs={allowedHrefs} />
       </SidebarProvider>
@@ -35,7 +35,7 @@ describe("AppSidebar", () => {
   it("renders the five sections in the fixed order, then Users, for a main admin", () => {
     vi.mocked(usePathname).mockReturnValue("/admin");
     renderSidebar();
-    expect(menuLabels()).toEqual(["Overview", "News", "Messages", "Signups", "Settings", "Users"]);
+    expect(menuLabels()).toEqual(["Overview", "News", "Messages", "Applications", "Settings", "Users"]);
     expect(ALL_HREFS).toEqual(MAIN_ADMIN_HREFS);
   });
 
@@ -73,7 +73,7 @@ describe("AppSidebar", () => {
     vi.mocked(usePathname).mockReturnValue("/admin/news/123");
     renderSidebar();
     expect(screen.getByRole("link", { name: "News" })).toHaveAttribute("aria-current", "page");
-    for (const label of ["Overview", "Messages", "Signups", "Settings"]) {
+    for (const label of ["Overview", "Messages", "Applications", "Settings"]) {
       expect(screen.getByRole("link", { name: label })).not.toHaveAttribute("aria-current");
     }
   });
@@ -82,7 +82,7 @@ describe("AppSidebar", () => {
     vi.mocked(usePathname).mockReturnValue("/admin");
     renderSidebar();
     expect(screen.getByRole("link", { name: "Overview" })).toHaveAttribute("aria-current", "page");
-    for (const label of ["News", "Messages", "Signups", "Settings"]) {
+    for (const label of ["News", "Messages", "Applications", "Settings"]) {
       expect(screen.getByRole("link", { name: label })).not.toHaveAttribute("aria-current");
     }
   });
@@ -93,7 +93,7 @@ describe("AppSidebar", () => {
     expect(screen.getByText("3")).toBeInTheDocument();
 
     rerender(
-      <NotificationsProvider initialMessagesNew={0} initialSignupsNew={0}>
+      <NotificationsProvider initialMessagesNew={0} initialApplicationsNew={0}>
         <SidebarProvider>
           <AppSidebar allowedHrefs={MAIN_ADMIN_HREFS} />
         </SidebarProvider>
@@ -102,7 +102,7 @@ describe("AppSidebar", () => {
     expect(screen.queryByText("0")).toBeNull();
   });
 
-  it("shows a badge with the count on Signups when new signups exist, and none at 0", () => {
+  it("shows a badge with the count on Applications when new applications exist, and none at 0", () => {
     vi.mocked(usePathname).mockReturnValue("/admin");
     renderSidebar(0, 2);
     expect(screen.getByText("2")).toBeInTheDocument();

@@ -14,8 +14,8 @@ test.describe("admin notifications — protected routes", () => {
     expect(await response.json()).toEqual({ error: "unauthorized" });
   });
 
-  test("POST /api/admin/signups/opened rejects without a session", async ({ request }) => {
-    const response = await request.post("/api/admin/signups/opened");
+  test("POST /api/admin/careers/opened rejects without a session", async ({ request }) => {
+    const response = await request.post("/api/admin/careers/opened");
     expect(response.status()).toBe(401);
     expect(await response.json()).toEqual({ error: "unauthorized" });
   });

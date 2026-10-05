@@ -102,5 +102,8 @@ export async function loginAsAdmin(page: Page): Promise<void> {
   await page.getByLabel("Email").fill(E2E_ADMIN.email);
   await page.getByLabel("Password", { exact: true }).fill(E2E_ADMIN.password);
   await page.getByRole("button", { name: "Sign in" }).click();
-  await expect(page).toHaveURL("/admin");
+  // Sign-in (a password hash and a remote database round trip) and the first compile of /admin can take
+  // far longer than the default 5 s on a slow machine; waiting longer does not hide a real failure,
+  // which still ends on /admin/login.
+  await expect(page).toHaveURL("/admin", { timeout: 90_000 });
 }
