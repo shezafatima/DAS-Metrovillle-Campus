@@ -186,8 +186,8 @@ description: "Task list for 012-careers"
 
 **Independent Test**: From any public page at each width, the top-bar and footer Careers links and Home's Join Now land on `/careers`.
 
-- [ ] T077 [P] [US5] (PARTLY DONE: the top-bar Careers link, its test and the E2E coverage via `contact-and-social.spec.ts` are done; the footer link and `footer` tests remain) Add `{ label: "Careers", href: "/careers" }` as the first item of `portalLinks` and add `links: [{ label: "Careers", href: "/careers" }]` to `FooterContent` / `footerContent` in `src/content/site-shell.ts`; render the footer links in the bottom bar in `src/components/site-shell/footer.tsx` with existing footer tokens; update `src/content/site-shell.test.ts`, `src/components/site-shell/top-bar.test.tsx` and `footer.test.tsx` (main menu still 8 items)
-- [ ] T078 [P] [US5] Add a "Careers" entry to `src/lib/site-search.ts` (+ case in `site-search.test.ts`); create `e2e/shell-careers-links.spec.ts` (`chromium` project; named so the `forms` pattern doesn't pick it up): top-bar link, footer link and Home Join Now → `/careers` at 375 and 1440
+- [X] T077 [P] [US5] (done: top-bar link first in the yellow bar, footer link in the bottom bar, tests updated; main menu still 8 items) Add `{ label: "Careers", href: "/careers" }` as the first item of `portalLinks` and add `links: [{ label: "Careers", href: "/careers" }]` to `FooterContent` / `footerContent` in `src/content/site-shell.ts`; render the footer links in the bottom bar in `src/components/site-shell/footer.tsx` with existing footer tokens; update `src/content/site-shell.test.ts`, `src/components/site-shell/top-bar.test.tsx` and `footer.test.tsx` (main menu still 8 items)
+- [X] T078 [P] [US5] (done; E2E 13/13 at 375/768/1024/1440; the Join Now click retries because the home page shifts while loading) Add a "Careers" entry to `src/lib/site-search.ts` (+ case in `site-search.test.ts`); create `e2e/shell-careers-links.spec.ts` (`chromium` project; named so the `forms` pattern doesn't pick it up): top-bar link, footer link and Home Join Now → `/careers` at 375 and 1440
 
 ---
 

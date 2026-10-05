@@ -16,6 +16,11 @@ describe("Footer", () => {
     ).toHaveAttribute("href", "/");
   });
 
+  it("links to the careers page beside the copyright (012)", () => {
+    render(<Footer contact={contactInfo} />);
+    expect(screen.getByRole("link", { name: "Careers" })).toHaveAttribute("href", "/careers");
+  });
+
   it("renders the configured social links", () => {
     render(<Footer contact={contactInfo} />);
     expect(screen.getByRole("link", { name: "Facebook" })).toBeInTheDocument();

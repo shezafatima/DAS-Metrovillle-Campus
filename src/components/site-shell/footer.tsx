@@ -21,6 +21,14 @@ export function Footer({ contact }: { contact: ContactInfo }) {
           <span className="text-primary">Sheza Fatima</span>    
               </Link>{" "}
           
+          {footerContent.links.map((link) => (
+            <span key={link.href}>
+              |{" "}
+              <Link href={link.href} className="text-primary hover:text-accent">
+                {link.label}
+              </Link>{" "}
+            </span>
+          ))}
         </p>
 
         <SocialLinks social={contact.social} variant="dark" />

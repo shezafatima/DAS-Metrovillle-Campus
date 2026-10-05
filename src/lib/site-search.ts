@@ -1,4 +1,4 @@
-import { navigationItems, type NavigationItem } from "@/content/site-shell";
+import { footerContent, navigationItems, type NavigationItem } from "@/content/site-shell";
 
 export interface SearchResult {
   label: string;
@@ -15,11 +15,15 @@ function flatten(items: NavigationItem[], parentLabel?: string): SearchResult[] 
 }
 
 // Real content-driven search: every navigable page in navigationItems
-// (top-level items and their dropdown sub-pages). Not a full-text search
+// (top-level items and their dropdown sub-pages) plus the pages linked from
+// the footer bar that are not in the main menu (Careers, 012). Not a full-text search
 // over page content — most pages are still shell placeholders (spec.md
 // Out of Scope), so there is no real content to index yet beyond page
 // titles/labels themselves.
-export const searchIndex: SearchResult[] = flatten(navigationItems);
+export const searchIndex: SearchResult[] = [
+  ...flatten(navigationItems),
+  ...footerContent.links.map(({ label, href }) => ({ label, href })),
+];
 
 export function searchSite(
   query: string,

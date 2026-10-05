@@ -38,6 +38,8 @@ export interface FooterContent {
    * Schools") — the reference footer's bottom bar is the *entire*
    * footer, no columns or quick-links row above it. */
   bottomText: string;
+  /** Links shown in the bottom bar beside the copyright (012: Careers; PRD §4 keeps it out of the main menu). */
+  links: PortalLink[];
 }
 
 // Fixed render order (FR-001). Taglines and sub-pages below are grounded in
@@ -159,6 +161,7 @@ export const contactInfo: ContactInfo = {
 // the user, correcting this feature's earlier quick-links-row addition.
 export const footerContent: FooterContent = {
   bottomText: "Dar-e-Arqam Schools",
+  links: [{ label: "Careers", href: "/careers" }],
 };
 
 // Fallback social-preview image for pages with no page-specific one (e.g.
