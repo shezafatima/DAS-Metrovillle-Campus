@@ -5,7 +5,7 @@ import mongoose from "mongoose";
  * Helpers for the 007 gallery specs. They touch the one `settings/_id:
  * "gallery"` document directly, to seed either the 005 flat shape (for the
  * migration) or the album shape, and to read back exactly what was stored.
- * The Playwright dev server runs with GALLERY_E2E_FRESH_READS=1, so public
+ * The Playwright dev server runs with E2E_FRESH_READS=1, so public
  * pages see seeded data at once (no 60 s cache).
  *
  * Every gallery spec is named `admin-gallery-*.spec.ts` so it runs in the

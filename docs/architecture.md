@@ -570,10 +570,31 @@
   `retired`. The same migration also runs lazily on the first gallery read
   (checked once per server process), so a forgotten run loses nothing, but
   only the command prints the report.
-- Test-only: `GALLERY_E2E_FRESH_READS=1` (set by playwright.config.ts,
+- Test-only: `E2E_FRESH_READS=1` (src/lib/e2e-fresh-reads.ts; set by playwright.config.ts,
   ignored in production) makes the public gallery skip its cache and its
   once-per-process migration flag, because the gallery specs seed the
   database directly.
+
+## Home page (006)
+- `/` renders the reference's sections in order: hero, Find Us Nearby,
+  quick-access cards, Inspiration + Why Choose, Latest News, Books, Salient
+  features, Progress dashboard, icon quick-links, careers CTA (`#signup`),
+  partners. Static sections come from src/content/home.ts; design values
+  from research/design-tokens.md "Home sections (006)".
+- Data: Settings hero/video/stats; Latest News from
+  `getLatestPosts()` (src/lib/news/latest.ts: the News visibility filter,
+  `unstable_cache` 60 s tagged `news`, 3 s timeout, never throws). Every
+  admin news write calls `revalidateNewsCaches()`.
+- Each data section is wrapped in SectionBoundary, so one failing read never
+  takes the page down. Carousels share components/home/carousel.tsx
+  (scroll-snap, arrows only when overflowing, autoplay paused on hover/focus,
+  none for reduced motion). No carousel or video library.
+- Books carousel: fixed heading/line and 10 fixed covers listed in
+  src/content/home.ts, files in public/images/home/books/book-01.jpg …
+  book-10.jpg (added by hand; not admin-managed). Missing files are skipped;
+  none present hides the section.
+- The 004 signup form is no longer placed on `/`: the careers CTA replaces it
+  (PRD §5.1) and keeps the `#signup` anchor.
 
 ## Testing
 - 011: every admin route has the three access cases in

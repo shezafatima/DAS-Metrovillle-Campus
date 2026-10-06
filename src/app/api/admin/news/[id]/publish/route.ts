@@ -1,4 +1,5 @@
 import { requireAdminAccess } from "@/lib/dal";
+import { revalidateNewsCaches } from "@/lib/news/latest";
 import { accessErrorResponse } from "@/lib/route-errors";
 import { setPostStatus } from "@/lib/news/mutations";
 
@@ -13,5 +14,6 @@ export async function POST(_request: Request, context: RouteContext<"/api/admin/
   if (!result) {
     return Response.json({ error: "not_found" }, { status: 404, headers: NO_STORE });
   }
+  revalidateNewsCaches();
   return Response.json(result, { headers: NO_STORE });
 }

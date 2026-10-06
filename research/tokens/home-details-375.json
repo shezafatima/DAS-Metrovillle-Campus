@@ -1,0 +1,566 @@
+{
+  "width": 375,
+  "extractedAt": "2026-10-01T04:32:05.281Z",
+  "hero": {
+    "className": "",
+    "size": {
+      "width": 375,
+      "height": 328,
+      "top": 368
+    },
+    "image": null,
+    "background": "url(\"https://das.edu.pk/wp-content/uploads/2019/02/hallmarks-bg-100x50.jpg\")",
+    "slideCount": 0,
+    "arrow": null,
+    "dots": null
+  },
+  "flips": [
+    {
+      "title": "Admission Procedure",
+      "size": {
+        "width": 315,
+        "height": 293,
+        "top": 1162
+      },
+      "frontBg": "rgb(238, 238, 238)",
+      "frontBorder": {
+        "border-top-width": "0px",
+        "border-top-color": "rgb(255, 0, 85)",
+        "border-radius": "4px"
+      },
+      "backBg": "rgb(255, 112, 159)",
+      "backTitle": "ADMISSION PROCEDURE",
+      "backText": "ADMISSION PROCEDUREThere is no written test for pre-school. The admission test for primary and secondary school is based on the following subjects and classesRead More",
+      "frontText": null,
+      "frontTextStyle": {
+        "font-family": "\"softLINKS Regular\", Arial, Helvetica, sans-serif",
+        "font-size": "16px",
+        "font-weight": "400",
+        "line-height": "24px",
+        "color": "rgb(116, 116, 116)",
+        "text-transform": "none",
+        "text-align": "center"
+      },
+      "link": "https://das.edu.pk/admission/"
+    },
+    {
+      "title": "Salient Features",
+      "size": {
+        "width": 315,
+        "height": 276,
+        "top": 1470
+      },
+      "frontBg": "rgb(238, 238, 238)",
+      "frontBorder": {
+        "border-top-width": "0px",
+        "border-top-color": "rgb(255, 0, 85)",
+        "border-radius": "4px"
+      },
+      "backBg": "rgb(0, 188, 212)",
+      "backTitle": "SALIENT FEATURES",
+      "backText": "SALIENT FEATURESDar-e-Arqam is one of a few pioneer schools of formal education where you may witness quite comfortably, a sublime blend of high standardRead More",
+      "frontText": null,
+      "frontTextStyle": {
+        "font-family": "\"softLINKS Regular\", Arial, Helvetica, sans-serif",
+        "font-size": "16px",
+        "font-weight": "400",
+        "line-height": "24px",
+        "color": "rgb(116, 116, 116)",
+        "text-transform": "none",
+        "text-align": "center"
+      },
+      "link": "https://das.edu.pk/about/salent-features/"
+    },
+    {
+      "title": "Branch Network",
+      "size": {
+        "width": 315,
+        "height": 275,
+        "top": 1761
+      },
+      "frontBg": "rgb(238, 238, 238)",
+      "frontBorder": {
+        "border-top-width": "0px",
+        "border-top-color": "rgb(255, 0, 85)",
+        "border-radius": "4px"
+      },
+      "backBg": "rgb(139, 195, 74)",
+      "backTitle": "BRANCH NETWORK",
+      "backText": "BRANCH NETWORKThere are 700+ Branches of Dar-e-Arqam Schools with more than 300,000+ Students in 150+ cities of Pakistan.Read More",
+      "frontText": null,
+      "frontTextStyle": {
+        "font-family": "\"softLINKS Regular\", Arial, Helvetica, sans-serif",
+        "font-size": "16px",
+        "font-weight": "400",
+        "line-height": "24px",
+        "color": "rgb(116, 116, 116)",
+        "text-transform": "none",
+        "text-align": "center"
+      },
+      "link": "https://das.edu.pk/campuses-list/"
+    },
+    {
+      "title": "Education Curriculum",
+      "size": {
+        "width": 315,
+        "height": 305,
+        "top": 2051
+      },
+      "frontBg": "rgb(238, 238, 238)",
+      "frontBorder": {
+        "border-top-width": "0px",
+        "border-top-color": "rgb(255, 0, 85)",
+        "border-radius": "4px"
+      },
+      "backBg": "rgb(96, 125, 139)",
+      "backTitle": "EDUCATION CURRICULUM",
+      "backText": "EDUCATION CURRICULUMCurriculum is seen as whole teaching-learning activity both inside & outside classroom of the schoolsRead More",
+      "frontText": null,
+      "frontTextStyle": {
+        "font-family": "\"softLINKS Regular\", Arial, Helvetica, sans-serif",
+        "font-size": "16px",
+        "font-weight": "400",
+        "line-height": "24px",
+        "color": "rgb(116, 116, 116)",
+        "text-transform": "none",
+        "text-align": "center"
+      },
+      "link": "https://das.edu.pk/academics/syllabi/"
+    },
+    {
+      "title": "Franchise Offer",
+      "size": {
+        "width": 315,
+        "height": 275,
+        "top": 2371
+      },
+      "frontBg": "rgb(238, 238, 238)",
+      "frontBorder": {
+        "border-top-width": "0px",
+        "border-top-color": "rgb(255, 0, 85)",
+        "border-radius": "4px"
+      },
+      "backBg": "rgb(255, 152, 0)",
+      "backTitle": "FRANCHISE OFFER",
+      "backText": "FRANCHISE OFFERBe our partner to promote education all over Pakistan. Find guidelines for investors to start Dar-e-Arqam Franchise.Read More",
+      "frontText": null,
+      "frontTextStyle": {
+        "font-family": "\"softLINKS Regular\", Arial, Helvetica, sans-serif",
+        "font-size": "16px",
+        "font-weight": "400",
+        "line-height": "24px",
+        "color": "rgb(116, 116, 116)",
+        "text-transform": "none",
+        "text-align": "center"
+      },
+      "link": "https://das.edu.pk/contact/franchise-offer/"
+    }
+  ],
+  "counters": [
+    {
+      "html": "300000 Students Studying in Dar-e-Arqam Schools",
+      "value": "300000",
+      "unitStyle": {
+        "font-family": "\"softLINKS Regular\", Arial, Helvetica, sans-serif",
+        "font-size": "50px",
+        "font-weight": "400",
+        "line-height": "normal",
+        "color": "rgb(255, 255, 255)",
+        "text-transform": "none",
+        "text-align": "center"
+      },
+      "info": null,
+      "infoStyle": null,
+      "icon": {
+        "tag": "i",
+        "className": "counter-box-icon fontawesome-icon fa-address-card far",
+        "color": "rgb(255, 255, 255)",
+        "size": "40px"
+      },
+      "size": {
+        "width": 329,
+        "height": 188,
+        "top": 9276
+      }
+    },
+    {
+      "html": "50 BOOKS Published by Uswa Publications",
+      "value": "50",
+      "unitStyle": {
+        "font-family": "\"softLINKS Regular\", Arial, Helvetica, sans-serif",
+        "font-size": "50px",
+        "font-weight": "400",
+        "line-height": "normal",
+        "color": "rgb(255, 255, 255)",
+        "text-transform": "none",
+        "text-align": "center"
+      },
+      "info": null,
+      "infoStyle": null,
+      "icon": {
+        "tag": "i",
+        "className": "counter-box-icon fontawesome-icon fa-leanpub fab",
+        "color": "rgb(255, 255, 255)",
+        "size": "40px"
+      },
+      "size": {
+        "width": 329,
+        "height": 188,
+        "top": 9499
+      }
+    },
+    {
+      "html": "14500 TEACHERS Teaching in All Campuses",
+      "value": "14500",
+      "unitStyle": {
+        "font-family": "\"softLINKS Regular\", Arial, Helvetica, sans-serif",
+        "font-size": "50px",
+        "font-weight": "400",
+        "line-height": "normal",
+        "color": "rgb(255, 255, 255)",
+        "text-transform": "none",
+        "text-align": "center"
+      },
+      "info": null,
+      "infoStyle": null,
+      "icon": {
+        "tag": "i",
+        "className": "counter-box-icon fontawesome-icon fa-street-view fas",
+        "color": "rgb(255, 255, 255)",
+        "size": "40px"
+      },
+      "size": {
+        "width": 329,
+        "height": 188,
+        "top": 9722
+      }
+    },
+    {
+      "html": "700 CAMPUSES School Branches all over Country",
+      "value": "700",
+      "unitStyle": {
+        "font-family": "\"softLINKS Regular\", Arial, Helvetica, sans-serif",
+        "font-size": "50px",
+        "font-weight": "400",
+        "line-height": "normal",
+        "color": "rgb(255, 255, 255)",
+        "text-transform": "none",
+        "text-align": "center"
+      },
+      "info": null,
+      "infoStyle": null,
+      "icon": {
+        "tag": "i",
+        "className": "counter-box-icon fontawesome-icon fa-school fas",
+        "color": "rgb(255, 255, 255)",
+        "size": "40px"
+      },
+      "size": {
+        "width": 329,
+        "height": 212,
+        "top": 9945
+      }
+    }
+  ],
+  "video": {
+    "tag": "a",
+    "src": null,
+    "size": {
+      "width": 26,
+      "height": 26,
+      "top": 161
+    },
+    "html": "<a class=\"fusion-social-network-icon fusion-tooltip fusion-youtube awb-icon-youtube\" style=\"\" data-placement=\"bottom\" data-title=\"YouTube\" data-toggle=\"tooltip\" title=\"\" href=\"https://www.youtube.com/@dar-e-arqamofficials\" target=\"_blank\" rel=\"noopener noreferrer\" data-original-title=\"YouTube\"><span"
+  },
+  "whyChooseParagraphs": [
+    "We offer a range of training packages in a range of subject areas and can offer blended learning opportunities to best meet your needs. If sitting in a room with a trainer and having the opportunity for discussion with other learners sounds good to you then we can offer this. If you prefer to study in your own time and at your own speed then one of our world class facilities.",
+    "If you prefer to study in your own time and at your own speed then one of our e-learning packages may be right up your street. There is a third option, which is you like the sound of both but perhaps can’t attend all training sessions, this is when blended learning comes into its own."
+  ],
+  "findUsSpans": [],
+  "quickLinks": [
+    {
+      "src": "https://das.edu.pk/wp-content/uploads/2019/02/photos_videos.jpg.webp",
+      "href": "https://das.edu.pk/resources/photo-gallery/",
+      "size": {
+        "width": 315,
+        "height": 325,
+        "top": 10237
+      }
+    },
+    {
+      "src": "https://das.edu.pk/wp-content/uploads/2019/02/downloads.jpg.webp",
+      "href": "https://das.edu.pk/#",
+      "size": {
+        "width": 315,
+        "height": 325,
+        "top": 10582
+      }
+    },
+    {
+      "src": "https://das.edu.pk/wp-content/uploads/2019/02/our_books.jpg.webp",
+      "href": "https://das.edu.pk/resources/our-books/",
+      "size": {
+        "width": 315,
+        "height": 326,
+        "top": 10927
+      }
+    },
+    {
+      "src": "https://das.edu.pk/wp-content/uploads/2019/02/call_mail_chat.jpg.webp",
+      "href": "https://das.edu.pk/contact/",
+      "size": {
+        "width": 315,
+        "height": 325,
+        "top": 11272
+      }
+    }
+  ],
+  "partners": [
+    {
+      "src": "https://das.edu.pk/wp-content/uploads/2019/02/Workbooks_Grade-6-7-400x508.jpg.webp",
+      "alt": "",
+      "href": null
+    },
+    {
+      "src": "https://das.edu.pk/wp-content/uploads/2019/02/Workbooks-Grade-1-English-400x497.jpg.webp",
+      "alt": "",
+      "href": null
+    },
+    {
+      "src": "https://das.edu.pk/wp-content/uploads/2019/02/Workbooks-Grade-1-Science-400x496.jpg.webp",
+      "alt": "",
+      "href": null
+    },
+    {
+      "src": "https://das.edu.pk/wp-content/uploads/2019/02/Workbooks-Grade-1-Urdu-400x496.jpg.webp",
+      "alt": "",
+      "href": null
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27600%27%20height%3D%27762%27%20viewBox%3D%270%200%20600%20762%27%3E%3Crect%20width%3D%27600%27%20height%3D%27762%27%20fill-opacity%3D%220%22%2F%3E%3C%2Fsvg%3E",
+      "alt": "",
+      "href": null
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27600%27%20height%3D%27733%27%20viewBox%3D%270%200%20600%20733%27%3E%3Crect%20width%3D%27600%27%20height%3D%27733%27%20fill-opacity%3D%220%22%2F%3E%3C%2Fsvg%3E",
+      "alt": "",
+      "href": null
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27600%27%20height%3D%27732%27%20viewBox%3D%270%200%20600%20732%27%3E%3Crect%20width%3D%27600%27%20height%3D%27732%27%20fill-opacity%3D%220%22%2F%3E%3C%2Fsvg%3E",
+      "alt": "",
+      "href": null
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27600%27%20height%3D%27733%27%20viewBox%3D%270%200%20600%20733%27%3E%3Crect%20width%3D%27600%27%20height%3D%27733%27%20fill-opacity%3D%220%22%2F%3E%3C%2Fsvg%3E",
+      "alt": "",
+      "href": null
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27600%27%20height%3D%27762%27%20viewBox%3D%270%200%20600%20762%27%3E%3Crect%20width%3D%27600%27%20height%3D%27762%27%20fill-opacity%3D%220%22%2F%3E%3C%2Fsvg%3E",
+      "alt": "",
+      "href": null
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27600%27%20height%3D%27746%27%20viewBox%3D%270%200%20600%20746%27%3E%3Crect%20width%3D%27600%27%20height%3D%27746%27%20fill-opacity%3D%220%22%2F%3E%3C%2Fsvg%3E",
+      "alt": "",
+      "href": null
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27600%27%20height%3D%27744%27%20viewBox%3D%270%200%20600%20744%27%3E%3Crect%20width%3D%27600%27%20height%3D%27744%27%20fill-opacity%3D%220%22%2F%3E%3C%2Fsvg%3E",
+      "alt": "",
+      "href": null
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27600%27%20height%3D%27744%27%20viewBox%3D%270%200%20600%20744%27%3E%3Crect%20width%3D%27600%27%20height%3D%27744%27%20fill-opacity%3D%220%22%2F%3E%3C%2Fsvg%3E",
+      "alt": "",
+      "href": null
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27600%27%20height%3D%27762%27%20viewBox%3D%270%200%20600%20762%27%3E%3Crect%20width%3D%27600%27%20height%3D%27762%27%20fill-opacity%3D%220%22%2F%3E%3C%2Fsvg%3E",
+      "alt": "",
+      "href": null
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27600%27%20height%3D%27733%27%20viewBox%3D%270%200%20600%20733%27%3E%3Crect%20width%3D%27600%27%20height%3D%27733%27%20fill-opacity%3D%220%22%2F%3E%3C%2Fsvg%3E",
+      "alt": "",
+      "href": null
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27600%27%20height%3D%27732%27%20viewBox%3D%270%200%20600%20732%27%3E%3Crect%20width%3D%27600%27%20height%3D%27732%27%20fill-opacity%3D%220%22%2F%3E%3C%2Fsvg%3E",
+      "alt": "",
+      "href": null
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27600%27%20height%3D%27733%27%20viewBox%3D%270%200%20600%20733%27%3E%3Crect%20width%3D%27600%27%20height%3D%27733%27%20fill-opacity%3D%220%22%2F%3E%3C%2Fsvg%3E",
+      "alt": "",
+      "href": null
+    },
+    {
+      "src": "https://das.edu.pk/wp-content/uploads/2018/11/youth.png",
+      "alt": "",
+      "href": null
+    },
+    {
+      "src": "https://das.edu.pk/wp-content/uploads/2018/11/uswa.png.webp",
+      "alt": "",
+      "href": null
+    },
+    {
+      "src": "https://das.edu.pk/wp-content/uploads/2018/11/ujala.png.webp",
+      "alt": "",
+      "href": null
+    },
+    {
+      "src": "https://das.edu.pk/wp-content/uploads/2018/11/tcdp.png.webp",
+      "alt": "",
+      "href": null
+    },
+    {
+      "src": "https://das.edu.pk/wp-content/uploads/2018/11/parenting.png.webp",
+      "alt": "",
+      "href": null
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27398%27%20height%3D%27398%27%20viewBox%3D%270%200%20398%20398%27%3E%3Crect%20width%3D%27398%27%20height%3D%27398%27%20fill-opacity%3D%220%22%2F%3E%3C%2Fsvg%3E",
+      "alt": "",
+      "href": null
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27398%27%20height%3D%27398%27%20viewBox%3D%270%200%20398%20398%27%3E%3Crect%20width%3D%27398%27%20height%3D%27398%27%20fill-opacity%3D%220%22%2F%3E%3C%2Fsvg%3E",
+      "alt": "",
+      "href": null
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27398%27%20height%3D%27398%27%20viewBox%3D%270%200%20398%20398%27%3E%3Crect%20width%3D%27398%27%20height%3D%27398%27%20fill-opacity%3D%220%22%2F%3E%3C%2Fsvg%3E",
+      "alt": "",
+      "href": null
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27398%27%20height%3D%27398%27%20viewBox%3D%270%200%20398%20398%27%3E%3Crect%20width%3D%27398%27%20height%3D%27398%27%20fill-opacity%3D%220%22%2F%3E%3C%2Fsvg%3E",
+      "alt": "",
+      "href": null
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27398%27%20height%3D%27398%27%20viewBox%3D%270%200%20398%20398%27%3E%3Crect%20width%3D%27398%27%20height%3D%27398%27%20fill-opacity%3D%220%22%2F%3E%3C%2Fsvg%3E",
+      "alt": "",
+      "href": null
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27398%27%20height%3D%27398%27%20viewBox%3D%270%200%20398%20398%27%3E%3Crect%20width%3D%27398%27%20height%3D%27398%27%20fill-opacity%3D%220%22%2F%3E%3C%2Fsvg%3E",
+      "alt": "",
+      "href": null
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27398%27%20height%3D%27398%27%20viewBox%3D%270%200%20398%20398%27%3E%3Crect%20width%3D%27398%27%20height%3D%27398%27%20fill-opacity%3D%220%22%2F%3E%3C%2Fsvg%3E",
+      "alt": "",
+      "href": null
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27398%27%20height%3D%27398%27%20viewBox%3D%270%200%20398%20398%27%3E%3Crect%20width%3D%27398%27%20height%3D%27398%27%20fill-opacity%3D%220%22%2F%3E%3C%2Fsvg%3E",
+      "alt": "",
+      "href": null
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27398%27%20height%3D%27398%27%20viewBox%3D%270%200%20398%20398%27%3E%3Crect%20width%3D%27398%27%20height%3D%27398%27%20fill-opacity%3D%220%22%2F%3E%3C%2Fsvg%3E",
+      "alt": "",
+      "href": null
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27398%27%20height%3D%27398%27%20viewBox%3D%270%200%20398%20398%27%3E%3Crect%20width%3D%27398%27%20height%3D%27398%27%20fill-opacity%3D%220%22%2F%3E%3C%2Fsvg%3E",
+      "alt": "",
+      "href": null
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27398%27%20height%3D%27398%27%20viewBox%3D%270%200%20398%20398%27%3E%3Crect%20width%3D%27398%27%20height%3D%27398%27%20fill-opacity%3D%220%22%2F%3E%3C%2Fsvg%3E",
+      "alt": "",
+      "href": null
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27398%27%20height%3D%27398%27%20viewBox%3D%270%200%20398%20398%27%3E%3Crect%20width%3D%27398%27%20height%3D%27398%27%20fill-opacity%3D%220%22%2F%3E%3C%2Fsvg%3E",
+      "alt": "",
+      "href": null
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27398%27%20height%3D%27398%27%20viewBox%3D%270%200%20398%20398%27%3E%3Crect%20width%3D%27398%27%20height%3D%27398%27%20fill-opacity%3D%220%22%2F%3E%3C%2Fsvg%3E",
+      "alt": "",
+      "href": null
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27398%27%20height%3D%27398%27%20viewBox%3D%270%200%20398%20398%27%3E%3Crect%20width%3D%27398%27%20height%3D%27398%27%20fill-opacity%3D%220%22%2F%3E%3C%2Fsvg%3E",
+      "alt": "",
+      "href": null
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27398%27%20height%3D%27398%27%20viewBox%3D%270%200%20398%20398%27%3E%3Crect%20width%3D%27398%27%20height%3D%27398%27%20fill-opacity%3D%220%22%2F%3E%3C%2Fsvg%3E",
+      "alt": "",
+      "href": null
+    }
+  ],
+  "books": [
+    {
+      "src": "https://das.edu.pk/wp-content/uploads/2019/02/Workbooks_Grade-6-7-400x508.jpg.webp",
+      "href": null
+    },
+    {
+      "src": "https://das.edu.pk/wp-content/uploads/2019/02/Workbooks-Grade-1-English-400x497.jpg.webp",
+      "href": null
+    },
+    {
+      "src": "https://das.edu.pk/wp-content/uploads/2019/02/Workbooks-Grade-1-Science-400x496.jpg.webp",
+      "href": null
+    },
+    {
+      "src": "https://das.edu.pk/wp-content/uploads/2019/02/Workbooks-Grade-1-Urdu-400x496.jpg.webp",
+      "href": null
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27600%27%20height%3D%27762%27%20viewBox%3D%270%200%20600%20762%27%3E%3Crect%20width%3D%27600%27%20height%3D%27762%27%20fill-opacity%3D%220%22%2F%3E%3C%2Fsvg%3E",
+      "href": null
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27600%27%20height%3D%27733%27%20viewBox%3D%270%200%20600%20733%27%3E%3Crect%20width%3D%27600%27%20height%3D%27733%27%20fill-opacity%3D%220%22%2F%3E%3C%2Fsvg%3E",
+      "href": null
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27600%27%20height%3D%27732%27%20viewBox%3D%270%200%20600%20732%27%3E%3Crect%20width%3D%27600%27%20height%3D%27732%27%20fill-opacity%3D%220%22%2F%3E%3C%2Fsvg%3E",
+      "href": null
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27600%27%20height%3D%27733%27%20viewBox%3D%270%200%20600%20733%27%3E%3Crect%20width%3D%27600%27%20height%3D%27733%27%20fill-opacity%3D%220%22%2F%3E%3C%2Fsvg%3E",
+      "href": null
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27600%27%20height%3D%27762%27%20viewBox%3D%270%200%20600%20762%27%3E%3Crect%20width%3D%27600%27%20height%3D%27762%27%20fill-opacity%3D%220%22%2F%3E%3C%2Fsvg%3E",
+      "href": null
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27600%27%20height%3D%27746%27%20viewBox%3D%270%200%20600%20746%27%3E%3Crect%20width%3D%27600%27%20height%3D%27746%27%20fill-opacity%3D%220%22%2F%3E%3C%2Fsvg%3E",
+      "href": null
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27600%27%20height%3D%27744%27%20viewBox%3D%270%200%20600%20744%27%3E%3Crect%20width%3D%27600%27%20height%3D%27744%27%20fill-opacity%3D%220%22%2F%3E%3C%2Fsvg%3E",
+      "href": null
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27600%27%20height%3D%27744%27%20viewBox%3D%270%200%20600%20744%27%3E%3Crect%20width%3D%27600%27%20height%3D%27744%27%20fill-opacity%3D%220%22%2F%3E%3C%2Fsvg%3E",
+      "href": null
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27600%27%20height%3D%27762%27%20viewBox%3D%270%200%20600%20762%27%3E%3Crect%20width%3D%27600%27%20height%3D%27762%27%20fill-opacity%3D%220%22%2F%3E%3C%2Fsvg%3E",
+      "href": null
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27600%27%20height%3D%27733%27%20viewBox%3D%270%200%20600%20733%27%3E%3Crect%20width%3D%27600%27%20height%3D%27733%27%20fill-opacity%3D%220%22%2F%3E%3C%2Fsvg%3E",
+      "href": null
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27600%27%20height%3D%27732%27%20viewBox%3D%270%200%20600%20732%27%3E%3Crect%20width%3D%27600%27%20height%3D%27732%27%20fill-opacity%3D%220%22%2F%3E%3C%2Fsvg%3E",
+      "href": null
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27600%27%20height%3D%27733%27%20viewBox%3D%270%200%20600%20733%27%3E%3Crect%20width%3D%27600%27%20height%3D%27733%27%20fill-opacity%3D%220%22%2F%3E%3C%2Fsvg%3E",
+      "href": null
+    }
+  ]
+}

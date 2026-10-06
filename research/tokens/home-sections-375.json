@@ -1,0 +1,2263 @@
+{
+  "viewport": "375",
+  "url": "https://das.edu.pk/",
+  "extractedAt": "2026-10-01T04:29:46.121Z",
+  "viewportWidth": 375,
+  "sections": [
+    {
+      "index": 0,
+      "id": null,
+      "firstHeading": "Dar-e-Arqam Schools extend its unique learning experience to well over 300,000+ students in 700+ branches in 150+ cities across Pakistan.",
+      "size": {
+        "width": 375,
+        "height": 436
+      },
+      "background": {
+        "color": "rgb(255, 235, 59)",
+        "image": null
+      },
+      "box": {
+        "padding-top": "10px",
+        "padding-right": "30px",
+        "padding-bottom": "10px",
+        "padding-left": "30px",
+        "margin-top": "-20px",
+        "margin-bottom": "20px",
+        "border-radius": "0px",
+        "box-shadow": "none",
+        "background-color": "rgb(255, 235, 59)",
+        "border-top-width": "0px",
+        "border-top-color": "rgb(234, 233, 233)",
+        "border-bottom-width": "0px",
+        "border-bottom-color": "rgb(234, 233, 233)"
+      },
+      "contentWidth": 328,
+      "headings": [
+        {
+          "tag": "h3",
+          "text": "Dar-e-Arqam Schools extend its unique learning experience to well over 300,000+ students in 700+ branches in 150+ cities across Pakistan.",
+          "style": {
+            "font-family": "Poppins, Arial, Helvetica, sans-serif",
+            "font-size": "24px",
+            "font-weight": "700",
+            "line-height": "33.6px",
+            "color": "rgb(51, 51, 51)",
+            "text-transform": "none",
+            "letter-spacing": "normal",
+            "text-align": "start",
+            "margin-bottom": "30px"
+          }
+        }
+      ],
+      "paragraphs": [],
+      "columnsPerRow": 1,
+      "images": [],
+      "buttons": [
+        {
+          "text": "Find Us Nearby",
+          "href": "https://das.edu.pk/campuses-list/",
+          "size": {
+            "width": 266,
+            "height": 51
+          },
+          "style": {
+            "font-family": "\"Open Sans\", Arial, Helvetica, sans-serif",
+            "font-size": "18px",
+            "font-weight": "600",
+            "line-height": "21px",
+            "color": "rgb(255, 255, 255)",
+            "text-transform": "uppercase",
+            "letter-spacing": "1px",
+            "text-align": "center",
+            "padding-top": "13px",
+            "padding-right": "29px",
+            "padding-bottom": "13px",
+            "padding-left": "29px",
+            "margin-top": "0px",
+            "margin-bottom": "0px",
+            "border-radius": "2px",
+            "box-shadow": "none",
+            "background-color": "rgb(244, 67, 54)",
+            "border-top-width": "2px",
+            "border-top-color": "rgb(255, 255, 255)",
+            "border-bottom-width": "2px",
+            "border-bottom-color": "rgb(255, 255, 255)"
+          }
+        }
+      ],
+      "flipBoxes": [],
+      "counters": [],
+      "swipers": [],
+      "shadowColumns": [],
+      "iframe": null
+    },
+    {
+      "index": 1,
+      "id": null,
+      "firstHeading": "Admission Procedure",
+      "size": {
+        "width": 375,
+        "height": 1543
+      },
+      "background": {
+        "color": "rgb(255, 255, 255)",
+        "image": null
+      },
+      "box": {
+        "padding-top": "0px",
+        "padding-right": "30px",
+        "padding-bottom": "0px",
+        "padding-left": "30px",
+        "margin-top": "0px",
+        "margin-bottom": "0px",
+        "border-radius": "0px",
+        "box-shadow": "none",
+        "background-color": "rgb(255, 255, 255)",
+        "border-top-width": "0px",
+        "border-top-color": "rgb(234, 233, 233)",
+        "border-bottom-width": "0px",
+        "border-bottom-color": "rgb(234, 233, 233)"
+      },
+      "contentWidth": 328,
+      "headings": [
+        {
+          "tag": "h2",
+          "text": "Admission Procedure",
+          "style": {
+            "font-family": "Poppins, Arial, Helvetica, sans-serif",
+            "font-size": "24.8382px",
+            "font-weight": "700",
+            "line-height": "29.8059px",
+            "color": "rgb(232, 34, 100)",
+            "text-transform": "none",
+            "letter-spacing": "normal",
+            "text-align": "center",
+            "margin-bottom": "9px"
+          }
+        },
+        {
+          "tag": "h3",
+          "text": "ADMISSION PROCEDURE",
+          "style": {
+            "font-family": "Poppins, Arial, Helvetica, sans-serif",
+            "font-size": "24px",
+            "font-weight": "700",
+            "line-height": "33.6px",
+            "color": "rgb(250, 249, 248)",
+            "text-transform": "none",
+            "letter-spacing": "normal",
+            "text-align": "center",
+            "margin-bottom": "9px"
+          }
+        },
+        {
+          "tag": "h2",
+          "text": "Salient Features",
+          "style": {
+            "font-family": "Poppins, Arial, Helvetica, sans-serif",
+            "font-size": "24.8382px",
+            "font-weight": "700",
+            "line-height": "29.8059px",
+            "color": "rgb(2, 155, 216)",
+            "text-transform": "none",
+            "letter-spacing": "normal",
+            "text-align": "center",
+            "margin-bottom": "9px"
+          }
+        },
+        {
+          "tag": "h3",
+          "text": "SALIENT FEATURES",
+          "style": {
+            "font-family": "Poppins, Arial, Helvetica, sans-serif",
+            "font-size": "24px",
+            "font-weight": "700",
+            "line-height": "33.6px",
+            "color": "rgb(250, 249, 248)",
+            "text-transform": "none",
+            "letter-spacing": "normal",
+            "text-align": "center",
+            "margin-bottom": "9px"
+          }
+        },
+        {
+          "tag": "h2",
+          "text": "Branch Network",
+          "style": {
+            "font-family": "Poppins, Arial, Helvetica, sans-serif",
+            "font-size": "24.8382px",
+            "font-weight": "700",
+            "line-height": "29.8059px",
+            "color": "rgb(103, 193, 0)",
+            "text-transform": "none",
+            "letter-spacing": "normal",
+            "text-align": "center",
+            "margin-bottom": "9px"
+          }
+        },
+        {
+          "tag": "h3",
+          "text": "BRANCH NETWORK",
+          "style": {
+            "font-family": "Poppins, Arial, Helvetica, sans-serif",
+            "font-size": "24px",
+            "font-weight": "700",
+            "line-height": "33.6px",
+            "color": "rgb(250, 249, 248)",
+            "text-transform": "none",
+            "letter-spacing": "normal",
+            "text-align": "center",
+            "margin-bottom": "9px"
+          }
+        }
+      ],
+      "paragraphs": [
+        {
+          "text": "There is no written test for pre-school. The admission test for primary and secondary school is based on the following subjects and classes",
+          "style": {
+            "font-family": "\"softLINKS Regular\", Arial, Helvetica, sans-serif",
+            "font-size": "16px",
+            "font-weight": "400",
+            "line-height": "24px",
+            "color": "rgb(255, 255, 255)",
+            "text-transform": "none",
+            "letter-spacing": "normal",
+            "text-align": "center"
+          }
+        },
+        {
+          "text": "Dar-e-Arqam is one of a few pioneer schools of formal education where you may witness quite comfortably, a sublime blend of high standard",
+          "style": {
+            "font-family": "\"softLINKS Regular\", Arial, Helvetica, sans-serif",
+            "font-size": "16px",
+            "font-weight": "400",
+            "line-height": "24px",
+            "color": "rgb(255, 255, 255)",
+            "text-transform": "none",
+            "letter-spacing": "normal",
+            "text-align": "center"
+          }
+        },
+        {
+          "text": "There are 700+ Branches of Dar-e-Arqam Schools with more than 300,000+ Students in 150+ cities of Pakistan.",
+          "style": {
+            "font-family": "\"softLINKS Regular\", Arial, Helvetica, sans-serif",
+            "font-size": "16px",
+            "font-weight": "400",
+            "line-height": "24px",
+            "color": "rgb(255, 255, 255)",
+            "text-transform": "none",
+            "letter-spacing": "normal",
+            "text-align": "center"
+          }
+        },
+        {
+          "text": "Curriculum is seen as whole teaching-learning activity both inside & outside classroom of the schools",
+          "style": {
+            "font-family": "\"softLINKS Regular\", Arial, Helvetica, sans-serif",
+            "font-size": "16px",
+            "font-weight": "400",
+            "line-height": "24px",
+            "color": "rgb(255, 255, 255)",
+            "text-transform": "none",
+            "letter-spacing": "normal",
+            "text-align": "center"
+          }
+        }
+      ],
+      "columnsPerRow": 1,
+      "images": [
+        {
+          "src": "https://das.edu.pk/wp-content/uploads/2018/11/icon-female-admission.gif",
+          "alt": "",
+          "width": 100,
+          "height": 99,
+          "objectFit": "fill"
+        },
+        {
+          "src": "https://das.edu.pk/wp-content/uploads/2018/11/salient-features.gif",
+          "alt": "",
+          "width": 110,
+          "height": 101,
+          "objectFit": "fill"
+        },
+        {
+          "src": "https://das.edu.pk/wp-content/uploads/2018/11/branch-nwteork.gif",
+          "alt": "",
+          "width": 119,
+          "height": 100,
+          "objectFit": "fill"
+        },
+        {
+          "src": "https://das.edu.pk/wp-content/uploads/2018/11/Curriculum.gif",
+          "alt": "",
+          "width": 100,
+          "height": 100,
+          "objectFit": "fill"
+        },
+        {
+          "src": "https://das.edu.pk/wp-content/uploads/2018/11/franchise.gif",
+          "alt": "",
+          "width": 129,
+          "height": 100,
+          "objectFit": "fill"
+        }
+      ],
+      "buttons": [
+        {
+          "text": "Read More",
+          "href": "https://das.edu.pk/admission/",
+          "size": {
+            "width": 275,
+            "height": 47
+          },
+          "style": {
+            "font-family": "\"Open Sans\", Arial, Helvetica, sans-serif",
+            "font-size": "14px",
+            "font-weight": "600",
+            "line-height": "17px",
+            "color": "rgb(255, 255, 255)",
+            "text-transform": "none",
+            "letter-spacing": "1px",
+            "text-align": "center",
+            "padding-top": "13px",
+            "padding-right": "29px",
+            "padding-bottom": "13px",
+            "padding-left": "29px",
+            "margin-top": "20px",
+            "margin-bottom": "0px",
+            "border-radius": "0px",
+            "box-shadow": "none",
+            "background-color": "rgb(244, 67, 54)",
+            "border-top-width": "2px",
+            "border-top-color": "rgb(255, 255, 255)",
+            "border-bottom-width": "2px",
+            "border-bottom-color": "rgb(255, 255, 255)"
+          }
+        },
+        {
+          "text": "Read More",
+          "href": "https://das.edu.pk/about/salent-features/",
+          "size": {
+            "width": 275,
+            "height": 47
+          },
+          "style": {
+            "font-family": "\"Open Sans\", Arial, Helvetica, sans-serif",
+            "font-size": "14px",
+            "font-weight": "600",
+            "line-height": "17px",
+            "color": "rgb(255, 255, 255)",
+            "text-transform": "none",
+            "letter-spacing": "1px",
+            "text-align": "center",
+            "padding-top": "13px",
+            "padding-right": "29px",
+            "padding-bottom": "13px",
+            "padding-left": "29px",
+            "margin-top": "20px",
+            "margin-bottom": "0px",
+            "border-radius": "0px",
+            "box-shadow": "none",
+            "background-color": "rgb(244, 67, 54)",
+            "border-top-width": "2px",
+            "border-top-color": "rgb(255, 255, 255)",
+            "border-bottom-width": "2px",
+            "border-bottom-color": "rgb(255, 255, 255)"
+          }
+        },
+        {
+          "text": "Read More",
+          "href": "https://das.edu.pk/campuses-list/",
+          "size": {
+            "width": 275,
+            "height": 47
+          },
+          "style": {
+            "font-family": "\"Open Sans\", Arial, Helvetica, sans-serif",
+            "font-size": "14px",
+            "font-weight": "600",
+            "line-height": "17px",
+            "color": "rgb(255, 255, 255)",
+            "text-transform": "none",
+            "letter-spacing": "1px",
+            "text-align": "center",
+            "padding-top": "13px",
+            "padding-right": "29px",
+            "padding-bottom": "13px",
+            "padding-left": "29px",
+            "margin-top": "20px",
+            "margin-bottom": "0px",
+            "border-radius": "0px",
+            "box-shadow": "none",
+            "background-color": "rgb(244, 67, 54)",
+            "border-top-width": "2px",
+            "border-top-color": "rgb(255, 255, 255)",
+            "border-bottom-width": "2px",
+            "border-bottom-color": "rgb(255, 255, 255)"
+          }
+        },
+        {
+          "text": "Read More",
+          "href": "https://das.edu.pk/academics/syllabi/",
+          "size": {
+            "width": 275,
+            "height": 47
+          },
+          "style": {
+            "font-family": "\"Open Sans\", Arial, Helvetica, sans-serif",
+            "font-size": "14px",
+            "font-weight": "600",
+            "line-height": "17px",
+            "color": "rgb(255, 255, 255)",
+            "text-transform": "none",
+            "letter-spacing": "1px",
+            "text-align": "center",
+            "padding-top": "13px",
+            "padding-right": "29px",
+            "padding-bottom": "13px",
+            "padding-left": "29px",
+            "margin-top": "20px",
+            "margin-bottom": "0px",
+            "border-radius": "0px",
+            "box-shadow": "none",
+            "background-color": "rgb(244, 67, 54)",
+            "border-top-width": "2px",
+            "border-top-color": "rgb(255, 255, 255)",
+            "border-bottom-width": "2px",
+            "border-bottom-color": "rgb(255, 255, 255)"
+          }
+        },
+        {
+          "text": "Read More",
+          "href": "https://das.edu.pk/contact/franchise-offer/",
+          "size": {
+            "width": 275,
+            "height": 47
+          },
+          "style": {
+            "font-family": "\"Open Sans\", Arial, Helvetica, sans-serif",
+            "font-size": "14px",
+            "font-weight": "600",
+            "line-height": "17px",
+            "color": "rgb(255, 255, 255)",
+            "text-transform": "none",
+            "letter-spacing": "1px",
+            "text-align": "center",
+            "padding-top": "13px",
+            "padding-right": "29px",
+            "padding-bottom": "13px",
+            "padding-left": "29px",
+            "margin-top": "20px",
+            "margin-bottom": "0px",
+            "border-radius": "0px",
+            "box-shadow": "none",
+            "background-color": "rgb(244, 67, 54)",
+            "border-top-width": "2px",
+            "border-top-color": "rgb(255, 255, 255)",
+            "border-bottom-width": "2px",
+            "border-bottom-color": "rgb(255, 255, 255)"
+          }
+        }
+      ],
+      "flipBoxes": [
+        {
+          "size": {
+            "width": 315,
+            "height": 293
+          },
+          "style": {
+            "padding-top": "27px",
+            "padding-right": "20px",
+            "padding-bottom": "27px",
+            "padding-left": "20px",
+            "margin-top": "0px",
+            "margin-bottom": "0px",
+            "border-radius": "4px",
+            "box-shadow": "none",
+            "background-color": "rgb(238, 238, 238)",
+            "border-top-width": "0px",
+            "border-top-color": "rgb(255, 0, 85)",
+            "border-bottom-width": "0px",
+            "border-bottom-color": "rgb(255, 0, 85)"
+          },
+          "title": "Admission Procedure",
+          "titleStyle": {
+            "font-family": "Poppins, Arial, Helvetica, sans-serif",
+            "font-size": "24.8382px",
+            "font-weight": "700",
+            "line-height": "29.8059px",
+            "color": "rgb(232, 34, 100)",
+            "text-transform": "none",
+            "letter-spacing": "normal",
+            "text-align": "center"
+          },
+          "bodyStyle": {
+            "font-family": "\"softLINKS Regular\", Arial, Helvetica, sans-serif",
+            "font-size": "16px",
+            "font-weight": "400",
+            "line-height": "24px",
+            "color": "rgb(255, 255, 255)",
+            "text-transform": "none",
+            "letter-spacing": "normal",
+            "text-align": "center"
+          }
+        },
+        {
+          "size": {
+            "width": 275,
+            "height": 220
+          },
+          "style": {
+            "padding-top": "0px",
+            "padding-right": "0px",
+            "padding-bottom": "0px",
+            "padding-left": "0px",
+            "margin-top": "0px",
+            "margin-bottom": "0px",
+            "border-radius": "0px",
+            "box-shadow": "none",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "border-top-width": "0px",
+            "border-top-color": "rgb(116, 116, 116)",
+            "border-bottom-width": "0px",
+            "border-bottom-color": "rgb(116, 116, 116)"
+          },
+          "title": "Admission Procedure",
+          "titleStyle": {
+            "font-family": "Poppins, Arial, Helvetica, sans-serif",
+            "font-size": "24.8382px",
+            "font-weight": "700",
+            "line-height": "29.8059px",
+            "color": "rgb(232, 34, 100)",
+            "text-transform": "none",
+            "letter-spacing": "normal",
+            "text-align": "center"
+          },
+          "bodyStyle": {
+            "font-family": "\"softLINKS Regular\", Arial, Helvetica, sans-serif",
+            "font-size": "16px",
+            "font-weight": "400",
+            "line-height": "24px",
+            "color": "rgb(255, 255, 255)",
+            "text-transform": "none",
+            "letter-spacing": "normal",
+            "text-align": "center"
+          }
+        },
+        {
+          "size": {
+            "width": 315,
+            "height": 276
+          },
+          "style": {
+            "padding-top": "27px",
+            "padding-right": "20px",
+            "padding-bottom": "27px",
+            "padding-left": "20px",
+            "margin-top": "0px",
+            "margin-bottom": "0px",
+            "border-radius": "4px",
+            "box-shadow": "none",
+            "background-color": "rgb(238, 238, 238)",
+            "border-top-width": "0px",
+            "border-top-color": "rgb(255, 0, 85)",
+            "border-bottom-width": "0px",
+            "border-bottom-color": "rgb(255, 0, 85)"
+          },
+          "title": "Salient Features",
+          "titleStyle": {
+            "font-family": "Poppins, Arial, Helvetica, sans-serif",
+            "font-size": "24.8382px",
+            "font-weight": "700",
+            "line-height": "29.8059px",
+            "color": "rgb(2, 155, 216)",
+            "text-transform": "none",
+            "letter-spacing": "normal",
+            "text-align": "center"
+          },
+          "bodyStyle": {
+            "font-family": "\"softLINKS Regular\", Arial, Helvetica, sans-serif",
+            "font-size": "16px",
+            "font-weight": "400",
+            "line-height": "24px",
+            "color": "rgb(255, 255, 255)",
+            "text-transform": "none",
+            "letter-spacing": "normal",
+            "text-align": "center"
+          }
+        },
+        {
+          "size": {
+            "width": 275,
+            "height": 222
+          },
+          "style": {
+            "padding-top": "0px",
+            "padding-right": "0px",
+            "padding-bottom": "0px",
+            "padding-left": "0px",
+            "margin-top": "0px",
+            "margin-bottom": "0px",
+            "border-radius": "0px",
+            "box-shadow": "none",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "border-top-width": "0px",
+            "border-top-color": "rgb(116, 116, 116)",
+            "border-bottom-width": "0px",
+            "border-bottom-color": "rgb(116, 116, 116)"
+          },
+          "title": "Salient Features",
+          "titleStyle": {
+            "font-family": "Poppins, Arial, Helvetica, sans-serif",
+            "font-size": "24.8382px",
+            "font-weight": "700",
+            "line-height": "29.8059px",
+            "color": "rgb(2, 155, 216)",
+            "text-transform": "none",
+            "letter-spacing": "normal",
+            "text-align": "center"
+          },
+          "bodyStyle": {
+            "font-family": "\"softLINKS Regular\", Arial, Helvetica, sans-serif",
+            "font-size": "16px",
+            "font-weight": "400",
+            "line-height": "24px",
+            "color": "rgb(255, 255, 255)",
+            "text-transform": "none",
+            "letter-spacing": "normal",
+            "text-align": "center"
+          }
+        },
+        {
+          "size": {
+            "width": 315,
+            "height": 275
+          },
+          "style": {
+            "padding-top": "27px",
+            "padding-right": "20px",
+            "padding-bottom": "27px",
+            "padding-left": "20px",
+            "margin-top": "0px",
+            "margin-bottom": "0px",
+            "border-radius": "4px",
+            "box-shadow": "none",
+            "background-color": "rgb(238, 238, 238)",
+            "border-top-width": "0px",
+            "border-top-color": "rgb(255, 0, 85)",
+            "border-bottom-width": "0px",
+            "border-bottom-color": "rgb(255, 0, 85)"
+          },
+          "title": "Branch Network",
+          "titleStyle": {
+            "font-family": "Poppins, Arial, Helvetica, sans-serif",
+            "font-size": "24.8382px",
+            "font-weight": "700",
+            "line-height": "29.8059px",
+            "color": "rgb(103, 193, 0)",
+            "text-transform": "none",
+            "letter-spacing": "normal",
+            "text-align": "center"
+          },
+          "bodyStyle": {
+            "font-family": "\"softLINKS Regular\", Arial, Helvetica, sans-serif",
+            "font-size": "16px",
+            "font-weight": "400",
+            "line-height": "24px",
+            "color": "rgb(255, 255, 255)",
+            "text-transform": "none",
+            "letter-spacing": "normal",
+            "text-align": "center"
+          }
+        },
+        {
+          "size": {
+            "width": 275,
+            "height": 221
+          },
+          "style": {
+            "padding-top": "0px",
+            "padding-right": "0px",
+            "padding-bottom": "0px",
+            "padding-left": "0px",
+            "margin-top": "0px",
+            "margin-bottom": "0px",
+            "border-radius": "0px",
+            "box-shadow": "none",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "border-top-width": "0px",
+            "border-top-color": "rgb(116, 116, 116)",
+            "border-bottom-width": "0px",
+            "border-bottom-color": "rgb(116, 116, 116)"
+          },
+          "title": "Branch Network",
+          "titleStyle": {
+            "font-family": "Poppins, Arial, Helvetica, sans-serif",
+            "font-size": "24.8382px",
+            "font-weight": "700",
+            "line-height": "29.8059px",
+            "color": "rgb(103, 193, 0)",
+            "text-transform": "none",
+            "letter-spacing": "normal",
+            "text-align": "center"
+          },
+          "bodyStyle": {
+            "font-family": "\"softLINKS Regular\", Arial, Helvetica, sans-serif",
+            "font-size": "16px",
+            "font-weight": "400",
+            "line-height": "24px",
+            "color": "rgb(255, 255, 255)",
+            "text-transform": "none",
+            "letter-spacing": "normal",
+            "text-align": "center"
+          }
+        },
+        {
+          "size": {
+            "width": 315,
+            "height": 305
+          },
+          "style": {
+            "padding-top": "27px",
+            "padding-right": "20px",
+            "padding-bottom": "27px",
+            "padding-left": "20px",
+            "margin-top": "0px",
+            "margin-bottom": "0px",
+            "border-radius": "4px",
+            "box-shadow": "none",
+            "background-color": "rgb(238, 238, 238)",
+            "border-top-width": "0px",
+            "border-top-color": "rgb(255, 0, 85)",
+            "border-bottom-width": "0px",
+            "border-bottom-color": "rgb(255, 0, 85)"
+          },
+          "title": "Education Curriculum",
+          "titleStyle": {
+            "font-family": "Poppins, Arial, Helvetica, sans-serif",
+            "font-size": "24.8382px",
+            "font-weight": "700",
+            "line-height": "29.8059px",
+            "color": "rgb(96, 125, 139)",
+            "text-transform": "none",
+            "letter-spacing": "normal",
+            "text-align": "center"
+          },
+          "bodyStyle": {
+            "font-family": "\"softLINKS Regular\", Arial, Helvetica, sans-serif",
+            "font-size": "16px",
+            "font-weight": "400",
+            "line-height": "24px",
+            "color": "rgb(255, 255, 255)",
+            "text-transform": "none",
+            "letter-spacing": "normal",
+            "text-align": "center"
+          }
+        },
+        {
+          "size": {
+            "width": 275,
+            "height": 251
+          },
+          "style": {
+            "padding-top": "0px",
+            "padding-right": "0px",
+            "padding-bottom": "0px",
+            "padding-left": "0px",
+            "margin-top": "0px",
+            "margin-bottom": "0px",
+            "border-radius": "0px",
+            "box-shadow": "none",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "border-top-width": "0px",
+            "border-top-color": "rgb(116, 116, 116)",
+            "border-bottom-width": "0px",
+            "border-bottom-color": "rgb(116, 116, 116)"
+          },
+          "title": "Education Curriculum",
+          "titleStyle": {
+            "font-family": "Poppins, Arial, Helvetica, sans-serif",
+            "font-size": "24.8382px",
+            "font-weight": "700",
+            "line-height": "29.8059px",
+            "color": "rgb(96, 125, 139)",
+            "text-transform": "none",
+            "letter-spacing": "normal",
+            "text-align": "center"
+          },
+          "bodyStyle": {
+            "font-family": "\"softLINKS Regular\", Arial, Helvetica, sans-serif",
+            "font-size": "16px",
+            "font-weight": "400",
+            "line-height": "24px",
+            "color": "rgb(255, 255, 255)",
+            "text-transform": "none",
+            "letter-spacing": "normal",
+            "text-align": "center"
+          }
+        },
+        {
+          "size": {
+            "width": 315,
+            "height": 275
+          },
+          "style": {
+            "padding-top": "27px",
+            "padding-right": "20px",
+            "padding-bottom": "27px",
+            "padding-left": "20px",
+            "margin-top": "0px",
+            "margin-bottom": "0px",
+            "border-radius": "4px",
+            "box-shadow": "none",
+            "background-color": "rgb(238, 238, 238)",
+            "border-top-width": "0px",
+            "border-top-color": "rgb(255, 0, 85)",
+            "border-bottom-width": "0px",
+            "border-bottom-color": "rgb(255, 0, 85)"
+          },
+          "title": "Franchise Offer",
+          "titleStyle": {
+            "font-family": "Poppins, Arial, Helvetica, sans-serif",
+            "font-size": "24.8382px",
+            "font-weight": "700",
+            "line-height": "29.8059px",
+            "color": "rgb(255, 152, 0)",
+            "text-transform": "none",
+            "letter-spacing": "normal",
+            "text-align": "center"
+          },
+          "bodyStyle": {
+            "font-family": "\"softLINKS Regular\", Arial, Helvetica, sans-serif",
+            "font-size": "16px",
+            "font-weight": "400",
+            "line-height": "24px",
+            "color": "rgb(255, 255, 255)",
+            "text-transform": "none",
+            "letter-spacing": "normal",
+            "text-align": "center"
+          }
+        },
+        {
+          "size": {
+            "width": 275,
+            "height": 221
+          },
+          "style": {
+            "padding-top": "0px",
+            "padding-right": "0px",
+            "padding-bottom": "0px",
+            "padding-left": "0px",
+            "margin-top": "0px",
+            "margin-bottom": "0px",
+            "border-radius": "0px",
+            "box-shadow": "none",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "border-top-width": "0px",
+            "border-top-color": "rgb(116, 116, 116)",
+            "border-bottom-width": "0px",
+            "border-bottom-color": "rgb(116, 116, 116)"
+          },
+          "title": "Franchise Offer",
+          "titleStyle": {
+            "font-family": "Poppins, Arial, Helvetica, sans-serif",
+            "font-size": "24.8382px",
+            "font-weight": "700",
+            "line-height": "29.8059px",
+            "color": "rgb(255, 152, 0)",
+            "text-transform": "none",
+            "letter-spacing": "normal",
+            "text-align": "center"
+          },
+          "bodyStyle": {
+            "font-family": "\"softLINKS Regular\", Arial, Helvetica, sans-serif",
+            "font-size": "16px",
+            "font-weight": "400",
+            "line-height": "24px",
+            "color": "rgb(255, 255, 255)",
+            "text-transform": "none",
+            "letter-spacing": "normal",
+            "text-align": "center"
+          }
+        }
+      ],
+      "counters": [],
+      "swipers": [],
+      "shadowColumns": [],
+      "iframe": null
+    },
+    {
+      "index": 2,
+      "id": null,
+      "firstHeading": "Inspired By Excellence & Innovation",
+      "size": {
+        "width": 375,
+        "height": 1199
+      },
+      "background": {
+        "color": "rgb(255, 255, 255)",
+        "image": null
+      },
+      "box": {
+        "padding-top": "20px",
+        "padding-right": "30px",
+        "padding-bottom": "20px",
+        "padding-left": "30px",
+        "margin-top": "0px",
+        "margin-bottom": "0px",
+        "border-radius": "0px",
+        "box-shadow": "none",
+        "background-color": "rgb(255, 255, 255)",
+        "border-top-width": "0px",
+        "border-top-color": "rgb(234, 233, 233)",
+        "border-bottom-width": "0px",
+        "border-bottom-color": "rgb(234, 233, 233)"
+      },
+      "contentWidth": 328,
+      "headings": [
+        {
+          "tag": "h2",
+          "text": "Inspired By Excellence & Innovation",
+          "style": {
+            "font-family": "Poppins, Arial, Helvetica, sans-serif",
+            "font-size": "24.8382px",
+            "font-weight": "700",
+            "line-height": "29.8059px",
+            "color": "rgb(34, 51, 85)",
+            "text-transform": "none",
+            "letter-spacing": "normal",
+            "text-align": "center",
+            "margin-bottom": "14.9029px"
+          }
+        },
+        {
+          "tag": "h3",
+          "text": "WHY CHOOSE DAR-E-ARQAM SCHOOLS?",
+          "style": {
+            "font-family": "Poppins, Arial, Helvetica, sans-serif",
+            "font-size": "24px",
+            "font-weight": "700",
+            "line-height": "33.6px",
+            "color": "rgb(51, 51, 51)",
+            "text-transform": "none",
+            "letter-spacing": "normal",
+            "text-align": "start",
+            "margin-bottom": "30px"
+          }
+        }
+      ],
+      "paragraphs": [
+        {
+          "text": "We offer a wide range of high quality of teaching and extra-curricular activities.",
+          "style": {
+            "font-family": "\"softLINKS Regular\", Arial, Helvetica, sans-serif",
+            "font-size": "20px",
+            "font-weight": "400",
+            "line-height": "24px",
+            "color": "rgb(0, 0, 0)",
+            "text-transform": "none",
+            "letter-spacing": "normal",
+            "text-align": "center"
+          }
+        },
+        {
+          "text": "We offer a range of training packages in a range of subject areas and can offer blended learning opportunities to best meet your needs. If sitting in a room with a trainer and having the opportunity for discussion with other learners sounds good to you then we can offer this. If you prefer to study ",
+          "style": {
+            "font-family": "\"softLINKS Regular\", Arial, Helvetica, sans-serif",
+            "font-size": "16px",
+            "font-weight": "400",
+            "line-height": "24px",
+            "color": "rgb(0, 0, 0)",
+            "text-transform": "none",
+            "letter-spacing": "normal",
+            "text-align": "left"
+          }
+        },
+        {
+          "text": "If you prefer to study in your own time and at your own speed then one of our e-learning packages may be right up your street. There is a third option, which is you like the sound of both but perhaps can’t attend all training sessions, this is when blended learning comes into its own.",
+          "style": {
+            "font-family": "\"softLINKS Regular\", Arial, Helvetica, sans-serif",
+            "font-size": "16px",
+            "font-weight": "400",
+            "line-height": "24px",
+            "color": "rgb(0, 0, 0)",
+            "text-transform": "none",
+            "letter-spacing": "normal",
+            "text-align": "left"
+          }
+        }
+      ],
+      "columnsPerRow": 1,
+      "images": [
+        {
+          "src": "https://das.edu.pk/wp-content/uploads/2018/11/android-icon-96x96.png",
+          "alt": "",
+          "width": 96,
+          "height": 96,
+          "objectFit": "fill"
+        }
+      ],
+      "buttons": [],
+      "flipBoxes": [],
+      "counters": [],
+      "swipers": [],
+      "shadowColumns": [],
+      "iframe": null
+    },
+    {
+      "index": 3,
+      "id": null,
+      "firstHeading": "Dar-e-Arqam Latest News",
+      "size": {
+        "width": 375,
+        "height": 2688
+      },
+      "background": {
+        "color": "rgb(247, 245, 244)",
+        "image": null
+      },
+      "box": {
+        "padding-top": "20px",
+        "padding-right": "30px",
+        "padding-bottom": "20px",
+        "padding-left": "30px",
+        "margin-top": "0px",
+        "margin-bottom": "0px",
+        "border-radius": "0px",
+        "box-shadow": "none",
+        "background-color": "rgb(247, 245, 244)",
+        "border-top-width": "0px",
+        "border-top-color": "rgb(234, 233, 233)",
+        "border-bottom-width": "0px",
+        "border-bottom-color": "rgb(234, 233, 233)"
+      },
+      "contentWidth": 328,
+      "headings": [
+        {
+          "tag": "h2",
+          "text": "Dar-e-Arqam Latest News",
+          "style": {
+            "font-family": "Poppins, Arial, Helvetica, sans-serif",
+            "font-size": "24.8382px",
+            "font-weight": "700",
+            "line-height": "29.8059px",
+            "color": "rgb(34, 51, 85)",
+            "text-transform": "none",
+            "letter-spacing": "normal",
+            "text-align": "center",
+            "margin-bottom": "14.9029px"
+          }
+        },
+        {
+          "tag": "h2",
+          "text": "Exploring the Innovative Education System in Japan",
+          "style": {
+            "font-family": "Poppins, Arial, Helvetica, sans-serif",
+            "font-size": "22px",
+            "font-weight": "700",
+            "line-height": "31.9px",
+            "color": "rgb(18, 18, 145)",
+            "text-transform": "none",
+            "letter-spacing": "normal",
+            "text-align": "start",
+            "margin-bottom": "5px"
+          }
+        },
+        {
+          "tag": "h2",
+          "text": "فکر اقبال اور تعلیمی نظام",
+          "style": {
+            "font-family": "Poppins, Arial, Helvetica, sans-serif",
+            "font-size": "22px",
+            "font-weight": "700",
+            "line-height": "31.9px",
+            "color": "rgb(18, 18, 145)",
+            "text-transform": "none",
+            "letter-spacing": "normal",
+            "text-align": "start",
+            "margin-bottom": "5px"
+          }
+        },
+        {
+          "tag": "h2",
+          "text": "The Spirit of Togatherness",
+          "style": {
+            "font-family": "Poppins, Arial, Helvetica, sans-serif",
+            "font-size": "22px",
+            "font-weight": "700",
+            "line-height": "31.9px",
+            "color": "rgb(18, 18, 145)",
+            "text-transform": "none",
+            "letter-spacing": "normal",
+            "text-align": "start",
+            "margin-bottom": "5px"
+          }
+        },
+        {
+          "tag": "h2",
+          "text": "GM Dar-e-Arqam Bakhtzada Syed called on Zahid Akhtar",
+          "style": {
+            "font-family": "Poppins, Arial, Helvetica, sans-serif",
+            "font-size": "22px",
+            "font-weight": "700",
+            "line-height": "31.9px",
+            "color": "rgb(18, 18, 145)",
+            "text-transform": "none",
+            "letter-spacing": "normal",
+            "text-align": "start",
+            "margin-bottom": "5px"
+          }
+        },
+        {
+          "tag": "h2",
+          "text": "All Pakistan Regional Directors and Deputy Regional Directors,",
+          "style": {
+            "font-family": "Poppins, Arial, Helvetica, sans-serif",
+            "font-size": "22px",
+            "font-weight": "700",
+            "line-height": "31.9px",
+            "color": "rgb(18, 18, 145)",
+            "text-transform": "none",
+            "letter-spacing": "normal",
+            "text-align": "start",
+            "margin-bottom": "5px"
+          }
+        }
+      ],
+      "paragraphs": [
+        {
+          "text": "Covering topics from classes to events and students to teachers activities.",
+          "style": {
+            "font-family": "\"softLINKS Regular\", Arial, Helvetica, sans-serif",
+            "font-size": "20px",
+            "font-weight": "400",
+            "line-height": "24px",
+            "color": "rgb(0, 0, 0)",
+            "text-transform": "none",
+            "letter-spacing": "normal",
+            "text-align": "center"
+          }
+        },
+        {
+          "text": "Our Executive Team safely landed in Japan. The Educationists were warmly embraced […]",
+          "style": {
+            "font-family": "\"softLINKS Regular\", Arial, Helvetica, sans-serif",
+            "font-size": "16px",
+            "font-weight": "400",
+            "line-height": "24px",
+            "color": "rgb(0, 0, 0)",
+            "text-transform": "none",
+            "letter-spacing": "normal",
+            "text-align": "start"
+          }
+        },
+        {
+          "text": "بحریہ یونیورسٹی لاہور نے “فکر اقبال اور تعلیمی نظام؛ عصر حاضر اور […]",
+          "style": {
+            "font-family": "\"softLINKS Regular\", Arial, Helvetica, sans-serif",
+            "font-size": "16px",
+            "font-weight": "400",
+            "line-height": "24px",
+            "color": "rgb(0, 0, 0)",
+            "text-transform": "none",
+            "letter-spacing": "normal",
+            "text-align": "start"
+          }
+        },
+        {
+          "text": "دارارقم اسکولز کے مینجنگ ڈائریکٹر محمد یاب سین خان،الخدمت فاونڈیشن […]",
+          "style": {
+            "font-family": "\"softLINKS Regular\", Arial, Helvetica, sans-serif",
+            "font-size": "16px",
+            "font-weight": "400",
+            "line-height": "24px",
+            "color": "rgb(0, 0, 0)",
+            "text-transform": "none",
+            "letter-spacing": "normal",
+            "text-align": "right"
+          }
+        }
+      ],
+      "columnsPerRow": 1,
+      "images": [
+        {
+          "src": "https://das.edu.pk/wp-content/uploads/2022/12/01-400x187.jpeg.webp",
+          "alt": "",
+          "width": 307,
+          "height": 144,
+          "objectFit": "fill"
+        },
+        {
+          "src": "https://das.edu.pk/wp-content/uploads/2022/12/03-400x185.jpeg.webp",
+          "alt": "",
+          "width": 307,
+          "height": 142,
+          "objectFit": "fill"
+        },
+        {
+          "src": "https://das.edu.pk/wp-content/uploads/2022/09/WhatsApp-Image-2022-09-03-at-12.17.40-400x267.jpeg.webp",
+          "alt": "WhatsApp Image 2022 09 03 at 12.17.40",
+          "width": 307,
+          "height": 205,
+          "objectFit": "fill"
+        },
+        {
+          "src": "https://das.edu.pk/wp-content/uploads/2021/01/Zahid-Sb-400x207.jpg.webp",
+          "alt": "Zahid Sb",
+          "width": 307,
+          "height": 159,
+          "objectFit": "fill"
+        },
+        {
+          "src": "https://das.edu.pk/wp-content/uploads/2021/01/RRM-20-400x207.jpg.webp",
+          "alt": "RRM 20",
+          "width": 307,
+          "height": 159,
+          "objectFit": "fill"
+        },
+        {
+          "src": "https://das.edu.pk/wp-content/uploads/2020/11/DPM-Multan-400x207.jpg.webp",
+          "alt": "DPM Multan",
+          "width": 307,
+          "height": 159,
+          "objectFit": "fill"
+        }
+      ],
+      "buttons": [],
+      "flipBoxes": [],
+      "counters": [],
+      "swipers": [],
+      "shadowColumns": [
+        {
+          "size": {
+            "width": 315,
+            "height": 2390
+          },
+          "style": {
+            "padding-top": "0px",
+            "padding-right": "0px",
+            "padding-bottom": "0px",
+            "padding-left": "0px",
+            "margin-top": "0px",
+            "margin-bottom": "0px",
+            "border-radius": "0px",
+            "box-shadow": "none",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "border-top-width": "0px",
+            "border-top-color": "rgb(0, 0, 0)",
+            "border-bottom-width": "0px",
+            "border-bottom-color": "rgb(0, 0, 0)"
+          }
+        }
+      ],
+      "iframe": null
+    },
+    {
+      "index": 4,
+      "id": null,
+      "firstHeading": "Dar-e-Arqam Books",
+      "size": {
+        "width": 375,
+        "height": 653
+      },
+      "background": {
+        "color": "rgb(247, 245, 244)",
+        "image": "url(\"https://das.edu.pk/wp-content/uploads/2019/02/Education-Background-1-1.jpg\")"
+      },
+      "box": {
+        "padding-top": "20px",
+        "padding-right": "30px",
+        "padding-bottom": "20px",
+        "padding-left": "30px",
+        "margin-top": "0px",
+        "margin-bottom": "0px",
+        "border-radius": "0px",
+        "box-shadow": "none",
+        "background-color": "rgb(247, 245, 244)",
+        "border-top-width": "0px",
+        "border-top-color": "rgb(234, 233, 233)",
+        "border-bottom-width": "0px",
+        "border-bottom-color": "rgb(234, 233, 233)"
+      },
+      "contentWidth": 328,
+      "headings": [
+        {
+          "tag": "h2",
+          "text": "Dar-e-Arqam Books",
+          "style": {
+            "font-family": "Poppins, Arial, Helvetica, sans-serif",
+            "font-size": "24.8382px",
+            "font-weight": "700",
+            "line-height": "29.8059px",
+            "color": "rgb(34, 51, 85)",
+            "text-transform": "none",
+            "letter-spacing": "normal",
+            "text-align": "center",
+            "margin-bottom": "14.9029px"
+          }
+        }
+      ],
+      "paragraphs": [
+        {
+          "text": "Books developed with efficient and effective techniques",
+          "style": {
+            "font-family": "\"softLINKS Regular\", Arial, Helvetica, sans-serif",
+            "font-size": "20px",
+            "font-weight": "400",
+            "line-height": "24px",
+            "color": "rgb(0, 0, 0)",
+            "text-transform": "none",
+            "letter-spacing": "normal",
+            "text-align": "center"
+          }
+        }
+      ],
+      "columnsPerRow": 1,
+      "images": [
+        {
+          "src": "https://das.edu.pk/wp-content/uploads/2019/02/Workbooks_Grade-6-7-400x508.jpg.webp",
+          "alt": "",
+          "width": 280,
+          "height": 356,
+          "objectFit": "fill"
+        },
+        {
+          "src": "https://das.edu.pk/wp-content/uploads/2019/02/Workbooks-Grade-1-English-400x497.jpg.webp",
+          "alt": "",
+          "width": 280,
+          "height": 348,
+          "objectFit": "fill"
+        },
+        {
+          "src": "https://das.edu.pk/wp-content/uploads/2019/02/Workbooks-Grade-1-Science-400x496.jpg.webp",
+          "alt": "",
+          "width": 280,
+          "height": 347,
+          "objectFit": "fill"
+        },
+        {
+          "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27600%27%20height%3D%27744%27%20viewBox%3D%270%200%20600%20744%27%3E%3Crect%20width%3D%27600%27%20height%3D%27744%27%20fill-opacity%3D%220%22%2F%3E%3C%2Fsvg%3E",
+          "alt": "",
+          "width": 280,
+          "height": 347,
+          "objectFit": "fill"
+        },
+        {
+          "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27600%27%20height%3D%27762%27%20viewBox%3D%270%200%20600%20762%27%3E%3Crect%20width%3D%27600%27%20height%3D%27762%27%20fill-opacity%3D%220%22%2F%3E%3C%2Fsvg%3E",
+          "alt": "",
+          "width": 280,
+          "height": 356,
+          "objectFit": "fill"
+        },
+        {
+          "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27600%27%20height%3D%27733%27%20viewBox%3D%270%200%20600%20733%27%3E%3Crect%20width%3D%27600%27%20height%3D%27733%27%20fill-opacity%3D%220%22%2F%3E%3C%2Fsvg%3E",
+          "alt": "",
+          "width": 280,
+          "height": 342,
+          "objectFit": "fill"
+        },
+        {
+          "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27600%27%20height%3D%27732%27%20viewBox%3D%270%200%20600%20732%27%3E%3Crect%20width%3D%27600%27%20height%3D%27732%27%20fill-opacity%3D%220%22%2F%3E%3C%2Fsvg%3E",
+          "alt": "",
+          "width": 280,
+          "height": 342,
+          "objectFit": "fill"
+        },
+        {
+          "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27600%27%20height%3D%27733%27%20viewBox%3D%270%200%20600%20733%27%3E%3Crect%20width%3D%27600%27%20height%3D%27733%27%20fill-opacity%3D%220%22%2F%3E%3C%2Fsvg%3E",
+          "alt": "",
+          "width": 280,
+          "height": 342,
+          "objectFit": "fill"
+        },
+        {
+          "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27600%27%20height%3D%27762%27%20viewBox%3D%270%200%20600%20762%27%3E%3Crect%20width%3D%27600%27%20height%3D%27762%27%20fill-opacity%3D%220%22%2F%3E%3C%2Fsvg%3E",
+          "alt": "",
+          "width": 280,
+          "height": 356,
+          "objectFit": "fill"
+        },
+        {
+          "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27600%27%20height%3D%27746%27%20viewBox%3D%270%200%20600%20746%27%3E%3Crect%20width%3D%27600%27%20height%3D%27746%27%20fill-opacity%3D%220%22%2F%3E%3C%2Fsvg%3E",
+          "alt": "",
+          "width": 280,
+          "height": 348,
+          "objectFit": "fill"
+        },
+        {
+          "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27600%27%20height%3D%27744%27%20viewBox%3D%270%200%20600%20744%27%3E%3Crect%20width%3D%27600%27%20height%3D%27744%27%20fill-opacity%3D%220%22%2F%3E%3C%2Fsvg%3E",
+          "alt": "",
+          "width": 280,
+          "height": 347,
+          "objectFit": "fill"
+        },
+        {
+          "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27600%27%20height%3D%27744%27%20viewBox%3D%270%200%20600%20744%27%3E%3Crect%20width%3D%27600%27%20height%3D%27744%27%20fill-opacity%3D%220%22%2F%3E%3C%2Fsvg%3E",
+          "alt": "",
+          "width": 280,
+          "height": 347,
+          "objectFit": "fill"
+        },
+        {
+          "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27600%27%20height%3D%27762%27%20viewBox%3D%270%200%20600%20762%27%3E%3Crect%20width%3D%27600%27%20height%3D%27762%27%20fill-opacity%3D%220%22%2F%3E%3C%2Fsvg%3E",
+          "alt": "",
+          "width": 280,
+          "height": 356,
+          "objectFit": "fill"
+        },
+        {
+          "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27600%27%20height%3D%27733%27%20viewBox%3D%270%200%20600%20733%27%3E%3Crect%20width%3D%27600%27%20height%3D%27733%27%20fill-opacity%3D%220%22%2F%3E%3C%2Fsvg%3E",
+          "alt": "",
+          "width": 280,
+          "height": 342,
+          "objectFit": "fill"
+        },
+        {
+          "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27600%27%20height%3D%27732%27%20viewBox%3D%270%200%20600%20732%27%3E%3Crect%20width%3D%27600%27%20height%3D%27732%27%20fill-opacity%3D%220%22%2F%3E%3C%2Fsvg%3E",
+          "alt": "",
+          "width": 280,
+          "height": 342,
+          "objectFit": "fill"
+        },
+        {
+          "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27600%27%20height%3D%27733%27%20viewBox%3D%270%200%20600%20733%27%3E%3Crect%20width%3D%27600%27%20height%3D%27733%27%20fill-opacity%3D%220%22%2F%3E%3C%2Fsvg%3E",
+          "alt": "",
+          "width": 280,
+          "height": 342,
+          "objectFit": "fill"
+        }
+      ],
+      "buttons": [],
+      "flipBoxes": [],
+      "counters": [],
+      "swipers": [
+        {
+          "totalSlides": 16,
+          "visibleSlides": 1,
+          "slideSize": {
+            "width": 282,
+            "height": 352
+          },
+          "slideGap": null,
+          "arrow": null,
+          "dots": false
+        }
+      ],
+      "shadowColumns": [],
+      "iframe": null
+    },
+    {
+      "index": 5,
+      "id": null,
+      "firstHeading": "Salient Features of Dar-e-Arqam Schools",
+      "size": {
+        "width": 375,
+        "height": 1729
+      },
+      "background": {
+        "color": "rgb(250, 249, 248)",
+        "image": null
+      },
+      "box": {
+        "padding-top": "50px",
+        "padding-right": "30px",
+        "padding-bottom": "20px",
+        "padding-left": "30px",
+        "margin-top": "0px",
+        "margin-bottom": "0px",
+        "border-radius": "0px",
+        "box-shadow": "none",
+        "background-color": "rgb(250, 249, 248)",
+        "border-top-width": "0px",
+        "border-top-color": "rgb(234, 233, 233)",
+        "border-bottom-width": "0px",
+        "border-bottom-color": "rgb(234, 233, 233)"
+      },
+      "contentWidth": 328,
+      "headings": [
+        {
+          "tag": "h2",
+          "text": "Salient Features of Dar-e-Arqam Schools",
+          "style": {
+            "font-family": "Poppins, Arial, Helvetica, sans-serif",
+            "font-size": "24.8382px",
+            "font-weight": "700",
+            "line-height": "29.8059px",
+            "color": "rgb(34, 51, 85)",
+            "text-transform": "none",
+            "letter-spacing": "normal",
+            "text-align": "center",
+            "margin-bottom": "14.9029px"
+          }
+        },
+        {
+          "tag": "h3",
+          "text": "PERSONALITY DEVELOPMENT",
+          "style": {
+            "font-family": "Poppins, Arial, Helvetica, sans-serif",
+            "font-size": "23.1618px",
+            "font-weight": "700",
+            "line-height": "32.4265px",
+            "color": "rgb(0, 91, 140)",
+            "text-transform": "none",
+            "letter-spacing": "normal",
+            "text-align": "center",
+            "margin-bottom": "0px"
+          }
+        },
+        {
+          "tag": "h3",
+          "text": "TEACHERS TRAINING",
+          "style": {
+            "font-family": "Poppins, Arial, Helvetica, sans-serif",
+            "font-size": "23.1618px",
+            "font-weight": "700",
+            "line-height": "32.4265px",
+            "color": "rgb(0, 91, 140)",
+            "text-transform": "none",
+            "letter-spacing": "normal",
+            "text-align": "center",
+            "margin-bottom": "0px"
+          }
+        },
+        {
+          "tag": "h3",
+          "text": "HIFZ QURAN-E-KAREEM",
+          "style": {
+            "font-family": "Poppins, Arial, Helvetica, sans-serif",
+            "font-size": "23.1618px",
+            "font-weight": "700",
+            "line-height": "32.4265px",
+            "color": "rgb(0, 91, 140)",
+            "text-transform": "none",
+            "letter-spacing": "normal",
+            "text-align": "center",
+            "margin-bottom": "0px"
+          }
+        },
+        {
+          "tag": "h3",
+          "text": "CO-CURRICULAR ACTIVITIES",
+          "style": {
+            "font-family": "Poppins, Arial, Helvetica, sans-serif",
+            "font-size": "23.1618px",
+            "font-weight": "700",
+            "line-height": "32.4265px",
+            "color": "rgb(0, 91, 140)",
+            "text-transform": "none",
+            "letter-spacing": "normal",
+            "text-align": "center",
+            "margin-bottom": "0px"
+          }
+        }
+      ],
+      "paragraphs": [
+        {
+          "text": "Dar-e-Arqam Schools reflect the goods for this world & hereafter.",
+          "style": {
+            "font-family": "\"softLINKS Regular\", Arial, Helvetica, sans-serif",
+            "font-size": "20px",
+            "font-weight": "400",
+            "line-height": "24px",
+            "color": "rgb(0, 0, 0)",
+            "text-transform": "none",
+            "letter-spacing": "normal",
+            "text-align": "center"
+          }
+        },
+        {
+          "text": "The teachers emphasizes on the personality development of the students besides providing meaningful education.",
+          "style": {
+            "font-family": "\"softLINKS Regular\", Arial, Helvetica, sans-serif",
+            "font-size": "16px",
+            "font-weight": "400",
+            "line-height": "24px",
+            "color": "rgb(0, 91, 140)",
+            "text-transform": "none",
+            "letter-spacing": "normal",
+            "text-align": "center"
+          }
+        },
+        {
+          "text": "2nd and 4th Saturdays of every month are fixed for training workshop for in service and pre-posting teachers regularly.",
+          "style": {
+            "font-family": "\"softLINKS Regular\", Arial, Helvetica, sans-serif",
+            "font-size": "16px",
+            "font-weight": "400",
+            "line-height": "24px",
+            "color": "rgb(0, 91, 140)",
+            "text-transform": "none",
+            "letter-spacing": "normal",
+            "text-align": "center"
+          }
+        },
+        {
+          "text": "Important wing of Department of Quranic studies offers this opportunity to talented students only.",
+          "style": {
+            "font-family": "\"softLINKS Regular\", Arial, Helvetica, sans-serif",
+            "font-size": "16px",
+            "font-weight": "400",
+            "line-height": "24px",
+            "color": "rgb(0, 91, 140)",
+            "text-transform": "none",
+            "letter-spacing": "normal",
+            "text-align": "center"
+          }
+        }
+      ],
+      "columnsPerRow": 1,
+      "images": [
+        {
+          "src": "https://das.edu.pk/wp-content/uploads/2019/02/personality_development-1.svg",
+          "alt": "",
+          "width": 120,
+          "height": 120,
+          "objectFit": "fill"
+        },
+        {
+          "src": "https://das.edu.pk/wp-content/uploads/2019/02/teachers-training.svg",
+          "alt": "",
+          "width": 120,
+          "height": 120,
+          "objectFit": "fill"
+        },
+        {
+          "src": "https://das.edu.pk/wp-content/uploads/2019/02/hifz-e-quran.svg",
+          "alt": "",
+          "width": 120,
+          "height": 120,
+          "objectFit": "fill"
+        },
+        {
+          "src": "https://das.edu.pk/wp-content/uploads/2019/02/co-curricular.svg",
+          "alt": "",
+          "width": 120,
+          "height": 120,
+          "objectFit": "fill"
+        }
+      ],
+      "buttons": [],
+      "flipBoxes": [],
+      "counters": [],
+      "swipers": [],
+      "shadowColumns": [],
+      "iframe": null
+    },
+    {
+      "index": 6,
+      "id": null,
+      "firstHeading": "Dar-e-Arqam Schools – Progress Dashboard",
+      "size": {
+        "width": 375,
+        "height": 1233
+      },
+      "background": {
+        "color": "rgb(255, 255, 255)",
+        "image": "url(\"https://das.edu.pk/wp-content/uploads/2019/02/progress-bar.jpg\")"
+      },
+      "box": {
+        "padding-top": "30px",
+        "padding-right": "30px",
+        "padding-bottom": "30px",
+        "padding-left": "30px",
+        "margin-top": "0px",
+        "margin-bottom": "0px",
+        "border-radius": "0px",
+        "box-shadow": "none",
+        "background-color": "rgb(255, 255, 255)",
+        "border-top-width": "0px",
+        "border-top-color": "rgb(234, 233, 233)",
+        "border-bottom-width": "0px",
+        "border-bottom-color": "rgb(234, 233, 233)"
+      },
+      "contentWidth": 328,
+      "headings": [
+        {
+          "tag": "h2",
+          "text": "Dar-e-Arqam Schools – Progress Dashboard",
+          "style": {
+            "font-family": "Poppins, Arial, Helvetica, sans-serif",
+            "font-size": "24.8382px",
+            "font-weight": "700",
+            "line-height": "29.8059px",
+            "color": "rgb(34, 51, 85)",
+            "text-transform": "none",
+            "letter-spacing": "normal",
+            "text-align": "center",
+            "margin-bottom": "14.9029px"
+          }
+        }
+      ],
+      "paragraphs": [
+        {
+          "text": "31 Years of Excellence & Experience",
+          "style": {
+            "font-family": "\"softLINKS Regular\", Arial, Helvetica, sans-serif",
+            "font-size": "20px",
+            "font-weight": "400",
+            "line-height": "24px",
+            "color": "rgb(0, 0, 0)",
+            "text-transform": "none",
+            "letter-spacing": "normal",
+            "text-align": "center"
+          }
+        }
+      ],
+      "columnsPerRow": 1,
+      "images": [],
+      "buttons": [],
+      "flipBoxes": [],
+      "counters": [
+        {
+          "value": "300000",
+          "valueStyle": {
+            "font-family": "\"softLINKS Regular\", Arial, Helvetica, sans-serif",
+            "font-size": "50px",
+            "font-weight": "400",
+            "line-height": "normal",
+            "color": "rgb(255, 255, 255)",
+            "text-transform": "none",
+            "letter-spacing": "normal",
+            "text-align": "center"
+          },
+          "label": null,
+          "size": {
+            "width": 329,
+            "height": 188
+          },
+          "labelStyle": null
+        },
+        {
+          "value": "300000",
+          "valueStyle": {
+            "font-family": "\"softLINKS Regular\", Arial, Helvetica, sans-serif",
+            "font-size": "50px",
+            "font-weight": "400",
+            "line-height": "normal",
+            "color": "rgb(255, 255, 255)",
+            "text-transform": "none",
+            "letter-spacing": "normal",
+            "text-align": "center"
+          },
+          "label": null,
+          "size": {
+            "width": 299,
+            "height": 188
+          },
+          "labelStyle": null
+        },
+        {
+          "value": "50",
+          "valueStyle": {
+            "font-family": "\"softLINKS Regular\", Arial, Helvetica, sans-serif",
+            "font-size": "50px",
+            "font-weight": "400",
+            "line-height": "normal",
+            "color": "rgb(255, 255, 255)",
+            "text-transform": "none",
+            "letter-spacing": "normal",
+            "text-align": "center"
+          },
+          "label": null,
+          "size": {
+            "width": 329,
+            "height": 188
+          },
+          "labelStyle": null
+        },
+        {
+          "value": "50",
+          "valueStyle": {
+            "font-family": "\"softLINKS Regular\", Arial, Helvetica, sans-serif",
+            "font-size": "50px",
+            "font-weight": "400",
+            "line-height": "normal",
+            "color": "rgb(255, 255, 255)",
+            "text-transform": "none",
+            "letter-spacing": "normal",
+            "text-align": "center"
+          },
+          "label": null,
+          "size": {
+            "width": 299,
+            "height": 188
+          },
+          "labelStyle": null
+        },
+        {
+          "value": "14500",
+          "valueStyle": {
+            "font-family": "\"softLINKS Regular\", Arial, Helvetica, sans-serif",
+            "font-size": "50px",
+            "font-weight": "400",
+            "line-height": "normal",
+            "color": "rgb(255, 255, 255)",
+            "text-transform": "none",
+            "letter-spacing": "normal",
+            "text-align": "center"
+          },
+          "label": null,
+          "size": {
+            "width": 329,
+            "height": 188
+          },
+          "labelStyle": null
+        },
+        {
+          "value": "14500",
+          "valueStyle": {
+            "font-family": "\"softLINKS Regular\", Arial, Helvetica, sans-serif",
+            "font-size": "50px",
+            "font-weight": "400",
+            "line-height": "normal",
+            "color": "rgb(255, 255, 255)",
+            "text-transform": "none",
+            "letter-spacing": "normal",
+            "text-align": "center"
+          },
+          "label": null,
+          "size": {
+            "width": 299,
+            "height": 188
+          },
+          "labelStyle": null
+        },
+        {
+          "value": "700",
+          "valueStyle": {
+            "font-family": "\"softLINKS Regular\", Arial, Helvetica, sans-serif",
+            "font-size": "50px",
+            "font-weight": "400",
+            "line-height": "normal",
+            "color": "rgb(255, 255, 255)",
+            "text-transform": "none",
+            "letter-spacing": "normal",
+            "text-align": "center"
+          },
+          "label": null,
+          "size": {
+            "width": 329,
+            "height": 212
+          },
+          "labelStyle": null
+        },
+        {
+          "value": "700",
+          "valueStyle": {
+            "font-family": "\"softLINKS Regular\", Arial, Helvetica, sans-serif",
+            "font-size": "50px",
+            "font-weight": "400",
+            "line-height": "normal",
+            "color": "rgb(255, 255, 255)",
+            "text-transform": "none",
+            "letter-spacing": "normal",
+            "text-align": "center"
+          },
+          "label": null,
+          "size": {
+            "width": 299,
+            "height": 212
+          },
+          "labelStyle": null
+        }
+      ],
+      "swipers": [],
+      "shadowColumns": [],
+      "iframe": null
+    },
+    {
+      "index": 7,
+      "id": null,
+      "firstHeading": null,
+      "size": {
+        "width": 375,
+        "height": 1420
+      },
+      "background": {
+        "color": "rgb(255, 255, 255)",
+        "image": null
+      },
+      "box": {
+        "padding-top": "30px",
+        "padding-right": "30px",
+        "padding-bottom": "10px",
+        "padding-left": "30px",
+        "margin-top": "0px",
+        "margin-bottom": "0px",
+        "border-radius": "0px",
+        "box-shadow": "none",
+        "background-color": "rgb(255, 255, 255)",
+        "border-top-width": "0px",
+        "border-top-color": "rgb(234, 233, 233)",
+        "border-bottom-width": "0px",
+        "border-bottom-color": "rgb(234, 233, 233)"
+      },
+      "contentWidth": 328,
+      "headings": [],
+      "paragraphs": [],
+      "columnsPerRow": 1,
+      "images": [
+        {
+          "src": "https://das.edu.pk/wp-content/uploads/2019/02/photos_videos.jpg.webp",
+          "alt": "",
+          "width": 315,
+          "height": 325,
+          "objectFit": "fill"
+        },
+        {
+          "src": "https://das.edu.pk/wp-content/uploads/2019/02/downloads.jpg.webp",
+          "alt": "",
+          "width": 315,
+          "height": 325,
+          "objectFit": "fill"
+        },
+        {
+          "src": "https://das.edu.pk/wp-content/uploads/2019/02/our_books.jpg.webp",
+          "alt": "",
+          "width": 315,
+          "height": 326,
+          "objectFit": "fill"
+        },
+        {
+          "src": "https://das.edu.pk/wp-content/uploads/2019/02/call_mail_chat.jpg.webp",
+          "alt": "",
+          "width": 315,
+          "height": 325,
+          "objectFit": "fill"
+        }
+      ],
+      "buttons": [],
+      "flipBoxes": [],
+      "counters": [],
+      "swipers": [],
+      "shadowColumns": [],
+      "iframe": null
+    },
+    {
+      "index": 8,
+      "id": null,
+      "firstHeading": "Join Over 300,000 Students Enjoying Dar-e-Arqam School Now",
+      "size": {
+        "width": 375,
+        "height": 724
+      },
+      "background": {
+        "color": "rgb(30, 41, 75)",
+        "image": null
+      },
+      "box": {
+        "padding-top": "20px",
+        "padding-right": "30px",
+        "padding-bottom": "20px",
+        "padding-left": "30px",
+        "margin-top": "20px",
+        "margin-bottom": "0px",
+        "border-radius": "0px",
+        "box-shadow": "none",
+        "background-color": "rgb(30, 41, 75)",
+        "border-top-width": "0px",
+        "border-top-color": "rgb(234, 233, 233)",
+        "border-bottom-width": "0px",
+        "border-bottom-color": "rgb(234, 233, 233)"
+      },
+      "contentWidth": 328,
+      "headings": [
+        {
+          "tag": "h3",
+          "text": "Join Over 300,000 Students Enjoying Dar-e-Arqam School Now",
+          "style": {
+            "font-family": "Poppins, Arial, Helvetica, sans-serif",
+            "font-size": "24px",
+            "font-weight": "700",
+            "line-height": "33.6px",
+            "color": "rgb(51, 51, 51)",
+            "text-transform": "none",
+            "letter-spacing": "normal",
+            "text-align": "center",
+            "margin-bottom": "30px"
+          }
+        },
+        {
+          "tag": "h4",
+          "text": "Become Part of Dar-e-Arqam Schools to Further Your Career.",
+          "style": {
+            "font-family": "Poppins, Arial, Helvetica, sans-serif",
+            "font-size": "15px",
+            "font-weight": "700",
+            "line-height": "25.05px",
+            "color": "rgb(51, 51, 51)",
+            "text-transform": "none",
+            "letter-spacing": "normal",
+            "text-align": "center",
+            "margin-bottom": "19.95px"
+          }
+        }
+      ],
+      "paragraphs": [],
+      "columnsPerRow": 1,
+      "images": [],
+      "buttons": [
+        {
+          "text": "",
+          "href": null,
+          "size": {
+            "width": 176,
+            "height": 77
+          },
+          "style": {
+            "font-family": "\"Open Sans\", Arial, Helvetica, sans-serif",
+            "font-size": "16px",
+            "font-weight": "600",
+            "line-height": "24px",
+            "color": "rgb(0, 0, 0)",
+            "text-transform": "none",
+            "letter-spacing": "1px",
+            "text-align": "center",
+            "padding-top": "13px",
+            "padding-right": "29px",
+            "padding-bottom": "13px",
+            "padding-left": "29px",
+            "margin-top": "0px",
+            "margin-bottom": "20px",
+            "border-radius": "0px",
+            "box-shadow": "none",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "border-top-width": "2px",
+            "border-top-color": "rgb(0, 0, 0)",
+            "border-bottom-width": "2px",
+            "border-bottom-color": "rgb(0, 0, 0)"
+          }
+        },
+        {
+          "text": "",
+          "href": null,
+          "size": {
+            "width": 114,
+            "height": 47
+          },
+          "style": {
+            "font-family": "\"Open Sans\", Arial, Helvetica, sans-serif",
+            "font-size": "14px",
+            "font-weight": "600",
+            "line-height": "17px",
+            "color": "rgb(255, 255, 255)",
+            "text-transform": "none",
+            "letter-spacing": "1px",
+            "text-align": "center",
+            "padding-top": "13px",
+            "padding-right": "29px",
+            "padding-bottom": "13px",
+            "padding-left": "29px",
+            "margin-top": "0px",
+            "margin-bottom": "0px",
+            "border-radius": "0px",
+            "box-shadow": "none",
+            "background-color": "rgb(244, 67, 54)",
+            "border-top-width": "2px",
+            "border-top-color": "rgb(255, 255, 255)",
+            "border-bottom-width": "2px",
+            "border-bottom-color": "rgb(255, 255, 255)"
+          }
+        }
+      ],
+      "flipBoxes": [],
+      "counters": [],
+      "swipers": [],
+      "shadowColumns": [],
+      "iframe": null
+    },
+    {
+      "index": 9,
+      "id": null,
+      "firstHeading": null,
+      "size": {
+        "width": 375,
+        "height": 474
+      },
+      "background": {
+        "color": "rgb(233, 233, 237)",
+        "image": null
+      },
+      "box": {
+        "padding-top": "40px",
+        "padding-right": "30px",
+        "padding-bottom": "40px",
+        "padding-left": "30px",
+        "margin-top": "0px",
+        "margin-bottom": "0px",
+        "border-radius": "0px",
+        "box-shadow": "none",
+        "background-color": "rgb(233, 233, 237)",
+        "border-top-width": "0px",
+        "border-top-color": "rgb(234, 233, 233)",
+        "border-bottom-width": "0px",
+        "border-bottom-color": "rgb(234, 233, 233)"
+      },
+      "contentWidth": 328,
+      "headings": [],
+      "paragraphs": [],
+      "columnsPerRow": 1,
+      "images": [
+        {
+          "src": "https://das.edu.pk/wp-content/uploads/2018/11/youth.png",
+          "alt": "",
+          "width": 313,
+          "height": 313,
+          "objectFit": "fill"
+        },
+        {
+          "src": "https://das.edu.pk/wp-content/uploads/2018/11/uswa.png.webp",
+          "alt": "",
+          "width": 313,
+          "height": 313,
+          "objectFit": "fill"
+        },
+        {
+          "src": "https://das.edu.pk/wp-content/uploads/2018/11/ujala.png.webp",
+          "alt": "",
+          "width": 313,
+          "height": 313,
+          "objectFit": "fill"
+        },
+        {
+          "src": "https://das.edu.pk/wp-content/uploads/2018/11/tcdp.png.webp",
+          "alt": "",
+          "width": 313,
+          "height": 313,
+          "objectFit": "fill"
+        },
+        {
+          "src": "https://das.edu.pk/wp-content/uploads/2018/11/parenting.png.webp",
+          "alt": "",
+          "width": 313,
+          "height": 313,
+          "objectFit": "fill"
+        },
+        {
+          "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27398%27%20height%3D%27398%27%20viewBox%3D%270%200%20398%20398%27%3E%3Crect%20width%3D%27398%27%20height%3D%27398%27%20fill-opacity%3D%220%22%2F%3E%3C%2Fsvg%3E",
+          "alt": "",
+          "width": 313,
+          "height": 313,
+          "objectFit": "fill"
+        },
+        {
+          "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27398%27%20height%3D%27398%27%20viewBox%3D%270%200%20398%20398%27%3E%3Crect%20width%3D%27398%27%20height%3D%27398%27%20fill-opacity%3D%220%22%2F%3E%3C%2Fsvg%3E",
+          "alt": "",
+          "width": 313,
+          "height": 313,
+          "objectFit": "fill"
+        },
+        {
+          "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27398%27%20height%3D%27398%27%20viewBox%3D%270%200%20398%20398%27%3E%3Crect%20width%3D%27398%27%20height%3D%27398%27%20fill-opacity%3D%220%22%2F%3E%3C%2Fsvg%3E",
+          "alt": "",
+          "width": 313,
+          "height": 313,
+          "objectFit": "fill"
+        },
+        {
+          "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27398%27%20height%3D%27398%27%20viewBox%3D%270%200%20398%20398%27%3E%3Crect%20width%3D%27398%27%20height%3D%27398%27%20fill-opacity%3D%220%22%2F%3E%3C%2Fsvg%3E",
+          "alt": "",
+          "width": 313,
+          "height": 313,
+          "objectFit": "fill"
+        },
+        {
+          "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27398%27%20height%3D%27398%27%20viewBox%3D%270%200%20398%20398%27%3E%3Crect%20width%3D%27398%27%20height%3D%27398%27%20fill-opacity%3D%220%22%2F%3E%3C%2Fsvg%3E",
+          "alt": "",
+          "width": 313,
+          "height": 313,
+          "objectFit": "fill"
+        },
+        {
+          "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27398%27%20height%3D%27398%27%20viewBox%3D%270%200%20398%20398%27%3E%3Crect%20width%3D%27398%27%20height%3D%27398%27%20fill-opacity%3D%220%22%2F%3E%3C%2Fsvg%3E",
+          "alt": "",
+          "width": 313,
+          "height": 313,
+          "objectFit": "fill"
+        },
+        {
+          "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27398%27%20height%3D%27398%27%20viewBox%3D%270%200%20398%20398%27%3E%3Crect%20width%3D%27398%27%20height%3D%27398%27%20fill-opacity%3D%220%22%2F%3E%3C%2Fsvg%3E",
+          "alt": "",
+          "width": 313,
+          "height": 313,
+          "objectFit": "fill"
+        },
+        {
+          "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27398%27%20height%3D%27398%27%20viewBox%3D%270%200%20398%20398%27%3E%3Crect%20width%3D%27398%27%20height%3D%27398%27%20fill-opacity%3D%220%22%2F%3E%3C%2Fsvg%3E",
+          "alt": "",
+          "width": 313,
+          "height": 313,
+          "objectFit": "fill"
+        },
+        {
+          "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27398%27%20height%3D%27398%27%20viewBox%3D%270%200%20398%20398%27%3E%3Crect%20width%3D%27398%27%20height%3D%27398%27%20fill-opacity%3D%220%22%2F%3E%3C%2Fsvg%3E",
+          "alt": "",
+          "width": 313,
+          "height": 313,
+          "objectFit": "fill"
+        },
+        {
+          "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27398%27%20height%3D%27398%27%20viewBox%3D%270%200%20398%20398%27%3E%3Crect%20width%3D%27398%27%20height%3D%27398%27%20fill-opacity%3D%220%22%2F%3E%3C%2Fsvg%3E",
+          "alt": "",
+          "width": 313,
+          "height": 313,
+          "objectFit": "fill"
+        },
+        {
+          "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27398%27%20height%3D%27398%27%20viewBox%3D%270%200%20398%20398%27%3E%3Crect%20width%3D%27398%27%20height%3D%27398%27%20fill-opacity%3D%220%22%2F%3E%3C%2Fsvg%3E",
+          "alt": "",
+          "width": 313,
+          "height": 313,
+          "objectFit": "fill"
+        },
+        {
+          "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27398%27%20height%3D%27398%27%20viewBox%3D%270%200%20398%20398%27%3E%3Crect%20width%3D%27398%27%20height%3D%27398%27%20fill-opacity%3D%220%22%2F%3E%3C%2Fsvg%3E",
+          "alt": "",
+          "width": 313,
+          "height": 313,
+          "objectFit": "fill"
+        },
+        {
+          "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27398%27%20height%3D%27398%27%20viewBox%3D%270%200%20398%20398%27%3E%3Crect%20width%3D%27398%27%20height%3D%27398%27%20fill-opacity%3D%220%22%2F%3E%3C%2Fsvg%3E",
+          "alt": "",
+          "width": 313,
+          "height": 313,
+          "objectFit": "fill"
+        },
+        {
+          "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27398%27%20height%3D%27398%27%20viewBox%3D%270%200%20398%20398%27%3E%3Crect%20width%3D%27398%27%20height%3D%27398%27%20fill-opacity%3D%220%22%2F%3E%3C%2Fsvg%3E",
+          "alt": "",
+          "width": 313,
+          "height": 313,
+          "objectFit": "fill"
+        },
+        {
+          "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27398%27%20height%3D%27398%27%20viewBox%3D%270%200%20398%20398%27%3E%3Crect%20width%3D%27398%27%20height%3D%27398%27%20fill-opacity%3D%220%22%2F%3E%3C%2Fsvg%3E",
+          "alt": "",
+          "width": 313,
+          "height": 313,
+          "objectFit": "fill"
+        }
+      ],
+      "buttons": [],
+      "flipBoxes": [],
+      "counters": [],
+      "swipers": [
+        {
+          "totalSlides": 20,
+          "visibleSlides": 1,
+          "slideSize": {
+            "width": 315,
+            "height": 318
+          },
+          "slideGap": null,
+          "arrow": null,
+          "dots": false
+        }
+      ],
+      "shadowColumns": [],
+      "iframe": null
+    }
+  ]
+}

@@ -1,6 +1,7 @@
 import { deleteUploadedImage } from "@/lib/cloudinary";
 import { connectDb } from "@/lib/db";
 import { logSecurityEvent } from "@/lib/log";
+import { freshReadsForTests } from "@/lib/e2e-fresh-reads";
 import { Settings } from "@/models/settings";
 import { newAlbumId } from "./rules";
 import { isGalleryData } from "./store";
@@ -114,15 +115,10 @@ export type EnsureResult =
 
 let migrationDone = false;
 
-/**
- * Test-only override (never honoured in production): with
- * GALLERY_E2E_FRESH_READS=1 the gallery skips its once-per-process
- * migration flag and its public cache, so Playwright specs that seed the
- * database directly see their data at once.
- */
-export function freshReadsForTests(): boolean {
-  return process.env.NODE_ENV !== "production" && process.env.GALLERY_E2E_FRESH_READS === "1";
-}
+// Test-only (src/lib/e2e-fresh-reads.ts): skips the once-per-process
+// migration flag and the public cache so Playwright specs that seed the
+// database directly see their data at once.
+export { freshReadsForTests };
 
 /** True once this process has seen the gallery in the album shape (or with no document at all). */
 export function isMigrationKnownDone(): boolean {

@@ -2,6 +2,7 @@ import { unstable_cache } from "next/cache";
 import { unstable_rethrow } from "next/navigation";
 import type { ContactInfo, SocialPlatform } from "@/content/site-shell";
 import { connectDb } from "@/lib/db";
+import { freshReadsForTests } from "@/lib/e2e-fresh-reads";
 import { logSecurityEvent } from "@/lib/log";
 import { Settings } from "@/models/settings";
 import { defaultsFor, mergeWithDefaults } from "./defaults";
@@ -154,7 +155,9 @@ const lastGood = new Map<GroupKey, unknown>();
 
 export async function getPublicSettings<G extends GroupKey>(group: G): Promise<PublicShapes[G]> {
   try {
-    const value = (await withTimeout(cachedReader(group)(), SETTINGS_READ_TIMEOUT_MS)) as PublicShapes[G];
+    // Test-only: Playwright specs seed the database directly (src/lib/e2e-fresh-reads.ts).
+    const read = freshReadsForTests() ? readPublic(group) : cachedReader(group)();
+    const value = (await withTimeout(read, SETTINGS_READ_TIMEOUT_MS)) as PublicShapes[G];
     lastGood.set(group, value);
     return value;
   } catch (error) {

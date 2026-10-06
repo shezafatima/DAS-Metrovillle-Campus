@@ -232,6 +232,74 @@
   --spacing-contact-columns-gap: 51px;
   --spacing-contact-map-height: 552px;
 
+  /* Home sections (006) — extracted per section from https://das.edu.pk/;
+     see research/design-tokens.md "Home sections (006)". */
+  --color-home-heading: #223355;
+  --color-home-dark-text: #333333;
+  --color-home-find-us-band: #ffeb3b;
+  --color-home-muted-band: #f7f5f4;
+  --color-home-salient-band: #faf9f8;
+  --color-home-partners-band: #e9e9ed;
+  --color-home-flip-front: #eeeeee;
+  --color-home-flip-back-text: #faf9f8;
+  --color-home-flip-admission: #e82264;
+  --color-home-flip-admission-back: #ff709f;
+  --color-home-flip-salient: #029bd8;
+  --color-home-flip-salient-back: #00bcd4;
+  --color-home-flip-branch: #67c100;
+  --color-home-flip-branch-back: #8bc34a;
+  --color-home-flip-curriculum: #607d8b;
+  --color-home-flip-curriculum-back: #607d8b;
+  --color-home-salient-title: #005b8c;
+  --text-home-heading: 30px;
+  --text-home-heading--line-height: 36px;
+  --text-home-heading--font-weight: 700;
+  --text-home-heading-md: 29.61px;
+  --text-home-heading-sm: 24.84px;
+  --text-home-subheading: 20px;
+  --text-home-subheading--line-height: 24px;
+  --text-home-flip-title: 30px;
+  --text-home-flip-title--line-height: 36px;
+  --text-home-salient-title: 18px;
+  --text-home-salient-title--line-height: 25.2px;
+  --text-home-counter: 50px;
+  --text-home-counter-label: 18px;
+  /* Breathing room (owner's request, 2026-10-01; deliberately more generous than
+     the reference's 10-50px, see spec Deviations): one section rhythm used for
+     the top and bottom padding of every home section. 48px on phones, 80px from
+     1024px (the override is at the end of this file). */
+  --spacing-home-section-y: 48px;
+  --spacing-home-band-y: var(--spacing-home-section-y);
+  --spacing-home-find-us-y: calc(var(--spacing-home-section-y) / 2);
+  --spacing-home-salient-top: var(--spacing-home-section-y);
+  --spacing-home-dashboard-y: var(--spacing-home-section-y);
+  --spacing-home-links-top: var(--spacing-home-section-y);
+  --spacing-home-links-bottom: var(--spacing-home-section-y);
+  --spacing-home-partners-y: var(--spacing-home-section-y);
+  --spacing-home-heading-gap: 18px;
+  --spacing-home-carousel-gap: 30px;
+  --spacing-home-flip-width: 232px;
+  --spacing-home-flip-height: 341px;
+  --spacing-home-flip-height-sm: 293px;
+  --spacing-home-flip-padding: 27px;
+  --spacing-home-find-us-button-x: 40px;
+  --spacing-home-find-us-button-y: 17px;
+  --spacing-home-read-more-x: 29px;
+  --spacing-home-read-more-y: 13px;
+  --spacing-home-book-height: 280px;
+  --spacing-home-partner-logo: 230px;
+  --spacing-home-salient-icon: 120px;
+  --spacing-home-inspiration-logo: 96px;
+  --spacing-home-counter-icon: 40px;
+  --spacing-home-hero-height: 424px;
+  --spacing-home-hero-height-sm: 328px;
+  --spacing-home-divider-width: 300px;
+  --radius-home-flip: 4px;
+  --radius-home-find-us-button: 2px;
+  --radius-home-careers-button: 6px;
+  --color-home-careers-button-hover: var(--color-signup-highlight);
+  --home-carousel-autoplay-ms: 5000;
+
   /* Admin dashboard layout tokens — no das.edu.pk reference exists for the
      admin area (spec 002-foundation "Deviations from the Reference"), so
      these are chosen values, not extracted ones. Named here first per
@@ -372,6 +440,10 @@
   }
   html {
     @apply font-sans;
+    /* Anchors (#photo-gallery, #signup) must not land under the sticky desktop header. */
+    scroll-padding-top: 6rem;
+    /* The desktop header shrinks continuously while scrolling (HeaderFrame); scroll anchoring would fight that. */
+    overflow-anchor: none;
   }
 }
 
@@ -430,5 +502,12 @@
     width: 1px;
     height: 1px;
     overflow: hidden;
+  }
+}
+
+/* Home section rhythm, larger from 1024px (see --spacing-home-section-y). */
+@media (min-width: 1024px) {
+  :root {
+    --spacing-home-section-y: 80px;
   }
 }

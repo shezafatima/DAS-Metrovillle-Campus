@@ -17,15 +17,16 @@ The home page is the site's front door. Until now `/` is a placeholder with only
 | Find Us Nearby | Content file |
 | Quick-access cards (four) | Content file |
 | Inspiration | Content file |
-| Who We Are / Why Choose — text and video | Content file (text) + Settings (video address) |
+| Why Choose — text and video | Content file (text) + Settings (video address) |
 | Latest news | News (003) — newest published posts |
+| Books carousel | Content file — fixed heading, line, layout and a fixed set of 10 book covers in `public/` |
 | Salient features cards | Content file |
 | Progress dashboard | Settings — stats (5) |
 | Icon quick-links | Content file |
 | Careers call-to-action | Content file |
 | Partners carousel | Content file |
 
-The reference's **books carousel** is deliberately left out (Out of Scope) and its space is closed up. The reference's fifth quick-access card, **Franchise Offer**, is also left out, as the brief specifies.
+The reference's **books carousel** is included as a fixed section: its heading, line, layout and a fixed set of 10 book cover images are all hardcoded; the covers are not admin-managed (owner's decision, 2026-10-01). The reference's fifth quick-access card, **Franchise Offer**, is left out, as the brief specifies.
 
 Static sections are typed field groups in the same shape the database will use later, so feature 014 can move any of them to the database without changing the components that show them (Constitution VIII).
 
@@ -36,6 +37,13 @@ Static sections are typed field groups in the same shape the database will use l
 - The three home screenshots are `das.edu.pk_.png`, `das.edu.pk_(iPad Pro).png` and `das.edu.pk_(Moto G Power).png` (the brief's filenames were placeholders).
 - The Careers call-to-action reuses the signup band's headings, wording and styling (feature 004) with a "Join Now" button in place of the input fields, as PRD §5.1 says. The signup band's `#signup` anchor id is kept on it so links to the old anchor still land in the right place.
 - Section wording that the client has not supplied stays as marked placeholder content in the content files (001 precedent).
+
+### Session 2026-10-01
+
+- Q: Which section order and heading does the video section follow — the brief's ("Who We Are" third) or the reference's? → A: The reference's: Find Us Nearby, the four quick-access cards, the inspiration section, then **"Why Choose Dar-e-Arqam Schools?"** with the video. The brief's different order and name are recorded under Deviations.
+- Q: Where do the Photo/Videos, Downloads and Our Books icon links go? → A: To the anchors fixed by 007 on the Resources page: `/resources#photo-gallery`, `/resources#downloads` and `/resources#our-books`. Call/Mail/Chat goes to `/contact`. Until feature 016 adds the Downloads and Our Books sections, those two land at the top of `/resources`.
+- Q: Is the books carousel in or out? → A: In. The section (heading "Dar-e-Arqam Books", the line "Books developed with efficient and effective techniques", its blue band and carousel layout) is hardcoded in a content file.
+- Q: Are the book covers admin-managed? → A: No (final decision, 2026-10-01). The carousel shows a fixed set of 10 hardcoded cover images, `public/images/home/books/book-01.jpg` … `book-10.jpg`, which the owner adds by hand. This replaces an earlier same-day answer that made the covers admin-managed through a Settings "Books" group; that group is not built.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -62,7 +70,7 @@ A visitor opens the home page and sees the site's header, then a hero carousel o
 
 ### User Story 2 - Sections in reference order (Priority: P1)
 
-Below the hero the page shows the reference's sections, in the reference's order, with its layout and spacing: a yellow "Find Us Nearby" band that links to Campuses, four quick-access cards, the inspiration section, the Who We Are / Why Choose section with the school's video, latest news, salient features cards, the progress dashboard, icon quick-links, the careers call-to-action and the partners carousel.
+Below the hero the page shows the reference's sections, in the reference's order, with its layout and spacing: a yellow "Find Us Nearby" band that links to Campuses, four quick-access cards, the inspiration section, the "Why Choose Dar-e-Arqam Schools?" section with the school's video, latest news, the books carousel, salient features cards, the progress dashboard, icon quick-links, the careers call-to-action and the partners carousel.
 
 **Why this priority**: This is what makes the page the reference's home page rather than a stack of unrelated blocks.
 
@@ -73,9 +81,9 @@ Below the hero the page shows the reference's sections, in the reference's order
 1. **Given** the page at 1440, 1024, 768 and 375px, **When** it is compared with the matching reference screenshot, **Then** the sections appear in the reference order with the reference's spacing, colours and type values (from `research/design-tokens.md`); any difference is listed in the spec's Deviations.
 2. **Given** the "Find Us Nearby" band, **When** the visitor chooses it, **Then** they go to the Campuses page.
 3. **Given** the four quick-access cards (Admission Procedure, Salient Features, Branch Network, Education Curriculum), **When** the visitor chooses one, **Then** they go to its page (Admission, Salient Features, Campuses, Academics); there is no Franchise card and the remaining four fill the row without a gap.
-4. **Given** the Who We Are / Why Choose section, **When** a home video address is saved in Settings, **Then** the section shows its text and that YouTube video; **When** the address is empty, **Then** the section shows its text alone with no empty frame and no error.
+4. **Given** the "Why Choose Dar-e-Arqam Schools?" section, **When** a home video address is saved in Settings, **Then** the section shows its text and that YouTube video; **When** the address is empty, **Then** the section shows its text alone with no empty frame and no error.
 5. **Given** the inspiration section, **When** it is shown, **Then** it displays its heading, supporting line and the school logo.
-6. **Given** the books carousel of the reference, **When** the page is built, **Then** it is absent and no blank space is left where it was.
+6. **Given** the fixed book cover images in `public/images/home/books/`, **When** the page renders, **Then** the books carousel shows them in the content file's order under the fixed heading and line, as in the reference; **When** none of the files exist yet, **Then** the whole books section is hidden and no blank space is left.
 7. **Given** any section's optional field is missing (an optional line, image or link), **When** the page renders, **Then** the section still looks intact.
 
 ---
@@ -145,9 +153,26 @@ A row of four large icon links: Photo/Videos, Downloads, Our Books and Call/Mail
 
 **Acceptance Scenarios**:
 
-1. **Given** the row, **When** the visitor chooses Photo/Videos, Downloads or Our Books, **Then** they reach the matching Resources page or section.
+1. **Given** the row, **When** the visitor chooses Photo/Videos, Downloads or Our Books, **Then** they reach `/resources#photo-gallery`, `/resources#downloads` or `/resources#our-books`.
 2. **Given** the row, **When** the visitor chooses Call/Mail/Chat, **Then** they reach the Contact page.
 3. **Given** each link, **When** it is read by a screen reader, **Then** its name says what it does (its label), and its icon is decorative.
+
+---
+
+### User Story 9 - Books carousel (Priority: P2)
+
+Under the fixed heading "Dar-e-Arqam Books" and its line, visitors see the school's books as a carousel on the reference's blue band. The 10 covers are fixed images added to the site by hand; there is no admin screen for them.
+
+**Why this priority**: Part of the reference look and the school's own publications; the rest of the page does not depend on it.
+
+**Independent Test**: Put cover images at `public/images/home/books/book-01.jpg` … `book-10.jpg`, open `/` and confirm they appear in that order under "Dar-e-Arqam Books"; move through them with the arrows and by swipe; remove all the files and confirm the section is gone.
+
+**Acceptance Scenarios**:
+
+1. **Given** the cover files are present, **When** the home page renders, **Then** the covers show in the content file's order (book-01 first) under the fixed heading and line.
+2. **Given** covers on the home page, **When** the visitor uses the previous/next arrows or swipes, **Then** the carousel moves; it shows as many covers at once as the reference does at each width, never clipped or distorted.
+3. **Given** only some of the 10 files are present, **When** the page renders, **Then** only those covers show, with no broken images or gaps.
+4. **Given** none of the files are present, **When** the page renders, **Then** the books section is hidden and the neighbouring sections close up.
 
 ---
 
@@ -213,12 +238,12 @@ The page has a title, description and preview image so that search engines and s
 
 **Sections**
 
-- **FR-006**: The page MUST show these sections in this order, after the hero, matching the reference layout, spacing, colours and type: Find Us Nearby; the four quick-access cards; the inspiration section; the Who We Are / Why Choose section with the school video; Latest News; the salient features cards; the progress dashboard; the icon quick-links; the careers call-to-action; the partners carousel. *(Order follows the reference screenshot; it differs from the brief's list — see Clarifications [NEEDS CLARIFICATION: section order and name].)*
+- **FR-006**: The page MUST show these sections in this order, after the hero, matching the reference layout, spacing, colours and type: Find Us Nearby; the four quick-access cards; the inspiration section; the "Why Choose Dar-e-Arqam Schools?" section with the school video; Latest News; the books carousel; the salient features cards; the progress dashboard; the icon quick-links; the careers call-to-action; the partners carousel. *(Order and name follow the reference screenshot, as decided in Clarifications; the brief's different order is a recorded deviation.)*
 - **FR-007**: "Find Us Nearby" MUST link to the Campuses page.
 - **FR-008**: The four quick-access cards MUST be Admission Procedure, Salient Features, Branch Network and Education Curriculum, each linking to its page; there MUST be no Franchise card and no gap where it was.
 - **FR-009**: The inspiration section MUST show its heading, supporting line and the school logo.
-- **FR-010**: The Who We Are / Why Choose section MUST show its text and, when Settings holds a home video address, that video embedded; with no address it MUST show the text alone with no empty frame.
-- **FR-011**: The books carousel MUST NOT appear and MUST leave no blank space; this is a documented deviation from the reference until the client decides (Out of Scope).
+- **FR-010**: The "Why Choose Dar-e-Arqam Schools?" section MUST show its text and, when Settings holds a home video address, that video embedded; with no address it MUST show the text alone with no empty frame.
+- **FR-011**: The books carousel MUST show the fixed book covers (up to 10, `public/images/home/books/book-01.jpg` … `book-10.jpg`, listed in the content file) in the content file's order, under the fixed heading "Dar-e-Arqam Books" and line "Books developed with efficient and effective techniques", in the reference's blue band and carousel layout. Nothing in it is admin-editable. A listed cover whose file is missing MUST be left out; with none present, the section MUST be hidden with no blank space.
 - **FR-012**: The salient features section MUST show its four cards (Personality Development, Teachers Training, Hifz-e-Quran-e-Kareem, Co-Curricular Activities) with their pictures and text, as in the reference.
 
 **Latest news**
@@ -242,23 +267,27 @@ The page has a title, description and preview image so that search engines and s
 
 **Icon quick-links**
 
-- **FR-023**: The page MUST show four icon links — Photo/Videos, Downloads, Our Books and Call/Mail/Chat — the first three to the matching Resources page or section and the fourth to Contact. *(Exact Resources destinations: see Clarifications [NEEDS CLARIFICATION: Resources anchors].)*
+- **FR-023**: The page MUST show four icon links — Photo/Videos, Downloads, Our Books and Call/Mail/Chat — linking to `/resources#photo-gallery`, `/resources#downloads`, `/resources#our-books` and `/contact` respectively (Clarifications).
 
 **Partners carousel**
 
 - **FR-024**: The partners carousel MUST advance automatically, pause while the pointer hovers or focus is inside it, loop, and work with one logo (shown still) and with many; it MUST NOT advance for visitors who prefer reduced motion.
 - **FR-025**: The number of logos visible at once MUST follow the reference's breakpoints, with no logo clipped or distorted.
 
+**Books carousel**
+
+- **FR-036**: The books carousel MUST show as many covers at once as the reference does at each width, move with previous/next arrows and by swipe, never clip or distort a cover, and show no arrows when every cover fits. It MUST NOT move by itself for visitors who prefer reduced motion.
+
 **Content, resilience and quality**
 
-- **FR-026**: Each static section (quick-access cards, inspiration, salient features, careers call-to-action, icon quick-links, partner logos, Find Us Nearby, Who We Are text) MUST be defined as a typed group of fields in a content file, in the shape a database record would take, so a later feature can move any of them to the database without changing the components.
+- **FR-026**: Each static section (quick-access cards, inspiration, salient features, careers call-to-action, icon quick-links, partner logos, Find Us Nearby, Why Choose text, the books section's heading and line) MUST be defined as a typed group of fields in a content file, in the shape a database record would take, so a later feature can move any of them to the database without changing the components.
 - **FR-027**: If Settings or News cannot be read, the home page MUST still render every other section instead of an error page; a failure in one section MUST NOT stop another from showing.
 - **FR-028**: Every image MUST have alternative text; purely decorative images MUST be marked decorative.
 - **FR-029**: The page MUST have a title, a description and a social preview (image, title and description).
 - **FR-030**: Images below the first screen MUST load as the visitor approaches them; the hero's first picture MUST load without delay.
 - **FR-031**: Long headings, Urdu text and missing optional fields MUST NOT break the layout at 375, 768, 1024 and 1440px, and the page MUST NOT scroll sideways at any width.
 - **FR-032**: Every design value MUST come from `research/design-tokens.md` through a named token; a value missing from it MUST be extracted and added there first (Constitution VII).
-- **FR-033**: Every moving element (hero, dashboard count-up, partners carousel) MUST respect the visitor's reduced-motion preference.
+- **FR-033**: Every moving element (hero, dashboard count-up, books carousel, partners carousel) MUST respect the visitor's reduced-motion preference.
 
 ### Key Entities
 
@@ -268,7 +297,9 @@ The page has a title, description and preview image so that search engines and s
 - **News post summary** (from News, feature 003): title, excerpt, category, publish date, language, optional cover image, link.
 - **Quick-access card**: title, short text, picture, destination.
 - **Inspiration block**: heading, supporting line, logo.
-- **Who We Are block**: heading, text (the video comes from Settings).
+- **Why Choose block**: heading, text (the video comes from Settings).
+- **Book cover** (content file, fixed): image file in `public/images/home/books/`, alternative text, order.
+- **Books section**: heading, supporting line (content file, fixed).
 - **Salient feature card**: title, text, picture.
 - **Quick-link**: label, icon, destination.
 - **Careers call-to-action**: heading (with highlighted part), supporting line, button label, destination.
@@ -288,6 +319,7 @@ The page has a title, description and preview image so that search engines and s
 - **SC-008**: The page never scrolls sideways at 375, 768, 1024 or 1440px, and shows no overlapping or clipped content.
 - **SC-009**: The end-to-end journeys pass: hero slides from Settings appear and advance; a stat changed in Settings changes the dashboard; publishing a post makes it appear in Latest News; "Join Now" reaches `/careers`; each icon quick-link reaches its destination.
 - **SC-010**: Below-the-fold images are not downloaded until the visitor scrolls near them, in the tested load.
+- **SC-011**: Every book cover file present in `public/images/home/books/` (up to 10) appears in the carousel in the content file's order, and the books section is absent when none is present, in 100% of tested cases.
 
 ## Assumptions
 
@@ -308,6 +340,7 @@ The page has a title, description and preview image so that search engines and s
 - Feature 003: news posts, their visibility rules, cover-image placeholder, card look.
 - Feature 004: signup band wording and styling (reused for the careers call-to-action) and the `#signup` anchor.
 - Feature 005: hero slides and display time, stats, home video address, contact details for the shell; the starting values it defines for each.
+- Feature 007: the Resources page and its `#photo-gallery` anchor (Photo/Videos link); the `#downloads` and `#our-books` anchors arrive with feature 016.
 - Feature 012 (later): the Careers page that "Join Now" reaches.
 - Feature 016 / Resources (later): the Resources pages the icon links reach.
 - Feature 014 (later): moves the static sections to the database.
@@ -316,15 +349,22 @@ The page has a title, description and preview image so that search engines and s
 
 | Deviation | Why |
 |---|---|
-| The books carousel is not shown and its space is closed up | The client has not decided whether the book covers are fixed or admin-managed (brief; Out of Scope) |
+| The section order and the video section's name follow the reference ("Why Choose Dar-e-Arqam Schools?"), not the brief's list ("Who We Are" third) | Owner's decision, Clarifications 2026-10-01 |
 | The Franchise Offer quick-access card is not shown; four cards fill the row | The brief removes it |
 | The signup form is replaced by a "Join Now" button | PRD §5.1: careers replaces signup |
 | Hero display time comes from Settings, not the reference's fixed 7 seconds | The school controls it |
+| Home sections have more top and bottom padding (48px on phones, 80px from 1024px) than the reference's 10–50px | Owner's request (2026-10-01) for sections that breathe |
+| The hero keeps the banner's own proportions (capped at 85% of the viewport height) instead of the reference's fixed 424px height | Owner's request: banner images must not be cropped |
+| On desktop scroll the sticky header shrinks further than the reference: the yellow bar collapses, the logo drops to 40px and the taglines under the main links are hidden | Owner's request (2026-10-01) |
+| Progress dashboard icons are lucide icons matching the reference's Font Awesome ones (address card, open book, standing person, school) | No new icon set (Constitution II) |
+| The Books, Latest News and Partners carousels have previous/next buttons; the reference's Swipers show none | Keyboard and screen-reader access (FR-036, FR-024) |
+| Partner logos carry descriptive alt text; the reference's are empty | Every image has alternative text (FR-028); names are from the logo file names and are placeholders until the client confirms them |
+| The 004 signup form no longer appears on `/` | The careers CTA replaces it (PRD §5.1); the signup E2E specs that used `/` need a new home (see Follow-ups) |
 
 ## Out of Scope
 
 - Editing the static sections from the admin (feature 014).
-- The books carousel (returns as its own small feature once the client decides).
+- Managing the book covers from the admin (they are fixed files; owner's decision).
 - The Careers page itself (feature 012); the home page only links to it.
 - The Campuses, Resources and News pages beyond linking to them.
 - Video slides in the hero (feature 005 scope).

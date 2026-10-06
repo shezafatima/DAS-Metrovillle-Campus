@@ -13,7 +13,7 @@
 
 ## Requirement Completeness
 
-- [ ] No [NEEDS CLARIFICATION] markers remain — 2 open: section order / section name (FR-006); Resources anchors (FR-023)
+- [x] No [NEEDS CLARIFICATION] markers remain
 - [x] Requirements are testable and unambiguous
 - [x] Success criteria are measurable
 - [x] Success criteria are technology-agnostic (no implementation details)
@@ -35,3 +35,6 @@
 - Flagged per Constitution I: the brief's section list (Who We Are third) differs from the reference screenshot (Inspiration, then Why Choose with the video); the brief says to follow the reference and note the difference.
 - The "anchors fixed in the site shell spec" do not exist: no Resources anchors are defined in `specs/001-site-shell`.
 - Defaults chosen without asking: six news cards; count-up about two seconds (the reference's duration is unreadable); hero pauses on hover/focus; card destinations from the existing navigation; `/careers` shows the placeholder page until feature 012.
+
+- 2026-10-01: both clarifications answered by the owner (reference order and "Why Choose" name; Resources anchors from 007). Books carousel brought into scope: fixed section, admin-managed covers (Settings Books group, FR-034–FR-037, US9).
+- 2026-10-01 (later): final decision — book covers are 10 fixed images in public/, not admin-managed. FR-034, FR-035, FR-037 removed; FR-011, US9, SC-011 rewritten.

@@ -593,6 +593,70 @@ New tokens (added to `@theme` in `src/app/globals.css`):
 | `--spacing-contact-columns-gap` | `51px` |
 | `--spacing-contact-map-height` | `552px` |
 
+## Home sections (006 — extracted per section)
+
+Source: `research/extract-home-tokens.ts` (row walk, `research/tokens/home-sections-{375,768,1024,1440}.json`) and `research/extract-home-details.ts` (hero, flip-box backs, counters, image sources, `research/tokens/home-details-{375,1440}.json`), run 2026-10-01 against https://das.edu.pk/. Values are 1440px unless a width is given. Assets saved to `public/images/home/` (list at the end).
+
+### Shared section heading and line
+
+| Element | Value | Token |
+|---|---|---|
+| Section heading `h2` | Poppins 700, 30px / 36px, `#223355`, centred, margin-bottom 18px | `--text-home-heading`, `--color-home-heading` |
+| Heading at 768 / 375 | 29.61px / 24.84px (Avada fluid type) | `--text-home-heading-md`, `--text-home-heading-sm` |
+| Supporting line `p` | softLINKS 400, 20px / 24px, `#000000`, centred | `--text-home-subheading` |
+| Body text | softLINKS 16px / 24px (= existing `--text-body`) | reused |
+| Content width | 1280px (= `--container-max-width`); Books band 1435px wide row | reused |
+
+### Rows (top to bottom)
+
+| # | Section | Background | Padding top / bottom | Notes |
+|---|---|---|---|---|
+| 0 | Find Us Nearby | `#FFEB3B` | 10px / 10px | `h3` Poppins 24/33.6 700 `#333333`; button "FIND US NEARBY" `#F44336`, Open Sans 18/21 600 uppercase, radius 2px, padding 17px 40px, 282×80; text and button side by side at 1440, stacked below 1024 |
+| 1 | Quick-access flip cards | white | 0 / 0 | 5 cards in the reference (Franchise removed here); front 232×341, `#EEEEEE`, radius 4px, padding 27px; 375: 315×293, one per row |
+| 2 | Inspiration + Why Choose | white | 20px / 20px | logo 96×96; Why Choose `h3` 24/33.6 700 `#333333` left; paragraphs 16/24 `#000000` left; text column and video column side by side at 1440 |
+| 3 | Latest News | `#F7F5F4` | 20px / 20px | 3 columns at ≥1024, 1 below; cards = the 003 news card tokens |
+| 4 | Books | `#F7F5F4` under `books-background.jpg` (blue) | 20px / 20px | heading and line **white** (`#FFFFFF`, confirmed from the screenshot — the computed `h2` colour reads `#223355` because the white is set on an inner element), plus a short white divider under the line; carousel slides 223×280, gap 30px |
+| 5 | Salient features | `#FAF9F8` | 50px / 20px | icons 120×120 (existing `public/images/*.svg`); titles Poppins 18/25.2 700 uppercase `#005B8C`; text 16/24 `#005B8C` centred |
+| 6 | Progress dashboard | white under `dashboard-background.jpg` (red) | 30px / 30px | heading and line white (as row 4); counter value softLINKS 50px 400 white; label softLINKS 18px 400 white; icon Font Awesome 40px white (`fa-address-card`, `fa-leanpub`, `fa-street-view`, `fa-school`) |
+| 7 | Icon quick-links | white | 30px / 10px | 4 tiles 282×290 (labels are part of the images); 375: 315×325, one per row |
+| 8 | Careers CTA (signup band) | `#1E294B` (= `--color-signup-band`) | 20px / 20px | as 004 "Signup band"; button 14px 600 Open Sans `#F44336`, padding 13px 29px, radius 0 |
+| 9 | Partners | `#E9E9ED` | 40px / 40px | logos 230×230 (1440), gap 30px |
+
+### Flip cards (front title colour / back colour)
+
+| Card | Front title | Back background |
+|---|---|---|
+| Admission Procedure | `#E82264` | `#FF709F` |
+| Salient Features | `#029BD8` | `#00BCD4` |
+| Branch Network | `#67C100` | `#8BC34A` |
+| Education Curriculum | `#607D8B` | `#607D8B` |
+
+Front title Poppins 30/36 700 centred; back title Poppins 24/33.6 700 uppercase `#FAF9F8`; back text softLINKS 16/24 white centred; "Read More" button 192×47, `#F44336`, Open Sans 14/17 600, padding 13px 29px, radius 0.
+
+### Carousels — items visible at once
+
+| Carousel | 375 | 768 | 1024 | 1440 |
+|---|---|---|---|---|
+| Books (row 4) | 1 | 1 | 5 | 4 |
+| Partners (row 9) | 1 | 1 | 5 | 4 |
+
+Gap 30px wherever more than one is visible. No arrows or dots were found on either Swiper at any width (they autoplay); the 006 carousels add accessible previous/next buttons (spec FR-036, FR-024).
+
+### Hero
+
+1440: 1440×424; 375: 375×328 (the slider shows one full-width slide).
+
+### Extraction gaps
+
+- Counter count-up duration: not readable (as before); 2 s is used (spec Assumption).
+- Swiper autoplay delay: not exposed in the DOM; the existing `--motion-slide` (0.45s) is the transition and the delay is the 004/005 default of 5 s for books and partners.
+- Avada switches from 5 to 4 visible slides somewhere between 1024px and 1440px; the exact breakpoint was not measured. 1200px (Avada's default "large" breakpoint) is used.
+
+### Assets (`public/images/home/`)
+
+quick-admission.gif, quick-salient-features.gif, quick-branch-network.gif, quick-curriculum.gif, inspiration-logo.png, books-background.jpg, dashboard-background.jpg, link-photos-videos.jpg, link-downloads.jpg, link-our-books.jpg, link-call-mail-chat.jpg, partners/{youth, uswa, ujala, tcdp, parenting, nazra, inclusive-education, da-international, da-colleges}.png. All fetched; none needed a placeholder. The Franchise card icon was not saved (card removed).
+
+
 ## Careers page (012 careers — no reference page exists)
 
 das.edu.pk has **no careers page**: `/careers` returns 404 and no header, top-bar or footer link mentions careers (checked 2026-10-03). Per spec/plan ("the reference's form styling"), the page reuses the Contact page's already-extracted values and adds **no new token**:

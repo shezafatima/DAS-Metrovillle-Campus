@@ -120,7 +120,7 @@ export function NavDesktop({ items = defaultNavigationItems }: NavDesktopProps) 
                       // — 8 items' taglines don't fit alongside the logo at
                       // their full, unshrunk size there; same size as always
                       // once shown again at xl:. Labels alone still fit at lg.
-                      "hidden font-body text-(length:--text-nav-tagline) leading-(--text-nav-tagline--line-height) xl:block",
+                      "hidden overflow-hidden font-body text-(length:--text-nav-tagline) leading-(--text-nav-tagline--line-height) xl:block xl:max-h-[calc(1rem*(1-var(--shrink,0)))] xl:opacity-[calc(1-var(--shrink,0)*1.6)]",
                       isActive ? "text-primary" : "text-text-muted"
                     )}
                   >

@@ -1,4 +1,5 @@
 import { requireAdminAccess } from "@/lib/dal";
+import { revalidateNewsCaches } from "@/lib/news/latest";
 import { accessErrorResponse } from "@/lib/route-errors";
 import { createPost } from "@/lib/news/mutations";
 import { mutationErrorResponse } from "@/lib/news/route-errors";
@@ -13,6 +14,7 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
     const result = await createPost(body, { verifyCover: verifyNewsCover });
+    revalidateNewsCaches();
     return Response.json(result, { status: 201, headers: NO_STORE });
   } catch (err) {
     return mutationErrorResponse(err);

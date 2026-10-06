@@ -64,9 +64,9 @@ test.describe("Header scroll behavior — mobile", () => {
     expect(topBefore).toBeCloseTo(0, 0);
 
     await page.mouse.wheel(0, 600);
-    const topAfter = await header.evaluate(
-      (el) => el.getBoundingClientRect().top
-    );
-    expect(topAfter).toBeLessThan(-50);
+    // The wheel event is applied asynchronously; wait for the scroll to take effect.
+    await expect
+      .poll(() => header.evaluate((el) => el.getBoundingClientRect().top))
+      .toBeLessThan(-50);
   });
 });
