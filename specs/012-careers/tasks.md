@@ -232,15 +232,15 @@ description: "Task list for 012-careers"
 
 ## Phase 11: Polish & Cross-Cutting Concerns
 
-- [ ] T093 [P] Update `docs/architecture.md`: Vercel Blob private store wiring (`src/lib/documents/`, drivers, env, local refused in production), `/api/public/careers` and `/api/admin/careers/*` in "API namespaces", careers data rules (30-day window and locks per ADR-0008, insert-first pending, sweep), remove the "Signup (004) data rules" section and signup folder entries, update notifications (009) to applications, note Vercel hosting is implied by ADR-0007, testing notes for `careers-*` specs
-- [ ] T094 [P] Update `specs/011-roles-and-users/contracts/access-matrix.md` with `contracts/access-matrix-delta.md`
-- [ ] T095 Run `npm run lint` and `npx tsc --noEmit`; fix findings in 012 files only
-- [ ] T096 Run `npm test` (Vitest, with `MONGODB_URI` set for DB suites); all 012 suites pass and no previously passing suite fails
-- [ ] T097 Run `npm run build` **on its own**, then (after it finishes) Playwright: pre-start the dev server, run `--project=forms`, `--project=chromium`, `--project=admin` in sequence; compare the admin failure set with the known baseline; every 012 spec passes
+- [X] T093 [P] Update `docs/architecture.md`: Vercel Blob private store wiring (`src/lib/documents/`, drivers, env, local refused in production), `/api/public/careers` and `/api/admin/careers/*` in "API namespaces", careers data rules (30-day window and locks per ADR-0008, insert-first pending, sweep), remove the "Signup (004) data rules" section and signup folder entries, update notifications (009) to applications, note Vercel hosting is implied by ADR-0007, testing notes for `careers-*` specs
+- [X] T094 [P] Update `specs/011-roles-and-users/contracts/access-matrix.md` with `contracts/access-matrix-delta.md`
+- [X] T095 Run `npm run lint` and `npx tsc --noEmit`; fix findings in 012 files only
+- [X] T096 Run `npm test` (Vitest, with `MONGODB_URI` set for DB suites); all 012 suites pass and no previously passing suite fails
+- [X] T097 (012 specs only: build passes; forms 38/38 after warm reruns; admin-careers, access and shell-links all pass; full chromium and admin suites not rerun, baseline not compared) Run `npm run build` **on its own**, then (after it finishes) Playwright: pre-start the dev server, run `--project=forms`, `--project=chromium`, `--project=admin` in sequence; compare the admin failure set with the known baseline; every 012 spec passes
 - [ ] T098 Walk through `specs/012-careers/quickstart.md` §2 manually at 375, 768, 1024 and 1440px; tick SC-001 to SC-011 in a short note appended to the PHR for the implement run
-- [ ] T100 Create `scripts/check-release-content.ts` and add `"prebuild": "tsx scripts/check-release-content.ts"` to `package.json`. Only when `VERCEL_ENV === "production"`, it fails the build if `careersCopy.privacy.placeholder` is `true` (Constitution V: client-approved privacy notice) or if `CAREERS_RETENTION_MONTHS` is not explicitly set (V: client-agreed retention), with a message naming what's missing. In every other environment it prints a warning only. Add `scripts/check-release-content.test.ts` covering production fail, preview warn, and pass when both are resolved
-- [ ] T101 [P] Add the release gate to `specs/012-careers/quickstart.md` §4 and `docs/architecture.md` (what blocks a production build and how to clear it)
-- [ ] T099 [P] Security self-check against the contracts: no response or DTO contains `cv.key` or a blob URL; download headers present; `local` driver refused with `NODE_ENV=production`; no `@vercel/blob` import outside `src/lib/documents/` (grep); `CAREERS_REAPPLY_WINDOW_DAYS` literal only in `rules.ts` (T013 test)
+- [X] T100 Create `scripts/check-release-content.ts` and add `"prebuild": "tsx scripts/check-release-content.ts"` to `package.json`. Only when `VERCEL_ENV === "production"`, it fails the build if `careersCopy.privacy.placeholder` is `true` (Constitution V: client-approved privacy notice) or if `CAREERS_RETENTION_MONTHS` is not explicitly set (V: client-agreed retention), with a message naming what's missing. In every other environment it prints a warning only. Add `scripts/check-release-content.test.ts` covering production fail, preview warn, and pass when both are resolved
+- [X] T101 [P] Add the release gate to `specs/012-careers/quickstart.md` §4 and `docs/architecture.md` (what blocks a production build and how to clear it)
+- [X] T099 [P] Security self-check against the contracts: no response or DTO contains `cv.key` or a blob URL; download headers present; `local` driver refused with `NODE_ENV=production`; no `@vercel/blob` import outside `src/lib/documents/` (grep); `CAREERS_REAPPLY_WINDOW_DAYS` literal only in `rules.ts` (T013 test)
 
 ---
 

@@ -43,16 +43,21 @@
 - src/components/news/   public news UI (NewsBanner, NewsGrid,
   NewsCard, NewsPagination, NewsEmptyState, CategoryFilter, CoverImage,
   PostBody) — 003 news
-- src/components/signup/   public signup section (SignupSection,
-  SignupForm) — 004 signup; one reusable section placed on Home (006)
-  and Resources (009), on the Home placeholder until then
-- src/components/admin/signups/   admin signup list UI
-  (SignupsTable, SignupsTableFilters, DeleteSignupDialog) — 004 signup
+- src/components/careers/   public application form (CareersForm,
+  CareersIntro) — 012 careers; the page is /careers, linked from the top
+  bar, the footer and the home Join Now section (not the main menu)
+- src/components/admin/careers/   admin Applications UI (ApplicationsTable,
+  delete dialog, CV download link, "opened" marker) — 012 careers
 - src/components/admin/admin-pagination.tsx   shared admin-list
   pagination (lifted out of news/news-pagination.tsx, which is now a
   thin wrapper over it — 004 signup, sp.analyze finding D1)
 - src/components/admin/gallery/   admin gallery albums UI (AlbumList,
   AlbumPanel, AlbumPhotos, AlbumUploader, useReorder) — 007 gallery albums
+- src/components/home/   home page sections (006): one component per
+  reference section, the shared scroll-snap Carousel, HeroSlider,
+  StatCounter, YouTubeEmbed facade, SectionBoundary
+- src/content/home.ts   typed static home sections (shape of a future
+  database row, feature 014)
 - src/components/gallery/   public gallery UI (GallerySection `#photo-gallery`,
   AlbumCard, AlbumPhotoGrid, PhotoViewer, GalleryImage) — 007
 - src/lib/gallery/   007 gallery domain: types, schema (shared client +
@@ -62,8 +67,9 @@
 - src/models/         Mongoose models. Better Auth owns user/session/
   account/verification/rateLimit directly — no Mongoose model is
   defined for those. throttle.ts, news-post.ts (003 news, collection
-  `news`) and signup.ts (004 signup, collection `signups`) are
-  app-owned (see below).
+  `news`), career-application.ts and career-application-lock.ts (012
+  careers, collections `careerApplications` and `careerApplicationLocks`)
+  are app-owned (see below).
 - src/lib/db.ts       cached Mongoose connection (connectDb, getMongoClient)
 - src/lib/auth.ts     Better Auth instance
 - src/lib/dal.ts      getAdminSession() / requireAdminSession() — the
@@ -93,31 +99,36 @@
   confirmation of an uploaded cover's size/format/folder)
 - src/lib/admin-list.ts   shared admin-list building blocks (Paged<T>,
   escapeRegExp, ADMIN_PAGE_SIZE) — moved out of news/admin-queries.ts
-  so signup's admin list imports these instead of the news module or a
-  duplicate copy (004 signup, sp.analyze finding D1)
-- src/lib/signup/   004 signup domain logic: sources.ts (fixed Home/
-  Resources list), phone.ts/dates.ts/route-errors.ts (thin re-export
-  shims — the real implementations moved to src/lib/phone.ts,
-  src/lib/admin-datetime.ts and src/lib/route-errors.ts in 008, since
-  contact messages need them too; every 004 import path and test still
-  works unchanged), mutations.ts (upsertSignup — the one atomic
-  natural-key upsert with restore-on-resignup, see ADR-0001;
-  deleteSignup), admin-queries.ts (listSignups/countSignups/
-  findSignupsForExport — one shared filter builder), csv.ts (RFC 4180
-  export encoding)
+  so the other admin lists (messages, applications) import these instead
+  of the news module or a duplicate copy
+- src/lib/careers/   012 careers domain logic: rules.ts (the 30-day
+  reapply window, `CAREERS_REAPPLY_WINDOW_DAYS`, the only place the
+  number lives; calendar days in Asia/Karachi), identity-lock.ts
+  (per-identity locks, ADR-0008), mutations.ts (createCareerApplication:
+  locks, window check, insert-first pending record, store put, confirm;
+  deleteCareerApplication: soft delete then file removal),
+  cv-limits.ts (4 MiB and the real-content PDF check),
+  read-capped-body.ts, admin-queries.ts, csv.ts, cv-download.ts,
+  retention.ts (the sweep) and route-errors.ts
+- src/lib/documents/   the private document store behind a
+  `DocumentStore` interface (put/get/delete/exists), the only module that
+  touches documents: `vercel-blob.ts` (private Vercel Blob store, ADR-0004
+  and ADR-0007), `local.ts` (a folder for development and E2E; refused
+  when NODE_ENV is production) and `store.ts` (driver choice by
+  DOCUMENT_STORE_DRIVER). Nothing else imports `@vercel/blob`; Cloudinary
+  and src/lib/uploads/ are never used for documents. Keys are
+  `cv/<256 random bits>.pdf`, never derived from the applicant.
 - src/lib/phone.ts, src/lib/admin-datetime.ts, src/lib/route-errors.ts,
   src/lib/validation/field-errors.ts   shared helpers lifted out of
-  signup-only modules once contact messages (008) needed them too
+  modules once contact messages (008) needed them too
   (Pakistani-mobile normalise/format/search-digits; PKT instant
   formatting; the common route-error envelope + payloadTooLargeResponse;
-  fieldErrors()/collapseSpaces()) — src/lib/signup/* re-exports these so
-  no caller had to change
+  fieldErrors()/collapseSpaces())
 - src/components/admin/admin-list-filters.tsx,
   src/components/admin/admin-delete-dialog.tsx   generic admin-list
   search+filter and confirm-delete dialog, lifted out of the
-  signup-only versions once messages (008) needed the same UI;
-  signups/signups-table-filters.tsx and signups/delete-signup-dialog.tsx
-  are now thin wrappers over these
+  versions once messages (008) needed the same UI; the 012 applications
+  list uses them too
 - src/lib/messages/   008 contact-messages domain logic: statuses.ts
   (fixed New/Read/Responded list), preview.ts (toPreview — code-point-
   safe one-line truncation), inbox-href.ts (whitelist rebuild of the
@@ -163,6 +174,9 @@
 - src/test/admin-session.ts   seedTestAdmin()/getTestSessionCookie() —
   shared by every DB-backed admin route test that needs a real session
 - scripts/seed-admin.ts
+- scripts/sweep-careers.ts (retention sweep, `npm run sweep:careers`),
+  scripts/retire-signups.ts (one-time, `npm run retire:signups -- --confirm`),
+  scripts/check-release-content.ts (the `prebuild` release gate)
 - public/images, public/icons   static assets, kebab-case names
 - research/design-tokens.md, research/tokens/*.json,
   research/tokens/news-cards-*.json (003 news), research/tokens/
@@ -180,20 +194,25 @@
 - /api/admin/*  session required — includes /api/admin/news* (post
   CRUD, publish/unpublish), /api/admin/uploads/sign (Cloudinary
   signature for direct browser upload; the API secret never leaves
-  this route), /api/admin/signups/[id] (soft delete) and
-  /api/admin/signups/export (filtered CSV) — 004 signup;
+  this route), /api/admin/careers/[id] (DELETE, main admin only),
+  /api/admin/careers/[id]/cv (GET — the CV as an attachment, checked per
+  request), /api/admin/careers/export (filtered CSV) and
+  /api/admin/careers/opened (POST — Applications "opened" marker) — 012
+  careers;
   /api/admin/messages/[id] (PATCH status, DELETE soft delete) and
   /api/admin/messages/[id]/read (POST — conditional new→read) — 008
   contact-messages; /api/admin/notifications (GET — combined counts +
   panel items), /api/admin/notifications/read (POST — mark all as
-  read) and /api/admin/signups/opened (POST — Signups-list "opened"
-  marker) — 009 admin-notifications
+  read) — 009 admin-notifications
 - /api/admin/settings/uploads/sign  (005, access `settings`) signs a
   direct Cloudinary upload into settings/hero or settings/gallery. Saving a
   settings group is a Server Action (`saveSettingsGroup`), not a route.
-- /api/public/* no auth — includes /api/public/signups (004 signup;
-  honeypot → rate limit → validate → upsert, identical response for
-  every outcome) and /api/public/messages (008 contact-messages; 64 KiB
+- /api/public/* no auth — includes /api/public/careers (012; multipart
+  with one PDF: body-size guard → capped read → honeypot → 5-per-10-minute
+  submission limit → 10-per-24-hour upload limit → validation incl. the
+  PDF's real content → save; identical `{ ok: true }` for a stored
+  application and a honeypot drop; 409 with `reapplyFrom` inside the
+  30-day window) and /api/public/messages (008 contact-messages; 64 KiB
   size guard → honeypot → its own `"contact"` rate-limit budget →
   validate → append-only insert; every valid submission creates a new
   `messages` document, and the honeypot response is identical)
@@ -248,7 +267,7 @@
 - Permission keys live in one registry, src/lib/permissions.ts:
   news, messages, careers, settings, pages. Registrations and users are
   main-admin only and are not keys. A new section = one new key.
-  Signups (004) is governed by `careers` until 012 replaces it.
+  Applications (012) are governed by `careers`; the old Signups (004) is retired.
 - One access check. getAdminSession() returns role, permissions and
   mustChangePassword, and returns null for a disabled or deleted account.
   The pure decideAccess(session, access) decides; access is a key,
@@ -363,26 +382,50 @@
   folder via the Cloudinary API on save (`verifyNewsCover`,
   `src/lib/cloudinary.ts`) before accepting a changed `coverImage`.
 
-## Signup (004) data rules
-- One person, one record: `signups` has a unique index on `email` with
-  no partial filter, so a soft-deleted record's email stays reserved.
-  The public route's only write is one atomic
-  `Signup.findOneAndUpdate(..., { upsert: true, withDeleted: true })`
-  that creates, updates or restores in a single call — see
-  `history/adr/0001-signup-upsert-and-restore.md` for the full
-  rationale, the alternatives rejected, and why this pattern does
-  **not** extend to contact messages (008), which are append-only
-  (every submission is its own record, even from the same email).
-  `withDeleted: true` is permitted only inside
-  `src/lib/signup/mutations.ts`; no list/read query anywhere else
-  passes it.
-- The public response body is identical (`{ ok: true }`, no id or
-  flag) whether the record was created, updated, restored, or the
-  submission was silently dropped by the honeypot — nothing in the
-  response distinguishes a new signup from a returning one or a bot.
+## Career applications (012) data rules
+- Collection `careerApplications` (soft-delete plugin). Email and phone
+  are NOT unique: the same person may apply again after the reapply
+  window. Not stored: the uploaded file name, the declared MIME type, the
+  visitor's IP. The CV key is random and is never returned to a browser.
+- The window (ADR-0008, superseding ADR-0003 and ADR-0006): one application
+  per person per 30 calendar days (Asia/Karachi), matched on email OR
+  phone. It is enforced in `src/lib/careers/mutations.ts` under
+  per-identity locks (`careerApplicationLocks`: hashed `_id`, conditional
+  upsert, duplicate-key means held, 30 s lease, sorted acquisition), so ten
+  simultaneous submissions produce exactly one record. A refusal is a 409
+  with the same body whichever field matched; a held lock is a 503
+  `try_again`. A soft-deleted application stops counting at once.
+- Write order is insert-first: validate, take the locks, insert the record
+  as pending (`cv.storedAt` null), put the file, confirm. A failure
+  compensates (hard-deletes the pending record) and answers 503. Admin
+  lists, counts, the export and notifications show stored applications only.
+- Files live in the private store only; a CV is delivered through
+  `/api/admin/careers/[id]/cv` after a session and permission check, as an
+  attachment (`nosniff`, CSP sandbox, `private, no-store`), never shown
+  inline. Delete is main admin only: soft delete plus file removal; if the
+  removal fails the sweep retries it.
+- Retention (Constitution V): `CAREERS_RETENTION_MONTHS` (1 to 120, default
+  12). `sweepCareerApplications` removes applications past it, live or
+  soft-deleted, with their files; retries failed removals; clears pending
+  records older than an hour. It runs at most hourly through `after()` on
+  a successful submission and on the admin Applications page
+  (`maybeSweepCareers`, throttle key `sweep:careers`), and on demand with
+  `npm run sweep:careers`.
+- Release gate: `scripts/check-release-content.ts` runs as `prebuild`.
+  When `VERCEL_ENV=production` it fails the build while the privacy notice
+  is still placeholder wording (`careersCopy.privacy.placeholder`, in
+  `src/content/careers.ts`) or `CAREERS_RETENTION_MONTHS` is not set
+  explicitly. To clear it: put the client-approved notice in, set the flag
+  to `false`, and set the variable in the production environment. Other
+  environments only print a warning.
+- Hosting: Vercel is implied by ADR-0007 (Vercel Blob; its 4.5 MB function
+  request limit is why the CV limit is 4 MiB). Local and E2E runs use the
+  `local` driver (`DOCUMENT_STORE_DRIVER`, default outside production).
+- The 004 signup is retired (collection dropped by
+  `npm run retire:signups -- --confirm` after a backup; code removed).
 
 ## Contact messages (008) data rules
-- Append-only, the opposite of signup's rule: `messages` has no unique
+- Append-only, the opposite of the retired signup's rule: `messages` has no unique
   index and the write path (`src/lib/messages/mutations.ts`) never
   upserts, looks up by email, or passes `withDeleted` — every valid
   submission is `Message.create(...)`, a brand-new document, even from
@@ -405,22 +448,22 @@
 ## Admin notifications (009) data rules
 - One new collection, `adminNotificationStates` — one document per
   admin, `_id` = the admin's Better Auth user id (a string, not an
-  ObjectId), holding only `signupsLastOpenedAt`. It is never soft-
+  ObjectId), holding only `careersLastOpenedAt` (012; the old `signupsLastOpenedAt` is
+  unset by `npm run retire:signups`). It is never soft-
   deleted, only overwritten (`src/lib/notifications/state.ts`). Messages
   need no equivalent state: 008's `status` field already is their "new"
   state.
 - Lazy creation defaults to **now**, never the epoch: the first time
-  `getSignupsLastOpenedAt(adminId)` runs for a given admin, it atomically
+  `getCareersLastOpenedAt(adminId)` runs for a given admin, it atomically
   upserts (`findOneAndUpdate` with `$setOnInsert`, never find-then-create
   — avoids a duplicate-key race between two tabs' first poll) a document
-  stamped with the current moment. Pre-existing signups therefore never
+  stamped with the current moment. Pre-existing applications therefore never
   flood in as "new" the day this feature ships — see
   `history/adr/0002-admin-notifications-live-state-and-shared-popover.md`.
 - "New" is computed, never stored, for both kinds: a message is new
-  when `status === "new"` (reuses 008 unchanged); a signup is new when
-  `lastSignupAt > signupsLastOpenedAt` — because 004 already bumps
-  `lastSignupAt` on every accepted submission including a repeat one,
-  "a repeat submission counts as new again" falls out for free
+  when `status === "new"` (reuses 008 unchanged); an application is new
+  when it is stored and `createdAt > careersLastOpenedAt` (a refused repeat
+  is never stored, so it never counts)
   (`src/lib/notifications/queries.ts`).
 - Client-side live state is one shared React Context
   (`NotificationsProvider`), not props threaded separately per
@@ -552,26 +595,29 @@
   still run. Admin specs (e2e/admin-*.spec.ts) run in their own
   Playwright project with fullyParallel:false — they share one
   MongoDB `throttle` collection and one seeded admin, so they can't
-  safely run concurrently with each other. Public signup specs
-  (e2e/signup-*.spec.ts) run in a third project, `forms`, for the same
-  reason: every Playwright worker shares one source IP, and the
-  rate-limit test deliberately exhausts that budget (004 signup,
-  research.md §8) — `chromium`'s testIgnore excludes both `admin-*`
-  and `signup-*` so a spec never runs twice under two projects.
-  `e2e/helpers/signups.ts` follows the same seed/clear/withConnection
-  pattern as `e2e/helpers/news.ts`.
+  safely run concurrently with each other. Public form specs
+  (e2e/contact-*.spec.ts and e2e/careers-*.spec.ts) run in a third project,
+  `forms`, for the same reason: every Playwright worker shares one source
+  IP, and the rate-limit tests deliberately exhaust a budget —
+  `chromium`'s testIgnore excludes `admin-*`, the contact specs and
+  `careers-*` so a spec never runs twice under two projects.
+  `e2e/helpers/careers.ts` seeds and reads `careerApplications` and the
+  local document folder (`.data/e2e-documents`) with the same
+  seed/clear/withConnection pattern as `e2e/helpers/news.ts`. Careers
+  specs: careers-public, careers-protection (forms), admin-careers,
+  admin-careers-access (admin), shell-careers-links (chromium).
 - The `forms` project also carries the four contact specs
   (`e2e/contact-{public,details,protection,visual}.spec.ts`, 008
-  contact-messages) alongside `signup-*`; `chromium`'s testIgnore names
+  contact-messages) alongside `careers-*`; `chromium`'s testIgnore names
   them explicitly rather than a broader `contact-*` pattern, because the
   pre-existing `e2e/contact-and-social.spec.ts` (001 site-shell) also
   starts with `contact-` and must keep running under `chromium`. Every
-  spec that submits through a public form (`/api/public/signups` or
+  spec that submits through a public form (`/api/public/careers` or
   `/api/public/messages`) sets its own `X-Forwarded-For`
-  (`e2e/helpers/signups.ts`'s IPs / `e2e/helpers/messages.ts`'s
-  `forwardedFor(n)`, both in the TEST-NET-3 `203.0.113.0/24` range) so
+  (`forwardedFor(n)` in `e2e/helpers/messages.ts` and
+  `e2e/helpers/careers.ts`) so
   concurrent specs never share a rate-limit budget by accident. This
   `X-Forwarded-For` trust (a pre-existing 002 hosting follow-up — verify
   the real host overwrites the header rather than passing through a
   client-supplied value) applies equally to both forms and is owned by
-  002's `extractIp`, not by 004 or 008.
+  002's `extractIp`, not by 008 or 012.

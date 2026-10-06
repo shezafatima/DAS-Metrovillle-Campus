@@ -35,7 +35,7 @@ Every refusal is `Cache-Control: no-store`, returns no section data, and logs an
 | `/admin/account` | any | Own account only. It takes no id. |
 | `/admin/news`, `/admin/news/new`, `/admin/news/[id]` | news | |
 | `/admin/messages`, `/admin/messages/[id]` | messages | |
-| `/admin/signups` | careers | Clarification 2 |
+| `/admin/careers`, `/admin/careers/[id]` | careers | 012 Applications (replaced `/admin/signups`) |
 | `/admin/settings` | settings | Redirects to `/admin/settings/contact` (005) |
 | `/admin/settings/contact`, `/hero`, `/stats`, `/video` | settings | 005: one page per group; see `specs/005-settings/contracts/access-matrix.md` |
 | `/admin/settings/gallery`, `/admin/settings/gallery/[albumId]` | settings | 007: album list and one album's photos; see `specs/007-gallery-albums/contracts/access-matrix.md` |
@@ -60,9 +60,10 @@ Every refusal is `Cache-Control: no-store`, returns no section data, and logs an
 | `POST /api/admin/settings/uploads/sign` | settings (005: hero and gallery images) |
 | `PATCH · DELETE /api/admin/messages/[id]` | messages |
 | `POST /api/admin/messages/[id]/read` | messages |
-| `DELETE /api/admin/signups/[id]` | careers |
-| `POST /api/admin/signups/opened` | careers |
-| `GET /api/admin/signups/export` | careers |
+| `GET /api/admin/careers/[id]/cv` | careers (CV as an attachment) |
+| `DELETE /api/admin/careers/[id]` | **main_admin** (012: a content manager with `careers` gets 403) |
+| `POST /api/admin/careers/opened` | careers |
+| `GET /api/admin/careers/export` | careers |
 | `/api/auth/*` closed by `disabledPaths` in 010 | 404 for every role (unchanged) |
 
 ## Server Actions
