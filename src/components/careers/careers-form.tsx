@@ -27,7 +27,7 @@ const CV_MESSAGES: Record<CvFailure, string> = {
 
 const INPUT_CLASS =
   "h-(--spacing-signup-input-height) w-full rounded-signup-input border border-signup-input-border bg-signup-input-bg px-4 font-body text-(length:--text-signup-input) text-foreground outline-none placeholder:text-signup-input-text focus-visible:ring-2 focus-visible:ring-ring";
-const ERROR_CLASS = "rounded-signup-input bg-signup-input-bg px-2 py-1 text-left text-xs font-bold text-error";
+const ERROR_CLASS = "rounded-signup-input bg-signup-input-bg px-2 py-1 text-left font-body text-xs font-bold text-error";
 
 /**
  * The application form (contracts/careers-page.md, public-careers-api.md).
@@ -152,7 +152,7 @@ export function CareersForm() {
   return (
     <form onSubmit={handleSubmit} noValidate className="w-full">
       {status.kind === "error" && (
-        <p role="alert" className="mb-(--spacing-contact-form-gap-y) rounded-md bg-white px-3 py-2 text-center text-sm font-bold text-error">
+        <p role="alert" className="mb-(--spacing-contact-form-gap-y) rounded-md bg-white px-3 py-2 text-center font-body text-sm font-bold text-error">
           {status.banner}
         </p>
       )}
