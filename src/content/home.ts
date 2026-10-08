@@ -221,17 +221,16 @@ export const homeContent = {
   },
 
   partners: {
-    label: "Our partners",
+    heading: "Our Partners",
     items: [
-      { id: "youth", name: "Dar-e-Arqam Youth", logo: { src: "/images/home/partners/youth.png", alt: "Dar-e-Arqam Youth", width: 230, height: 230 } },
-      { id: "uswa", name: "Uswa Publications", logo: { src: "/images/home/partners/uswa.png", alt: "Uswa Publications", width: 230, height: 230 } },
-      { id: "ujala", name: "Ujala", logo: { src: "/images/home/partners/ujala.png", alt: "Ujala", width: 230, height: 230 } },
-      { id: "tcdp", name: "TCDP", logo: { src: "/images/home/partners/tcdp.png", alt: "TCDP", width: 230, height: 230 } },
-      { id: "parenting", name: "Parenting", logo: { src: "/images/home/partners/parenting.png", alt: "Parenting", width: 230, height: 230 } },
-      { id: "nazra", name: "Nazra & Hifz", logo: { src: "/images/home/partners/nazra.png", alt: "Nazra & Hifz", width: 230, height: 230 } },
-      { id: "inclusive-education", name: "Inclusive Education", logo: { src: "/images/home/partners/inclusive-education.png", alt: "Inclusive Education", width: 230, height: 230 } },
-      { id: "da-international", name: "Dar-e-Arqam International", logo: { src: "/images/home/partners/da-international.png", alt: "Dar-e-Arqam International", width: 230, height: 230 } },
-      { id: "da-colleges", name: "Dar-e-Arqam Colleges", logo: { src: "/images/home/partners/da-colleges.png", alt: "Dar-e-Arqam Colleges", width: 230, height: 230 } },
+      { id: "youth", name: "Dar-e-Arqam Youth", logo: { src: "/images/home/partners/youth.png", alt: "Dar-e-Arqam Youth", width: 398, height: 398 } },
+      { id: "uswa", name: "Uswa Publications", logo: { src: "/images/home/partners/uswa.png", alt: "Uswa Publications", width: 398, height: 398 } },
+      { id: "tcdp", name: "TCDP", logo: { src: "/images/home/partners/tcdp.png", alt: "TCDP", width: 398, height: 398 } },
+      { id: "parenting", name: "Parenting", logo: { src: "/images/home/partners/parenting.png", alt: "Parenting", width: 398, height: 398 } },
+      { id: "nazra", name: "Nazra & Hifz", logo: { src: "/images/home/partners/nazra.png", alt: "Nazra & Hifz", width: 398, height: 398 } },
+      { id: "inclusive-education", name: "Inclusive Education", logo: { src: "/images/home/partners/inclusive-education.png", alt: "Inclusive Education", width: 398, height: 398 } },
+      { id: "da-international", name: "Dar-e-Arqam International", logo: { src: "/images/home/partners/da-international.png", alt: "Dar-e-Arqam International", width: 398, height: 398 } },
+      { id: "da-colleges", name: "Dar-e-Arqam Colleges", logo: { src: "/images/home/partners/da-colleges.png", alt: "Dar-e-Arqam Colleges", width: 398, height: 398 } },
     ] as Partner[],
   },
 

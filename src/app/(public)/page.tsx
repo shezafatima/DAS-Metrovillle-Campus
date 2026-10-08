@@ -4,7 +4,7 @@ import { CareersCta } from "@/components/home/careers-cta";
 import { HeroSlider } from "@/components/home/hero-slider";
 import { InspirationWhyChoose } from "@/components/home/inspiration-why-choose";
 import { LatestNews } from "@/components/home/latest-news";
-import { PartnersCarousel } from "@/components/home/partners-carousel";
+import { PartnersStrip } from "@/components/home/partners-strip";
 import { ProgressDashboard } from "@/components/home/progress-dashboard";
 import { QuickAccessCards } from "@/components/home/quick-access-cards";
 import { QuickLinks } from "@/components/home/quick-links";
@@ -65,8 +65,8 @@ export default async function Home() {
       <SalientFeatures />
       <SectionBoundary name="progress-dashboard" render={ProgressDashboard} />
       <QuickLinks />
+      <PartnersStrip />
       <CareersCta />
-      <PartnersCarousel />
     </>
   );
 }

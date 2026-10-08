@@ -282,7 +282,12 @@
   --spacing-home-read-more-x: 29px;
   --spacing-home-read-more-y: 13px;
   --spacing-home-book-height: 280px;
-  --spacing-home-partner-logo: 230px;
+  /* The partners ticker (RollingStrip kind="logo"): a logo is as wide as its own shape, up to the width cap, at a small fixed height, with an equal gap. */
+  --spacing-home-partner-box-h: 120px;
+  --spacing-home-partner-box-h-sm: 92px;
+  --spacing-home-partner-box-w: 270px;
+  --spacing-home-partner-gap: 88px;
+  --spacing-home-partner-gap-sm: 68px;
   --spacing-home-counter-icon: 40px;
   --spacing-home-hero-height: 424px;
   --spacing-home-hero-height-sm: 328px;

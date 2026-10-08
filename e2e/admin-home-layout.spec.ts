@@ -42,7 +42,10 @@ test.describe("home — layout and motion (006)", () => {
     await openHome(page);
     const active = () => page.locator('[data-testid="hero-slide"][data-active]').textContent();
     const withBooks = bookFilesPresent() > 0;
-    const snapshot = async () => ({ hero: await active(), books: withBooks ? await scrollOf("books") : 0, partners: await scrollOf("partners") });
+    // The books strip does not roll under reduced motion: its track stays put (no transform) and its row is not scrolled.
+    const rollState = (id: string) => page.getByTestId(id).evaluate((el) => ({ transform: getComputedStyle(el.querySelector("ul")!).transform, animation: getComputedStyle(el.querySelector("ul")!).animationName, scroll: el.scrollLeft }));
+    const booksState = () => rollState("book-roll");
+    const snapshot = async () => ({ hero: await active(), books: withBooks ? await booksState() : 0, partners: await rollState("partner-roll") });
     const before = await snapshot();
     await page.waitForTimeout(7_000);
     expect(await snapshot()).toEqual(before);

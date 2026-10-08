@@ -128,6 +128,3 @@ export function Carousel({ label, children, perViewClass, autoplayMs, tone = "li
     </div>
   );
 }
-
-/** Items visible at once for the Books and Partners carousels: 1 below 1024px, 5 from 1024px, 4 from 1200px (design-tokens "Carousels"). */
-export const BAND_CAROUSEL_PER_VIEW = "[--pv:1] lg:[--pv:5] min-[1200px]:[--pv:4]";
