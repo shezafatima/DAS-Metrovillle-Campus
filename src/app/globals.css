@@ -70,7 +70,6 @@
   --color-topbar: #ffff00;
   /* research/tokens/home-1440.json footerBottomBar.sample.style.backgroundColor
      — rgb(234, 234, 238), distinct from the general --color-neutral-100. */
-  --color-footer-bottom: #eaeaee;
 
   --font-body: "softLINKS Regular", Arial, Helvetica, sans-serif;
   --font-body-urdu: "softLINKS Urdu Regular", "Noto Nastaliq Urdu", Tahoma, sans-serif;
@@ -96,8 +95,6 @@
   --text-button-lg: 18px;
   --text-button-lg--line-height: 21px;
   --text-button-lg--font-weight: 600;
-  --text-footer-link: 16px;
-  --text-footer-link--line-height: 24px;
 
   /* Dropdown sub-nav text, the top bar's portal links, and each top-level
      item's small tagline (e.g. "Front Page" under HOME) — confirmed

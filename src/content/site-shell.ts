@@ -30,12 +30,18 @@ export interface PortalLink {
 }
 
 export interface FooterContent {
-  /** The brand name shown in the copyright line (e.g. "Dar-e-Arqam
-   * Schools") — the reference footer's bottom bar is the *entire*
-   * footer, no columns or quick-links row above it. */
-  bottomText: string;
-  /** Links shown in the bottom bar beside the copyright (012: Careers; PRD §4 keeps it out of the main menu). */
-  links: PortalLink[];
+  /** A short description of the school, under the logo. */
+  description: string;
+  logo: { src: string; alt: string; width: number; height: number };
+  headings: { quickLinks: string; portalLinks: string; contact: string };
+  /** The main pages (Campuses is deliberately not here; Careers is). */
+  quickLinks: PortalLink[];
+  /** "Get directions": goes to the Contact page. */
+  directions: PortalLink;
+  /** The copyright sentence for a year (the year is generated, never typed in). */
+  copyright: (year: number) => string;
+  /** "Crafted Excellence with ❤ by <name>", the developer credit. */
+  credit: { before: string; by: string; name: string; href: string };
 }
 
 // Fixed render order (FR-001). Taglines and sub-pages below are grounded in
@@ -105,15 +111,13 @@ export const navigationItems: NavigationItem[] = [
   { label: "Contact", href: "/contact" },
 ];
 
-// The reference top bar's portal-login links (confirmed on the live site)
-// point to external student/parent/staff systems this project doesn't have
-// yet (no auth — Constitution III/out of scope). Rather than fabricate
-// external URLs that don't exist, each links to an internal placeholder
-// page under /portal/<slug>, consistent with every other not-yet-built page
-// in this feature (FR-017's pattern, extended here by content, not code).
-// Careers (012, PRD §4: "link in the top bar and footer, not the main menu")
-// is the first link in the top (yellow) bar; it is a real page, unlike the
-// portal placeholders after it.
+// The reference's portal-login links (confirmed on the live site) point to
+// external student/parent/staff systems this project doesn't have yet (no
+// auth — Constitution III/out of scope). Rather than fabricate external URLs
+// that don't exist, each links to an internal placeholder page under
+// /portal/<slug>, consistent with every other not-yet-built page in this
+// feature (FR-017's pattern, extended here by content, not code). They are
+// utility links, so they sit in the footer (the yellow top bar is gone).
 export const portalLinks: PortalLink[] = [
   { label: "DAS Portal", href: "/portal/das-portal" },
   { label: "ePortal", href: "/portal/eportal" },
@@ -151,8 +155,24 @@ export const contactInfo: ContactInfo = {
 // credit link + social icons) — confirmed directly against the reference by
 // the user, correcting this feature's earlier quick-links-row addition.
 export const footerContent: FooterContent = {
-  bottomText: "Dar-e-Arqam Schools",
-  links: [{ label: "Careers", href: "/careers" }],
+  // PENDING CLIENT APPROVAL: this description was supplied by the project owner and has not been approved by the client yet.
+  description:
+    "Dar-e-Arqam School, Metroville Campus, offers quality education rooted in Islamic values, helping every student grow in knowledge, character and faith.",
+  logo: { src: "/images/logo.svg", alt: "Dar-e-Arqam School Metroville Campus", width: 1974, height: 797 },
+  headings: { quickLinks: "Quick Links", portalLinks: "Portal Links", contact: "Contact Us" },
+  quickLinks: [
+    { label: "Home", href: "/" },
+    { label: "About", href: "/about" },
+    { label: "Academics", href: "/academics" },
+    { label: "Admission", href: "/admission" },
+    { label: "Resources", href: "/resources" },
+    { label: "News", href: "/news" },
+    { label: "Careers", href: "/careers" },
+    { label: "Contact", href: "/contact" },
+  ],
+  directions: { label: "Get directions", href: "/contact" },
+  copyright: (year) => `© ${year} Dar-e-Arqam School, Metroville Campus. All rights reserved.`,
+  credit: { before: "Crafted Excellence with", by: "by", name: "Sheza Fatima", href: "https://sheza-fatima.vercel.app/" },
 };
 
 // Fallback social-preview image for pages with no page-specific one (e.g.

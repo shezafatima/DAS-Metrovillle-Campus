@@ -40,8 +40,8 @@ describe("searchSite", () => {
 });
 
 describe("the real search index (012 careers)", () => {
-  it("finds the Careers page, which is linked from the top bar and footer but not the main menu", () => {
-    expect(searchSite("career", searchIndex)).toEqual([{ label: "Careers", href: "/careers" }]);
+  it("finds the Careers page, once, under About", () => {
+    expect(searchSite("career", searchIndex)).toEqual([{ label: "Careers", href: "/careers", parentLabel: "About" }]);
     expect(searchSite("CAREERS", searchIndex).map((r) => r.href)).toEqual(["/careers"]);
   });
 

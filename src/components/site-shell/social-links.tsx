@@ -13,7 +13,7 @@ const SOCIAL_LABELS: Record<SocialPlatform, string> = {
 };
 
 // Real brand marks (per user request) — react-icons/fa6 ships the exact
-// glyphs the reference site's top-bar badges use.
+// glyphs the reference site's badges use.
 const SOCIAL_ICONS: Record<SocialPlatform, IconType> = {
   facebook: FaFacebookF,
   youtube: FaYoutube,
@@ -23,21 +23,14 @@ const SOCIAL_ICONS: Record<SocialPlatform, IconType> = {
 
 interface SocialLinksProps {
   social: ContactInfo["social"];
-  /** "light" (white badge on a dark/yellow bar, e.g. the top bar) or "dark"
-   * (dark badge on a light bar, e.g. the footer bottom bar) — matches the
-   * reference's two different social-icon treatments. */
-  variant?: "light" | "dark";
   className?: string;
 }
 
-// Reusable across TopBar and Footer — the one place that reads
-// ContactInfo.social and renders it as icon links (FR-012, FR-013): a
-// platform with no configured URL is omitted entirely, never a dead link.
-export function SocialLinks({
-  social,
-  variant = "light",
-  className,
-}: SocialLinksProps) {
+// The one place that reads ContactInfo.social and renders it as icon links
+// (FR-012, FR-013): a platform with no configured URL is omitted entirely,
+// never a dead link. The badges keep the old top bar's rounded-square shape;
+// on the footer's white they are the theme yellow with a navy icon.
+export function SocialLinks({ social, className }: SocialLinksProps) {
   // Fixed order (Facebook, YouTube, Instagram, TikTok — the reference's), not
   // the order the values happen to arrive in: Settings (005) stores them as a
   // plain object, and a cleared platform must leave the rest where they were.
@@ -58,12 +51,7 @@ export function SocialLinks({
               href={url}
               target="_blank"
               rel="noopener noreferrer"
-              className={cn(
-                "flex items-center justify-center transition-opacity duration-(--motion-fast) hover:opacity-75",
-                variant === "light"
-                  ? "rounded-md bg-surface p-1.5 text-primary"
-                  : "rounded-full bg-text p-1 text-surface"
-              )}
+              className="flex items-center justify-center rounded-md bg-(--color-topbar) p-1.5 text-primary transition-opacity duration-(--motion-fast) hover:opacity-75 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-primary)"
             >
               <Icon aria-hidden="true" className="size-4" />
               <span className="sr-only">{SOCIAL_LABELS[platform]}</span>
