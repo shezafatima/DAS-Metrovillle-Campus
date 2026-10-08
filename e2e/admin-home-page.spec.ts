@@ -210,9 +210,9 @@ test.describe("home — sections, news, books, stats, links (006 US2–US9)", ()
     await openHome(page);
     const news = page.getByTestId("latest-news");
     await expect(news).toBeVisible();
-    const titles = news.locator("article h2");
+    const titles = news.getByTestId("home-news-card").locator("h3");
     await expect(titles).toHaveText(["فکر اقبال اور تعلیمی نظام", "Older post"]);
-    await expect(titles.first().locator("a")).toHaveAttribute("dir", "rtl");
+    await expect(news.getByTestId("home-news-card").first().locator("[dir]").first()).toHaveAttribute("dir", "rtl");
     await expect(news.getByText("A draft")).toHaveCount(0);
     await expect(news.locator('[aria-hidden="true"][data-variant="home"]').first()).toBeAttached(); // cover placeholder
     await expect(news.getByRole("link", { name: /View all news/ })).toHaveAttribute("href", "/news");

@@ -125,7 +125,10 @@ export const homeContent = {
   },
 
   latestNews: {
-    heading: "Dar-e-Arqam Latest News",
+    // PENDING CLIENT APPROVAL: this heading was supplied by the project owner and has not been approved by the client yet.
+    heading: "Latest News and Highlights from Our Campus",
+    /** The small pill above the heading. */
+    label: "News",
     line: "Covering topics from classes to events and students to teachers activities.",
     viewAll: { label: "View all news", href: "/news" },
   },
