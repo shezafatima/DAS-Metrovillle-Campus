@@ -576,7 +576,6 @@
   database directly.
 
 ## Home page (006)
-  quick-access cards, Inspiration + Why Choose, Latest News, Books, Salient
   features, Progress dashboard, icon quick-links, careers CTA (`#signup`),
   partners. Static sections come from src/content/home.ts; design values
   from research/design-tokens.md "Home sections (006)".
@@ -588,10 +587,12 @@
   takes the page down. Carousels share components/home/carousel.tsx
   (scroll-snap, arrows only when overflowing, autoplay paused on hover/focus,
   none for reduced motion). No carousel or video library.
-- Books carousel: fixed heading/line and 10 fixed covers listed in
-  src/content/home.ts, files in public/images/home/books/book-01.jpg …
-  book-10.jpg (added by hand; not admin-managed). Missing files are skipped;
-  none present hides the section.
+- Books band (`BooksSection`, `RollingStrip`): a navy band with the heading and
+  text beside a strip of covers that rolls sideways (transform only). Heading,
+  text and the 10 fixed covers are listed in src/content/home.ts, files in
+  public/images/home/books/book-01.jpg … book-10.jpg (added by hand; not
+  admin-managed). Missing files are skipped. Three or more covers loop, one or
+  two sit in a centred static row, none leaves the text alone.
 - The 004 signup form is no longer placed on `/`: the careers CTA replaces it
   (PRD §5.1) and keeps the `#signup` anchor.
 

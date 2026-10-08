@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { BooksCarousel } from "@/components/home/books-carousel";
+import { BooksSection } from "@/components/home/books-section";
 import { CareersCta } from "@/components/home/careers-cta";
 import { HeroSlider } from "@/components/home/hero-slider";
 import { InspirationWhyChoose } from "@/components/home/inspiration-why-choose";
@@ -61,7 +61,7 @@ export default async function Home() {
       <QuickAccessCards />
       <InspirationWhyChoose video={video} />
       <SectionBoundary name="latest-news" render={LatestNews} />
-      <BooksCarousel />
+      <BooksSection />
       <SalientFeatures />
       <SectionBoundary name="progress-dashboard" render={ProgressDashboard} />
       <QuickLinks />

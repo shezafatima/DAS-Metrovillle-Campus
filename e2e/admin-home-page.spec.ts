@@ -146,9 +146,8 @@ test.describe("home — sections, news, books, stats, links (006 US2–US9)", ()
       homeContent.inspiration.heading,
       homeContent.whyChoose.heading,
       homeContent.latestNews.heading,
-      // news card titles are h2 in the 003 card
-      "Exploring Japan",
-      ...(bookFilesPresent() > 0 ? [homeContent.books.heading] : []),
+      // the home news cards' titles are h3, under the section's h2
+      homeContent.books.heading,
       homeContent.salientFeatures.heading,
       homeContent.progressDashboard.heading,
       expect.stringContaining("Join Over"),
@@ -218,16 +217,17 @@ test.describe("home — sections, news, books, stats, links (006 US2–US9)", ()
     await expect(news.getByRole("link", { name: /View all news/ })).toHaveAttribute("href", "/news");
   });
 
-  test("Books: the fixed covers added to public/ show in order under the fixed heading; none hides the section", async ({ page }) => {
+  test("Books: the fixed covers added to public/ show in order beside the heading and text; with none the strip is left out", async ({ page }) => {
     test.setTimeout(300_000);
     await openHome(page);
     const present = bookFilesPresent();
     const books = page.getByTestId("books");
+    await expect(books.getByRole("heading", { name: homeContent.books.heading })).toBeVisible();
+    await expect(books.getByText(homeContent.books.line)).toBeVisible();
     if (present === 0) {
-      await expect(books).toHaveCount(0);
+      await expect(books.getByTestId("book-roll")).toHaveCount(0);
       return;
     }
-    await expect(books.getByRole("heading", { name: homeContent.books.heading })).toBeVisible();
     await expect(books.getByText(homeContent.books.line)).toBeVisible();
     const covers = books.getByTestId("book-cover").locator("img");
     await expect(covers).toHaveCount(present);

@@ -41,7 +41,6 @@ test.describe("home — layout and motion (006)", () => {
     await stubImages(page);
     await openHome(page);
     const active = () => page.locator('[data-testid="hero-slide"][data-active]').textContent();
-    const scrollOf = (id: string) => page.getByTestId(id).locator("ul").first().evaluate((el) => el.scrollLeft);
     const withBooks = bookFilesPresent() > 0;
     const snapshot = async () => ({ hero: await active(), books: withBooks ? await scrollOf("books") : 0, partners: await scrollOf("partners") });
     const before = await snapshot();

@@ -5,12 +5,18 @@
 | # | Section | Source | Empty / failure behaviour |
 |---|---|---|---|
 | 1 | Hero slider | `getPublicSettings("hero")` | No visible slide, or a read failure, gives the 005 default slide (FR-004) |
-| 7 | Books carousel | `home.books` (fixed heading, line and 10 covers in `public/images/home/books/`) | Missing files are skipped; none present hides the section (FR-011) |
-| 8 | Salient features ×4 | `home.salientFeatures` | Always shown |
-| 9 | Progress dashboard | `home.progressDashboard` + `getPublicSettings("stats")` | A failure shows the 005 starting values |
 | 10 | Icon quick-links ×4 | `home.quickLinks` | Always shown |
 | 11 | Careers CTA (`id="signup"`) | `home.careersCta` | Always shown; "Join Now" goes to `/careers` |
 | 12 | Partners carousel | `home.partners` | 1 logo is shown still; many logos are a carousel |
+| 2 | Quick-access cards ×4 (looping coverflow, `QuickAccessCards`, with a heading and a yellow stroke) | `home.quickAccess` | Always shown; no Franchise card |
+| 3 | Inspiration | `home.inspiration` | Always shown |
+| 4 | Why Choose Dar-e-Arqam Schools? | `home.whyChoose` + `getPublicSettings("video")` | No `youtubeId` shows the text alone, with no empty frame |
+| 5 | Latest News | `getLatestPosts()` (6) | No posts, or a failure, hides the section (FR-016) |
+| 6 | Books band (rolling covers, `BooksSection`) | `home.books` (fixed heading, line and 10 covers in `public/images/home/books/`) | Missing files are skipped; none present hides the section (FR-011) |
+| 7 | Salient features ×4 | `home.salientFeatures` | Always shown |
+| 8 | Progress dashboard | `home.progressDashboard` + `getPublicSettings("stats")` | A failure shows the 005 starting values |
+| 10 | Careers CTA (`id="signup"`) | `home.careersCta` | Always shown; "Join Now" goes to `/careers` |
+| 11 | Partners carousel | `home.partners` | 1 logo is shown still; many logos are a carousel |
 
 ## Shared behaviour
 

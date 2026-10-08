@@ -134,16 +134,16 @@ export const homeContent = {
   },
 
   /**
-   * "Dar-e-Arqam Books" carousel: fixed section and a fixed set of 10 covers
+   * The Books band: heading, text and a fixed set of 10 covers
    * (not admin-managed — owner's decision, 2026-10-01). Put the cover images
    * in public/images/home/books/ as book-01.jpg … book-10.jpg; a file that is
-   * not there yet is simply left out, and the section hides until at least
-   * one exists. PLACEHOLDER: the alt text, until the real book titles are known.
+   * not there yet is simply left out (with none, the strip is not drawn and the
+   * text takes the section). PLACEHOLDER: the alt text, until the real book titles are known.
    */
   books: {
-    heading: "Dar-e-Arqam Books",
-    line: "Books developed with efficient and effective techniques",
-    background: { src: "/images/home/books-background.jpg", alt: "", width: 1920, height: 572 },
+    // PENDING CLIENT APPROVAL: the heading and supporting text below were supplied by the project owner and have not been approved by the client yet.
+    heading: "Explore Our Course Books",
+    line: "Our carefully selected course books support every stage of learning, from early years to senior classes. Each one is chosen to build strong foundations, spark curiosity and help students grow with confidence.",
     covers: [
       { id: "book-01", src: "/images/home/books/book-01.jpg", alt: "Dar-e-Arqam book 1", width: 400, height: 508 },
       { id: "book-02", src: "/images/home/books/book-02.jpg", alt: "Dar-e-Arqam book 2", width: 400, height: 508 },

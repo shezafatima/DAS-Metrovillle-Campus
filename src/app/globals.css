@@ -448,6 +448,105 @@
 }
 
 @layer components {
+  /* Home rolling strips (RollingStrip: the books and the partners): the track moves by transform only; each item carries its own right margin, so one
+     half of the doubled track is exactly the distance to travel and the loop has no seam. */
+  .roll-strip {
+    overflow: hidden;
+  }
+  .roll-track {
+    display: flex;
+    width: max-content;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .roll-item {
+    position: relative;
+    flex: none;
+    width: calc(var(--spacing-home-book-height) * 400 / 508);
+    height: var(--spacing-home-book-height);
+    margin-right: 1.5rem;
+  }
+  .roll-strip[data-mode="loop"] .roll-track {
+    animation: roll-strip var(--roll-duration-sm, var(--roll-duration, 60s)) linear infinite;
+    will-change: transform;
+  }
+  @media (min-width: 48rem) {
+    .roll-strip[data-mode="loop"] .roll-track {
+      animation-duration: var(--roll-duration, 60s);
+    }
+  }
+  .roll-strip[data-direction="reverse"] .roll-track {
+    animation-direction: reverse;
+  }
+  /* Partner logos: small, as wide as their own shape up to the cap (never stretched), an equal gap. */
+  .roll-strip[data-kind="logo"] {
+    --roll-h: var(--spacing-home-partner-box-h-sm);
+    --roll-gap: var(--spacing-home-partner-gap-sm);
+  }
+  @media (min-width: 48rem) {
+    .roll-strip[data-kind="logo"] {
+      --roll-h: var(--spacing-home-partner-box-h);
+      --roll-gap: var(--spacing-home-partner-gap);
+    }
+  }
+  .roll-strip[data-kind="logo"] .roll-item {
+    width: min(var(--spacing-home-partner-box-w), calc(var(--roll-h) * var(--ar)));
+    height: var(--roll-h);
+    margin-right: var(--roll-gap);
+  }
+  .roll-strip[data-kind="logo"][data-mode="static"] .roll-item:last-child {
+    margin-right: 0;
+  }
+  .roll-strip[data-mode="static"] .roll-track {
+    width: 100%;
+    justify-content: center;
+  }
+  .roll-strip[data-mode="static"] .roll-item:last-child {
+    margin-right: 0;
+  }
+  .roll-strip[data-paused="true"] .roll-track {
+    animation-play-state: paused;
+  }
+  @keyframes roll-strip {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+  /* Both ends fade into the section's own navy, so covers seem to come out of the background. */
+  .roll-fade {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 14%;
+    pointer-events: none;
+  }
+  .roll-fade-start {
+    left: 0;
+    background: linear-gradient(to right, var(--roll-fade, var(--color-primary)), transparent);
+  }
+  .roll-fade-end {
+    right: 0;
+    background: linear-gradient(to left, var(--roll-fade, var(--color-primary)), transparent);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    /* No rolling: a plain row of the real covers that can be swiped or scrolled. */
+    .roll-strip[data-mode="loop"] {
+      overflow-x: auto;
+      scroll-snap-type: x proximity;
+    }
+    .roll-strip[data-mode="loop"] .roll-track {
+      animation: none;
+    }
+    .roll-strip[data-mode="loop"] .roll-item {
+      scroll-snap-align: start;
+    }
+    .roll-item[data-copy="true"],
+    .roll-fade {
+      display: none;
+    }
+  }
+
   /* The yellow stroke under a section heading (HeadingStroke): drawn in once, when it scrolls into view. */
   .heading-stroke path {
     /* The gap after the dash and the offset past 1 keep the round cap of a not-yet-drawn line off the path (no stray dot). */
