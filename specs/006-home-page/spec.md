@@ -14,7 +14,6 @@ The home page is the site's front door. Until now `/` is a placeholder with only
 | Section | Content comes from |
 |---|---|
 | Hero carousel | Settings — hero slides (5) |
-| Find Us Nearby | Content file |
 | Quick-access cards (four) | Content file |
 | Inspiration | Content file |
 | Why Choose — text and video | Content file (text) + Settings (video address) |
@@ -79,7 +78,7 @@ Below the hero the page shows the reference's sections, in the reference's order
 **Acceptance Scenarios**:
 
 1. **Given** the page at 1440, 1024, 768 and 375px, **When** it is compared with the matching reference screenshot, **Then** the sections appear in the reference order with the reference's spacing, colours and type values (from `research/design-tokens.md`); any difference is listed in the spec's Deviations.
-2. **Given** the "Find Us Nearby" band, **When** the visitor chooses it, **Then** they go to the Campuses page.
+2. *(Removed 2026-10-07: the "Find Us Nearby" band no longer exists.)*
 3. **Given** the four quick-access cards (Admission Procedure, Salient Features, Branch Network, Education Curriculum), **When** the visitor chooses one, **Then** they go to its page (Admission, Salient Features, Campuses, Academics); there is no Franchise card and the remaining four fill the row without a gap.
 4. **Given** the "Why Choose Dar-e-Arqam Schools?" section, **When** a home video address is saved in Settings, **Then** the section shows its text and that YouTube video; **When** the address is empty, **Then** the section shows its text alone with no empty frame and no error.
 5. **Given** the inspiration section, **When** it is shown, **Then** it displays its heading, supporting line and the school logo.
@@ -239,7 +238,6 @@ The page has a title, description and preview image so that search engines and s
 **Sections**
 
 - **FR-006**: The page MUST show these sections in this order, after the hero, matching the reference layout, spacing, colours and type: Find Us Nearby; the four quick-access cards; the inspiration section; the "Why Choose Dar-e-Arqam Schools?" section with the school video; Latest News; the books carousel; the salient features cards; the progress dashboard; the icon quick-links; the careers call-to-action; the partners carousel. *(Order and name follow the reference screenshot, as decided in Clarifications; the brief's different order is a recorded deviation.)*
-- **FR-007**: "Find Us Nearby" MUST link to the Campuses page.
 - **FR-008**: The four quick-access cards MUST be Admission Procedure, Salient Features, Branch Network and Education Curriculum, each linking to its page; there MUST be no Franchise card and no gap where it was.
 - **FR-009**: The inspiration section MUST show its heading, supporting line and the school logo.
 - **FR-010**: The "Why Choose Dar-e-Arqam Schools?" section MUST show its text and, when Settings holds a home video address, that video embedded; with no address it MUST show the text alone with no empty frame.
@@ -354,8 +352,6 @@ The page has a title, description and preview image so that search engines and s
 | The signup form is replaced by a "Join Now" button | PRD §5.1: careers replaces signup |
 | Hero display time comes from Settings, not the reference's fixed 7 seconds | The school controls it |
 | Home sections have more top and bottom padding (48px on phones, 80px from 1024px) than the reference's 10–50px | Owner's request (2026-10-01) for sections that breathe |
-| The hero keeps the banner's own proportions (capped at 85% of the viewport height) instead of the reference's fixed 424px height | Owner's request: banner images must not be cropped |
-| On desktop scroll the sticky header shrinks further than the reference: the yellow bar collapses, the logo drops to 40px and the taglines under the main links are hidden | Owner's request (2026-10-01) |
 | Progress dashboard icons are lucide icons matching the reference's Font Awesome ones (address card, open book, standing person, school) | No new icon set (Constitution II) |
 | The Books, Latest News and Partners carousels have previous/next buttons; the reference's Swipers show none | Keyboard and screen-reader access (FR-036, FR-024) |
 | Partner logos carry descriptive alt text; the reference's are empty | Every image has alternative text (FR-028); names are from the logo file names and are placeholders until the client confirms them |

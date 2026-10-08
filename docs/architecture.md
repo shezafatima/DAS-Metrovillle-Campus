@@ -576,7 +576,6 @@
   database directly.
 
 ## Home page (006)
-- `/` renders the reference's sections in order: hero, Find Us Nearby,
   quick-access cards, Inspiration + Why Choose, Latest News, Books, Salient
   features, Progress dashboard, icon quick-links, careers CTA (`#signup`),
   partners. Static sections come from src/content/home.ts; design values

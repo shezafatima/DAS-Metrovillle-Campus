@@ -238,7 +238,6 @@
      see research/design-tokens.md "Home sections (006)". */
   --color-home-heading: #223355;
   --color-home-dark-text: #333333;
-  --color-home-find-us-band: #ffeb3b;
   --color-home-muted-band: #f7f5f4;
   --color-home-salient-band: #faf9f8;
   --color-home-partners-band: #e9e9ed;
@@ -272,7 +271,6 @@
      1024px (the override is at the end of this file). */
   --spacing-home-section-y: 48px;
   --spacing-home-band-y: var(--spacing-home-section-y);
-  --spacing-home-find-us-y: calc(var(--spacing-home-section-y) / 2);
   --spacing-home-salient-top: var(--spacing-home-section-y);
   --spacing-home-dashboard-y: var(--spacing-home-section-y);
   --spacing-home-links-top: var(--spacing-home-section-y);
@@ -284,8 +282,6 @@
   --spacing-home-flip-height: 341px;
   --spacing-home-flip-height-sm: 293px;
   --spacing-home-flip-padding: 27px;
-  --spacing-home-find-us-button-x: 40px;
-  --spacing-home-find-us-button-y: 17px;
   --spacing-home-read-more-x: 29px;
   --spacing-home-read-more-y: 13px;
   --spacing-home-book-height: 280px;
@@ -297,7 +293,6 @@
   --spacing-home-hero-height-sm: 328px;
   --spacing-home-divider-width: 300px;
   --radius-home-flip: 4px;
-  --radius-home-find-us-button: 2px;
   --radius-home-careers-button: 6px;
   --color-home-careers-button-hover: var(--color-signup-highlight);
   --home-carousel-autoplay-ms: 5000;
@@ -442,14 +437,25 @@
   }
   html {
     @apply font-sans;
-    /* Anchors (#photo-gallery, #signup) must not land under the sticky desktop header. */
-    scroll-padding-top: 6rem;
-    /* The desktop header shrinks continuously while scrolling (HeaderFrame); scroll anchoring would fight that. */
-    overflow-anchor: none;
+    /* Anchors (#photo-gallery, #signup) must not land under the sticky header (--header-h plus a little air). */
+    scroll-padding-top: calc(var(--header-h) + 1rem);
+    /* The public header is one fixed height at every scroll position (HeaderFrame). */
+    --header-h: 4rem;
+  }
+  @media (min-width: 64rem) {
+    html {
+      --header-h: 4.5rem;
+    }
   }
 }
 
 @layer components {
+  /* The home hero is as tall as the screen. `svh` keeps it from jumping when a phone's address bar hides; `vh` is the fallback for browsers without it. */
+  .hero-full {
+    height: 100vh;
+    height: 100svh;
+  }
+
   /* Shared body typography for news content (headings, paragraphs,
      lists, links) — used by both the admin rich-text editor
      (rich-text-editor.tsx) and the public post body (post-body.tsx),

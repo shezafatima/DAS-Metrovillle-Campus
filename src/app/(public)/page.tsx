@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { BooksCarousel } from "@/components/home/books-carousel";
 import { CareersCta } from "@/components/home/careers-cta";
-import { FindUsNearby } from "@/components/home/find-us-nearby";
 import { HeroSlider } from "@/components/home/hero-slider";
 import { InspirationWhyChoose } from "@/components/home/inspiration-why-choose";
 import { LatestNews } from "@/components/home/latest-news";
@@ -58,7 +57,7 @@ export default async function Home() {
     <>
       <h1 className="sr-only">{homeContent.pageHeading}</h1>
       <HeroSlider hero={hero} />
-      <FindUsNearby />
+      <div id="after-hero" />
       <QuickAccessCards />
       <InspirationWhyChoose video={video} />
       <SectionBoundary name="latest-news" render={LatestNews} />

@@ -1,8 +1,8 @@
 import { test, expect, type Page } from "@playwright/test";
 
-// 012 US5: Careers is reachable from the top (yellow) bar, the footer and the
+// 012 US5: Careers is reachable from the About menu, the footer and the
 // home page's Join Now button, at phone and desktop widths. The main menu
-// stays at its eight items. Named shell-* so it runs in the `chromium`
+// stays at its eight top-level items. Named shell-* so it runs in the `chromium`
 // project, not the serial `forms` one.
 
 const WIDTHS = [375, 768, 1024, 1440];
@@ -21,25 +21,19 @@ for (const width of WIDTHS) {
       await page.goto("/", { timeout: 120_000 });
     });
 
-    test("the top bar link goes to /careers and comes first", async ({ page }) => {
-      const topBarLinks = page.locator("header a, .bg-topbar a").filter({ hasText: /^Careers$/ });
-      const link = page.getByRole("link", { name: "Careers", exact: true }).first();
+    test("Careers is in the About menu and goes to /careers", async ({ page }) => {
+      if (width >= 1024) {
+        const about = page.getByRole("navigation", { name: "Main menu" }).getByRole("link", { name: "About", exact: true });
+        await about.hover();
+        await expect(about).toHaveAttribute("aria-expanded", "true");
+      } else {
+        await page.getByRole("button", { name: "Open menu" }).click();
+        await page.getByRole("navigation", { name: "Mobile menu" }).getByRole("button", { name: "About" }).click();
+      }
+      const menuName = width >= 1024 ? "Main menu" : "Mobile menu";
+      const link = page.getByRole("navigation", { name: menuName }).getByRole("link", { name: "Careers", exact: true });
       await expect(link).toBeVisible();
       await expect(link).toHaveAttribute("href", "/careers");
-
-      // It sits in the yellow top bar, as the first of its links.
-      const barBackground = await link.evaluate((el) => {
-        let node: HTMLElement | null = el as HTMLElement;
-        while (node) {
-          const colour = getComputedStyle(node).backgroundColor;
-          if (colour !== "rgba(0, 0, 0, 0)" && colour !== "transparent") return colour;
-          node = node.parentElement;
-        }
-        return "";
-      });
-      expect(barBackground).toBe("rgb(255, 255, 0)");
-      expect(await topBarLinks.count()).toBeGreaterThanOrEqual(0);
-
       await link.click();
       await expectCareersPage(page);
     });
@@ -70,10 +64,11 @@ for (const width of WIDTHS) {
   });
 }
 
-test("the main menu has no Careers item (it stays at eight)", async ({ page }) => {
+test("the main menu keeps eight top-level items; Careers is not one of them", async ({ page }) => {
   test.setTimeout(300_000);
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("/", { timeout: 120_000 });
-  const menu = page.getByRole("navigation").filter({ has: page.getByRole("link", { name: "Contact" }) }).first();
-  await expect(menu.getByRole("link", { name: "Careers" })).toHaveCount(0);
+  const menu = page.getByRole("navigation", { name: "Main menu" });
+  await expect(menu.locator(":scope > ul > li")).toHaveCount(8);
+  await expect(menu.locator(":scope > ul > li > a", { hasText: /^Careers$/ })).toHaveCount(0);
 });

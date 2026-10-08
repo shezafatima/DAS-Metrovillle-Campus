@@ -520,6 +520,10 @@ export const settingsCopy = {
     buttonLink: "A page on this site (starting with /) or a full web address.",
     videoUrl: "Leave empty to hide the video.",
     imageLimits: "JPG, PNG or WebP, up to 5 MB.",
+    heroDesktop:
+      "JPG, PNG or WebP, up to 5 MB. Best size: 1920 × 1080 pixels (landscape, 16:9). The slide fills the whole screen, so the edges are cropped on different screens: keep text and faces inside the middle 70% of the width and the middle 60% of the height. The menu covers the top edge and the dots and arrow cover the bottom edge.",
+    heroMobile:
+      "JPG, PNG or WebP, up to 5 MB. Best size: 1080 × 1920 pixels (portrait, 9:16). Keep text and faces inside the middle 60% of the height; the menu covers the top edge and the dots and arrow the bottom edge. Without a phone picture, phones show the desktop picture whole, with blue bars above and below it.",
   },
   save: "Save",
   saving: "Saving…",

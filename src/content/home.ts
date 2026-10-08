@@ -63,14 +63,8 @@ export const homeContent = {
 
   hero: {
     label: "Highlights",
-    previous: "Previous slide",
-    next: "Next slide",
+    scrollCue: "Scroll to the content",
     goTo: (n: number) => `Show slide ${n}`,
-  },
-
-  findUsNearby: {
-    text: "Dar-e-Arqam Schools extend its unique learning experience to well over 300,000+ students in 700+ branches in 150+ cities across Pakistan.",
-    cta: { label: "Find Us Nearby", href: "/campuses" },
   },
 
   quickAccess: {

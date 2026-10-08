@@ -31,14 +31,10 @@ for (const viewport of DESKTOP_VIEWPORTS) {
     test("the main menu renders in the fixed order", async ({ page }) => {
       await page.goto("/");
       const nav = page.getByRole("navigation", { name: "Main menu" });
-      // Each link's text is "<Label><tagline>" (e.g. "HomeFront Page") since
-      // every item also renders a small tagline under its label, so this
-      // checks the label prefix and count/order rather than exact text.
+      // Labels only (no taglines). Dropdown links are hidden while closed, so
+      // only the top-level links are in the accessibility tree.
       const items = await nav.getByRole("link").allTextContents();
-      expect(items).toHaveLength(MENU_ITEMS.length);
-      MENU_ITEMS.forEach((item, i) => {
-        expect(items[i].startsWith(item.label)).toBe(true);
-      });
+      expect(items.map((text) => text.trim())).toEqual(MENU_ITEMS.map((item) => item.label));
     });
 
     test("the current page's menu item is marked active", async ({ page }) => {
@@ -83,13 +79,15 @@ for (const viewport of DESKTOP_VIEWPORTS) {
     test("the main menu's computed style matches research/design-tokens.md", async ({
       page,
     }) => {
-      await page.goto("/");
-      const homeLabel = page
+      // /about: the header is solid there (it is transparent with white links over the home hero),
+      // and About is the active item, which is the navy one (inactive items are the body text colour).
+      await page.goto("/about");
+      const activeLabel = page
         .getByRole("navigation", { name: "Main menu" })
-        .getByRole("link", { name: "Home" })
+        .getByRole("link", { name: "About", exact: true })
         .locator("span")
         .first();
-      const style = await homeLabel.evaluate((el) => {
+      const style = await activeLabel.evaluate((el) => {
         const cs = getComputedStyle(el);
         return {
           fontFamily: cs.fontFamily,
@@ -104,8 +102,7 @@ for (const viewport of DESKTOP_VIEWPORTS) {
       expect(style.color).toBe("rgb(18, 18, 145)");
 
       const gutter = await page
-        .locator("header > div")
-        .nth(1)
+        .locator("header > div:not([aria-hidden])")
         .evaluate((el) => getComputedStyle(el).paddingLeft);
       expect(gutter).toBe("30px");
     });

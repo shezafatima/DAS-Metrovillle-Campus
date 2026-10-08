@@ -4,7 +4,7 @@ import { Footer } from "@/components/site-shell/footer";
 import { getContactDetails } from "@/lib/contact-details";
 
 /**
- * The public site's chrome — skip link, header (top bar + nav), the
+ * The public site's chrome — skip link, header (nav), the
  * shared <main>, and footer. Extracted out of the root layout
  * (specs/002-foundation/research.md §3) so the admin area, which has no
  * das.edu.pk counterpart and none of this chrome, can share the same
@@ -19,7 +19,7 @@ export async function PublicShell({ children }: { children: React.ReactNode }) {
   return (
     <>
       <SkipLink />
-      <Header contact={contact} />
+      <Header />
       <main id="main-content" className="flex flex-1 flex-col">
         {children}
       </main>

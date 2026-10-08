@@ -40,7 +40,6 @@ Every record has a `placeholder?: boolean` flag. Placeholder wording renders `da
 
 | Item | href |
 |---|---|
-| Find Us Nearby | `/campuses` |
 | Admission Procedure | `/admission/admission-procedure` |
 | Salient Features | `/about/salient-features` |
 | Branch Network | `/campuses` |

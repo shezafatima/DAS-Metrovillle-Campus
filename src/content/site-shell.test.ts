@@ -20,6 +20,10 @@ describe("navigationItems", () => {
     expect(navigationItems.some((item) => item.label === "Careers")).toBe(false);
   });
 
+  it("has no taglines under the labels", () => {
+    expect(JSON.stringify(navigationItems)).not.toContain("tagline");
+  });
+
   it("never contains a Franchise Offer entry", () => {
     const hasFranchiseOffer = navigationItems.some(
       (item) => item.label === "Franchise Offer"
@@ -29,8 +33,9 @@ describe("navigationItems", () => {
 });
 
 describe("Careers entry points (012)", () => {
-  it("is the first link in the top bar and points at /careers", () => {
-    expect(portalLinks[0]).toEqual({ label: "Careers", href: "/careers" });
+  it("is the last entry in the About dropdown and points at /careers", () => {
+    const about = navigationItems.find((item) => item.label === "About");
+    expect(about?.children?.at(-1)).toEqual({ label: "Careers", href: "/careers" });
   });
 
   it("is in the footer bar and points at /careers", () => {

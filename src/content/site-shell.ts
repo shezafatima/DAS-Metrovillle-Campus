@@ -10,10 +10,6 @@ export type SocialPlatform = "facebook" | "instagram" | "youtube" | "tiktok";
 export interface NavigationItem {
   label: string;
   href: string;
-  /** Small caption shown under the label (e.g. "Front Page" under Home) —
-   * confirmed on the live reference site (das.edu.pk), optional so an item
-   * can omit it without a code change. */
-  tagline?: string;
   children?: NavigationItem[];
 }
 
@@ -49,23 +45,22 @@ export interface FooterContent {
 // really under Admission). Adding/removing a sub-page later is a content
 // edit only (FR-004), never a code change.
 export const navigationItems: NavigationItem[] = [
-  { label: "Home", href: "/", tagline: "Front Page" },
+  { label: "Home", href: "/" },
   {
     label: "About",
     href: "/about",
-    tagline: "Who We Are?",
     children: [
       { label: "Overview", href: "/about/overview" },
       { label: "Salient Features", href: "/about/salient-features" },
       { label: "Management", href: "/about/management" },
       { label: "Messages", href: "/about/messages" },
+      { label: "Careers", href: "/careers" },
     ],
   },
-  { label: "Campuses", href: "/campuses", tagline: "Branch Network" },
+  { label: "Campuses", href: "/campuses" },
   {
     label: "Academics",
     href: "/academics",
-    tagline: "Our Courses",
     children: [
       { label: "Academics Overview", href: "/academics/academics-overview" },
       { label: "Syllabi", href: "/academics/syllabi" },
@@ -77,7 +72,6 @@ export const navigationItems: NavigationItem[] = [
   {
     label: "Admission",
     href: "/admission",
-    tagline: "Apply Now",
     children: [
       { label: "Admission Procedure", href: "/admission/admission-procedure" },
       { label: "Class Levels", href: "/admission/class-levels" },
@@ -87,7 +81,6 @@ export const navigationItems: NavigationItem[] = [
   {
     label: "Resources",
     href: "/resources",
-    tagline: "Gallery & Download",
     children: [
       { label: "Photo Gallery", href: "/resources#photo-gallery" },
       { label: "Prospectus", href: "/resources/prospectus" },
@@ -101,7 +94,6 @@ export const navigationItems: NavigationItem[] = [
   {
     label: "News",
     href: "/news",
-    tagline: "Latest News",
     children: [
       { label: "Head Office", href: "/news/head-office" },
       { label: "Events", href: "/news/events" },
@@ -110,7 +102,7 @@ export const navigationItems: NavigationItem[] = [
       { label: "Announcements", href: "/news/announcements" },
     ],
   },
-  { label: "Contact", href: "/contact", tagline: "Call or Mail" },
+  { label: "Contact", href: "/contact" },
 ];
 
 // The reference top bar's portal-login links (confirmed on the live site)
@@ -123,7 +115,6 @@ export const navigationItems: NavigationItem[] = [
 // is the first link in the top (yellow) bar; it is a real page, unlike the
 // portal placeholders after it.
 export const portalLinks: PortalLink[] = [
-  { label: "Careers", href: "/careers" },
   { label: "DAS Portal", href: "/portal/das-portal" },
   { label: "ePortal", href: "/portal/eportal" },
   { label: "Student Login", href: "/portal/student-login" },

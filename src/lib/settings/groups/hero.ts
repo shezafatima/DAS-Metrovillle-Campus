@@ -40,8 +40,8 @@ export const heroDefinition: GroupDefinition = {
         { kind: "allOrNone", fields: ["buttonLabel", "buttonLink"], message: settingsCopy.errors.buttonPair },
       ],
       itemFields: [
-        { type: "image", key: "desktop", label: labels.desktop, hint: settingsCopy.hints.imageLimits, required: true, folder: "settings/hero", kind: "hero-desktop" },
-        { type: "image", key: "mobile", label: labels.mobile, hint: settingsCopy.hints.imageLimits, folder: "settings/hero", kind: "hero-mobile" },
+        { type: "image", key: "desktop", label: labels.desktop, hint: settingsCopy.hints.heroDesktop, required: true, folder: "settings/hero", kind: "hero-desktop" },
+        { type: "image", key: "mobile", label: labels.mobile, hint: settingsCopy.hints.heroMobile, folder: "settings/hero", kind: "hero-mobile" },
         { type: "text", key: "alt", label: labels.alt, maxLength: 150, required: true },
         { type: "text", key: "heading", label: labels.heading, maxLength: 80 },
         { type: "text", key: "buttonLabel", label: labels.buttonLabel, maxLength: 30 },

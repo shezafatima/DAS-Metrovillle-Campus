@@ -64,7 +64,7 @@ export function NavDesktop({ items = defaultNavigationItems }: NavDesktopProps) 
 
   return (
     <nav aria-label="Main menu" className="hidden lg:block">
-      <ul className="flex flex-wrap items-center gap-4 xl:gap-6">
+      <ul className="flex items-center gap-4 xl:gap-6">
         {items.map((item) => {
           const hasChildren = Boolean(item.children?.length);
           const isActive = isNavItemActive(pathname, item.href);
@@ -91,7 +91,7 @@ export function NavDesktop({ items = defaultNavigationItems }: NavDesktopProps) 
                 aria-current={isActive ? "page" : undefined}
                 aria-haspopup={hasChildren ? "true" : undefined}
                 aria-expanded={hasChildren ? isOpen : undefined}
-                className="flex flex-col items-center py-2 text-center"
+                className="flex items-center py-2 text-center"
               >
                 <span
                   dir="auto"
@@ -108,25 +108,14 @@ export function NavDesktop({ items = defaultNavigationItems }: NavDesktopProps) 
                     // had this problem.
                     "font-nav text-(length:--text-nav) leading-(--text-nav--line-height) font-bold uppercase tracking-(--text-nav--letter-spacing) transition-colors duration-(--motion-fast)",
                     isRtlScript(item.label) && "font-body-urdu",
-                    isActive ? "text-primary" : "text-text hover:text-primary"
+                    isActive ? "text-primary" : "text-text hover:text-primary",
+                    // Over the transparent home header (HeaderFrame) the links are white.
+                    "group-data-[transparent=true]/header:text-white group-data-[transparent=true]/header:hover:text-white",
+                    isActive && "group-data-[transparent=true]/header:underline group-data-[transparent=true]/header:decoration-2 group-data-[transparent=true]/header:underline-offset-8"
                   )}
                 >
                   {item.label}
                 </span>
-                {item.tagline && (
-                  <span
-                    className={cn(
-                      // Hidden at the tightest desktop width (1024-1279px) only
-                      // — 8 items' taglines don't fit alongside the logo at
-                      // their full, unshrunk size there; same size as always
-                      // once shown again at xl:. Labels alone still fit at lg.
-                      "hidden overflow-hidden font-body text-(length:--text-nav-tagline) leading-(--text-nav-tagline--line-height) xl:block xl:max-h-[calc(1rem*(1-var(--shrink,0)))] xl:opacity-[calc(1-var(--shrink,0)*1.6)]",
-                      isActive ? "text-primary" : "text-text-muted"
-                    )}
-                  >
-                    {item.tagline}
-                  </span>
-                )}
               </Link>
               {hasChildren && (
                 <ul

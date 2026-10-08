@@ -29,7 +29,7 @@ beforeEach(() => {
 });
 
 describe("PublicShell reads the contact details from Settings (005)", () => {
-  it("shows the saved social links in the top bar and the footer, and no icon for a cleared one", async () => {
+  it("shows the saved social links in the footer only (no header icons), and no icon for a cleared one", async () => {
     findById.mockResolvedValue({
       version: 2,
       updatedBy: "x@y.pk",
@@ -39,7 +39,7 @@ describe("PublicShell reads the contact details from Settings (005)", () => {
 
     const header = screen.getByRole("banner");
     const footer = screen.getByRole("contentinfo");
-    expect(within(header).getByRole("link", { name: "Facebook" })).toHaveAttribute("href", "https://fb.example/new");
+    expect(within(header).queryByRole("link", { name: "Facebook" })).not.toBeInTheDocument();
     expect(within(footer).getByRole("link", { name: "Facebook" })).toHaveAttribute("href", "https://fb.example/new");
     expect(within(header).queryByRole("link", { name: "TikTok" })).not.toBeInTheDocument();
     expect(within(footer).queryByRole("link", { name: "TikTok" })).not.toBeInTheDocument();

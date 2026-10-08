@@ -1,13 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
 
-// public/images/logo.svg is 1974x797 intrinsic (~2.48:1). No dedicated
-// header-logo crop or measured pixel size exists in research/design-tokens.md
-// or research/tokens/*.json — only full-page captures are available, at a
-// resolution too extreme to reliably pixel-measure the header logo — so its
-// rendered height uses a standard responsive header scale (growing with the
-// viewport, same intent as the reference) rather than a fabricated exact
-// value. Revisit if a dedicated header/footer crop is supplied later.
+// public/images/logo.svg is 1974x797 intrinsic (~2.48:1). The same artwork is
+// used in every header state (also over the transparent home header). The
+// height is a modest responsive scale and fits inside --header-h.
 export function Logo() {
   return (
     <Link
@@ -20,7 +16,7 @@ export function Logo() {
         width={1974}
         height={797}
         priority
-        className="h-14 w-auto sm:h-16 lg:h-[calc(4rem-1.5rem*var(--shrink,0))] xl:h-[calc(5rem-2.5rem*var(--shrink,0))]"
+        className="h-11 w-auto md:h-12 lg:h-14"
       />
     </Link>
   );

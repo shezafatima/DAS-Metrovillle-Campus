@@ -42,7 +42,76 @@ test.describe("home — hero and frame (006 US1)", () => {
     await seedHero([slide(1, { visible: false })]);
     await openHome(page);
     await expect(page.getByTestId("hero-slide")).toHaveCount(1);
-    await expect(page.getByRole("button", { name: homeContent.hero.next })).toHaveCount(0);
+    await expect(page.getByRole("button", { name: homeContent.hero.goTo(1) })).toHaveCount(0);
+  });
+
+  test("with several slides there are dots but no previous/next buttons, and slides move sideways", async ({ page }) => {
+    test.setTimeout(300_000);
+    await seedHero([slide(1), slide(2)], 3);
+    await openHome(page);
+    await expect(page.getByRole("button", { name: /^(Previous|Next) slide$/ })).toHaveCount(0);
+    await expect(page.getByRole("button", { name: homeContent.hero.goTo(2) })).toBeVisible();
+
+    const left = (n: number) => page.getByTestId("hero-slide").nth(n).evaluate((el) => Math.round(el.getBoundingClientRect().left));
+    await page.getByTestId("hero").hover(); // hovering pauses the autoplay so it cannot race the click
+    await page.getByRole("button", { name: homeContent.hero.goTo(2) }).click();
+    // Settled: slide 2 in place, slide 1 moved out of view. A fade would leave both at the left edge.
+    await expect.poll(() => left(1)).toBe(0);
+    await expect.poll(async () => (await left(0)) !== 0).toBe(true);
+  });
+
+  for (const [width, height] of [[375, 700], [768, 1024], [1024, 768], [1440, 900]] as const) {
+    test(`the hero fills the screen at ${width}px, with dots above a working scroll cue`, async ({ page }) => {
+      test.setTimeout(300_000);
+      await page.setViewportSize({ width, height });
+      // Reduced motion: the chevron bounces otherwise, and Playwright cannot click a moving element.
+      await page.emulateMedia({ reducedMotion: "reduce" });
+      await seedHero([slide(1), slide(2)], 60);
+      await stubImages(page);
+      await openHome(page);
+      const hero = await page.getByTestId("hero").boundingBox();
+      expect(hero!.y).toBeCloseTo(0, 0);
+      expect(Math.abs(hero!.height - height)).toBeLessThanOrEqual(1);
+
+      const cue = page.getByRole("link", { name: homeContent.hero.scrollCue });
+      const dots = page.getByRole("button", { name: homeContent.hero.goTo(1) });
+      await expect(cue).toBeVisible();
+      const [cueBox, dotBox] = [await cue.boundingBox(), await dots.boundingBox()];
+      expect(dotBox!.y + dotBox!.height).toBeLessThanOrEqual(cueBox!.y);
+
+      await cue.click();
+      await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(height / 2);
+    });
+  }
+
+  test("a slide with no mobile picture is shown whole on a phone; one with a mobile picture fills the screen", async ({ page }) => {
+    test.setTimeout(300_000);
+    await page.setViewportSize({ width: 375, height: 700 });
+    await seedHero([slide(1)]);
+    await stubImages(page);
+    await openHome(page);
+    const fit = () => page.locator('[data-testid="hero-slide"][data-active] img').evaluate((el) => getComputedStyle(el).objectFit);
+    expect(await fit()).toBe("contain");
+
+    await seedHero([slide(1, { mobile: { url: "https://res.cloudinary.com/e2e/image/upload/v1/settings/hero/mob-1.jpg", publicId: "settings/hero/mob-1", width: 750, height: 900 } })]);
+    await openHome(page);
+    expect(await fit()).toBe("cover");
+  });
+
+  test("a phone downloads only the mobile picture and a desktop only the desktop picture", async ({ browser }) => {
+    test.setTimeout(300_000);
+    await seedHero([slide(1, { mobile: { url: "https://res.cloudinary.com/e2e/image/upload/v1/settings/hero/mob-1.jpg", publicId: "settings/hero/mob-1", width: 750, height: 900 } })]);
+    for (const [width, height, wanted, unwanted] of [[375, 700, "mob-1", "desk-1"], [1440, 900, "desk-1", "mob-1"]] as const) {
+      const context = await browser.newContext({ viewport: { width, height } });
+      const page = await context.newPage();
+      const urls: string[] = [];
+      page.on("request", (request) => urls.push(request.url()));
+      await stubImages(page);
+      await openHome(page);
+      await expect.poll(() => urls.some((url) => url.includes(wanted))).toBe(true);
+      expect(urls.some((url) => url.includes(unwanted))).toBe(false);
+      await context.close();
+    }
   });
 
   test("the mobile picture is used at phone width", async ({ browser }) => {
@@ -145,7 +214,7 @@ test.describe("home — sections, news, books, stats, links (006 US2–US9)", ()
     await expect(titles).toHaveText(["فکر اقبال اور تعلیمی نظام", "Older post"]);
     await expect(titles.first().locator("a")).toHaveAttribute("dir", "rtl");
     await expect(news.getByText("A draft")).toHaveCount(0);
-    await expect(news.locator('[aria-hidden="true"][data-variant="card"]').first()).toBeAttached(); // cover placeholder
+    await expect(news.locator('[aria-hidden="true"][data-variant="home"]').first()).toBeAttached(); // cover placeholder
     await expect(news.getByRole("link", { name: /View all news/ })).toHaveAttribute("href", "/news");
   });
 

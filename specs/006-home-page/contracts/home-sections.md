@@ -5,7 +5,6 @@
 | # | Section | Source | Empty / failure behaviour |
 |---|---|---|---|
 | 1 | Hero slider | `getPublicSettings("hero")` | No visible slide, or a read failure, gives the 005 default slide (FR-004) |
-| 2 | Find Us Nearby | `home.findUsNearby` | Always shown |
 | 3 | Quick-access cards ×4 | `home.quickAccessCards` | Always shown; no Franchise card |
 | 4 | Inspiration | `home.inspiration` | Always shown |
 | 5 | Why Choose Dar-e-Arqam Schools? | `home.whyChoose` + `getPublicSettings("video")` | No `youtubeId` shows the text alone, with no empty frame |
@@ -27,7 +26,9 @@
   - The track is a `role="region"` with `aria-roledescription="carousel"` and the section's label. Items are `role="group"`, labelled "n of N".
 - **Hero slider**:
   - It advances after `displaySeconds`, with the transition from the tokens.
-  - Dots and previous/next appear only with more than one slide.
+  - Dots appear only with more than one slide; there are no previous/next buttons (2026-10-07).
+  - Slides slide sideways. It is `100svh` tall under the fixed header and ends with a scroll cue to `#after-hero`.
+  - One `<picture>` per slide: the mobile file below `md` and on portrait screens, the desktop file on landscape screens from `md`. With no mobile file the desktop picture is shown whole (letterboxed) on phones.
   - It pauses on hover and focus, and doesn't autoplay under reduced motion.
   - Its mobile image shows below `md`.
   - The first slide's image is `priority`.
