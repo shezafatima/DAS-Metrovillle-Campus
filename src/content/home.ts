@@ -31,7 +31,6 @@ export interface QuickAccessCard {
 export interface SalientFeature {
   id: string;
   title: string;
-  text: string;
   image: ContentImage;
 }
 
@@ -160,30 +159,31 @@ export const homeContent = {
 
   salientFeatures: {
     heading: "Salient Features of Dar-e-Arqam Schools",
-    line: "Dar-e-Arqam Schools reflect the goods for this world & hereafter.",
+    // PENDING CLIENT APPROVAL: the paragraph below was supplied by the project owner and has not been approved by the client yet.
+    paragraph:
+      "Dar-e-Arqam Schools strive for the good of this world and the hereafter. Alongside meaningful education, our teachers focus on each student's personality development. Talented students can join our Hifz Quran-e-Kareem programme, our teachers train regularly in workshops held on the 2nd and 4th Saturday of every month, and students take part in sports competitions, educational trips, quizzes and debates.",
+    readMore: { label: "Read more", href: "/about" },
+    /** Just the sun-and-book emblem (cropped from the school logo: no wordmark), small in the middle of the circle. Decorative: the school's name is in the page. */
+    logo: { src: "/images/logo-emblem.svg", alt: "", width: 636, height: 676 },
     items: [
       {
         id: "personality-development",
         title: "Personality Development",
-        text: "The teachers emphasizes on the personality development of the students besides providing meaningful education.",
         image: { src: "/images/personality_development-1.svg", alt: "", width: 120, height: 120 },
       },
       {
         id: "teachers-training",
         title: "Teachers Training",
-        text: "2nd and 4th Saturdays of every month are fixed for training workshop for in service and pre-posting teachers regularly.",
         image: { src: "/images/teachers-training.svg", alt: "", width: 120, height: 120 },
       },
       {
         id: "hifz-quran",
         title: "Hifz Quran-e-Kareem",
-        text: "Important wing of Department of Quranic studies offers this opportunity to talented students only.",
         image: { src: "/images/hifz-e-quran.svg", alt: "", width: 120, height: 120 },
       },
       {
         id: "co-curricular",
         title: "Co-Curricular Activities",
-        text: "These includes Sports Competition, Education Trips, Quiz Programs and Debates on different events.",
         image: { src: "/images/co-curricular.svg", alt: "", width: 120, height: 120 },
       },
     ] satisfies SalientFeature[],

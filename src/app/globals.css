@@ -260,8 +260,6 @@
   --text-home-subheading--line-height: 24px;
   --text-home-flip-title: 30px;
   --text-home-flip-title--line-height: 36px;
-  --text-home-salient-title: 18px;
-  --text-home-salient-title--line-height: 25.2px;
   --text-home-counter: 50px;
   --text-home-counter-label: 18px;
   /* Breathing room (owner's request, 2026-10-01; deliberately more generous than
@@ -285,7 +283,6 @@
   --spacing-home-read-more-y: 13px;
   --spacing-home-book-height: 280px;
   --spacing-home-partner-logo: 230px;
-  --spacing-home-salient-icon: 120px;
   --spacing-home-counter-icon: 40px;
   --spacing-home-hero-height: 424px;
   --spacing-home-hero-height-sm: 328px;
@@ -448,6 +445,87 @@
 }
 
 @layer components {
+  /* Salient features (SalientRing): four items 90deg apart on a ring that turns slowly, each counter-turning so its
+     icon and heading stay upright; the emblem in the middle stays still. An item is a third of the ring's width, the
+     largest size at which two neighbours never overlap at any angle, and everything stays inside the ring's box. The
+     ring is as wide as its column (up to 36rem), a little wider than the column on a phone, so it is the same circle,
+     smaller. Only transform animates. */
+  .salient-ring {
+    container-type: inline-size;
+    --spin: 70s;
+    position: relative;
+    width: min(calc(100% + 1.5rem), 36rem);
+    aspect-ratio: 1;
+    margin-inline: calc((100% - min(calc(100% + 1.5rem), 36rem)) / 2);
+  }
+  .salient-list {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    animation: salient-spin var(--spin) linear infinite;
+    will-change: transform;
+  }
+  .salient-item {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 31%;
+    aspect-ratio: 1;
+    margin: -15.5% 0 0 -15.5%;
+    transform: rotate(var(--a)) translateY(-111.3%) rotate(calc(var(--a) * -1));
+  }
+  .salient-item-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2cqw;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    animation: salient-unspin var(--spin) linear infinite;
+    will-change: transform;
+  }
+  .salient-icon {
+    width: 56%;
+    height: auto;
+  }
+  .salient-title {
+    font-size: clamp(0.5625rem, 2.9cqw, 1.0625rem);
+    line-height: 1.2;
+  }
+  .salient-logo {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 20%;
+    height: auto;
+    transform: translate(-50%, -50%);
+  }
+  .salient-ring[data-paused="true"] .salient-list,
+  .salient-ring[data-paused="true"] .salient-item-inner {
+    animation-play-state: paused;
+  }
+  @keyframes salient-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  @keyframes salient-unspin {
+    to {
+      transform: rotate(-360deg);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .salient-list,
+    .salient-item-inner {
+      animation: none !important;
+      will-change: auto;
+    }
+  }
+
   /* Home rolling strips (RollingStrip: the books and the partners): the track moves by transform only; each item carries its own right margin, so one
      half of the doubled track is exactly the distance to travel and the loop has no seam. */
   .roll-strip {
