@@ -1,4 +1,5 @@
 import { cn } from "cn";
+import { HeadingStroke } from "./heading-stroke";
 
 /**
  * The reference's shared section heading and supporting line (006,
@@ -12,17 +13,21 @@ export function SectionHeading({
   heading,
   line,
   tone = "dark",
+  stroke = false,
   className,
 }: {
   id: string;
   heading: string;
   line?: string;
   tone?: "dark" | "light";
+  /** A yellow pencil stroke that draws itself under the heading when it scrolls into view. */
+  stroke?: boolean;
   className?: string;
 }) {
   const light = tone === "light";
   return (
     <div className={cn("flex flex-col items-center gap-(--spacing-home-heading-gap) text-center", className)}>
+      <div className={cn(stroke && "flex max-w-full flex-col items-stretch")}>
       <h2
         id={id}
         className={cn(
@@ -32,6 +37,8 @@ export function SectionHeading({
       >
         {heading}
       </h2>
+      {stroke && <HeadingStroke />}
+      </div>
       {line && (
         <p className={cn("font-body text-(length:--text-home-subheading) leading-(--text-home-subheading--line-height)", light ? "text-white" : "text-text")}>{line}</p>
       )}

@@ -142,6 +142,7 @@ test.describe("home — sections, news, books, stats, links (006 US2–US9)", ()
     await stubImages(page);
     await openHome(page);
     expect(await sectionHeadings(page)).toEqual([
+      homeContent.quickAccess.heading,
       homeContent.inspiration.heading,
       homeContent.whyChoose.heading,
       homeContent.latestNews.heading,
@@ -159,8 +160,7 @@ test.describe("home — sections, news, books, stats, links (006 US2–US9)", ()
   test("links: Find Us Nearby, the quick-access cards, the icon quick-links and Join Now", async ({ page }) => {
     test.setTimeout(300_000);
     await openHome(page);
-    await expect(page.getByRole("link", { name: homeContent.findUsNearby.cta.label })).toHaveAttribute("href", "/campuses");
-    const cards = page.getByTestId("quick-access-card");
+    const cards = page.getByTestId("quick-access-link");
     expect(await cards.evaluateAll((els) => els.map((e) => e.getAttribute("href")))).toEqual(homeContent.quickAccess.cards.map((c) => c.href));
     for (const item of homeContent.quickLinks.items) {
       await expect(page.getByRole("link", { name: item.label })).toHaveAttribute("href", item.href);

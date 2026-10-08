@@ -69,7 +69,11 @@ export const homeContent = {
 
   quickAccess: {
     label: "Quick links",
+    /** Visible heading above the cards. */
+    heading: "Explore Dar-e-Arqam Schools",
     readMore: "Read More",
+    /** Accessible name of the button that turns a card over. */
+    flip: (title: string) => `${title}: show details`,
     cards: [
       {
         id: "admission",

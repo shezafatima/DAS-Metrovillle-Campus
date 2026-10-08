@@ -447,6 +447,135 @@
 }
 
 @layer components {
+  /* The yellow stroke under a section heading (HeadingStroke): drawn in once, when it scrolls into view. */
+  .heading-stroke path {
+    /* The gap after the dash and the offset past 1 keep the round cap of a not-yet-drawn line off the path (no stray dot). */
+    stroke-dasharray: 1 2;
+    stroke-dashoffset: 1.04;
+    /* Uneven, like a hand: a quick start, a slower finish. */
+    transition: stroke-dashoffset 0.7s cubic-bezier(0.55, 0.05, 0.25, 1);
+  }
+  .heading-stroke[data-drawn="true"] path {
+    stroke-dashoffset: 0;
+  }
+  /* Drawn one after another: the first line, then the second back the other way, then the short third. */
+  .heading-stroke path:nth-of-type(1) {
+    transition-duration: 0.85s;
+  }
+  .heading-stroke path:nth-of-type(2) {
+    transition-duration: 0.7s;
+    transition-delay: 1s;
+  }
+  .heading-stroke path:nth-of-type(3) {
+    transition-duration: 0.45s;
+    transition-delay: 1.9s;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .heading-stroke path {
+      stroke-dashoffset: 0;
+      transition: none !important;
+    }
+  }
+
+  /* Quick-access coverflow (QuickAccessCards). Cards move with transform and opacity only, so nothing
+     re-lays out and each card is its own compositor layer. */
+  .qa-stage {
+    --qa-step: calc(var(--qa-w) * 0.9);
+    height: calc(var(--qa-h) * 1.1 + 1rem);
+    touch-action: pan-y;
+  }
+  .qa-card {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: var(--qa-w);
+    height: var(--qa-h);
+    z-index: var(--z);
+    opacity: var(--op);
+    perspective: 1000px;
+    transform: translate(-50%, -50%) translateX(calc(var(--qa-step) * var(--pos) + var(--drag, 0px))) scale(var(--sc));
+    transition: transform var(--motion-medium) ease, opacity var(--motion-medium) ease;
+    /* Not opacity: it would make the card a backdrop root, and the glass faces must see the cards behind them. */
+    will-change: transform;
+  }
+  .qa-card:not([data-centre="true"]) {
+    cursor: pointer;
+  }
+  .qa-card[data-wrap="true"] {
+    transition-property: opacity;
+    animation: qa-in var(--motion-medium) ease both;
+  }
+  .qa-stage[data-dragging="true"] .qa-card {
+    transition: none;
+  }
+  @keyframes qa-in {
+    from {
+      opacity: 0;
+    }
+  }
+  .qa-inner {
+    position: absolute;
+    inset: 0;
+    transform-style: preserve-3d;
+    transition: transform var(--motion-medium) ease;
+  }
+  .qa-card[data-flipped="true"] .qa-inner {
+    transform: rotateY(180deg);
+  }
+  /* Frosted glass: a translucent fill (set on each face) over a blur of whatever is behind it. */
+  .qa-face {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    backface-visibility: hidden;
+    box-shadow: 0 6px 18px rgb(0 0 0 / 0.14), inset 0 1px 0 rgb(255 255 255 / 0.6);
+  }
+  /* The blur itself is only for mouse devices. Measured on a 4x-throttled phone-width profile, blurring the
+     animating cards dropped sliding frames to 200 ms (p95); without it they stay at 16.7 ms. Phones keep the
+     translucent fill and the shadow. */
+  @media (hover: hover) and (pointer: fine) and (prefers-reduced-transparency: no-preference) {
+    .qa-face {
+      -webkit-backdrop-filter: blur(10px);
+      backdrop-filter: blur(10px);
+    }
+  }
+  .qa-back {
+    transform: rotateY(180deg);
+  }
+  /* The face turned away takes no clicks, but stays in the accessibility tree (its link remains reachable to assistive tech). */
+  .qa-card:not([data-flipped="true"]) .qa-back,
+  .qa-card[data-flipped="true"] .qa-front {
+    pointer-events: none;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    /* No turning over: the back cross-fades in over the front, and cards change places without sliding. */
+    .qa-card {
+      transition: opacity var(--motion-fade) ease;
+    }
+    .qa-card[data-wrap="true"] {
+      animation: none;
+    }
+    .qa-inner,
+    .qa-card[data-flipped="true"] .qa-inner {
+      transform: none;
+      transition: none;
+    }
+    .qa-face {
+      backface-visibility: visible;
+      transition: opacity var(--motion-fade) ease;
+    }
+    .qa-back {
+      transform: none;
+      opacity: 0;
+    }
+    .qa-card[data-flipped="true"] .qa-front {
+      opacity: 0;
+    }
+    .qa-card[data-flipped="true"] .qa-back {
+      opacity: 1;
+    }
+  }
+
   /* The home hero is as tall as the screen. `svh` keeps it from jumping when a phone's address bar hides; `vh` is the fallback for browsers without it. */
   .hero-full {
     height: 100vh;
