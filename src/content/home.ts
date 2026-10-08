@@ -113,7 +113,6 @@ export const homeContent = {
   inspiration: {
     heading: "Inspired By Excellence & Innovation",
     line: "We offer a wide range of high quality of teaching and extra-curricular activities.",
-    logo: { src: "/images/home/inspiration-logo.png", alt: "Dar-e-Arqam Schools", width: 96, height: 96 },
   },
 
   whyChoose: {

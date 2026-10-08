@@ -14,6 +14,7 @@ export function SectionHeading({
   line,
   tone = "dark",
   stroke = false,
+  divider = true,
   className,
 }: {
   id: string;
@@ -22,6 +23,8 @@ export function SectionHeading({
   tone?: "dark" | "light";
   /** A yellow pencil stroke that draws itself under the heading when it scrolls into view. */
   stroke?: boolean;
+  /** The short white rule under the line on the light variant. On by default; the navy heading band turns it off. */
+  divider?: boolean;
   className?: string;
 }) {
   const light = tone === "light";
@@ -42,7 +45,7 @@ export function SectionHeading({
       {line && (
         <p className={cn("font-body text-(length:--text-home-subheading) leading-(--text-home-subheading--line-height)", light ? "text-white" : "text-text")}>{line}</p>
       )}
-      {light && <span aria-hidden="true" className="h-0.5 w-(--spacing-home-divider-width) max-w-full bg-white" />}
+      {light && divider && <span aria-hidden="true" className="h-0.5 w-(--spacing-home-divider-width) max-w-full bg-white" />}
     </div>
   );
 }
