@@ -150,33 +150,24 @@ test.describe("home — sections, news, books, stats, links (006 US2–US9)", ()
       homeContent.books.heading,
       homeContent.salientFeatures.heading,
       homeContent.progressDashboard.heading,
+      homeContent.partners.heading,
       expect.stringContaining("Join Over"),
     ]);
     await expect(page.getByTestId("quick-access-card")).toHaveCount(4);
     await expect(page.getByText("Franchise Offer")).toHaveCount(0);
   });
 
-  test("links: Find Us Nearby, the quick-access cards, the icon quick-links and Join Now", async ({ page }) => {
+  test("links: the quick-access cards and Join Now", async ({ page }) => {
     test.setTimeout(300_000);
     await openHome(page);
     const cards = page.getByTestId("quick-access-link");
     expect(await cards.evaluateAll((els) => els.map((e) => e.getAttribute("href")))).toEqual(homeContent.quickAccess.cards.map((c) => c.href));
-    for (const item of homeContent.quickLinks.items) {
-      await expect(page.getByRole("link", { name: item.label })).toHaveAttribute("href", item.href);
-    }
     const join = page.getByRole("link", { name: "Join Now" });
     await expect(join).toHaveAttribute("href", "/careers");
     await expect(page.locator("#signup")).toBeAttached();
     await expect(page.locator("#signup input")).toHaveCount(0);
     await join.click();
     await expect(page).toHaveURL("/careers", { timeout: 120_000 });
-  });
-
-  test("Photo/Videos reaches the gallery anchor on Resources", async ({ page }) => {
-    test.setTimeout(300_000);
-    await openHome(page);
-    await page.getByRole("link", { name: "Photo / Videos" }).click();
-    await expect(page).toHaveURL("/resources#photo-gallery", { timeout: 120_000 });
   });
 
   test("Why Choose: the video when Settings has one, the text alone when not", async ({ page }) => {
@@ -269,6 +260,6 @@ test.describe("home — sections, news, books, stats, links (006 US2–US9)", ()
     await expect(page.locator('meta[name="description"]')).toHaveAttribute("content", homeContent.metadata.description);
     await expect(page.locator('meta[property="og:image"]')).toHaveAttribute("content", /og-home\.png|res\.cloudinary\.com/);
     await expect(page.locator('meta[name="twitter:card"]')).toHaveAttribute("content", "summary_large_image");
-    await expect(page.getByTestId("quick-link").first().locator("img")).toHaveAttribute("loading", "lazy");
+    await expect(page.locator("img.salient-icon").first()).toHaveAttribute("loading", "lazy"); // a below-the-fold image
   });
 });

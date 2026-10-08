@@ -20,7 +20,8 @@ export function SectionHeading({
   id: string;
   heading: string;
   line?: string;
-  tone?: "dark" | "light";
+  /** "navy" is for a yellow band: heading and line in the brand navy. */
+  tone?: "dark" | "light" | "navy";
   /** A yellow pencil stroke that draws itself under the heading when it scrolls into view. */
   stroke?: boolean;
   /** The short white rule under the line on the light variant. On by default; the navy heading band turns it off. */
@@ -28,6 +29,7 @@ export function SectionHeading({
   className?: string;
 }) {
   const light = tone === "light";
+  const navy = tone === "navy";
   return (
     <div className={cn("flex flex-col items-center gap-(--spacing-home-heading-gap) text-center", className)}>
       <div className={cn(stroke && "flex max-w-full flex-col items-stretch")}>
@@ -35,7 +37,7 @@ export function SectionHeading({
         id={id}
         className={cn(
           "font-bold font-heading text-(length:--text-home-heading-sm) leading-(--text-home-heading--line-height) md:text-(length:--text-home-heading-md) lg:text-(length:--text-home-heading)",
-          light ? "text-white" : "text-(--color-home-heading)",
+          light ? "text-white" : navy ? "text-primary" : "text-(--color-home-heading)",
         )}
       >
         {heading}
@@ -43,7 +45,7 @@ export function SectionHeading({
       {stroke && <HeadingStroke />}
       </div>
       {line && (
-        <p className={cn("font-body text-(length:--text-home-subheading) leading-(--text-home-subheading--line-height)", light ? "text-white" : "text-text")}>{line}</p>
+        <p className={cn("font-body text-(length:--text-home-subheading) leading-(--text-home-subheading--line-height)", light ? "text-white" : navy ? "text-primary" : "text-text")}>{line}</p>
       )}
       {light && divider && <span aria-hidden="true" className="h-0.5 w-(--spacing-home-divider-width) max-w-full bg-white" />}
     </div>

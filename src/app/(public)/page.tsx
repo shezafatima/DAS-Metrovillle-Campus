@@ -7,7 +7,6 @@ import { LatestNews } from "@/components/home/latest-news";
 import { PartnersStrip } from "@/components/home/partners-strip";
 import { ProgressDashboard } from "@/components/home/progress-dashboard";
 import { QuickAccessCards } from "@/components/home/quick-access-cards";
-import { QuickLinks } from "@/components/home/quick-links";
 import { SalientFeatures } from "@/components/home/salient-features";
 import { SectionBoundary } from "@/components/home/section-boundary";
 import { homeContent } from "@/content/home";
@@ -64,7 +63,6 @@ export default async function Home() {
       <BooksSection />
       <SalientFeatures />
       <SectionBoundary name="progress-dashboard" render={ProgressDashboard} />
-      <QuickLinks />
       <PartnersStrip />
       <CareersCta />
     </>

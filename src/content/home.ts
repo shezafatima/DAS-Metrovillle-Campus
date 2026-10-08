@@ -34,13 +34,6 @@ export interface SalientFeature {
   image: ContentImage;
 }
 
-export interface QuickLink {
-  id: string;
-  label: string;
-  image: ContentImage;
-  href: string;
-}
-
 export interface Partner {
   id: string;
   name: string;
@@ -192,23 +185,12 @@ export const homeContent = {
   progressDashboard: {
     heading: "Dar-e-Arqam Schools – Progress Dashboard",
     line: "31 Years of Excellence & Experience",
-    background: { src: "/images/home/dashboard-background.jpg", alt: "", width: 1920, height: 491 },
     stats: [
-      { key: "students", title: "", caption: "Students Studying in Dar-e-Arqam Schools" },
-      { key: "books", title: "Books", caption: "Published by Uswa Publications" },
-      { key: "teachers", title: "Teachers", caption: "Teaching in All Campuses" },
-      { key: "campuses", title: "Campuses", caption: "School Branches all over Country" },
-    ] satisfies { key: StatKey; title: string; caption: string }[],
-  },
-
-  quickLinks: {
-    label: "Explore",
-    items: [
-      { id: "photo-videos", label: "Photo / Videos", image: { src: "/images/home/link-photos-videos.jpg", alt: "Photo / Videos", width: 282, height: 290 }, href: "/resources#photo-gallery" },
-      { id: "downloads", label: "Downloads", image: { src: "/images/home/link-downloads.jpg", alt: "Downloads", width: 282, height: 290 }, href: "/resources#downloads" },
-      { id: "our-books", label: "Our Books", image: { src: "/images/home/link-our-books.jpg", alt: "Our Books", width: 282, height: 291 }, href: "/resources#our-books" },
-      { id: "call-mail-chat", label: "Call / Mail / Chat", image: { src: "/images/home/link-call-mail-chat.jpg", alt: "Call / Mail / Chat", width: 282, height: 290 }, href: "/contact" },
-    ] satisfies QuickLink[],
+      { key: "students", title: "Students" },
+      { key: "books", title: "Books" },
+      { key: "teachers", title: "Teachers" },
+      { key: "campuses", title: "Campuses" },
+    ] satisfies { key: StatKey; title: string }[],
   },
 
   /** The 004 signup band's heading and supporting line, with a button instead of the form (PRD §5.1). */

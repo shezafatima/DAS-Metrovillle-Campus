@@ -126,6 +126,8 @@
 
   --container-max-width: 1280px;
   --container-gutter-x: 30px;
+  /* The Progress Dashboard's stats: a narrower column than the page container, so the four items sit closer together. */
+  --container-home-stats-max-width: 960px;
 
   --motion-fast: 0.2s;
   --motion-medium: 0.3s;
@@ -269,9 +271,7 @@
   --spacing-home-section-y: 48px;
   --spacing-home-band-y: var(--spacing-home-section-y);
   --spacing-home-salient-top: var(--spacing-home-section-y);
-  --spacing-home-dashboard-y: var(--spacing-home-section-y);
-  --spacing-home-links-top: var(--spacing-home-section-y);
-  --spacing-home-links-bottom: var(--spacing-home-section-y);
+  --spacing-home-dashboard-y: calc(var(--spacing-home-section-y) / 2);
   --spacing-home-partners-y: var(--spacing-home-section-y);
   --spacing-home-heading-gap: 18px;
   --spacing-home-carousel-gap: 30px;

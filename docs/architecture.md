@@ -576,7 +576,11 @@
   database directly.
 
 ## Home page (006)
-  features, Progress dashboard, icon quick-links, careers CTA (`#signup`),
+- `/` renders the reference's sections in order: hero (full screen height, under the fixed header),
+  quick-access cards (a headed looping coverflow of flip cards: transform
+  and opacity only), Inspiration + Why Choose, Latest News, Books, Salient
+  features, Progress dashboard, partners ticker (`PartnersStrip`, the shared
+  `RollingStrip` strip), careers CTA (`#signup`),
   partners. Static sections come from src/content/home.ts; design values
   from research/design-tokens.md "Home sections (006)".
 - Data: Settings hero/video/stats; Latest News from

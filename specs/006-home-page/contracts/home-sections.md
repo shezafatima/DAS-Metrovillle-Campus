@@ -5,9 +5,6 @@
 | # | Section | Source | Empty / failure behaviour |
 |---|---|---|---|
 | 1 | Hero slider | `getPublicSettings("hero")` | No visible slide, or a read failure, gives the 005 default slide (FR-004) |
-| 10 | Icon quick-links ×4 | `home.quickLinks` | Always shown |
-| 11 | Careers CTA (`id="signup"`) | `home.careersCta` | Always shown; "Join Now" goes to `/careers` |
-| 12 | Partners carousel | `home.partners` | 1 logo is shown still; many logos are a carousel |
 | 2 | Quick-access cards ×4 (looping coverflow, `QuickAccessCards`, with a heading and a yellow stroke) | `home.quickAccess` | Always shown; no Franchise card |
 | 3 | Inspiration | `home.inspiration` | Always shown |
 | 4 | Why Choose Dar-e-Arqam Schools? | `home.whyChoose` + `getPublicSettings("video")` | No `youtubeId` shows the text alone, with no empty frame |
