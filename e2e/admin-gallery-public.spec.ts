@@ -168,9 +168,12 @@ test.describe("gallery — images load as the visitor scrolls (007 US5, FR-018, 
     });
     await page.goto(`/resources/gallery/${MAIN}`);
     await expect(page.getByTestId("public-photo-grid")).toBeVisible({ timeout: 90_000 });
-    await page.waitForTimeout(1500);
-    const before = new Set(requested.map((u) => u.match(/annual(\d)/)?.[1]).filter(Boolean));
-    expect(before.size, `requested on load: ${[...before].join(",")}`).toBeLessThan(8);
+    // Every grid photo is natively lazy: the browser fetches each only as it nears the viewport. (With the
+    // masonry layout all 8 small photos sit close to a 375×600 viewport, so how many are requested on load
+    // depends on the browser's own distance threshold; the attribute is the contract.)
+    const images = page.getByTestId("public-photo-grid").locator("img");
+    await expect(images).toHaveCount(8);
+    expect(await images.evaluateAll((els) => els.map((e) => e.getAttribute("loading")))).toEqual(Array(8).fill("lazy"));
 
     await page.getByTestId("public-photo-grid").locator("li").last().scrollIntoViewIfNeeded();
     await expect.poll(() => new Set(requested.map((u) => u.match(/annual(\d)/)?.[1]).filter(Boolean)).size, { timeout: 30_000 }).toBe(8);

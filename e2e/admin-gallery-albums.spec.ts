@@ -51,6 +51,10 @@ test.describe("gallery — admin manages albums (007 US1)", () => {
     await page.getByRole("button", { name: galleryCopy.moveDown("Science Fair") }).focus();
     await page.keyboard.press("Enter");
     await expect(titles(page).nth(2)).toHaveText("Science Fair");
+    // The list updates optimistically; wait until the order is actually stored before reloading.
+    await expect
+      .poll(async () => (await liveAlbums()).map((a) => a.title).slice(0, 3), { timeout: 60_000 })
+      .toEqual(["Annual Day", "Sports Day", "Science Fair"]);
     await page.reload();
     await expect(titles(page)).toHaveText(["Annual Day", "Sports Day", "Science Fair", "Hifz Ceremony", "Trip", "Qirat"]);
 

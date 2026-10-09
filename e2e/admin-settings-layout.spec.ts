@@ -65,6 +65,10 @@ test.describe("settings — layout at four widths (005 FR-035)", () => {
       await page.getByRole("button", { name: "Add slide" }).click();
       const panel = page.getByRole("dialog", { name: "Add slide" });
       await expect(panel).toBeVisible();
+      // The panel slides in from the right; measure once its animations have finished.
+      await expect
+        .poll(() => panel.evaluate((el) => el.getAnimations({ subtree: true }).every((a) => a.playState === "finished")))
+        .toBe(true);
       const box = await panel.boundingBox();
       expect(box).not.toBeNull();
       expect((box?.x ?? -1) + (box?.width ?? 0)).toBeLessThanOrEqual(width + 1);
