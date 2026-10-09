@@ -17,6 +17,10 @@ const nextConfig: NextConfig = {
   // beside a developer's own dev server: Next allows one dev server per
   // build folder. Unset means the normal `.next`.
   ...(process.env.NEXT_DIST_DIR ? { distDir: process.env.NEXT_DIST_DIR } : {}),
+  // Next 16.3 locks the build folder (.next/lock) and removes the lock when the build process exits.
+  // Vercel's step after the build then fails with "ENOENT: lstat '/vercel/path0/.next/lock'".
+  // Nothing else builds in the same folder here, so the lock is not needed.
+  experimental: { lockDistDir: false },
   images: {
     // News cover images (003) live in Cloudinary; only their URLs are
     // stored in the database (docs/architecture.md "Media and content").
