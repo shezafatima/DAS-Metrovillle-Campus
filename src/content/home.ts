@@ -72,7 +72,7 @@ export const homeContent = {
         title: "Admission Procedure",
         text: "There is no written test for pre-school. The admission test for primary and secondary school is based on the following subjects and classes",
         icon: { src: "/images/home/quick-admission.gif", alt: "", width: 100, height: 99 },
-        href: "/admission/admission-procedure",
+        href: "/admission#admission-procedure",
         tone: "admission",
       },
       {
@@ -80,7 +80,7 @@ export const homeContent = {
         title: "Salient Features",
         text: "Dar-e-Arqam is one of a few pioneer schools of formal education where you may witness quite comfortably, a sublime blend of high standard",
         icon: { src: "/images/home/quick-salient-features.gif", alt: "", width: 110, height: 101 },
-        href: "/about/salient-features",
+        href: "/about#salient-features",
         tone: "salient",
       },
       {

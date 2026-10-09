@@ -13,7 +13,7 @@ import { homeContent } from "@/content/home";
 export function CareersCta() {
   const { heading, supporting, button, background } = homeContent.careersCta;
   return (
-    <section id="signup" aria-labelledby="careers-cta-heading" className="relative overflow-hidden bg-signup-band py-(--spacing-home-section-y)" data-testid="careers-cta">
+    <section id="signup" aria-labelledby="careers-cta-heading" className="anchor-section relative overflow-hidden bg-signup-band py-(--spacing-home-section-y)" data-testid="careers-cta">
       <Image src={background.src} alt={background.alt} fill sizes="100vw" className="object-cover" />
       <div className="relative mx-auto flex max-w-(--container-max-width) flex-col items-center gap-4 px-(--container-gutter-x) text-center">
         <h2 id="careers-cta-heading" data-placeholder={heading.placeholder || undefined} className="font-bold font-heading text-h3 text-white">
