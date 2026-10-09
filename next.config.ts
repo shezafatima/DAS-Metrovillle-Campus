@@ -30,6 +30,13 @@ const nextConfig: NextConfig = {
       // 007: the gallery is the #photo-gallery section of /resources, not its
       // own page (documented deviation from the reference's address).
       { source: "/resources/photo-gallery", destination: "/resources#photo-gallery", permanent: true },
+      { source: "/resources/scarlet-mobile-apps", destination: "/resources#mobile-apps", permanent: true },
+      // Resources entries that left the menu land on the Resources page.
+      ...["prospectus", "monthly-arqam", "newsletters", "useful-links", "our-books"].map((slug) => ({
+        source: `/resources/${slug}`,
+        destination: "/resources",
+        permanent: true,
+      })),
       // The Campuses page is gone; Contact is the nearest page.
       { source: "/campuses", destination: "/contact", permanent: true },
     ];

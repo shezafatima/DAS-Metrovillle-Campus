@@ -21,6 +21,23 @@ describe("navigationItems", () => {
     expect(navigationItems.find((item) => item.label === "Careers")).toEqual({ label: "Careers", href: "/careers" });
   });
 
+  it("points every dropdown of a single page at an anchor on that page, with short hyphenated ids", () => {
+    for (const label of ["About", "Academics", "Admission", "Resources"]) {
+      const item = navigationItems.find((i) => i.label === label)!;
+      for (const child of item.children!) {
+        expect(child.href).toMatch(new RegExp(`^${item.href}#[a-z]+(-[a-z]+)*$`));
+      }
+    }
+  });
+
+  it("Resources shows only Photo Gallery and Mobile Apps", () => {
+    const resources = navigationItems.find((i) => i.label === "Resources");
+    expect(resources?.children).toEqual([
+      { label: "Photo Gallery", href: "/resources#photo-gallery" },
+      { label: "Mobile Apps", href: "/resources#mobile-apps" },
+    ]);
+  });
+
   it("has no taglines under the labels", () => {
     expect(JSON.stringify(navigationItems)).not.toContain("tagline");
   });

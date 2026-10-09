@@ -76,9 +76,10 @@ export const pageSections = {
     { id: "class-levels", label: "Class Levels" },
     { id: "uniform", label: "Uniform" },
   ],
-  /** Photo Gallery is rendered by GallerySection (007). */
+  /** Photo Gallery is rendered by GallerySection (007); Mobile Apps is a placeholder. */
   resources: [
     { id: "photo-gallery", label: "Photo Gallery" },
+    { id: "mobile-apps", label: "Mobile Apps" },
   ],
 } satisfies Record<string, PageSection[]>;
 
@@ -98,19 +99,7 @@ export const navigationItems: NavigationItem[] = [
   { label: "Careers", href: "/careers" },
   { label: "Academics", href: "/academics", children: anchors("/academics", pageSections.academics) },
   { label: "Admission", href: "/admission", children: anchors("/admission", pageSections.admission) },
-  {
-    label: "Resources",
-    href: "/resources",
-    children: [
-      ...anchors("/resources", pageSections.resources),
-      { label: "Prospectus", href: "/resources/prospectus" },
-      { label: "Our Books", href: "/resources/our-books" },
-      { label: "Monthly Arqam", href: "/resources/monthly-arqam" },
-      { label: "Newsletters", href: "/resources/newsletters" },
-      { label: "Useful Links", href: "/resources/useful-links" },
-      { label: "Scarlet Mobile Apps", href: "/resources/scarlet-mobile-apps" },
-    ],
-  },
+  { label: "Resources", href: "/resources", children: anchors("/resources", pageSections.resources) },
   {
     label: "News",
     href: "/news",
