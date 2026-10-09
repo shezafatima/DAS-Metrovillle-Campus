@@ -94,12 +94,8 @@ function anchors(path: string, sections: PageSection[]): NavigationItem[] {
 // edit only (FR-004), never a code change.
 export const navigationItems: NavigationItem[] = [
   { label: "Home", href: "/" },
-  {
-    label: "About",
-    href: "/about",
-    children: [...anchors("/about", pageSections.about), { label: "Careers", href: "/careers" }],
-  },
-  { label: "Campuses", href: "/campuses" },
+  { label: "About", href: "/about", children: anchors("/about", pageSections.about) },
+  { label: "Careers", href: "/careers" },
   { label: "Academics", href: "/academics", children: anchors("/academics", pageSections.academics) },
   { label: "Admission", href: "/admission", children: anchors("/admission", pageSections.admission) },
   {

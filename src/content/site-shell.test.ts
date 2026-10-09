@@ -6,7 +6,7 @@ describe("navigationItems", () => {
     expect(navigationItems.map((item) => item.label)).toEqual([
       "Home",
       "About",
-      "Campuses",
+      "Careers",
       "Academics",
       "Admission",
       "Resources",
@@ -15,9 +15,10 @@ describe("navigationItems", () => {
     ]);
   });
 
-  it("keeps the main menu at eight top-level items: Careers is a child of About, not a ninth item (PRD §4)", () => {
+  it("keeps the main menu at eight top-level items: Careers replaced Campuses", () => {
     expect(navigationItems).toHaveLength(8);
-    expect(navigationItems.some((item) => item.label === "Careers")).toBe(false);
+    expect(navigationItems.some((item) => item.label === "Campuses")).toBe(false);
+    expect(navigationItems.find((item) => item.label === "Careers")).toEqual({ label: "Careers", href: "/careers" });
   });
 
   it("has no taglines under the labels", () => {
@@ -33,9 +34,9 @@ describe("navigationItems", () => {
 });
 
 describe("Careers entry points (012)", () => {
-  it("is the last entry in the About dropdown and points at /careers", () => {
+  it("is no longer in the About dropdown", () => {
     const about = navigationItems.find((item) => item.label === "About");
-    expect(about?.children?.at(-1)).toEqual({ label: "Careers", href: "/careers" });
+    expect(about?.children?.some((child) => child.label === "Careers")).toBe(false);
   });
 
   it("is not among the portal links (those are footer utility links)", () => {

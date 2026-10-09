@@ -30,6 +30,8 @@ const nextConfig: NextConfig = {
       // 007: the gallery is the #photo-gallery section of /resources, not its
       // own page (documented deviation from the reference's address).
       { source: "/resources/photo-gallery", destination: "/resources#photo-gallery", permanent: true },
+      // The Campuses page is gone; Contact is the nearest page.
+      { source: "/campuses", destination: "/contact", permanent: true },
     ];
   },
 };

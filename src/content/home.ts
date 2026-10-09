@@ -88,7 +88,7 @@ export const homeContent = {
         title: "Branch Network",
         text: "There are 700+ Branches of Dar-e-Arqam Schools with more than 300,000+ Students in 150+ cities of Pakistan.",
         icon: { src: "/images/home/quick-branch-network.gif", alt: "", width: 119, height: 100 },
-        href: "/campuses",
+        href: "/contact",
         tone: "branch",
       },
       {
