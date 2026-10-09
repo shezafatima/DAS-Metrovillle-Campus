@@ -108,10 +108,7 @@ export function NavDesktop({ items = defaultNavigationItems }: NavDesktopProps) 
                     // had this problem.
                     "font-nav text-(length:--text-nav) leading-(--text-nav--line-height) font-bold uppercase tracking-(--text-nav--letter-spacing) transition-colors duration-(--motion-fast)",
                     isRtlScript(item.label) && "font-body-urdu",
-                    isActive ? "text-primary" : "text-text hover:text-primary",
-                    // Over the transparent home header (HeaderFrame) the links are white.
-                    "group-data-[transparent=true]/header:text-white group-data-[transparent=true]/header:hover:text-white",
-                    isActive && "group-data-[transparent=true]/header:underline group-data-[transparent=true]/header:decoration-2 group-data-[transparent=true]/header:underline-offset-8"
+                    isActive ? "text-primary" : "text-text hover:text-primary"
                   )}
                 >
                   {item.label}

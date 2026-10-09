@@ -33,7 +33,7 @@ export function NavMobile({ items = defaultNavigationItems }: NavMobileProps) {
     <Drawer.Root swipeDirection="right" open={open} onOpenChange={setOpen}>
       <Drawer.Trigger
         aria-label="Open menu"
-        className="flex items-center justify-center rounded-md p-2 text-text group-data-[transparent=true]/header:text-white lg:hidden"
+        className="flex items-center justify-center rounded-md p-2 text-text lg:hidden"
       >
         <Menu aria-hidden="true" className="size-6" />
       </Drawer.Trigger>
