@@ -53,8 +53,9 @@ test.describe("Site search — mobile", () => {
     await page.getByRole("button", { name: "Open menu" }).click();
     await page.getByRole("button", { name: "Search" }).click();
     await page.getByRole("combobox").fill("contact");
+    // Scoped to the results list: the page also has Contact links in the menu and footer.
     await expect(
-      page.getByRole("link", { name: "Contact", exact: true })
+      page.getByRole("listbox").getByRole("link", { name: "Contact", exact: true })
     ).toBeVisible();
   });
 });
