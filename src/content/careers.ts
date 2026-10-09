@@ -15,8 +15,8 @@ export function formatReapplyDate(isoDate: string): string {
 
 /**
  * Careers page copy (Constitution VIII/IX — copy lives in content files).
- * Wording marked `placeholder: true` is not client-approved: the privacy
- * notice and the intro are placeholders until the client supplies them, and
+ * Wording marked `placeholder: true` is not client-approved: the intro is a
+ * placeholder until the client supplies it (the privacy notice is approved), and
  * `scripts/check-release-content.ts` blocks a production build while the
  * privacy notice is still one (Constitution V).
  */
@@ -47,7 +47,8 @@ export const careersCopy = {
     sending: "Sending…",
   },
   privacy: {
-    placeholder: true,
+    // Approved by the client on 2026-10-09 (the wording below, unchanged).
+    placeholder: false,
     notice:
       "Your details and CV are used only to consider your application and are kept for a limited time. They are visible only to authorised school staff.",
     consentLabel: "I have read the privacy notice and agree to my details being used to consider my application.",
