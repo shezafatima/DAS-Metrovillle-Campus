@@ -1,6 +1,6 @@
 import { test, expect, type Page } from "@playwright/test";
 
-// 012 US5: Careers is reachable from the About menu, the footer and the
+// 012 US5: Careers is reachable from the main menu, the footer and the
 // home page's Join Now button, at phone and desktop widths. The main menu
 // stays at its eight top-level items. Named shell-* so it runs in the `chromium`
 // project, not the serial `forms` one.
@@ -21,15 +21,8 @@ for (const width of WIDTHS) {
       await page.goto("/", { timeout: 120_000 });
     });
 
-    test("Careers is in the About menu and goes to /careers", async ({ page }) => {
-      if (width >= 1024) {
-        const about = page.getByRole("navigation", { name: "Main menu" }).getByRole("link", { name: "About", exact: true });
-        await about.hover();
-        await expect(about).toHaveAttribute("aria-expanded", "true");
-      } else {
-        await page.getByRole("button", { name: "Open menu" }).click();
-        await page.getByRole("navigation", { name: "Mobile menu" }).getByRole("button", { name: "About" }).click();
-      }
+    test("Careers is a main menu item and goes to /careers", async ({ page }) => {
+      if (width < 1024) await page.getByRole("button", { name: "Open menu" }).click();
       const menuName = width >= 1024 ? "Main menu" : "Mobile menu";
       const link = page.getByRole("navigation", { name: menuName }).getByRole("link", { name: "Careers", exact: true });
       await expect(link).toBeVisible();
@@ -64,11 +57,12 @@ for (const width of WIDTHS) {
   });
 }
 
-test("the main menu keeps eight top-level items; Careers is not one of them", async ({ page }) => {
+test("the main menu keeps eight top-level items; Careers is one and is not in the About dropdown", async ({ page }) => {
   test.setTimeout(300_000);
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("/", { timeout: 120_000 });
   const menu = page.getByRole("navigation", { name: "Main menu" });
   await expect(menu.locator(":scope > ul > li")).toHaveCount(8);
-  await expect(menu.locator(":scope > ul > li > a", { hasText: /^Careers$/ })).toHaveCount(0);
+  await expect(menu.locator(":scope > ul > li > a", { hasText: /^Careers$/ })).toHaveCount(1);
+  await expect(menu.locator(":scope > ul > li", { hasText: /^About/ }).getByRole("link", { name: "Careers", includeHidden: true })).toHaveCount(0);
 });

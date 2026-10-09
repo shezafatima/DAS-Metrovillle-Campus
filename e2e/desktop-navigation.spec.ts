@@ -8,7 +8,7 @@ const DESKTOP_VIEWPORTS = [
 const MENU_ITEMS: { label: string; href: string }[] = [
   { label: "Home", href: "/" },
   { label: "About", href: "/about" },
-  { label: "Campuses", href: "/campuses" },
+  { label: "Careers", href: "/careers" },
   { label: "Academics", href: "/academics" },
   { label: "Admission", href: "/admission" },
   { label: "Resources", href: "/resources" },
