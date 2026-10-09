@@ -1,14 +1,12 @@
 import { test, expect } from "@playwright/test";
 
 const SITEMAP_ROUTES = [
-  { path: "/", heading: "Home" },
   { path: "/about", heading: "About" },
-  { path: "/campuses", heading: "Campuses" },
+  { path: "/careers", heading: "Careers" },
   { path: "/academics", heading: "Academics" },
   { path: "/admission", heading: "Admission" },
   { path: "/resources", heading: "Resources" },
   { path: "/news", heading: "News" },
-  { path: "/news/some-slug", heading: "News" },
   { path: "/contact", heading: "Contact" },
 ];
 
@@ -24,6 +22,24 @@ test.describe("Shared layout and placeholder pages", () => {
       ).toBeVisible();
     });
   }
+
+  // Updated for 006 (as in home.spec.ts): the placeholder "Home" heading is gone; the real home page
+  // renders inside the shell with a single h1.
+  test("/ renders inside the shell with a single h1", async ({ page }) => {
+    const response = await page.goto("/");
+    expect(response?.status()).toBe(200);
+    await expect(page.getByRole("banner")).toBeVisible();
+    await expect(page.getByRole("contentinfo")).toBeVisible();
+    await expect(page.getByRole("heading", { level: 1 })).toHaveCount(1);
+  });
+
+  // /news/<slug> is a news category or a post; an unknown slug is a 404 (003), inside the shell.
+  test("/news/some-slug is a 404 inside the shell", async ({ page }) => {
+    const response = await page.goto("/news/some-slug");
+    expect(response?.status()).toBe(404);
+    await expect(page.getByRole("banner")).toBeVisible();
+    await expect(page.getByRole("contentinfo")).toBeVisible();
+  });
 
   test("an unmatched URL renders a shell-wrapped not-found page with a link home", async ({
     page,
