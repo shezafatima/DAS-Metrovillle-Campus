@@ -108,11 +108,22 @@ export const homeContent = {
   },
 
   whyChoose: {
-    heading: "Why Choose Dar-e-Arqam Schools?",
-    paragraphs: [
-      "We offer a range of training packages in a range of subject areas and can offer blended learning opportunities to best meet your needs. If sitting in a room with a trainer and having the opportunity for discussion with other learners sounds good to you then we can offer this. If you prefer to study in your own time and at your own speed then one of our world class facilities.",
-      "If you prefer to study in your own time and at your own speed then one of our e-learning packages may be right up your street. There is a third option, which is you like the sound of both but perhaps can’t attend all training sessions, this is when blended learning comes into its own.",
+    // PENDING CLIENT APPROVAL: this text was supplied by the project owner and has not been approved by the client yet.
+    heading: "Why Metroville Campus?",
+    subheading: "A Place Where Every Child Thrives",
+    intro:
+      "We are committed to providing an educational experience that goes beyond the classroom. Our focus is on nurturing confident learners, strong character, and lifelong values in a safe and supportive environment.",
+    pointsHeading: "Why Parents Choose Us",
+    points: [
+      "Merit Scholarship Program for outstanding students.",
+      "Booster Classes to support below-average students.",
+      "English Language Program for confident communication.",
+      "Computer Education from Grade 3 onwards.",
+      "Equal emphasis on Nazra-e-Qur'an and academic excellence.",
+      "Continuous academic monitoring and student progress tracking.",
+      "Regular teacher training for quality education.",
     ],
+    closing: "Together, these initiatives help every child grow academically, morally, and socially.",
     video: { play: "Play the school video", title: "Dar-e-Arqam Schools video" },
   },
 
