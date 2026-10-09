@@ -1,5 +1,6 @@
-import { PagePlaceholder } from "@/components/site-shell/page-placeholder";
+import { AnchoredPage } from "@/components/site-shell/anchored-sections";
+import { pageSections } from "@/content/site-shell";
 
 export default function AcademicsPage() {
-  return <PagePlaceholder title="Academics" />;
+  return <AnchoredPage title="Academics" sections={pageSections.academics} />;
 }

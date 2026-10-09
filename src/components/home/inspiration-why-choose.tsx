@@ -5,8 +5,8 @@ import { YouTubeEmbed } from "./youtube-embed";
 
 /**
  * The reference's row 2 (006 FR-009, FR-010): the "Inspired By Excellence &
- * Innovation" block (heading and line, no logo), then "Why Choose Dar-e-Arqam
- * Schools?" — its text beside the Settings home video at ≥1024px, stacked
+ * Innovation" block (heading and line, no logo), then "Why Metroville
+ * Campus?" — its text beside the Settings home video at ≥1024px, stacked
  * below. With no video address, the text spans the row and no empty frame
  * is drawn.
  */
@@ -24,11 +24,15 @@ export function InspirationWhyChoose({ video }: { video: PublicVideo }) {
       <div className={video.youtubeId ? "grid items-center gap-8 lg:grid-cols-2" : "flex flex-col"} data-testid="why-choose">
         <div className="flex flex-col gap-4">
           <h2 className="font-bold font-heading text-(--color-home-dark-text) text-h3 uppercase leading-(--text-h3--line-height)">{whyChoose.heading}</h2>
-          {whyChoose.paragraphs.map((paragraph) => (
-            <p key={paragraph.slice(0, 24)} className="font-body text-body text-text">
-              {paragraph}
-            </p>
-          ))}
+          <h3 className="font-bold font-heading text-(--color-home-dark-text) text-lg">{whyChoose.subheading}</h3>
+          <p className="font-body text-body text-text">{whyChoose.intro}</p>
+          <h3 className="font-bold font-heading text-(--color-home-dark-text) text-lg">{whyChoose.pointsHeading}</h3>
+          <ul className="flex list-disc flex-col gap-2 ps-6 font-body text-body text-text marker:text-primary">
+            {whyChoose.points.map((point) => (
+              <li key={point}>{point}</li>
+            ))}
+          </ul>
+          <p className="font-body text-body text-text">{whyChoose.closing}</p>
         </div>
         {video.youtubeId && <YouTubeEmbed id={video.youtubeId} title={whyChoose.video.title} playLabel={whyChoose.video.play} />}
       </div>

@@ -17,7 +17,7 @@ export async function GallerySection() {
   const { albums } = await getPublicGallery();
   if (albums.length === 0) return null;
   return (
-    <section id="photo-gallery" aria-labelledby="photo-gallery-heading" className="scroll-mt-24 flex flex-col gap-6">
+    <section id="photo-gallery" aria-labelledby="photo-gallery-heading" className="anchor-section flex flex-col gap-6">
       <h2 id="photo-gallery-heading" className="font-bold font-heading text-2xl text-primary">
         {galleryContent.sectionHeading}
       </h2>

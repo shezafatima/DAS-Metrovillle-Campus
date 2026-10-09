@@ -1,39 +1,20 @@
-import { act, render, screen } from "@testing-library/react";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { render, screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 import { usePathname } from "next/navigation";
-import { HeaderFrame, SOLID_AFTER } from "./header-frame";
+import { HeaderFrame } from "./header-frame";
 
 vi.mock("next/navigation", () => ({ usePathname: vi.fn() }));
 
-function scrollTo(y: number) {
-  act(() => {
-    Object.defineProperty(window, "scrollY", { value: y, configurable: true });
-    window.dispatchEvent(new Event("scroll"));
-  });
-}
-
 describe("HeaderFrame", () => {
-  beforeEach(() => {
-    scrollTo(0);
-  });
-
-  it("is transparent at the top of the home page and solid once scrolled", () => {
+  it("is a sticky, fixed-height header that is white and never transparent", () => {
     vi.mocked(usePathname).mockReturnValue("/");
     render(<HeaderFrame>nav</HeaderFrame>);
     const header = screen.getByRole("banner");
-    expect(header).toHaveAttribute("data-transparent", "true");
-
-    scrollTo(SOLID_AFTER + 1);
-    expect(header).toHaveAttribute("data-transparent", "false");
-
-    scrollTo(0);
-    expect(header).toHaveAttribute("data-transparent", "true");
-  });
-
-  it("is solid from the top on every other page", () => {
-    vi.mocked(usePathname).mockReturnValue("/news");
-    render(<HeaderFrame>nav</HeaderFrame>);
-    expect(screen.getByRole("banner")).toHaveAttribute("data-transparent", "false");
+    expect(header.className).toContain("sticky");
+    expect(header.className).toContain("h-(--header-h)");
+    expect(header.className).toContain("bg-surface");
+    expect(header.className).not.toContain("bg-transparent");
+    expect(header).not.toHaveAttribute("data-transparent");
   });
 
   it("sits over the hero only on the home page", () => {

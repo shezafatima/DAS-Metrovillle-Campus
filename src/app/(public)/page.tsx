@@ -56,7 +56,7 @@ export default async function Home() {
     <>
       <h1 className="sr-only">{homeContent.pageHeading}</h1>
       <HeroSlider hero={hero} />
-      <div id="after-hero" />
+      <div id="after-hero" className="anchor-section" />
       <QuickAccessCards />
       <InspirationWhyChoose video={video} />
       <SectionBoundary name="latest-news" render={LatestNews} />

@@ -6,7 +6,7 @@ export function ContactFormSection() {
     <section
       id="contact-form"
       aria-labelledby="contact-form-heading"
-      className="bg-contact-form-band py-(--spacing-contact-form-band-y)"
+      className="anchor-section bg-contact-form-band py-(--spacing-contact-form-band-y)"
     >
       <div className="mx-auto max-w-(--container-max-width) px-(--container-gutter-x)">
         <h2 id="contact-form-heading" className="sr-only">

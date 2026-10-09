@@ -23,7 +23,7 @@ test.describe("Site search", () => {
     await page.getByRole("combobox").fill("syllabi");
     await expect(page.getByRole("link", { name: /Syllabi/ })).toHaveAttribute(
       "href",
-      "/academics/syllabi"
+      "/academics#syllabi"
     );
   });
 

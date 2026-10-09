@@ -53,7 +53,7 @@ export function SearchBox() {
         aria-expanded={open}
         onClick={toggle}
         className={cn(
-          "flex items-center justify-center rounded-md p-2 text-text transition-colors duration-(--motion-fast) hover:bg-neutral-100 hover:text-primary group-data-[transparent=true]/header:text-white group-data-[transparent=true]/header:hover:bg-white/15 group-data-[transparent=true]/header:hover:text-white",
+          "flex items-center justify-center rounded-md p-2 text-text transition-colors duration-(--motion-fast) hover:bg-neutral-100 hover:text-primary",
           open && "bg-neutral-100 text-primary"
         )}
       >

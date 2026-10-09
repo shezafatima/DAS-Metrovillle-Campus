@@ -437,15 +437,24 @@
   }
   html {
     @apply font-sans;
-    /* Anchors (#photo-gallery, #signup) must not land under the sticky header (--header-h plus a little air). */
-    scroll-padding-top: calc(var(--header-h) + 1rem);
     /* The public header is one fixed height at every scroll position (HeaderFrame). */
     --header-h: 4rem;
+    /* Anchored sections stop this far from the top: exactly the header's height. */
+    --anchor-scroll-margin: var(--header-h);
   }
   @media (min-width: 64rem) {
     html {
       --header-h: 4.5rem;
     }
+  }
+  /* Smooth scrolling to anchors, except for visitors who ask for less motion. */
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+  .anchor-section {
+    scroll-margin-top: var(--anchor-scroll-margin);
   }
 }
 

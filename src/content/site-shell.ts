@@ -44,59 +44,62 @@ export interface FooterContent {
   credit: { before: string; by: string; name: string; href: string };
 }
 
-// Fixed render order (FR-001). Taglines and sub-pages below are grounded in
-// the live reference site (das.edu.pk) itself, not docs/prd.md's rougher
-// "TBD: subpages such as..." guess, which named pages the site doesn't
-// actually have (e.g. it guessed "Uniform" under Academics, but that page is
-// really under Admission). Adding/removing a sub-page later is a content
+/**
+ * The sections of the pages that used to have sub-routes. Each page is ONE
+ * route; its former sub-routes are sections with these ids (`/about#overview`).
+ * The menu children, the page sections and the old-route redirects in
+ * next.config.ts all come from here, so an id is defined once.
+ */
+export interface PageSection {
+  /** Short, lowercase, hyphenated and stable: it is the URL fragment. */
+  id: string;
+  /** The section's h2 and its menu label. */
+  label: string;
+}
+
+export const pageSections = {
+  about: [
+    { id: "overview", label: "Overview" },
+    { id: "salient-features", label: "Salient Features" },
+    { id: "management", label: "Management" },
+    { id: "messages", label: "Messages" },
+  ],
+  academics: [
+    { id: "academics-overview", label: "Academics Overview" },
+    { id: "syllabi", label: "Syllabi" },
+    { id: "examinations", label: "Examinations" },
+    { id: "teachers-training", label: "Teachers' Training" },
+    { id: "hifz-e-quran", label: "Hifz-e-Quran" },
+  ],
+  admission: [
+    { id: "admission-procedure", label: "Admission Procedure" },
+    { id: "class-levels", label: "Class Levels" },
+    { id: "uniform", label: "Uniform" },
+  ],
+  /** Photo Gallery is rendered by GallerySection (007); Mobile Apps is a placeholder. */
+  resources: [
+    { id: "photo-gallery", label: "Photo Gallery" },
+    { id: "mobile-apps", label: "Mobile Apps" },
+  ],
+} satisfies Record<string, PageSection[]>;
+
+function anchors(path: string, sections: PageSection[]): NavigationItem[] {
+  return sections.map((section) => ({ label: section.label, href: `${path}#${section.id}` }));
+}
+
+// Fixed render order (FR-001). Sections are grounded in the live reference
+// site (das.edu.pk), not docs/prd.md's rougher "TBD: subpages such as..."
+// guess. About, Academics, Admission and Resources are single pages whose
+// dropdown links are anchors to their sections; News keeps real sub-routes
+// (its categories hold data). Adding/removing a section later is a content
 // edit only (FR-004), never a code change.
 export const navigationItems: NavigationItem[] = [
   { label: "Home", href: "/" },
-  {
-    label: "About",
-    href: "/about",
-    children: [
-      { label: "Overview", href: "/about/overview" },
-      { label: "Salient Features", href: "/about/salient-features" },
-      { label: "Management", href: "/about/management" },
-      { label: "Messages", href: "/about/messages" },
-      { label: "Careers", href: "/careers" },
-    ],
-  },
-  { label: "Campuses", href: "/campuses" },
-  {
-    label: "Academics",
-    href: "/academics",
-    children: [
-      { label: "Academics Overview", href: "/academics/academics-overview" },
-      { label: "Syllabi", href: "/academics/syllabi" },
-      { label: "Examinations", href: "/academics/examinations" },
-      { label: "Teachers' Training", href: "/academics/teachers-training" },
-      { label: "Hifz-e-Quran", href: "/hifz-e-quran" },
-    ],
-  },
-  {
-    label: "Admission",
-    href: "/admission",
-    children: [
-      { label: "Admission Procedure", href: "/admission/admission-procedure" },
-      { label: "Class Levels", href: "/admission/class-levels" },
-      { label: "Uniform", href: "/admission/uniform" },
-    ],
-  },
-  {
-    label: "Resources",
-    href: "/resources",
-    children: [
-      { label: "Photo Gallery", href: "/resources#photo-gallery" },
-      { label: "Prospectus", href: "/resources/prospectus" },
-      { label: "Our Books", href: "/resources/our-books" },
-      { label: "Monthly Arqam", href: "/resources/monthly-arqam" },
-      { label: "Newsletters", href: "/resources/newsletters" },
-      { label: "Useful Links", href: "/resources/useful-links" },
-      { label: "Scarlet Mobile Apps", href: "/resources/scarlet-mobile-apps" },
-    ],
-  },
+  { label: "About", href: "/about", children: anchors("/about", pageSections.about) },
+  { label: "Careers", href: "/careers" },
+  { label: "Academics", href: "/academics", children: anchors("/academics", pageSections.academics) },
+  { label: "Admission", href: "/admission", children: anchors("/admission", pageSections.admission) },
+  { label: "Resources", href: "/resources", children: anchors("/resources", pageSections.resources) },
   {
     label: "News",
     href: "/news",

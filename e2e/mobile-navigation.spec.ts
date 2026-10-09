@@ -8,7 +8,7 @@ const MOBILE_VIEWPORTS = [
 const MENU_ITEMS = [
   "Home",
   "About",
-  "Campuses",
+  "Careers",
   "Academics",
   "Admission",
   "Resources",
@@ -81,11 +81,11 @@ for (const viewport of MOBILE_VIEWPORTS) {
       await page.keyboard.press("Escape");
       await expect(page.getByRole("navigation", { name: "Mobile menu" })).toBeHidden();
 
-      // Link selection (Campuses has no sub-pages, so it's a plain link).
+      // Link selection (Careers has no sub-pages, so it's a plain link).
       await menuButton.click();
       const menu = page.getByRole("navigation", { name: "Mobile menu" });
-      await menu.getByRole("link", { name: "Campuses" }).click();
-      await expect(page).toHaveURL("/campuses");
+      await menu.getByRole("link", { name: "Careers" }).click();
+      await expect(page).toHaveURL("/careers");
       await expect(page.getByRole("navigation", { name: "Mobile menu" })).toBeHidden();
     });
 
