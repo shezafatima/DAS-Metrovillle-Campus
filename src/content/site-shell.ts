@@ -10,10 +10,6 @@ export type SocialPlatform = "facebook" | "instagram" | "youtube" | "tiktok";
 export interface NavigationItem {
   label: string;
   href: string;
-  /** Small caption shown under the label (e.g. "Front Page" under Home) —
-   * confirmed on the live reference site (das.edu.pk), optional so an item
-   * can omit it without a code change. */
-  tagline?: string;
   children?: NavigationItem[];
 }
 
@@ -34,72 +30,79 @@ export interface PortalLink {
 }
 
 export interface FooterContent {
-  /** The brand name shown in the copyright line (e.g. "Dar-e-Arqam
-   * Schools") — the reference footer's bottom bar is the *entire*
-   * footer, no columns or quick-links row above it. */
-  bottomText: string;
+  /** A short description of the school, under the logo. */
+  description: string;
+  logo: { src: string; alt: string; width: number; height: number };
+  headings: { quickLinks: string; portalLinks: string; contact: string };
+  /** The main pages (Campuses is deliberately not here; Careers is). */
+  quickLinks: PortalLink[];
+  /** "Get directions": goes to the Contact page. */
+  directions: PortalLink;
+  /** The copyright sentence for a year (the year is generated, never typed in). */
+  copyright: (year: number) => string;
+  /** "Crafted Excellence with ❤ by <name>", the developer credit. */
+  credit: { before: string; by: string; name: string; href: string };
 }
 
-// Fixed render order (FR-001). Taglines and sub-pages below are grounded in
-// the live reference site (das.edu.pk) itself, not docs/prd.md's rougher
-// "TBD: subpages such as..." guess, which named pages the site doesn't
-// actually have (e.g. it guessed "Uniform" under Academics, but that page is
-// really under Admission). Adding/removing a sub-page later is a content
+/**
+ * The sections of the pages that used to have sub-routes. Each page is ONE
+ * route; its former sub-routes are sections with these ids (`/about#overview`).
+ * The menu children, the page sections and the old-route redirects in
+ * next.config.ts all come from here, so an id is defined once.
+ */
+export interface PageSection {
+  /** Short, lowercase, hyphenated and stable: it is the URL fragment. */
+  id: string;
+  /** The section's h2 and its menu label. */
+  label: string;
+}
+
+export const pageSections = {
+  about: [
+    { id: "overview", label: "Overview" },
+    { id: "salient-features", label: "Salient Features" },
+    { id: "management", label: "Management" },
+    { id: "messages", label: "Messages" },
+  ],
+  academics: [
+    { id: "academics-overview", label: "Academics Overview" },
+    { id: "syllabi", label: "Syllabi" },
+    { id: "examinations", label: "Examinations" },
+    { id: "teachers-training", label: "Teachers' Training" },
+    { id: "hifz-e-quran", label: "Hifz-e-Quran" },
+  ],
+  admission: [
+    { id: "admission-procedure", label: "Admission Procedure" },
+    { id: "class-levels", label: "Class Levels" },
+    { id: "uniform", label: "Uniform" },
+  ],
+  /** Photo Gallery is rendered by GallerySection (007); Mobile Apps is a placeholder. */
+  resources: [
+    { id: "photo-gallery", label: "Photo Gallery" },
+    { id: "mobile-apps", label: "Mobile Apps" },
+  ],
+} satisfies Record<string, PageSection[]>;
+
+function anchors(path: string, sections: PageSection[]): NavigationItem[] {
+  return sections.map((section) => ({ label: section.label, href: `${path}#${section.id}` }));
+}
+
+// Fixed render order (FR-001). Sections are grounded in the live reference
+// site (das.edu.pk), not docs/prd.md's rougher "TBD: subpages such as..."
+// guess. About, Academics, Admission and Resources are single pages whose
+// dropdown links are anchors to their sections; News keeps real sub-routes
+// (its categories hold data). Adding/removing a section later is a content
 // edit only (FR-004), never a code change.
 export const navigationItems: NavigationItem[] = [
-  { label: "Home", href: "/", tagline: "Front Page" },
-  {
-    label: "About",
-    href: "/about",
-    tagline: "Who We Are?",
-    children: [
-      { label: "Overview", href: "/about/overview" },
-      { label: "Salient Features", href: "/about/salient-features" },
-      { label: "Management", href: "/about/management" },
-      { label: "Messages", href: "/about/messages" },
-    ],
-  },
-  { label: "Campuses", href: "/campuses", tagline: "Branch Network" },
-  {
-    label: "Academics",
-    href: "/academics",
-    tagline: "Our Courses",
-    children: [
-      { label: "Academics Overview", href: "/academics/academics-overview" },
-      { label: "Syllabi", href: "/academics/syllabi" },
-      { label: "Examinations", href: "/academics/examinations" },
-      { label: "Teachers' Training", href: "/academics/teachers-training" },
-      { label: "Hifz-e-Quran", href: "/hifz-e-quran" },
-    ],
-  },
-  {
-    label: "Admission",
-    href: "/admission",
-    tagline: "Apply Now",
-    children: [
-      { label: "Admission Procedure", href: "/admission/admission-procedure" },
-      { label: "Class Levels", href: "/admission/class-levels" },
-      { label: "Uniform", href: "/admission/uniform" },
-    ],
-  },
-  {
-    label: "Resources",
-    href: "/resources",
-    tagline: "Gallery & Download",
-    children: [
-      { label: "Photo Gallery", href: "/resources/photo-gallery" },
-      { label: "Prospectus", href: "/resources/prospectus" },
-      { label: "Our Books", href: "/resources/our-books" },
-      { label: "Monthly Arqam", href: "/resources/monthly-arqam" },
-      { label: "Newsletters", href: "/resources/newsletters" },
-      { label: "Useful Links", href: "/resources/useful-links" },
-      { label: "Scarlet Mobile Apps", href: "/resources/scarlet-mobile-apps" },
-    ],
-  },
+  { label: "Home", href: "/" },
+  { label: "About", href: "/about", children: anchors("/about", pageSections.about) },
+  { label: "Careers", href: "/careers" },
+  { label: "Academics", href: "/academics", children: anchors("/academics", pageSections.academics) },
+  { label: "Admission", href: "/admission", children: anchors("/admission", pageSections.admission) },
+  { label: "Resources", href: "/resources", children: anchors("/resources", pageSections.resources) },
   {
     label: "News",
     href: "/news",
-    tagline: "Latest News",
     children: [
       { label: "Head Office", href: "/news/head-office" },
       { label: "Events", href: "/news/events" },
@@ -108,15 +111,16 @@ export const navigationItems: NavigationItem[] = [
       { label: "Announcements", href: "/news/announcements" },
     ],
   },
-  { label: "Contact", href: "/contact", tagline: "Call or Mail" },
+  { label: "Contact", href: "/contact" },
 ];
 
-// The reference top bar's portal-login links (confirmed on the live site)
-// point to external student/parent/staff systems this project doesn't have
-// yet (no auth — Constitution III/out of scope). Rather than fabricate
-// external URLs that don't exist, each links to an internal placeholder
-// page under /portal/<slug>, consistent with every other not-yet-built page
-// in this feature (FR-017's pattern, extended here by content, not code).
+// The reference's portal-login links (confirmed on the live site) point to
+// external student/parent/staff systems this project doesn't have yet (no
+// auth — Constitution III/out of scope). Rather than fabricate external URLs
+// that don't exist, each links to an internal placeholder page under
+// /portal/<slug>, consistent with every other not-yet-built page in this
+// feature (FR-017's pattern, extended here by content, not code). They are
+// utility links, so they sit in the footer (the yellow top bar is gone).
 export const portalLinks: PortalLink[] = [
   { label: "DAS Portal", href: "/portal/das-portal" },
   { label: "ePortal", href: "/portal/eportal" },
@@ -154,7 +158,24 @@ export const contactInfo: ContactInfo = {
 // credit link + social icons) — confirmed directly against the reference by
 // the user, correcting this feature's earlier quick-links-row addition.
 export const footerContent: FooterContent = {
-  bottomText: "Dar-e-Arqam Schools",
+  // PENDING CLIENT APPROVAL: this description was supplied by the project owner and has not been approved by the client yet.
+  description:
+    "Dar-e-Arqam School, Metroville Campus, offers quality education rooted in Islamic values, helping every student grow in knowledge, character and faith.",
+  logo: { src: "/images/logo.svg", alt: "Dar-e-Arqam School Metroville Campus", width: 1974, height: 797 },
+  headings: { quickLinks: "Quick Links", portalLinks: "Portal Links", contact: "Contact Us" },
+  quickLinks: [
+    { label: "Home", href: "/" },
+    { label: "About", href: "/about" },
+    { label: "Academics", href: "/academics" },
+    { label: "Admission", href: "/admission" },
+    { label: "Resources", href: "/resources" },
+    { label: "News", href: "/news" },
+    { label: "Careers", href: "/careers" },
+    { label: "Contact", href: "/contact" },
+  ],
+  directions: { label: "Get directions", href: "/contact" },
+  copyright: (year) => `© ${year} Dar-e-Arqam School, Metroville Campus. All rights reserved.`,
+  credit: { before: "Crafted Excellence with", by: "by", name: "Sheza Fatima", href: "https://sheza-fatima.vercel.app/" },
 };
 
 // Fallback social-preview image for pages with no page-specific one (e.g.

@@ -6,55 +6,17 @@ import { Loader2, Upload, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cloudinaryLoader } from "@/lib/news/cloudinary-loader";
+import { requestSignature, uploadToCloudinary } from "@/lib/uploads/direct-upload";
+import { precheckImage } from "@/lib/uploads/image-limits";
 import { newsCopy } from "@/content/admin";
 import type { CoverImageInput } from "@/lib/validation/news";
 
-const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
-const MAX_BYTES = 5 * 1024 * 1024;
+const SIGN_ENDPOINT = "/api/admin/uploads/sign";
 
 export interface CoverImageFieldProps {
   value: CoverImageInput | null;
   onChange: (value: CoverImageInput | null) => void;
   errorMessage?: string;
-}
-
-interface SignedUpload {
-  cloudName: string;
-  apiKey: string;
-  timestamp: number;
-  signature: string;
-  folder: string;
-  allowedFormats: string;
-  transformation: string;
-  maxBytes: number;
-}
-
-async function requestSignature(): Promise<SignedUpload> {
-  const response = await fetch("/api/admin/uploads/sign", {
-    method: "POST",
-    headers: { "content-type": "application/json" },
-    body: JSON.stringify({ kind: "news-cover" }),
-  });
-  if (!response.ok) throw new Error("sign request failed");
-  return response.json();
-}
-
-async function uploadToCloudinary(file: File, signed: SignedUpload) {
-  const form = new FormData();
-  form.append("file", file);
-  form.append("api_key", signed.apiKey);
-  form.append("timestamp", String(signed.timestamp));
-  form.append("signature", signed.signature);
-  form.append("folder", signed.folder);
-  form.append("allowed_formats", signed.allowedFormats);
-  form.append("transformation", signed.transformation);
-
-  const response = await fetch(`https://api.cloudinary.com/v1_1/${signed.cloudName}/image/upload`, {
-    method: "POST",
-    body: form,
-  });
-  if (!response.ok) throw new Error("upload failed");
-  return response.json() as Promise<{ secure_url: string; public_id: string; width: number; height: number }>;
 }
 
 /**
@@ -73,18 +35,19 @@ export function CoverImageField({ value, onChange, errorMessage }: CoverImageFie
   async function handleFile(file: File) {
     setLocalError(null);
 
-    if (!ALLOWED_TYPES.includes(file.type)) {
+    const failure = await precheckImage(file);
+    if (failure === "bad_format") {
       setLocalError(newsCopy.editor.validation.imageBadFormat);
       return;
     }
-    if (file.size > MAX_BYTES) {
+    if (failure === "too_large") {
       setLocalError(newsCopy.editor.validation.imageTooLarge);
       return;
     }
 
     setUploading(true);
     try {
-      const signed = await requestSignature();
+      const signed = await requestSignature(SIGN_ENDPOINT, "news-cover");
       const result = await uploadToCloudinary(file, signed);
       onChange({
         url: result.secure_url,

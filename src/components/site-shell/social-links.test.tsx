@@ -41,18 +41,10 @@ describe("SocialLinks", () => {
     }
   });
 
-  it("defaults to the light (white badge) variant", () => {
+  it("is a yellow rounded-square badge with a navy icon (visible on the white footer)", () => {
     render(<SocialLinks social={{ facebook: "https://facebook.com/example" }} />);
-    expect(screen.getByRole("link", { name: "Facebook" })).toHaveClass("bg-surface");
-  });
-
-  it("switches to the dark (filled badge) variant", () => {
-    render(
-      <SocialLinks
-        social={{ facebook: "https://facebook.com/example" }}
-        variant="dark"
-      />
-    );
-    expect(screen.getByRole("link", { name: "Facebook" })).toHaveClass("bg-text");
+    const badge = screen.getByRole("link", { name: "Facebook" });
+    expect(badge).toHaveClass("rounded-md", "text-primary");
+    expect(badge.className).toContain("bg-(--color-topbar)");
   });
 });

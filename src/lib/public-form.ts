@@ -6,7 +6,7 @@ export type PublicFormCheckResult =
   | { kind: "limited"; retryAfterSeconds: number }
   | { kind: "honeypot" };
 
-function extractIp(request: Request): string {
+export function extractIp(request: Request): string {
   return (
     request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
     request.headers.get("x-real-ip") ??

@@ -1,4 +1,5 @@
 import { execFileSync } from "node:child_process";
+import { rmSync } from "node:fs";
 import path from "node:path";
 import { loadEnvConfig } from "@next/env";
 import mongoose from "mongoose";
@@ -41,7 +42,19 @@ export default async function globalSetup() {
 
   try {
     await mongoose.connect(uri, { dbName: "dar_e_arqam_test", serverSelectionTimeoutMS: 15000 });
-    for (const name of ["user", "session", "account", "throttles", "news", "signups", "messages"]) {
+    for (const name of [
+      "user",
+      "session",
+      "account",
+      "throttles",
+      "news",
+      "messages",
+      "adminNotificationStates",
+      "userChanges",
+      "settings",
+      "careerApplications",
+      "careerApplicationLocks",
+    ]) {
       try {
         await mongoose.connection.db?.collection(name).deleteMany({});
       } catch {
@@ -49,6 +62,8 @@ export default async function globalSetup() {
       }
     }
     await mongoose.disconnect();
+    // 012 careers: stored CVs from earlier runs (the E2E document store directory).
+    rmSync(path.join(projectRoot, ".data/e2e-documents"), { recursive: true, force: true });
 
     execFileSync("npx", ["tsx", "scripts/seed-admin.ts"], {
       cwd: projectRoot,

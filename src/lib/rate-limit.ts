@@ -11,9 +11,14 @@ import { Throttle } from "@/models/throttle";
  * section: 5 failed logins per source address / 15 min, 20 per account /
  * 15 min, either triggers a 15-minute block; 5 public-form submissions
  * per source / 10 min.
+ *
+ * The Account page's current-password check (010) has its own
+ * per-account counter — 5 wrong / 15 min, 15-minute block — under a
+ * separate key prefix, so it never shares state with login's.
  */
 export const LOGIN_IP_POLICY = { threshold: 5, windowSeconds: 900, blockSeconds: 900 } as const;
 export const LOGIN_EMAIL_POLICY = { threshold: 20, windowSeconds: 900, blockSeconds: 900 } as const;
+export const PASSWORD_CHANGE_POLICY = { threshold: 5, windowSeconds: 900, blockSeconds: 900 } as const;
 export const PUBLIC_FORM_POLICY = { max: 5, windowSeconds: 600 } as const;
 
 function isDuplicateKeyError(err: unknown): boolean {
@@ -39,7 +44,7 @@ async function bumpWindowCounter(
   const incremented = await Throttle.findOneAndUpdate(
     { key, windowStart: { $gt: cutoff } },
     { $inc: { count: 1 }, $max: { expiresAt: windowExpiresAt } },
-    { new: true },
+    { returnDocument: "after" },
   ).lean();
   if (incremented) {
     return { count: incremented.count, windowStart: incremented.windowStart };
@@ -49,7 +54,7 @@ async function bumpWindowCounter(
     const reset = await Throttle.findOneAndUpdate(
       { key, $or: [{ windowStart: { $lte: cutoff } }, { windowStart: null }] },
       { $set: { count: 1, windowStart: now, blockedUntil: null, expiresAt: windowExpiresAt } },
-      { upsert: true, new: true },
+      { upsert: true, returnDocument: "after" },
     ).lean();
     if (reset) return { count: reset.count, windowStart: reset.windowStart };
   } catch (err) {
@@ -61,7 +66,7 @@ async function bumpWindowCounter(
   const retried = await Throttle.findOneAndUpdate(
     { key },
     { $inc: { count: 1 }, $max: { expiresAt: windowExpiresAt } },
-    { new: true, upsert: true, setDefaultsOnInsert: true },
+    { returnDocument: "after", upsert: true, setDefaultsOnInsert: true },
   ).lean();
   return {
     count: retried?.count ?? 1,

@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import { Button } from "@/components/ui/button";
+import { PasswordInput } from "@/components/ui/password-input";
 import { login, type LoginActionState } from "@/app/admin/login/actions";
 import { loginCopy } from "@/content/admin";
 import { HONEYPOT_FIELD } from "@/lib/honeypot";
@@ -47,13 +48,12 @@ export function LoginForm({ next }: { next: string }) {
         <label htmlFor="password" className="font-button text-sm text-text">
           {loginCopy.passwordLabel}
         </label>
-        <input
+        <PasswordInput
           id="password"
           name="password"
-          type="password"
           autoComplete="current-password"
           required
-          className="rounded-md border border-neutral-100 px-3 py-2 font-body text-body text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="h-auto rounded-md border-neutral-100 px-3 py-2 font-body text-body text-text"
         />
       </div>
 

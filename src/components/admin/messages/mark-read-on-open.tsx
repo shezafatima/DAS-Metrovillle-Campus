@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import type { MessageStatus } from "@/lib/messages/statuses";
+import { useNotifications } from "@/components/admin/notifications/notifications-provider";
 
 export interface MarkReadOnOpenProps {
   id: string;
@@ -23,6 +24,7 @@ export interface MarkReadOnOpenProps {
  */
 export function MarkReadOnOpen({ id, status }: MarkReadOnOpenProps) {
   const router = useRouter();
+  const { refreshNow } = useNotifications();
   const statusAtOpen = useRef(status);
   const fired = useRef(false);
 
@@ -34,7 +36,10 @@ export function MarkReadOnOpen({ id, status }: MarkReadOnOpenProps) {
       .then(async (response) => {
         if (!response.ok) return;
         const body = await response.json();
-        if (body.changed) router.refresh();
+        if (body.changed) {
+          router.refresh();
+          refreshNow();
+        }
       })
       .catch(() => {
         // Silent by contract — the admin can set the status manually.

@@ -11,7 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "@/components/ui/toaster";
 import { RichTextEditor } from "@/components/admin/news/rich-text-editor";
 import { CoverImageField } from "@/components/admin/news/cover-image-field";
-import { useUnsavedChanges } from "@/components/admin/news/use-unsaved-changes";
+import { useUnsavedChanges } from "@/components/admin/use-unsaved-changes";
 import { newsCopy } from "@/content/admin";
 import { NEWS_CATEGORIES } from "@/lib/news/categories";
 import { slugify } from "@/lib/news/slug";

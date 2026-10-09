@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 /**
  * Seeding/reading helpers for the contact-messages (008) Playwright
  * specs. Inserts directly into the `messages` collection (bypassing the
- * app's mutation layer, same spirit as e2e/helpers/signups.ts) so specs
+ * app's mutation layer, same spirit as e2e/helpers/careers.ts) so specs
  * can set up exact fixtures without going through the public form first.
  */
 

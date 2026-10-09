@@ -1,6 +1,7 @@
 // @vitest-environment node
 import { it, expect, vi } from "vitest";
 import { describeWithDb } from "@/test/db";
+import { mockNextHeaders } from "@/test/next-headers";
 
 const ADMIN_EMAIL = "session-route-test@example.com";
 const ADMIN_PASSWORD = "correct-horse-battery-staple";
@@ -26,7 +27,7 @@ async function seedAdmin() {
 
 describeWithDb("GET /api/admin/session", ["user", "account", "session"], () => {
   it("returns 401 with no cookie", async () => {
-    vi.doMock("next/headers", () => ({ headers: async () => new Headers() }));
+    vi.doMock("next/headers", () => mockNextHeaders(new Headers()));
     const { GET } = await import("./route");
     const response = await GET();
     expect(response.status).toBe(401);
@@ -47,9 +48,7 @@ describeWithDb("GET /api/admin/session", ["user", "account", "session"], () => {
     const cookie = setHeaders.getSetCookie()[0]?.split(";")[0];
     expect(cookie).toBeTruthy();
 
-    vi.doMock("next/headers", () => ({
-      headers: async () => new Headers({ cookie: cookie! }),
-    }));
+    vi.doMock("next/headers", () => mockNextHeaders(new Headers({ cookie: cookie! })));
     vi.resetModules();
     const { GET } = await import("./route");
     const response = await GET();
@@ -74,9 +73,7 @@ describeWithDb("GET /api/admin/session", ["user", "account", "session"], () => {
       .collection("session")
       .updateMany({}, { $set: { expiresAt: new Date(Date.now() - 60_000) } });
 
-    vi.doMock("next/headers", () => ({
-      headers: async () => new Headers({ cookie: cookie! }),
-    }));
+    vi.doMock("next/headers", () => mockNextHeaders(new Headers({ cookie: cookie! })));
     vi.resetModules();
     const { GET } = await import("./route");
     const response = await GET();

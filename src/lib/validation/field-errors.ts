@@ -1,7 +1,7 @@
 import type { z } from "zod";
 
 /**
- * Shared by every public form schema (signup 004, message 008) and
+ * Shared by every public form schema (message 008, career application 012) and
  * their route handlers — Constitution IV: one schema, never two
  * validation rules that can drift apart.
  */

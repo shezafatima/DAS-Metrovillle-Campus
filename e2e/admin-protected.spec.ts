@@ -14,7 +14,7 @@ test.describe("protected admin area (US3)", () => {
     await expect(page).toHaveURL(/\/admin\/login/);
 
     await page.getByLabel("Email").fill(E2E_ADMIN.email);
-    await page.getByLabel("Password").fill(E2E_ADMIN.password);
+    await page.getByLabel("Password", { exact: true }).fill(E2E_ADMIN.password);
     await page.getByRole("button", { name: "Sign in" }).click();
 
     await expect(page).toHaveURL("/admin/news");
@@ -23,7 +23,7 @@ test.describe("protected admin area (US3)", () => {
   test("an unsafe next destination is ignored in favour of /admin", async ({ page }) => {
     await page.goto("/admin/login?next=https://evil.com");
     await page.getByLabel("Email").fill(E2E_ADMIN.email);
-    await page.getByLabel("Password").fill(E2E_ADMIN.password);
+    await page.getByLabel("Password", { exact: true }).fill(E2E_ADMIN.password);
     await page.getByRole("button", { name: "Sign in" }).click();
     await expect(page).toHaveURL("/admin");
   });
@@ -58,7 +58,7 @@ test.describe("protected admin area (US3)", () => {
   test("a valid session is served normally at the page and API level", async ({ page }) => {
     await page.goto("/admin/login");
     await page.getByLabel("Email").fill(E2E_ADMIN.email);
-    await page.getByLabel("Password").fill(E2E_ADMIN.password);
+    await page.getByLabel("Password", { exact: true }).fill(E2E_ADMIN.password);
     await page.getByRole("button", { name: "Sign in" }).click();
     await expect(page).toHaveURL("/admin");
 

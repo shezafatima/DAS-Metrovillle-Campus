@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { searchSite, type SearchResult } from "./site-search";
+import { searchIndex, searchSite, type SearchResult } from "./site-search";
 
 const fixtureIndex: SearchResult[] = [
   { label: "Home", href: "/" },
@@ -36,5 +36,16 @@ describe("searchSite", () => {
   it("includes the parent label for a sub-page result", () => {
     const [result] = searchSite("overview", fixtureIndex);
     expect(result.parentLabel).toBe("About");
+  });
+});
+
+describe("the real search index (012 careers)", () => {
+  it("finds the Careers page, once, as a main menu item", () => {
+    expect(searchSite("career", searchIndex)).toEqual([{ label: "Careers", href: "/careers", parentLabel: undefined }]);
+    expect(searchSite("CAREERS", searchIndex).map((r) => r.href)).toEqual(["/careers"]);
+  });
+
+  it("still finds the regular menu pages", () => {
+    expect(searchSite("admission", searchIndex).some((r) => r.href === "/admission")).toBe(true);
   });
 });

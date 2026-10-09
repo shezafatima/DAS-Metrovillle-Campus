@@ -40,6 +40,59 @@ const envSchema = z.object({
     .string()
     .optional()
     .transform((value) => (value?.trim() === "skip" ? ("skip" as const) : undefined)),
+  // Private document store (012 careers, ADR-0004/0007). Blank behaves like
+  // unset: production defaults to Vercel Blob; every other environment
+  // defaults to the local directory driver so dev and tests need no account.
+  DOCUMENT_STORE_DRIVER: z
+    .string()
+    .optional()
+    .transform((value) => {
+      const trimmed = value?.trim().toLowerCase();
+      if (trimmed) return trimmed;
+      return process.env.NODE_ENV === "production" ? "vercel-blob" : "local";
+    })
+    .pipe(z.enum(["vercel-blob", "local"], { error: "DOCUMENT_STORE_DRIVER must be vercel-blob or local" })),
+  DOCUMENT_STORE_LOCAL_DIR: z
+    .string()
+    .optional()
+    .transform((value) => value?.trim() || ".data/documents"),
+  // Vercel Blob credentials: OIDC (BLOB_STORE_ID + runtime token) on Vercel,
+  // BLOB_READ_WRITE_TOKEN as the fallback elsewhere.
+  BLOB_STORE_ID: z
+    .string()
+    .optional()
+    .transform((value) => value?.trim() || undefined),
+  BLOB_READ_WRITE_TOKEN: z
+    .string()
+    .optional()
+    .transform((value) => value?.trim() || undefined),
+  // How long applications and their CVs are kept (Constitution V). The
+  // default is not a client-agreed value; scripts/check-release-content.ts
+  // blocks a production build until it is set explicitly.
+  CAREERS_RETENTION_MONTHS: z
+    .string()
+    .optional()
+    .transform((value) => value?.trim() || "12")
+    .pipe(
+      z
+        .string()
+        .regex(/^\d+$/, "CAREERS_RETENTION_MONTHS must be a whole number of months from 1 to 120")
+        .transform(Number)
+        .pipe(z.number().int().min(1, "CAREERS_RETENTION_MONTHS must be from 1 to 120").max(120, "CAREERS_RETENTION_MONTHS must be from 1 to 120")),
+    ),
+}).superRefine((env, ctx) => {
+  if (env.DOCUMENT_STORE_DRIVER === "local" && process.env.NODE_ENV === "production") {
+    ctx.addIssue({ code: "custom", message: "DOCUMENT_STORE_DRIVER=local is not allowed in production" });
+  }
+  // Credentials are required only where CVs would really be stored.
+  if (
+    env.DOCUMENT_STORE_DRIVER === "vercel-blob" &&
+    process.env.NODE_ENV === "production" &&
+    !env.BLOB_STORE_ID &&
+    !env.BLOB_READ_WRITE_TOKEN
+  ) {
+    ctx.addIssue({ code: "custom", message: "Missing required environment variable: BLOB_READ_WRITE_TOKEN" });
+  }
 });
 
 export type Env = z.infer<typeof envSchema>;

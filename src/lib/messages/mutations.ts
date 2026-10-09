@@ -6,7 +6,7 @@ import type { MessageStatus } from "@/lib/messages/statuses";
 
 /**
  * The append-only write path for contact messages (ADR-0001's "Boundary"
- * — this rule does NOT extend to messages the way it does to signups).
+ * — this rule does NOT extend to messages the way it did to the retired signups).
  * It must never upsert, look up by email, or pass `withDeleted`.
  */
 
@@ -39,7 +39,7 @@ export async function markMessageRead(
   const updated = await Message.findOneAndUpdate(
     { _id: id, status: "new" },
     { $set: { status: "read", statusChangedAt: new Date() } },
-    { new: true },
+    { returnDocument: "after" },
   );
   if (updated) {
     return { id, status: updated.status as MessageStatus, changed: true };
@@ -61,7 +61,7 @@ export async function setMessageStatus(
   const updated = await Message.findOneAndUpdate(
     { _id: id },
     { $set: { status, statusChangedAt: now } },
-    { new: true },
+    { returnDocument: "after" },
   );
   if (!updated) return null;
   return { id, status: updated.status as MessageStatus, statusChangedAt: now.toISOString() };

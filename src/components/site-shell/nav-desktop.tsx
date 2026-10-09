@@ -64,7 +64,7 @@ export function NavDesktop({ items = defaultNavigationItems }: NavDesktopProps) 
 
   return (
     <nav aria-label="Main menu" className="hidden lg:block">
-      <ul className="flex flex-wrap items-center gap-4 xl:gap-6">
+      <ul className="flex items-center gap-4 xl:gap-6">
         {items.map((item) => {
           const hasChildren = Boolean(item.children?.length);
           const isActive = isNavItemActive(pathname, item.href);
@@ -91,7 +91,7 @@ export function NavDesktop({ items = defaultNavigationItems }: NavDesktopProps) 
                 aria-current={isActive ? "page" : undefined}
                 aria-haspopup={hasChildren ? "true" : undefined}
                 aria-expanded={hasChildren ? isOpen : undefined}
-                className="flex flex-col items-center py-2 text-center"
+                className="flex items-center py-2 text-center"
               >
                 <span
                   dir="auto"
@@ -113,20 +113,6 @@ export function NavDesktop({ items = defaultNavigationItems }: NavDesktopProps) 
                 >
                   {item.label}
                 </span>
-                {item.tagline && (
-                  <span
-                    className={cn(
-                      // Hidden at the tightest desktop width (1024-1279px) only
-                      // — 8 items' taglines don't fit alongside the logo at
-                      // their full, unshrunk size there; same size as always
-                      // once shown again at xl:. Labels alone still fit at lg.
-                      "hidden font-body text-(length:--text-nav-tagline) leading-(--text-nav-tagline--line-height) xl:block",
-                      isActive ? "text-primary" : "text-text-muted"
-                    )}
-                  >
-                    {item.tagline}
-                  </span>
-                )}
               </Link>
               {hasChildren && (
                 <ul

@@ -21,12 +21,28 @@ export interface CoverImageValue {
 
 export interface CoverImageProps {
   image: CoverImageValue;
-  variant: "card" | "detail";
+  variant: "card" | "detail" | "home";
   priority?: boolean;
 }
 
 /** A post's cover, sized to the viewer's screen via Cloudinary (FR-026). */
 export function CoverImage({ image, variant, priority }: CoverImageProps) {
+  if (variant === "home") {
+    return (
+      <div className="relative aspect-home-news-card w-full overflow-hidden bg-neutral-100">
+        <Image
+          src={image.url}
+          alt={image.alt}
+          fill
+          loader={cloudinaryLoader}
+          sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+          className="object-cover motion-safe:transition-transform motion-safe:duration-(--motion-slide) group-hover:scale-105 group-focus-visible:scale-105"
+          priority={priority}
+        />
+      </div>
+    );
+  }
+
   if (variant === "card") {
     return (
       <div className="relative aspect-news-card w-full overflow-hidden bg-neutral-100">
@@ -59,10 +75,10 @@ export function CoverImage({ image, variant, priority }: CoverImageProps) {
 }
 
 /** Shown wherever a post has no cover image (US4/FR-017 — the layout must not break). */
-export function CoverImagePlaceholder({ variant }: { variant: "card" | "detail" }) {
+export function CoverImagePlaceholder({ variant }: { variant: "card" | "detail" | "home" }) {
   return (
     <div
-      className="aspect-news-card w-full bg-neutral-100"
+      className={variant === "home" ? "aspect-home-news-card w-full bg-neutral-100" : "aspect-news-card w-full bg-neutral-100"}
       aria-hidden="true"
       data-variant={variant}
     />

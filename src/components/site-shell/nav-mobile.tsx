@@ -73,19 +73,6 @@ export function NavMobile({ items = defaultNavigationItems }: NavMobileProps) {
                       >
                         {item.label}
                       </span>
-                      {item.tagline && (
-                        <span
-                          className={cn(
-                            // Same cn()/text-* collision as nav-desktop.tsx: bare
-                            // text-nav-tagline gets dropped when merged with
-                            // text-primary/text-text-muted below.
-                            "block font-body text-(length:--text-nav-tagline) leading-(--text-nav-tagline--line-height) font-normal",
-                            isActive ? "text-primary" : "text-text-muted"
-                          )}
-                        >
-                          {item.tagline}
-                        </span>
-                      )}
                     </>
                   );
 
@@ -113,7 +100,7 @@ export function NavMobile({ items = defaultNavigationItems }: NavMobileProps) {
                     >
                       <Accordion.Header>
                         <Accordion.Trigger className="group flex w-full items-center justify-between py-3 text-text">
-                          <span className="flex flex-col items-start">{label}</span>
+                          {label}
                           <ChevronDown
                             aria-hidden="true"
                             className="size-4 shrink-0 transition-transform duration-(--motion-fast) group-data-panel-open:rotate-180"

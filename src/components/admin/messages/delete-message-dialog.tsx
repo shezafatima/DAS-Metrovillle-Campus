@@ -2,6 +2,7 @@
 
 import { AdminDeleteDialog } from "@/components/admin/admin-delete-dialog";
 import { messagesCopy } from "@/content/admin";
+import { useNotifications } from "@/components/admin/notifications/notifications-provider";
 
 export interface DeleteMessageDialogProps {
   id: string;
@@ -11,12 +12,14 @@ export interface DeleteMessageDialogProps {
 }
 
 export function DeleteMessageDialog({ id, subject, redirectTo, triggerLabel }: DeleteMessageDialogProps) {
+  const { refreshNow } = useNotifications();
   return (
     <AdminDeleteDialog
       endpoint={`/api/admin/messages/${id}`}
       itemName={subject}
       redirectTo={redirectTo}
       triggerLabel={triggerLabel}
+      onSuccess={() => refreshNow()}
       copy={{
         trigger: messagesCopy.table.delete,
         title: messagesCopy.deleteDialog.title,

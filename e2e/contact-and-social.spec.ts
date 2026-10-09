@@ -24,13 +24,12 @@ test.describe("Contact details and social links", () => {
     ).toHaveAttribute("href", `mailto:${contactInfo.email}`);
   });
 
-  test("the top bar shows every configured portal link", async ({ page }) => {
+  test("the footer shows every configured portal link, and the header none", async ({ page }) => {
     await page.goto("/");
-    const topBar = page.locator(".bg-topbar");
+    const nav = page.getByRole("contentinfo").getByRole("navigation", { name: "Portal links" });
     for (const link of portalLinks) {
-      await expect(
-        topBar.getByRole("link", { name: link.label })
-      ).toHaveAttribute("href", link.href);
+      await expect(nav.getByRole("link", { name: link.label })).toHaveAttribute("href", link.href);
+      await expect(page.getByRole("banner").getByRole("link", { name: link.label })).toHaveCount(0);
     }
   });
 

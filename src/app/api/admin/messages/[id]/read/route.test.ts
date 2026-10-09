@@ -3,6 +3,7 @@ import { it, expect, vi, beforeEach } from "vitest";
 import { describeWithDb } from "@/test/db";
 import { seedTestAdmin, getTestSessionCookie } from "@/test/admin-session";
 import { Message } from "@/models/message";
+import { mockNextHeaders } from "@/test/next-headers";
 
 const ADMIN_EMAIL = "messages-read-route-test@example.com";
 const ADMIN_PASSWORD = "correct-horse-battery-staple";
@@ -34,7 +35,7 @@ describeWithDb("POST /api/admin/messages/[id]/read", ["messages", "user", "accou
   });
 
   it("returns 401 without a session", async () => {
-    vi.doMock("next/headers", () => ({ headers: async () => new Headers() }));
+    vi.doMock("next/headers", () => mockNextHeaders(new Headers()));
     const { POST } = await import("./route");
     const response = await POST(new Request("http://localhost/x"), ctx(UNKNOWN_ID));
     expect(response.status).toBe(401);
@@ -46,7 +47,7 @@ describeWithDb("POST /api/admin/messages/[id]/read", ["messages", "user", "accou
     await seedTestAdmin(ADMIN_EMAIL, ADMIN_PASSWORD);
     const cookie = await getTestSessionCookie(ADMIN_EMAIL, ADMIN_PASSWORD);
     const doc = await createMessageDoc();
-    vi.doMock("next/headers", () => ({ headers: async () => new Headers({ cookie }) }));
+    vi.doMock("next/headers", () => mockNextHeaders(new Headers({ cookie })));
     vi.resetModules();
     const { POST } = await import("./route");
 
@@ -60,7 +61,7 @@ describeWithDb("POST /api/admin/messages/[id]/read", ["messages", "user", "accou
     await seedTestAdmin(ADMIN_EMAIL, ADMIN_PASSWORD);
     const cookie = await getTestSessionCookie(ADMIN_EMAIL, ADMIN_PASSWORD);
     const doc = await createMessageDoc({ status: "read" });
-    vi.doMock("next/headers", () => ({ headers: async () => new Headers({ cookie }) }));
+    vi.doMock("next/headers", () => mockNextHeaders(new Headers({ cookie })));
     vi.resetModules();
     const { POST } = await import("./route");
 
@@ -75,7 +76,7 @@ describeWithDb("POST /api/admin/messages/[id]/read", ["messages", "user", "accou
     const cookie = await getTestSessionCookie(ADMIN_EMAIL, ADMIN_PASSWORD);
     const doc = await createMessageDoc();
     await Message.softDeleteById(doc._id);
-    vi.doMock("next/headers", () => ({ headers: async () => new Headers({ cookie }) }));
+    vi.doMock("next/headers", () => mockNextHeaders(new Headers({ cookie })));
     vi.resetModules();
     const { POST } = await import("./route");
 

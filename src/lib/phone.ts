@@ -1,6 +1,6 @@
 /**
- * Pakistani mobile phone handling — shared by signup (004) and contact
- * (008) (FR-006; research.md §2). Storage form is E.164
+ * Pakistani mobile phone handling — shared by contact (008) and careers
+ * (012) (FR-006; research.md §2). Storage form is E.164
  * (`+92 3XXXXXXXXX`, settled against docs/architecture.md during
  * planning); the admin sees the local form (`03XXXXXXXXX`) they
  * recognise.

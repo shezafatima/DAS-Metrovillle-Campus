@@ -1,5 +1,6 @@
-import { PagePlaceholder } from "@/components/site-shell/page-placeholder";
+import { AnchoredPage } from "@/components/site-shell/anchored-sections";
+import { pageSections } from "@/content/site-shell";
 
 export default function AboutPage() {
-  return <PagePlaceholder title="About" />;
+  return <AnchoredPage title="About" sections={pageSections.about} />;
 }

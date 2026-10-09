@@ -7,7 +7,9 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
+  /* The page-wide default (html uses font-sans). It once pointed at itself, which is invalid and left
+     every element without its own font class in the browser's serif; it now follows the site body font. */
+  --font-sans: var(--font-body);
   --font-mono: var(--font-geist-mono);
   --font-heading: var(--font-sans);
   --color-sidebar-ring: var(--sidebar-ring);
@@ -68,7 +70,6 @@
   --color-topbar: #ffff00;
   /* research/tokens/home-1440.json footerBottomBar.sample.style.backgroundColor
      — rgb(234, 234, 238), distinct from the general --color-neutral-100. */
-  --color-footer-bottom: #eaeaee;
 
   --font-body: "softLINKS Regular", Arial, Helvetica, sans-serif;
   --font-body-urdu: "softLINKS Urdu Regular", "Noto Nastaliq Urdu", Tahoma, sans-serif;
@@ -94,8 +95,6 @@
   --text-button-lg: 18px;
   --text-button-lg--line-height: 21px;
   --text-button-lg--font-weight: 600;
-  --text-footer-link: 16px;
-  --text-footer-link--line-height: 24px;
 
   /* Dropdown sub-nav text, the top bar's portal links, and each top-level
      item's small tagline (e.g. "Front Page" under HOME) — confirmed
@@ -127,6 +126,8 @@
 
   --container-max-width: 1280px;
   --container-gutter-x: 30px;
+  /* The Progress Dashboard's stats: a narrower column than the page container, so the four items sit closer together. */
+  --container-home-stats-max-width: 960px;
 
   --motion-fast: 0.2s;
   --motion-medium: 0.3s;
@@ -149,6 +150,8 @@
   --text-news-read-more--line-height: 24px;
   --color-news-card-border: #ebeaea;
   --aspect-news-card: 400 / 187;
+  /* The home page's news cards (HomeNewsCard): a 5:4 cover. */
+  --aspect-home-news-card: 5 / 4;
   /* Asymmetric shorthand (30px 25px 20px), so it isn't named
      --spacing-news-*: Tailwind's --spacing-* namespace only makes
      sense for single-dimension scale steps. Applied via .news-card in
@@ -231,6 +234,68 @@
   --spacing-contact-icon: 200px;
   --spacing-contact-columns-gap: 51px;
   --spacing-contact-map-height: 552px;
+
+  /* Home sections (006) — extracted per section from https://das.edu.pk/;
+     see research/design-tokens.md "Home sections (006)". */
+  --color-home-heading: #223355;
+  --color-home-dark-text: #333333;
+  --color-home-muted-band: #f7f5f4;
+  --color-home-salient-band: #faf9f8;
+  --color-home-partners-band: #e9e9ed;
+  --color-home-flip-front: #eeeeee;
+  --color-home-flip-back-text: #faf9f8;
+  --color-home-flip-admission: #e82264;
+  --color-home-flip-admission-back: #ff709f;
+  --color-home-flip-salient: #029bd8;
+  --color-home-flip-salient-back: #00bcd4;
+  --color-home-flip-branch: #67c100;
+  --color-home-flip-branch-back: #8bc34a;
+  --color-home-flip-curriculum: #607d8b;
+  --color-home-flip-curriculum-back: #607d8b;
+  --color-home-salient-title: #005b8c;
+  --text-home-heading: 30px;
+  --text-home-heading--line-height: 36px;
+  --text-home-heading--font-weight: 700;
+  --text-home-heading-md: 29.61px;
+  --text-home-heading-sm: 24.84px;
+  --text-home-subheading: 20px;
+  --text-home-subheading--line-height: 24px;
+  --text-home-flip-title: 30px;
+  --text-home-flip-title--line-height: 36px;
+  --text-home-counter: 50px;
+  --text-home-counter-label: 18px;
+  /* Breathing room (owner's request, 2026-10-01; deliberately more generous than
+     the reference's 10-50px, see spec Deviations): one section rhythm used for
+     the top and bottom padding of every home section. 48px on phones, 80px from
+     1024px (the override is at the end of this file). */
+  --spacing-home-section-y: 48px;
+  --spacing-home-band-y: var(--spacing-home-section-y);
+  --spacing-home-salient-top: var(--spacing-home-section-y);
+  --spacing-home-dashboard-y: calc(var(--spacing-home-section-y) / 2);
+  --spacing-home-partners-y: var(--spacing-home-section-y);
+  --spacing-home-heading-gap: 18px;
+  --spacing-home-carousel-gap: 30px;
+  --spacing-home-flip-width: 232px;
+  --spacing-home-flip-height: 341px;
+  --spacing-home-flip-height-sm: 293px;
+  --spacing-home-flip-padding: 27px;
+  --spacing-home-read-more-x: 29px;
+  --spacing-home-read-more-y: 13px;
+  --spacing-home-book-height: 280px;
+  /* The partners ticker (RollingStrip kind="logo"): a logo is as wide as its own shape, up to the width cap, at a small fixed height, with an equal gap. */
+  --spacing-home-partner-box-h: 120px;
+  --spacing-home-partner-box-h-sm: 92px;
+  --spacing-home-partner-box-w: 270px;
+  --spacing-home-partner-gap: 88px;
+  --spacing-home-partner-gap-sm: 68px;
+  --spacing-home-counter-icon: 40px;
+  --spacing-home-hero-height: 424px;
+  --spacing-home-hero-height-sm: 328px;
+  --spacing-home-divider-width: 300px;
+  --radius-home-flip: 4px;
+  --radius-home-careers-button: 6px;
+  --color-home-careers-button-hover: var(--color-signup-highlight);
+  --home-carousel-autoplay-ms: 5000;
 
   /* Admin dashboard layout tokens — no das.edu.pk reference exists for the
      admin area (spec 002-foundation "Deviations from the Reference"), so
@@ -372,10 +437,343 @@
   }
   html {
     @apply font-sans;
+    /* The public header is one fixed height at every scroll position (HeaderFrame). */
+    --header-h: 4rem;
+    /* Anchored sections stop this far from the top: exactly the header's height. */
+    --anchor-scroll-margin: var(--header-h);
+  }
+  @media (min-width: 64rem) {
+    html {
+      --header-h: 4.5rem;
+    }
+  }
+  /* Smooth scrolling to anchors, except for visitors who ask for less motion. */
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+  .anchor-section {
+    scroll-margin-top: var(--anchor-scroll-margin);
   }
 }
 
 @layer components {
+  /* Salient features (SalientRing): four items 90deg apart on a ring that turns slowly, each counter-turning so its
+     icon and heading stay upright; the emblem in the middle stays still. An item is a third of the ring's width, the
+     largest size at which two neighbours never overlap at any angle, and everything stays inside the ring's box. The
+     ring is as wide as its column (up to 36rem), a little wider than the column on a phone, so it is the same circle,
+     smaller. Only transform animates. */
+  .salient-ring {
+    container-type: inline-size;
+    --spin: 70s;
+    position: relative;
+    width: min(calc(100% + 1.5rem), 36rem);
+    aspect-ratio: 1;
+    margin-inline: calc((100% - min(calc(100% + 1.5rem), 36rem)) / 2);
+  }
+  .salient-list {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    animation: salient-spin var(--spin) linear infinite;
+    will-change: transform;
+  }
+  .salient-item {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 31%;
+    aspect-ratio: 1;
+    margin: -15.5% 0 0 -15.5%;
+    transform: rotate(var(--a)) translateY(-111.3%) rotate(calc(var(--a) * -1));
+  }
+  .salient-item-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2cqw;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    animation: salient-unspin var(--spin) linear infinite;
+    will-change: transform;
+  }
+  .salient-icon {
+    width: 56%;
+    height: auto;
+  }
+  .salient-title {
+    font-size: clamp(0.5625rem, 2.9cqw, 1.0625rem);
+    line-height: 1.2;
+  }
+  .salient-logo {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 20%;
+    height: auto;
+    transform: translate(-50%, -50%);
+  }
+  .salient-ring[data-paused="true"] .salient-list,
+  .salient-ring[data-paused="true"] .salient-item-inner {
+    animation-play-state: paused;
+  }
+  @keyframes salient-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  @keyframes salient-unspin {
+    to {
+      transform: rotate(-360deg);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .salient-list,
+    .salient-item-inner {
+      animation: none !important;
+      will-change: auto;
+    }
+  }
+
+  /* Home rolling strips (RollingStrip: the books and the partners): the track moves by transform only; each item carries its own right margin, so one
+     half of the doubled track is exactly the distance to travel and the loop has no seam. */
+  .roll-strip {
+    overflow: hidden;
+  }
+  .roll-track {
+    display: flex;
+    width: max-content;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .roll-item {
+    position: relative;
+    flex: none;
+    width: calc(var(--spacing-home-book-height) * 400 / 508);
+    height: var(--spacing-home-book-height);
+    margin-right: 1.5rem;
+  }
+  .roll-strip[data-mode="loop"] .roll-track {
+    animation: roll-strip var(--roll-duration-sm, var(--roll-duration, 60s)) linear infinite;
+    will-change: transform;
+  }
+  @media (min-width: 48rem) {
+    .roll-strip[data-mode="loop"] .roll-track {
+      animation-duration: var(--roll-duration, 60s);
+    }
+  }
+  .roll-strip[data-direction="reverse"] .roll-track {
+    animation-direction: reverse;
+  }
+  /* Partner logos: small, as wide as their own shape up to the cap (never stretched), an equal gap. */
+  .roll-strip[data-kind="logo"] {
+    --roll-h: var(--spacing-home-partner-box-h-sm);
+    --roll-gap: var(--spacing-home-partner-gap-sm);
+  }
+  @media (min-width: 48rem) {
+    .roll-strip[data-kind="logo"] {
+      --roll-h: var(--spacing-home-partner-box-h);
+      --roll-gap: var(--spacing-home-partner-gap);
+    }
+  }
+  .roll-strip[data-kind="logo"] .roll-item {
+    width: min(var(--spacing-home-partner-box-w), calc(var(--roll-h) * var(--ar)));
+    height: var(--roll-h);
+    margin-right: var(--roll-gap);
+  }
+  .roll-strip[data-kind="logo"][data-mode="static"] .roll-item:last-child {
+    margin-right: 0;
+  }
+  .roll-strip[data-mode="static"] .roll-track {
+    width: 100%;
+    justify-content: center;
+  }
+  .roll-strip[data-mode="static"] .roll-item:last-child {
+    margin-right: 0;
+  }
+  .roll-strip[data-paused="true"] .roll-track {
+    animation-play-state: paused;
+  }
+  @keyframes roll-strip {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+  /* Both ends fade into the section's own navy, so covers seem to come out of the background. */
+  .roll-fade {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 14%;
+    pointer-events: none;
+  }
+  .roll-fade-start {
+    left: 0;
+    background: linear-gradient(to right, var(--roll-fade, var(--color-primary)), transparent);
+  }
+  .roll-fade-end {
+    right: 0;
+    background: linear-gradient(to left, var(--roll-fade, var(--color-primary)), transparent);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    /* No rolling: a plain row of the real covers that can be swiped or scrolled. */
+    .roll-strip[data-mode="loop"] {
+      overflow-x: auto;
+      scroll-snap-type: x proximity;
+    }
+    .roll-strip[data-mode="loop"] .roll-track {
+      animation: none;
+    }
+    .roll-strip[data-mode="loop"] .roll-item {
+      scroll-snap-align: start;
+    }
+    .roll-item[data-copy="true"],
+    .roll-fade {
+      display: none;
+    }
+  }
+
+  /* The yellow stroke under a section heading (HeadingStroke): drawn in once, when it scrolls into view. */
+  .heading-stroke path {
+    /* The gap after the dash and the offset past 1 keep the round cap of a not-yet-drawn line off the path (no stray dot). */
+    stroke-dasharray: 1 2;
+    stroke-dashoffset: 1.04;
+    /* Uneven, like a hand: a quick start, a slower finish. */
+    transition: stroke-dashoffset 0.7s cubic-bezier(0.55, 0.05, 0.25, 1);
+  }
+  .heading-stroke[data-drawn="true"] path {
+    stroke-dashoffset: 0;
+  }
+  /* Drawn one after another: the first line, then the second back the other way, then the short third. */
+  .heading-stroke path:nth-of-type(1) {
+    transition-duration: 0.85s;
+  }
+  .heading-stroke path:nth-of-type(2) {
+    transition-duration: 0.7s;
+    transition-delay: 1s;
+  }
+  .heading-stroke path:nth-of-type(3) {
+    transition-duration: 0.45s;
+    transition-delay: 1.9s;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .heading-stroke path {
+      stroke-dashoffset: 0;
+      transition: none !important;
+    }
+  }
+
+  /* Quick-access coverflow (QuickAccessCards). Cards move with transform and opacity only, so nothing
+     re-lays out and each card is its own compositor layer. */
+  .qa-stage {
+    --qa-step: calc(var(--qa-w) * 0.9);
+    height: calc(var(--qa-h) * 1.1 + 1rem);
+    touch-action: pan-y;
+  }
+  .qa-card {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: var(--qa-w);
+    height: var(--qa-h);
+    z-index: var(--z);
+    opacity: var(--op);
+    perspective: 1000px;
+    transform: translate(-50%, -50%) translateX(calc(var(--qa-step) * var(--pos) + var(--drag, 0px))) scale(var(--sc));
+    transition: transform var(--motion-medium) ease, opacity var(--motion-medium) ease;
+    /* Not opacity: it would make the card a backdrop root, and the glass faces must see the cards behind them. */
+    will-change: transform;
+  }
+  .qa-card:not([data-centre="true"]) {
+    cursor: pointer;
+  }
+  .qa-card[data-wrap="true"] {
+    transition-property: opacity;
+    animation: qa-in var(--motion-medium) ease both;
+  }
+  .qa-stage[data-dragging="true"] .qa-card {
+    transition: none;
+  }
+  @keyframes qa-in {
+    from {
+      opacity: 0;
+    }
+  }
+  .qa-inner {
+    position: absolute;
+    inset: 0;
+    transform-style: preserve-3d;
+    transition: transform var(--motion-medium) ease;
+  }
+  .qa-card[data-flipped="true"] .qa-inner {
+    transform: rotateY(180deg);
+  }
+  /* Frosted glass: a translucent fill (set on each face) over a blur of whatever is behind it. */
+  .qa-face {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    backface-visibility: hidden;
+    box-shadow: 0 6px 18px rgb(0 0 0 / 0.14), inset 0 1px 0 rgb(255 255 255 / 0.6);
+  }
+  /* The blur itself is only for mouse devices. Measured on a 4x-throttled phone-width profile, blurring the
+     animating cards dropped sliding frames to 200 ms (p95); without it they stay at 16.7 ms. Phones keep the
+     translucent fill and the shadow. */
+  @media (hover: hover) and (pointer: fine) and (prefers-reduced-transparency: no-preference) {
+    .qa-face {
+      -webkit-backdrop-filter: blur(10px);
+      backdrop-filter: blur(10px);
+    }
+  }
+  .qa-back {
+    transform: rotateY(180deg);
+  }
+  /* The face turned away takes no clicks, but stays in the accessibility tree (its link remains reachable to assistive tech). */
+  .qa-card:not([data-flipped="true"]) .qa-back,
+  .qa-card[data-flipped="true"] .qa-front {
+    pointer-events: none;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    /* No turning over: the back cross-fades in over the front, and cards change places without sliding. */
+    .qa-card {
+      transition: opacity var(--motion-fade) ease;
+    }
+    .qa-card[data-wrap="true"] {
+      animation: none;
+    }
+    .qa-inner,
+    .qa-card[data-flipped="true"] .qa-inner {
+      transform: none;
+      transition: none;
+    }
+    .qa-face {
+      backface-visibility: visible;
+      transition: opacity var(--motion-fade) ease;
+    }
+    .qa-back {
+      transform: none;
+      opacity: 0;
+    }
+    .qa-card[data-flipped="true"] .qa-front {
+      opacity: 0;
+    }
+    .qa-card[data-flipped="true"] .qa-back {
+      opacity: 1;
+    }
+  }
+
+  /* The home hero is as tall as the screen. `svh` keeps it from jumping when a phone's address bar hides; `vh` is the fallback for browsers without it. */
+  .hero-full {
+    height: 100vh;
+    height: 100svh;
+  }
+
   /* Shared body typography for news content (headings, paragraphs,
      lists, links) — used by both the admin rich-text editor
      (rich-text-editor.tsx) and the public post body (post-body.tsx),
@@ -430,5 +828,12 @@
     width: 1px;
     height: 1px;
     overflow: hidden;
+  }
+}
+
+/* Home section rhythm, larger from 1024px (see --spacing-home-section-y). */
+@media (min-width: 1024px) {
+  :root {
+    --spacing-home-section-y: 80px;
   }
 }

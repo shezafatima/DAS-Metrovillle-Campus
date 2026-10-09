@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { requireAdminSession } from "@/lib/dal";
+import { requireAdminPage } from "@/lib/dal";
 import { listAdminPosts } from "@/lib/news/admin-queries";
 import { NewsTable } from "@/components/admin/news/news-table";
 import { NewsTableFilters } from "@/components/admin/news/news-table-filters";
@@ -13,7 +13,7 @@ export const metadata: Metadata = { title: "News" };
 export default async function AdminNewsPage({
   searchParams,
 }: PageProps<"/admin/news">) {
-  await requireAdminSession();
+  await requireAdminPage("news");
 
   const params = await searchParams;
   const q = typeof params.q === "string" ? params.q : undefined;

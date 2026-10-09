@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { requireAdminSession } from "@/lib/dal";
+import { requireAdminPage } from "@/lib/dal";
 import { getMessage } from "@/lib/messages/admin-queries";
 import { inboxHref } from "@/lib/messages/inbox-href";
 import { MessageDetail } from "@/components/admin/messages/message-detail";
@@ -16,7 +16,7 @@ export default async function AdminMessageDetailPage({
   params,
   searchParams,
 }: PageProps<"/admin/messages/[id]">) {
-  await requireAdminSession();
+  await requireAdminPage("messages");
 
   const { id } = await params;
   const search = await searchParams;

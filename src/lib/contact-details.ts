@@ -1,13 +1,15 @@
-import { contactInfo, type ContactInfo } from "@/content/site-shell";
+import type { ContactInfo } from "@/content/site-shell";
+import { getPublicSettings } from "@/lib/settings/public";
 
 /**
- * The Contact page's single seam for contact values (data-model.md
- * "Contact details"). Today this just returns the content file;
- * Settings (005) replaces only this function's body with a real read —
- * every caller and the returned shape stay the same.
+ * The single seam for contact values (008 data-model.md "Contact details"):
+ * the top bar, the footer and the Contact page all read them here. Since 005
+ * they come from Settings (cached, and never an error: an unsaved or
+ * unreadable group reads as the 001/008 content-file values). The returned
+ * shape did not change.
  */
 export async function getContactDetails(): Promise<ContactInfo> {
-  return contactInfo;
+  return getPublicSettings("contact");
 }
 
 /** Derived, never stored — a keyless Google Maps embed URL for an address. */

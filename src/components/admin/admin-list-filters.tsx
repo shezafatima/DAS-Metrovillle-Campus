@@ -9,7 +9,8 @@ const DEBOUNCE_MS = 300;
 
 export interface AdminListFiltersProps {
   searchPlaceholder: string;
-  select: {
+  /** Optional: a list that is search-only (012 Applications) passes none. */
+  select?: {
     param: string;
     label: string;
     allLabel: string;
@@ -21,7 +22,7 @@ export interface AdminListFiltersProps {
  * Search + page filters for an admin list table (FR-018). Filters live
  * in the URL's search params, same as NewsTableFilters, with two fixes
  * over that component (found while verifying the AdminPagination lift,
- * signup T034 — logged there, not fixed there since news-table-filters.tsx
+ * the retired signup T034 — logged there, not fixed there since news-table-filters.tsx
  * is out of that feature's scope; this component must not repeat either
  * bug):
  *
@@ -89,19 +90,21 @@ export function AdminListFilters({ searchPlaceholder, select }: AdminListFilters
         className="max-w-xs"
         aria-label={searchPlaceholder}
       />
-      <Select
-        aria-label={select.label}
-        defaultValue={searchParams.get(select.param) ?? "all"}
-        onChange={(event) => setParam(select.param, event.target.value)}
-        className="w-auto"
-      >
-        <option value="all">{select.allLabel}</option>
-        {select.options.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </Select>
+      {select && (
+        <Select
+          aria-label={select.label}
+          defaultValue={searchParams.get(select.param) ?? "all"}
+          onChange={(event) => setParam(select.param, event.target.value)}
+          className="w-auto"
+        >
+          <option value="all">{select.allLabel}</option>
+          {select.options.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </Select>
+      )}
     </div>
   );
 }

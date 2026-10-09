@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 import { clearMessages, findMessages, forwardedFor } from "./helpers/messages";
 
 // This file runs in the "forms" Playwright project (serial), alongside
-// signup-*.spec.ts. Each describe block below isolates its own
+// careers-*.spec.ts. Each describe block below isolates its own
 // rate-limit budget with a per-spec X-Forwarded-For (research §16), so
 // these specs never interleave with each other's throttle counts.
 

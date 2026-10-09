@@ -8,6 +8,11 @@ vi.mock("next/navigation", () => ({
   useRouter: vi.fn(),
 }));
 
+const refreshNow = vi.fn();
+vi.mock("@/components/admin/notifications/notifications-provider", () => ({
+  useNotifications: () => ({ refreshNow }),
+}));
+
 function mockFetchOnce(response: { ok: boolean; body?: unknown }) {
   return vi.fn().mockResolvedValue({
     ok: response.ok,
@@ -20,10 +25,11 @@ describe("MarkReadOnOpen", () => {
 
   beforeEach(() => {
     refresh = vi.fn();
+    refreshNow.mockClear();
     vi.mocked(useRouter).mockReturnValue({ refresh } as unknown as ReturnType<typeof useRouter>);
   });
 
-  it("POSTs once and refreshes when mounted with status new and changed: true", async () => {
+  it("POSTs once and refreshes (page + notifications) when mounted with status new and changed: true", async () => {
     const fetchMock = mockFetchOnce({ ok: true, body: { changed: true } });
     vi.stubGlobal("fetch", fetchMock);
 
@@ -31,6 +37,7 @@ describe("MarkReadOnOpen", () => {
     await vi.waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(1));
     expect(fetchMock).toHaveBeenCalledWith("/api/admin/messages/1/read", { method: "POST" });
     await vi.waitFor(() => expect(refresh).toHaveBeenCalledTimes(1));
+    expect(refreshNow).toHaveBeenCalledTimes(1);
 
     vi.unstubAllGlobals();
   });

@@ -3,6 +3,7 @@ import { it, expect, vi, beforeEach } from "vitest";
 import { describeWithDb } from "@/test/db";
 import { seedTestAdmin, getTestSessionCookie } from "@/test/admin-session";
 import { Message } from "@/models/message";
+import { mockNextHeaders } from "@/test/next-headers";
 
 const ADMIN_EMAIL = "messages-id-route-test@example.com";
 const ADMIN_PASSWORD = "correct-horse-battery-staple";
@@ -42,14 +43,14 @@ describeWithDb("PATCH & DELETE /api/admin/messages/[id]", ["messages", "user", "
   });
 
   it("PATCH returns 401 without a session", async () => {
-    vi.doMock("next/headers", () => ({ headers: async () => new Headers() }));
+    vi.doMock("next/headers", () => mockNextHeaders(new Headers()));
     const { PATCH } = await import("./route");
     const response = await PATCH(patchRequest({ status: "read" }), ctx(UNKNOWN_ID));
     expect(response.status).toBe(401);
   });
 
   it("DELETE returns 401 without a session", async () => {
-    vi.doMock("next/headers", () => ({ headers: async () => new Headers() }));
+    vi.doMock("next/headers", () => mockNextHeaders(new Headers()));
     const { DELETE } = await import("./route");
     const response = await DELETE(new Request("http://localhost/x"), ctx(UNKNOWN_ID));
     expect(response.status).toBe(401);
@@ -59,7 +60,7 @@ describeWithDb("PATCH & DELETE /api/admin/messages/[id]", ["messages", "user", "
     await seedTestAdmin(ADMIN_EMAIL, ADMIN_PASSWORD);
     const cookie = await getTestSessionCookie(ADMIN_EMAIL, ADMIN_PASSWORD);
     const doc = await createMessageDoc();
-    vi.doMock("next/headers", () => ({ headers: async () => new Headers({ cookie }) }));
+    vi.doMock("next/headers", () => mockNextHeaders(new Headers({ cookie })));
     vi.resetModules();
     const { PATCH } = await import("./route");
 
@@ -77,7 +78,7 @@ describeWithDb("PATCH & DELETE /api/admin/messages/[id]", ["messages", "user", "
     await seedTestAdmin(ADMIN_EMAIL, ADMIN_PASSWORD);
     const cookie = await getTestSessionCookie(ADMIN_EMAIL, ADMIN_PASSWORD);
     const doc = await createMessageDoc();
-    vi.doMock("next/headers", () => ({ headers: async () => new Headers({ cookie }) }));
+    vi.doMock("next/headers", () => mockNextHeaders(new Headers({ cookie })));
     vi.resetModules();
     const { PATCH } = await import("./route");
 
@@ -98,7 +99,7 @@ describeWithDb("PATCH & DELETE /api/admin/messages/[id]", ["messages", "user", "
     const cookie = await getTestSessionCookie(ADMIN_EMAIL, ADMIN_PASSWORD);
     const doc = await createMessageDoc();
     await Message.softDeleteById(doc._id);
-    vi.doMock("next/headers", () => ({ headers: async () => new Headers({ cookie }) }));
+    vi.doMock("next/headers", () => mockNextHeaders(new Headers({ cookie })));
     vi.resetModules();
     const { PATCH } = await import("./route");
 
@@ -112,7 +113,7 @@ describeWithDb("PATCH & DELETE /api/admin/messages/[id]", ["messages", "user", "
     await seedTestAdmin(ADMIN_EMAIL, ADMIN_PASSWORD);
     const cookie = await getTestSessionCookie(ADMIN_EMAIL, ADMIN_PASSWORD);
     const doc = await createMessageDoc();
-    vi.doMock("next/headers", () => ({ headers: async () => new Headers({ cookie }) }));
+    vi.doMock("next/headers", () => mockNextHeaders(new Headers({ cookie })));
     vi.resetModules();
     const { DELETE } = await import("./route");
 
@@ -133,7 +134,7 @@ describeWithDb("PATCH & DELETE /api/admin/messages/[id]", ["messages", "user", "
     await seedTestAdmin(ADMIN_EMAIL, ADMIN_PASSWORD);
     const cookie = await getTestSessionCookie(ADMIN_EMAIL, ADMIN_PASSWORD);
     const doc = await createMessageDoc();
-    vi.doMock("next/headers", () => ({ headers: async () => new Headers({ cookie }) }));
+    vi.doMock("next/headers", () => mockNextHeaders(new Headers({ cookie })));
     vi.resetModules();
     const { DELETE, PATCH } = await import("./route");
 

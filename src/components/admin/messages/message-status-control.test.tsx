@@ -7,12 +7,18 @@ vi.mock("next/navigation", () => ({
   useRouter: vi.fn(),
 }));
 
+const refreshNow = vi.fn();
+vi.mock("@/components/admin/notifications/notifications-provider", () => ({
+  useNotifications: () => ({ refreshNow }),
+}));
+
 describe("MessageStatusControl", () => {
   beforeEach(() => {
+    refreshNow.mockClear();
     vi.mocked(useRouter).mockReturnValue({ refresh: vi.fn() } as unknown as ReturnType<typeof useRouter>);
   });
 
-  it("updates the displayed status on a 200 response", async () => {
+  it("updates the displayed status on a 200 response, and refreshes notifications", async () => {
     vi.stubGlobal(
       "fetch",
       vi.fn().mockResolvedValue({ ok: true, status: 200, json: async () => ({ status: "responded" }) }),
@@ -22,6 +28,7 @@ describe("MessageStatusControl", () => {
     fireEvent.change(screen.getByRole("combobox"), { target: { value: "responded" } });
 
     await vi.waitFor(() => expect(screen.getByRole("combobox")).toHaveValue("responded"));
+    expect(refreshNow).toHaveBeenCalledTimes(1);
     vi.unstubAllGlobals();
   });
 
@@ -32,6 +39,7 @@ describe("MessageStatusControl", () => {
     fireEvent.change(screen.getByRole("combobox"), { target: { value: "read" } });
 
     await vi.waitFor(() => expect(screen.getByRole("combobox")).toHaveValue("new"));
+    expect(refreshNow).not.toHaveBeenCalled();
     vi.unstubAllGlobals();
   });
 

@@ -15,10 +15,10 @@ function flatten(items: NavigationItem[], parentLabel?: string): SearchResult[] 
 }
 
 // Real content-driven search: every navigable page in navigationItems
-// (top-level items and their dropdown sub-pages). Not a full-text search
-// over page content — most pages are still shell placeholders (spec.md
-// Out of Scope), so there is no real content to index yet beyond page
-// titles/labels themselves.
+// (top-level items and their dropdown sub-pages, Careers included). Not a
+// full-text search over page content — most pages are still shell
+// placeholders (spec.md Out of Scope), so there is no real content to index
+// yet beyond page titles/labels themselves.
 export const searchIndex: SearchResult[] = flatten(navigationItems);
 
 export function searchSite(

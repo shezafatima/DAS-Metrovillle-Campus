@@ -2,7 +2,7 @@
 
 > **Scope**: Document decision clusters, not individual technology choices. Group related decisions that work together (e.g., "Frontend Stack" not separate ADRs for framework, styling, deployment).
 
-- **Status:** Accepted
+- **Status:** Superseded — signups retired in 012 (collection dropped with `npm run retire:signups`; code removed). ADR-0003/ADR-0008 govern career applications. The boundary rule for contact messages (Decision, final bullet) is still referenced by `src/lib/messages/mutations.ts` and remains authoritative.
 - **Date:** 2026-09-22
 - **Feature:** 004-signup
 - **Context:** The signup form (PRD §5.1, §5.6, §7) captures name, email and phone as a *lead*, and the PRD defines the data rule as "one record per email; a repeat submission updates it; records the page it came from". The constitution (IV. Data Integrity) requires natural-key records to be upserted, never duplicated, and deletes to be soft. Three forces collide: (1) the visitor must never learn whether an email is already known (the thank-you is identical for new and returning); (2) an admin may soft-delete a lead who later signs up again, and the spec requires the *same* record to come back — not a duplicate and not a silent loss; (3) two submissions for one email can arrive in the same instant. The 002 soft-delete plugin filters `deletedAt: null` into every query by default, which — if left in place — makes a re-signup of a deleted email invisible to the upsert and turns it into a unique-index violation. This is the first feature to hit these rules together, and 008-contact will be built against the same foundation shortly after, so the boundary of the rule must be stated explicitly.

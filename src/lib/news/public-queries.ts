@@ -87,6 +87,18 @@ export async function listPublishedPosts(
   };
 }
 
+/**
+ * The newest visible posts, newest first (006 Latest News, FR-013/FR-014):
+ * the same visibility filter and sort as the News list, capped at `limit`.
+ */
+export async function listLatestPosts(limit: number, now?: Date): Promise<PublicPostSummary[]> {
+  await connectDb();
+  const docs = await NewsPost.find(publicVisibilityFilter(now))
+    .sort({ publishDate: -1, updatedAt: -1 })
+    .limit(Math.max(1, Math.floor(limit)));
+  return docs.map(toSummary);
+}
+
 /** `null` for anything not currently visible — callers respond with `notFound()`. */
 export async function getPublishedPostBySlug(slug: string, now?: Date): Promise<PublicPost | null> {
   await connectDb();

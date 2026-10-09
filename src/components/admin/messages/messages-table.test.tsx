@@ -1,7 +1,16 @@
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { MessagesTable } from "@/components/admin/messages/messages-table";
 import type { MessageRow } from "@/lib/messages/admin-queries";
+
+// Each row renders a DeleteMessageDialog (→ AdminDeleteDialog), which
+// reads useNotifications() (009) and useRouter().
+vi.mock("@/components/admin/notifications/notifications-provider", () => ({
+  useNotifications: () => ({ refreshNow: vi.fn() }),
+}));
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ refresh: vi.fn(), push: vi.fn() }),
+}));
 
 const XSS_PAYLOAD = '<script>alert(1)</script><img src=x onerror="window.__xss=1">';
 

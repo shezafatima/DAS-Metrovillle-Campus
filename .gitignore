@@ -17,6 +17,7 @@ node_modules/
 
 # next.js
 /.next/
+/.next-e2e/
 /out/
 
 # production
@@ -42,3 +43,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local private document store (012 careers; dev and E2E only)
+/.data/

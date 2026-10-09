@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { requireAdminSession } from "@/lib/dal";
+import { requireAdminPage } from "@/lib/dal";
 import { listMessages } from "@/lib/messages/admin-queries";
 import { MessagesTable } from "@/components/admin/messages/messages-table";
 import { AdminListFilters } from "@/components/admin/admin-list-filters";
@@ -11,7 +11,7 @@ export const metadata: Metadata = { title: "Messages" };
 export const dynamic = "force-dynamic";
 
 export default async function AdminMessagesPage({ searchParams }: PageProps<"/admin/messages">) {
-  await requireAdminSession();
+  await requireAdminPage("messages");
 
   const params = await searchParams;
   const q = typeof params.q === "string" ? params.q : undefined;

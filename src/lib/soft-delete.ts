@@ -50,14 +50,14 @@ export function softDeletePlugin(schema: Schema): void {
   });
 
   schema.statics.softDeleteById = function (id: unknown) {
-    return this.findOneAndUpdate({ _id: id }, { $set: { deletedAt: new Date() } }, { new: true });
+    return this.findOneAndUpdate({ _id: id }, { $set: { deletedAt: new Date() } }, { returnDocument: "after" });
   };
 
   schema.statics.restoreById = function (id: unknown) {
     return this.findOneAndUpdate(
       { _id: id },
       { $set: { deletedAt: null } },
-      { new: true, withDeleted: true },
+      { returnDocument: "after", withDeleted: true },
     );
   };
 }
