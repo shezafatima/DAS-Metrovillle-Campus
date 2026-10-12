@@ -12,7 +12,8 @@ test.describe("public news detail (US3, US6)", () => {
         title: "Detailed Post",
         slug: "detailed-post",
         bodyHtml:
-          '<h2>A heading</h2><ul><li>One</li><li>Two</li></ul><p>Read more at <a href="https://example.com">example.com</a>.</p>',
+          // Seeded straight into the database, so it is written as the sanitiser leaves it on save (src/lib/news/sanitize.ts, unit-tested).
+          '<h2>A heading</h2><ul><li>One</li><li>Two</li></ul><p>Read more at <a href="https://example.com" target="_blank" rel="noopener noreferrer">example.com</a>.</p>',
         coverImage: {
           url: "https://res.cloudinary.com/demo/image/upload/v1/news/covers/detail.jpg",
           publicId: "news/covers/detail",
@@ -27,7 +28,8 @@ test.describe("public news detail (US3, US6)", () => {
     await expect(page.getByRole("heading", { name: "Detailed Post", level: 1 })).toBeVisible();
     await expect(page.getByRole("img", { name: "A descriptive caption" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "A heading", level: 2 })).toBeVisible();
-    await expect(page.locator("ul li")).toHaveCount(2);
+    // Scoped to the post: the header and footer have their own lists.
+    await expect(page.locator("article ul li")).toHaveCount(2);
 
     const link = page.getByRole("link", { name: "example.com" });
     await expect(link).toHaveAttribute("target", "_blank");

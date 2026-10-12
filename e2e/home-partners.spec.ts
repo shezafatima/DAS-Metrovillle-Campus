@@ -1,5 +1,6 @@
 import { test, expect, type Page } from "@playwright/test";
 import { homeContent } from "../src/content/home";
+import { waitForScrollSettled } from "./helpers/scroll";
 
 /**
  * The Partners ticker (006 US7): the partners' logos on the grey band, in a slow continuous loop that runs the
@@ -13,6 +14,7 @@ const linked = partners.filter((p) => p.href);
 async function openPartners(page: Page) {
   await page.goto("/", { timeout: 120_000 });
   await page.getByTestId("partners").evaluate((el) => el.scrollIntoView({ block: "center" }));
+  await waitForScrollSettled(page);
 }
 
 for (const width of [375, 768, 1024, 1440]) {
