@@ -55,12 +55,12 @@ for (const viewport of MOBILE_VIEWPORTS) {
       const menu = page.getByRole("navigation", { name: "Mobile menu" });
       const aboutTrigger = menu.getByRole("button", { name: "About" });
 
-      await expect(menu.getByRole("link", { name: "Overview" })).toBeHidden();
+      await expect(menu.getByRole("link", { name: "Our Story" })).toBeHidden();
       await aboutTrigger.click();
-      await expect(menu.getByRole("link", { name: "Overview" })).toBeVisible();
+      await expect(menu.getByRole("link", { name: "Our Story" })).toBeVisible();
 
       await aboutTrigger.click();
-      await expect(menu.getByRole("link", { name: "Overview" })).toBeHidden();
+      await expect(menu.getByRole("link", { name: "Our Story" })).toBeHidden();
     });
 
     test("closes via link selection, the close control, and Escape", async ({
