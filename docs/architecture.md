@@ -55,9 +55,31 @@
   AlbumPanel, AlbumPhotos, AlbumUploader, useReorder) — 007 gallery albums
 - src/components/home/   home page sections (006): one component per
   reference section, the shared scroll-snap Carousel, HeroSlider,
-  StatCounter, YouTubeEmbed facade, SectionBoundary
+  StatCounter, SectionBoundary (the video facade moved to
+  src/components/media/ in 018)
 - src/content/home.ts   typed static home sections (shape of a future
   database row, feature 014)
+- src/components/media/   VideoEmbed (018, ADR-0010): the single
+  click-to-load video block for YouTube and Instagram, used by the home
+  Why Choose video and both Academics videos. Before the visitor clicks
+  play it renders only a poster and a button; no request goes to either
+  provider. After the click it inserts an iframe whose src is built by
+  src/lib/video/embed.ts from a parsed id or post code, never raw input.
+  - YouTube: iframe from www.youtube-nocookie.com (privacy-enhanced).
+    The home page's poster loads from i.ytimg.com before the click (006
+    behaviour, home only); Academics posters are local.
+  - Instagram: iframe from www.instagram.com (/p|reel/<code>/embed/;
+    Instagram's embed.js script is not used). Loaded only on click.
+    Inside the frame, Instagram loads its own assets from
+    static.cdninstagram.com and post media from *.cdninstagram.com
+    (media hosts to be confirmed against a real post in 018 T060).
+  - Content Security Policy: the site sends none today. If one is added,
+    frame-src must allow https://www.youtube-nocookie.com and
+    https://www.instagram.com, and img-src must allow https://i.ytimg.com
+    (the home poster). The hosts loaded inside the frames
+    (static.cdninstagram.com, *.cdninstagram.com) follow Instagram's own
+    policy, not this site's, so they don't need to be listed. If the
+    player is ever replaced by a direct, non-iframe embed, they would.
 - src/components/gallery/   public gallery UI (GallerySection `#photo-gallery`,
   AlbumCard, AlbumPhotoGrid, PhotoViewer, GalleryImage) — 007
 - src/lib/gallery/   007 gallery domain: types, schema (shared client +
