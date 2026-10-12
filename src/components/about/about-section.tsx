@@ -15,27 +15,60 @@ export function AboutSection({
   background,
   heading,
   line,
+  stroke = false,
+  compact = false,
+  headingBand = false,
+  boldLine = false,
   children,
 }: {
   id: string;
   background: AboutBackground;
   heading: string;
   line?: string;
+  /** The yellow pencil stroke under the heading (used by Academics). */
+  stroke?: boolean;
+  /** Tighter vertical padding and gaps (used by Academics). */
+  compact?: boolean;
+  /** The heading sits in a full-width yellow band, in navy (used by Hifz-e-Quran). */
+  headingBand?: boolean;
+  /** Sets the supporting line under the heading in bold. */
+  boldLine?: boolean;
   children: ReactNode;
 }) {
   const navy = background === "navy";
+  const gap = compact ? "gap-6" : "gap-10";
+  const container = `mx-auto flex max-w-(--container-max-width) flex-col px-(--container-gutter-x) ${gap}`;
+  if (headingBand) {
+    return (
+      <section
+        id={id}
+        aria-labelledby={`${id}-heading`}
+        data-background={background}
+        className={cn("anchor-section pb-8 md:pb-10", backgroundClass[background])}
+      >
+        <div className="bg-topbar px-(--container-gutter-x) py-6 md:py-8" data-testid="heading-band">
+          <div className="mx-auto max-w-(--container-max-width)">
+            <SectionHeading id={`${id}-heading`} heading={heading} line={line} tone="navy" boldLine={boldLine} />
+          </div>
+        </div>
+        <div className={cn(container, "pt-8 md:pt-10")}>{children}</div>
+      </section>
+    );
+  }
   return (
     <section
       id={id}
       aria-labelledby={`${id}-heading`}
       data-background={background}
-      className={cn("anchor-section py-(--spacing-home-section-y)", backgroundClass[background])}
+      className={cn("anchor-section", compact ? "py-8 md:py-10" : "py-(--spacing-home-section-y)", backgroundClass[background])}
     >
-      <div className="mx-auto flex max-w-(--container-max-width) flex-col gap-10 px-(--container-gutter-x)">
+      <div className={container}>
         <SectionHeading
           id={`${id}-heading`}
           heading={heading}
           line={line}
+          stroke={stroke}
+          boldLine={boldLine}
           tone={navy ? "light" : "dark"}
           divider={!navy}
         />

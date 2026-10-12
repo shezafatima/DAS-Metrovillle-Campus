@@ -15,6 +15,7 @@ export function SectionHeading({
   tone = "dark",
   stroke = false,
   divider = true,
+  boldLine = false,
   className,
 }: {
   id: string;
@@ -26,6 +27,8 @@ export function SectionHeading({
   stroke?: boolean;
   /** The short white rule under the line on the light variant. On by default; the navy heading band turns it off. */
   divider?: boolean;
+  /** Sets the supporting line in bold. */
+  boldLine?: boolean;
   className?: string;
 }) {
   const light = tone === "light";
@@ -45,7 +48,7 @@ export function SectionHeading({
       {stroke && <HeadingStroke />}
       </div>
       {line && (
-        <p className={cn("font-body text-(length:--text-home-subheading) leading-(--text-home-subheading--line-height)", light ? "text-white" : navy ? "text-primary" : "text-text")}>{line}</p>
+        <p className={cn("font-body text-(length:--text-home-subheading) leading-(--text-home-subheading--line-height)", boldLine && "font-bold", light ? "text-white" : navy ? "text-primary" : "text-text")}>{line}</p>
       )}
       {light && divider && <span aria-hidden="true" className="h-0.5 w-(--spacing-home-divider-width) max-w-full bg-white" />}
     </div>

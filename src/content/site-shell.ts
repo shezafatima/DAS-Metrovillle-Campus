@@ -47,8 +47,9 @@ export interface FooterContent {
 /**
  * The sections of the pages that used to have sub-routes. Each page is ONE
  * route; its former sub-routes are sections with these ids (`/about#overview`).
- * The menu children, the page sections and the old-route redirects in
- * next.config.ts all come from here, so an id is defined once.
+ * The menu children and the page sections come from here, so an id is
+ * defined once. Admission's old-route redirects in next.config.ts also come
+ * from here; About's and Academics' ids were remapped (see the legacy maps).
  */
 export interface PageSection {
   /** Short, lowercase, hyphenated and stable: it is the URL fragment. */
@@ -66,9 +67,7 @@ export const pageSections = {
     { id: "messages", label: "Messages" },
   ],
   academics: [
-    { id: "academics-overview", label: "Academics Overview" },
-    { id: "syllabi", label: "Syllabi" },
-    { id: "examinations", label: "Examinations" },
+    { id: "academic-overview", label: "Academic Overview" },
     { id: "teachers-training", label: "Teachers' Training" },
     { id: "hifz-e-quran", label: "Hifz-e-Quran" },
   ],
@@ -87,14 +86,27 @@ export const pageSections = {
 /**
  * About's old section ids (overview, salient-features, management, messages)
  * were remapped in 017. These four old sub-routes still redirect, to the
- * nearest new section. next.config.ts reads this; Academics and Admission
- * derive theirs from `pageSections`.
+ * nearest new section. next.config.ts reads this; Admission derives its
+ * redirects from `pageSections`.
  */
 export const legacyAboutRedirects: { source: string; destination: string }[] = [
   { source: "/about/overview", destination: "/about#our-story" },
   { source: "/about/salient-features", destination: "/about" },
   { source: "/about/management", destination: "/about#management-team" },
   { source: "/about/messages", destination: "/about#messages" },
+];
+
+/**
+ * Academics' section ids were remapped in 018 (`academics-overview` became
+ * `academic-overview`; Syllabi and Examinations were removed). The old
+ * sub-routes still redirect, to the nearest new section. `/hifz-e-quran` keeps
+ * its own rule in next.config.ts.
+ */
+export const legacyAcademicsRedirects: { source: string; destination: string }[] = [
+  { source: "/academics/academics-overview", destination: "/academics#academic-overview" },
+  { source: "/academics/syllabi", destination: "/academics" },
+  { source: "/academics/examinations", destination: "/academics" },
+  { source: "/academics/teachers-training", destination: "/academics#teachers-training" },
 ];
 
 function anchors(path: string, sections: PageSection[]): NavigationItem[] {
