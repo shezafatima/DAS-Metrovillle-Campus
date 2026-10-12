@@ -72,6 +72,28 @@ test.describe("US1 content", () => {
   }
 });
 
+test.describe("Core Values glow", () => {
+  test("each card starts its loop at a different point, and the glow pauses off screen", async ({ page }) => {
+    await page.goto("/about");
+    const delays = await page.locator("#core-values li").evaluateAll((els) =>
+      els.map((e) => getComputedStyle(e.querySelector(".about-glow-spin")!).animationDelay),
+    );
+    expect(new Set(delays).size).toBe(6);
+    await page.locator("#core-values").scrollIntoViewIfNeeded();
+    await expect(page.locator("#core-values ul")).toHaveAttribute("data-offscreen", "false");
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await expect(page.locator("#core-values ul")).toHaveAttribute("data-offscreen", "true");
+  });
+
+  test("reduced motion: no movement, a static yellow border", async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto("/about");
+    const ring = page.locator("#core-values li .about-glow-ring").first();
+    expect(await ring.evaluate((e) => getComputedStyle(e).backgroundColor)).toBe("rgb(255, 255, 0)");
+    expect(await page.locator("#core-values li .about-glow-spin").first().evaluate((e) => getComputedStyle(e).display)).toBe("none");
+  });
+});
+
 test.describe("US2 navigation", () => {
   test.use({ viewport: { width: 1440, height: 800 } });
 
