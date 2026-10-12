@@ -1,10 +1,12 @@
 import type { NextConfig } from "next";
-import { pageSections } from "./src/content/site-shell";
+import { legacyAboutRedirects, pageSections } from "./src/content/site-shell";
+import { TEMPORARY_IMAGE_HOSTS } from "./src/lib/temporary-image-hosts";
 
-// About, Academics and Admission were sub-route pages; each is now one page whose
-// former sub-routes are sections (/about/overview -> /about#overview). Only these
-// known routes redirect; any other slug is a 404.
-const sectionRedirects = (["about", "academics", "admission"] as const).flatMap((page) =>
+// Academics and Admission were sub-route pages; each is now one page whose former
+// sub-routes are sections (/academics/syllabi -> /academics#syllabi). About's sections
+// were remapped in 017, so its four old routes come from legacyAboutRedirects below.
+// Only these known routes redirect; any other slug is a 404.
+const sectionRedirects = (["academics", "admission"] as const).flatMap((page) =>
   pageSections[page].map((section) => ({
     source: `/${page}/${section.id}`,
     destination: `/${page}#${section.id}`,
@@ -24,11 +26,16 @@ const nextConfig: NextConfig = {
   images: {
     // News cover images (003) live in Cloudinary; only their URLs are
     // stored in the database (docs/architecture.md "Media and content").
-    remotePatterns: [new URL("https://res.cloudinary.com/**")],
+    remotePatterns: [
+      new URL("https://res.cloudinary.com/**"),
+      // TEMPORARY (017): stock photos until the client supplies real ones. The release check blocks a production build while any are listed.
+      ...TEMPORARY_IMAGE_HOSTS.map((host) => new URL(`https://${host}/**`)),
+    ],
   },
   async redirects() {
     return [
       ...sectionRedirects,
+      ...legacyAboutRedirects.map((redirect) => ({ ...redirect, permanent: true })),
       // Hifz-e-Quran was a top-level page; it is now a section of Academics.
       { source: "/hifz-e-quran", destination: "/academics#hifz-e-quran", permanent: true },
       // 007: the gallery is the #photo-gallery section of /resources, not its

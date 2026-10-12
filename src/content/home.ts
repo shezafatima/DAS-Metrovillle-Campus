@@ -80,7 +80,8 @@ export const homeContent = {
         title: "Salient Features",
         text: "Dar-e-Arqam is one of a few pioneer schools of formal education where you may witness quite comfortably, a sublime blend of high standard",
         icon: { src: "/images/home/quick-salient-features.gif", alt: "", width: 110, height: 101 },
-        href: "/about#salient-features",
+        // The About sections were remapped in 017; there is no salient-features anchor any more.
+        href: "/about",
         tone: "salient",
       },
       {

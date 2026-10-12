@@ -152,6 +152,11 @@
   --aspect-news-card: 400 / 187;
   /* The home page's news cards (HomeNewsCard): a 5:4 cover. */
   --aspect-home-news-card: 5 / 4;
+  /* About (017): no reference page; composed values, see research/design-tokens.md "About page". */
+  --aspect-about-person: 4 / 5;
+  --aspect-about-story: 4 / 3;
+  /* An alias of an existing navy (--color-cta-hover), not a new colour. */
+  --color-about-panel: var(--color-cta-hover);
   /* Asymmetric shorthand (30px 25px 20px), so it isn't named
      --spacing-news-*: Tailwind's --spacing-* namespace only makes
      sense for single-dimension scale steps. Applied via .news-card in

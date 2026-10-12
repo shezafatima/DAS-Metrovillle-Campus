@@ -42,4 +42,14 @@ describe("SearchBox", () => {
     expect(screen.queryByRole("combobox")).not.toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Search" })).toBeInTheDocument();
   });
+
+  it("searches the index it is given", () => {
+    render(<SearchBox index={[{ label: "Our Story", href: "/about#our-story", parentLabel: "About" }]} />);
+    fireEvent.click(screen.getByRole("button", { name: "Search" }));
+    const input = screen.getByRole("combobox");
+    fireEvent.change(input, { target: { value: "story" } });
+    expect(screen.getByRole("link", { name: /Our Story/ })).toHaveAttribute("href", "/about#our-story");
+    fireEvent.change(input, { target: { value: "overview" } });
+    expect(screen.queryByRole("link", { name: /Overview/ })).not.toBeInTheDocument();
+  });
 });

@@ -672,3 +672,18 @@ das.edu.pk has **no careers page**: `/careers` returns 404 and no header, top-ba
 | Errors, button | `text-error` chip as in the Contact form; the Contact submit button |
 
 Deviation (flagged, Constitution I): the file row and the consent checkbox have no reference counterpart; they are composed from the input tokens above rather than extracted values. If the client supplies a design for them, extract it here first.
+
+
+## About page (017 about — no matching reference page)
+
+das.edu.pk has no About page with these five sections, so the page is composed from existing tokens. Three values are added, each named here first.
+
+| Token | Value | Use |
+|---|---|---|
+| `--aspect-about-person` | `4 / 5` | Photo frame for team members and messages (`PersonPhoto`) |
+| `--aspect-about-story` | `4 / 3` | Our Story image slot |
+| `--color-about-panel` | `var(--color-cta-hover)` | Vision and Mission panels on the navy band (`bg-about-panel`). An alias of an existing navy, not a new colour |
+
+Reused: `bg-primary`, `bg-topbar` (accent only: icon discs and a top rule), `bg-surface`, `--color-home-muted-band`, the `SectionHeading` tokens, `--spacing-home-section-y`, `anchor-section`, `max-w-prose`, `rounded-xl`.
+
+Deviation (flagged, Constitution I): every value above is composed, not extracted. If the client supplies a design, extract it here first.

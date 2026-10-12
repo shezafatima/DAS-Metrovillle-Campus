@@ -49,3 +49,16 @@ describe("the real search index (012 careers)", () => {
     expect(searchSite("admission", searchIndex).some((r) => r.href === "/admission")).toBe(true);
   });
 });
+
+describe("buildSearchIndex", () => {
+  it("flattens children with their parent label", async () => {
+    const { buildSearchIndex } = await import("./site-search");
+    const index = buildSearchIndex([
+      { label: "About", href: "/about", children: [{ label: "Our Story", href: "/about#our-story" }] },
+    ]);
+    expect(index).toEqual([
+      { label: "About", href: "/about", parentLabel: undefined },
+      { label: "Our Story", href: "/about#our-story", parentLabel: "About" },
+    ]);
+  });
+});

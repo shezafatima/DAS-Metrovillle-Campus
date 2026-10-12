@@ -7,6 +7,10 @@ export interface SearchResult {
   parentLabel?: string;
 }
 
+export function buildSearchIndex(items: NavigationItem[]): SearchResult[] {
+  return flatten(items);
+}
+
 function flatten(items: NavigationItem[], parentLabel?: string): SearchResult[] {
   return items.flatMap((item) => [
     { label: item.label, href: item.href, parentLabel },
@@ -19,7 +23,7 @@ function flatten(items: NavigationItem[], parentLabel?: string): SearchResult[] 
 // full-text search over page content — most pages are still shell
 // placeholders (spec.md Out of Scope), so there is no real content to index
 // yet beyond page titles/labels themselves.
-export const searchIndex: SearchResult[] = flatten(navigationItems);
+export const searchIndex: SearchResult[] = buildSearchIndex(navigationItems);
 
 export function searchSite(
   query: string,
