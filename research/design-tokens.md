@@ -686,4 +686,6 @@ das.edu.pk has no About page with these five sections, so the page is composed f
 
 Reused: `bg-primary`, `bg-topbar` (accent only: icon discs and a top rule), `bg-surface`, `--color-home-muted-band`, the `SectionHeading` tokens, `--spacing-home-section-y`, `anchor-section`, `max-w-prose`, `rounded-xl`.
 
+Core Values glow (added after review): the ring is 3px in `--color-gold` (`#ffd700`, the same value as `--color-signup-highlight`, under a neutral name), and the halo is the pale `--color-topbar`. Pale yellow alone was about 1.1:1 against the section background; the gold is about 1.4:1.
+
 Deviation (flagged, Constitution I): every value above is composed, not extracted. If the client supplies a design, extract it here first.

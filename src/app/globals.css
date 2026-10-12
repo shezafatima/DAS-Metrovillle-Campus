@@ -187,6 +187,8 @@
      component to need a hover state for it. */
   --color-signup-band: #1e294b;
   --color-signup-highlight: #ffd700;
+  /* A neutral name for the same deep yellow (#ffd700), for components that are not the signup band: About Core Values ring (017). */
+  --color-gold: #ffd700;
   --color-signup-supporting: #d3d3d3;
   --color-signup-input-bg: #ffffff;
   --color-signup-input-border: #d2d2d2;
@@ -847,8 +849,8 @@
    the border. Only existing tokens (--color-topbar). A conic-gradient square,
    larger than the card, turns behind it using a `transform` animation (compositor
    only: no repaint, no layout, no animated custom property). Two layers share the
-   idea: the ring is clipped to the card plus 2px; the halo is a fainter, blurred
-   copy clipped 7px wider. The card face has a solid background and covers the
+   idea: the ring (3px, the deep gold --color-gold) is clipped to the card; the halo
+   (the pale yellow --color-topbar) is a fainter, blurred copy clipped 7px wider. The card face has a solid background and covers the
    centre, so only the ring and a soft outer glow show and the text is never
    covered. One loop is --about-glow-duration; each card gets its own negative
    delay (--about-glow-delay, set inline) so they never move in step. */
@@ -867,8 +869,9 @@
 }
 
 .about-glow-ring {
+  --about-glow-color: var(--color-gold);
   inset: 0;
-  opacity: 0.95;
+  opacity: 1;
 }
 
 .about-glow-halo {
@@ -888,7 +891,7 @@
   background: conic-gradient(
     transparent 0deg,
     transparent 200deg,
-    var(--color-topbar) 340deg,
+    var(--about-glow-color, var(--color-topbar)) 340deg,
     transparent 360deg
   );
   will-change: transform;
@@ -905,8 +908,8 @@
 /* The solid face: covers the middle of the ring, so only a 2px border shows. */
 .about-value-card-face {
   position: relative;
-  margin: 2px;
-  border-radius: calc(var(--radius-xl) - 2px);
+  margin: 3px;
+  border-radius: calc(var(--radius-xl) - 3px);
 }
 
 /* Brighter on hover and keyboard focus within the card. */
@@ -933,7 +936,7 @@
   }
 
   .about-glow-ring {
-    background: var(--color-topbar);
+    background: var(--color-gold);
     opacity: 1;
   }
 }

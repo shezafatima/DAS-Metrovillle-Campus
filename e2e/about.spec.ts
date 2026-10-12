@@ -89,7 +89,7 @@ test.describe("Core Values glow", () => {
     await page.emulateMedia({ reducedMotion: "reduce" });
     await page.goto("/about");
     const ring = page.locator("#core-values li .about-glow-ring").first();
-    expect(await ring.evaluate((e) => getComputedStyle(e).backgroundColor)).toBe("rgb(255, 255, 0)");
+    expect(await ring.evaluate((e) => getComputedStyle(e).backgroundColor)).toBe("rgb(255, 215, 0)");
     expect(await page.locator("#core-values li .about-glow-spin").first().evaluate((e) => getComputedStyle(e).display)).toBe("none");
   });
 });
