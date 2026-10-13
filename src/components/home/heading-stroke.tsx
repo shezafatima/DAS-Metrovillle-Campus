@@ -5,7 +5,9 @@ import { useEffect, useId, useRef, useState } from "react";
 /**
  * A yellow pencil-style stroke under a section heading, drawn in once, the first
  * time it scrolls into view (decorative: `aria-hidden`). Used through
- * `SectionHeading`'s `stroke` prop, so any heading can have it.
+ * `SectionHeading`'s `stroke` prop, so any heading can have it. The colour is
+ * `--color-topbar` unless a section sets `--heading-stroke-color` (the Photo
+ * Gallery uses `--color-gold`, which shows better on white).
  *
  * It fills the width of whatever wraps it, so under a heading that wraps it stays
  * under the widest line. Three strokes (two long, one short) draw in one after another, at an uneven pace with short pauses, like a hand moving a pencil. The drawing animates `stroke-dashoffset` only (paint, no
@@ -56,7 +58,7 @@ export function HeadingStroke() {
         </filter>
       </defs>
       {/* Two long strokes and a short one, wobbling like a hand-drawn scribble back and forth. */}
-      <g fill="none" stroke="var(--color-topbar)" strokeWidth={3.6} strokeLinecap="round" strokeLinejoin="round" filter={`url(#${filterId})`}>
+      <g fill="none" stroke="var(--heading-stroke-color, var(--color-topbar))" strokeWidth={3.6} strokeLinecap="round" strokeLinejoin="round" filter={`url(#${filterId})`}>
         <path d="M3 7 C 14 3.5, 22 8.5, 36 5.5 S 58 2.5, 74 7.5 S 98 9.5, 112 4.5 S 142 2, 158 6 S 184 8, 197 4.5" pathLength={1} />
         <path d="M194 14.5 C 180 11, 168 17, 150 13 S 124 10.5, 108 15.5 S 76 18, 62 12.5 S 30 11, 8 15" pathLength={1} opacity={0.92} />
         <path d="M20 22.5 C 34 20, 44 25, 62 21.5 S 92 19.5, 108 23.5 S 142 22, 156 21" pathLength={1} opacity={0.85} />

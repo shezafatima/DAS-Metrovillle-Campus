@@ -652,6 +652,10 @@
     }
   }
 
+  /* Photo Gallery (019): the yellow stroke is faint on white, so it uses the deeper gold. */
+  #photo-gallery {
+    --heading-stroke-color: var(--color-gold);
+  }
   /* The yellow stroke under a section heading (HeadingStroke): drawn in once, when it scrolls into view. */
   .heading-stroke path {
     /* The gap after the dash and the offset past 1 keep the round cap of a not-yet-drawn line off the path (no stray dot). */
