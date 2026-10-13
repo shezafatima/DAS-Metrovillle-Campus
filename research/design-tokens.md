@@ -702,3 +702,16 @@ das.edu.pk has no single Academics page with these sections (its Teachers' Train
 Reused: `bg-surface`, `--color-home-muted-band`, `bg-primary`, `max-w-prose`, `max-w-4xl`, `rounded-xl`, `--spacing-home-section-y`, `anchor-section`, the `SectionHeading` tokens.
 
 Deviation (flagged, Constitution I): every value above is composed, not extracted. If the client supplies a design, extract it here first.
+
+## Resources page (019 — no matching reference layout)
+
+das.edu.pk's Scarlet Mobile Apps page is text, one photo and three button images, so the page is composed from existing tokens. Two values are added, each named here first.
+
+| Token | Value | Use |
+|---|---|---|
+| `--size-resources-flyer-max-h` | `36rem` | Maximum height of the Scarlet Series flyer (744 x 1280). The width follows from its aspect ratio, so the flyer is shown whole |
+| `--spacing-resources-card-lift` | `4px` | How far an app card lifts on hover (transform only, motion-safe) |
+
+Reused: `bg-surface`, `--color-home-muted-band`, `bg-primary`, `--color-topbar`, `--radius-card`, `--shadow-card`, `max-w-prose`, `anchor-section`, the `SectionHeading` tokens.
+
+Deviation (flagged, Constitution I): both values are composed, not extracted. If the client supplies a design, extract it here first.

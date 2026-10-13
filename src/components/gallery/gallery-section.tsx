@@ -1,3 +1,4 @@
+import { AboutSection } from "@/components/about/about-section";
 import { galleryContent } from "@/content/gallery";
 import { getPublicGallery } from "@/lib/gallery/public";
 import { AlbumCard } from "./album-card";
@@ -9,23 +10,19 @@ import { AlbumCard } from "./album-card";
  * heading, no empty grid (FR-031). If the gallery cannot be read it is
  * likewise hidden, never an error (FR-033).
  *
- * Feature 016 adds the Downloads (`#downloads`) and Our Books (`#our-books`)
- * sections AROUND this one. This component, its id and its behaviour must
- * not change for that.
+ * On the 019 Resources page it is the first of two sections (Photo Gallery,
+ * Mobile Apps), in the shared AboutSection wrapper.
  */
 export async function GallerySection() {
   const { albums } = await getPublicGallery();
   if (albums.length === 0) return null;
   return (
-    <section id="photo-gallery" aria-labelledby="photo-gallery-heading" className="anchor-section flex flex-col gap-6">
-      <h2 id="photo-gallery-heading" className="font-bold font-heading text-2xl text-primary">
-        {galleryContent.sectionHeading}
-      </h2>
+    <AboutSection id="photo-gallery" background="surface" heading={galleryContent.sectionHeading} stroke>
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {albums.map((album) => (
           <AlbumCard key={album.id} album={album} />
         ))}
       </div>
-    </section>
+    </AboutSection>
   );
 }

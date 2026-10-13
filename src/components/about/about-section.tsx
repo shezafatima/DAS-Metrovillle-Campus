@@ -19,6 +19,8 @@ export function AboutSection({
   compact = false,
   headingBand = false,
   boldLine = false,
+  beside,
+  below,
   children,
 }: {
   id: string;
@@ -33,6 +35,10 @@ export function AboutSection({
   headingBand?: boolean;
   /** Sets the supporting line under the heading in bold. */
   boldLine?: boolean;
+  /** A second column next to the heading and children, from tablet width up (used by Resources). */
+  beside?: ReactNode;
+  /** Full-width content after the heading row (used by Resources). */
+  below?: ReactNode;
   children: ReactNode;
 }) {
   const navy = background === "navy";
@@ -55,6 +61,18 @@ export function AboutSection({
       </section>
     );
   }
+  const headingEl = (
+    <SectionHeading
+      id={`${id}-heading`}
+      heading={heading}
+      line={line}
+      stroke={stroke}
+      boldLine={boldLine}
+      tone={navy ? "light" : "dark"}
+      divider={!navy}
+      className={beside ? "items-start text-start" : undefined}
+    />
+  );
   return (
     <section
       id={id}
@@ -63,16 +81,23 @@ export function AboutSection({
       className={cn("anchor-section", compact ? "py-8 md:py-10" : "py-(--spacing-home-section-y)", backgroundClass[background])}
     >
       <div className={container}>
-        <SectionHeading
-          id={`${id}-heading`}
-          heading={heading}
-          line={line}
-          stroke={stroke}
-          boldLine={boldLine}
-          tone={navy ? "light" : "dark"}
-          divider={!navy}
-        />
-        {children}
+        {beside ? (
+          <div className="grid gap-10 md:grid-cols-12 md:items-start">
+            <div className={cn("flex flex-col md:col-span-7", gap)} data-testid="about-section-main">
+              {headingEl}
+              {children}
+            </div>
+            <div className="md:col-span-5" data-testid="about-section-beside">
+              {beside}
+            </div>
+          </div>
+        ) : (
+          <>
+            {headingEl}
+            {children}
+          </>
+        )}
+        {below}
       </div>
     </section>
   );

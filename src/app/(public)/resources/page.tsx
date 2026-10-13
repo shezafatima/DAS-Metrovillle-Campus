@@ -1,36 +1,40 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { AnchoredSection } from "@/components/site-shell/anchored-sections";
 import { GallerySection } from "@/components/gallery/gallery-section";
+import { MobileAppsSection } from "@/components/resources/mobile-apps";
 import { PageBanner } from "@/components/site-shell/page-banner";
 import { galleryContent } from "@/content/gallery";
-import { pageSections, portalLinks } from "@/content/site-shell";
+import { mobileApps, mobileAppsCopy } from "@/content/resources";
+import { pageSections } from "@/content/site-shell";
 
-export const metadata: Metadata = { title: galleryContent.resourcesBanner.title };
+export const metadata: Metadata = {
+  title: galleryContent.resourcesBanner.title,
+  description: mobileApps.body.split(". ")[0] + ".",
+  alternates: { canonical: "/resources" },
+};
 export const revalidate = 60;
 
 /**
- * Resources (minimal until feature 016): the Photo Gallery section
- * (`#photo-gallery`, 007) and a Mobile Apps placeholder (`#mobile-apps`).
- * Feature 016 EXTENDS this page by adding the Downloads (`#downloads`) and
- * Our Books (`#our-books`) sections; it does not replace the page or the
- * gallery section. The old Resources sub-routes redirect here (next.config.ts).
+ * Resources (019): two anchored sections composed from `pageSections.resources`
+ * (the menu and search read the same list): Photo Gallery (`#photo-gallery`,
+ * 007, hidden when it has no photos) and Mobile Apps (`#mobile-apps`). Their
+ * backgrounds are fixed per section, not by position. The old Resources
+ * sub-routes redirect here (next.config.ts).
  */
 export default function ResourcesPage() {
   const banner = galleryContent.resourcesBanner;
-  const lms = portalLinks.find((link) => link.href === "/portal/lms-app")!;
   return (
     <>
       <PageBanner title={banner.title} trail={[...banner.trail]} breadcrumbHome={banner.breadcrumbHome} />
-      <div className="mx-auto flex max-w-(--container-max-width) flex-col gap-section-gap-lg px-(--container-gutter-x) py-section-gap-lg">
-        <GallerySection />
-        <AnchoredSection section={pageSections.resources[1]}>
-          <p className="font-body text-body text-text-muted">Our mobile apps are coming soon.</p>
-          <Link href={lms.href} className="w-fit font-body text-body font-bold text-primary underline underline-offset-4">
-            {lms.label}
-          </Link>
-        </AnchoredSection>
-      </div>
+      {pageSections.resources.map((section) => {
+        switch (section.id) {
+          case "photo-gallery":
+            return <GallerySection key={section.id} />;
+          case "mobile-apps":
+            return <MobileAppsSection key={section.id} value={mobileApps} copy={mobileAppsCopy} />;
+          default:
+            return null;
+        }
+      })}
     </>
   );
 }

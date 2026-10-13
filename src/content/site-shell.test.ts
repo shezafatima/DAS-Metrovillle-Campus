@@ -80,6 +80,15 @@ describe("navigationItems", () => {
     }
   });
 
+  it("pageSections.resources is exactly Photo Gallery then Mobile Apps, and no nav link uses a removed anchor", () => {
+    expect(pageSections.resources).toEqual([
+      { id: "photo-gallery", label: "Photo Gallery" },
+      { id: "mobile-apps", label: "Mobile Apps" },
+    ]);
+    const hrefs = navigationItems.flatMap((i) => [i.href, ...(i.children ?? []).map((c) => c.href)]);
+    for (const href of hrefs) expect(href).not.toMatch(/#(downloads|our-books)/);
+  });
+
   it("Resources shows only Photo Gallery and Mobile Apps", () => {
     const resources = navigationItems.find((i) => i.label === "Resources");
     expect(resources?.children).toEqual([
