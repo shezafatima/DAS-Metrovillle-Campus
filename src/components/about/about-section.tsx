@@ -82,8 +82,8 @@ export function AboutSection({
     >
       <div className={container}>
         {beside ? (
-          <div className="grid gap-10 md:grid-cols-12 md:items-start">
-            <div className={cn("flex flex-col md:col-span-7", gap)} data-testid="about-section-main">
+          <div className="grid gap-10 md:grid-cols-12 md:items-center">
+            <div className="flex flex-col gap-6 md:col-span-7" data-testid="about-section-main">
               {headingEl}
               {children}
             </div>
