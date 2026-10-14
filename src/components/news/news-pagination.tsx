@@ -4,7 +4,7 @@ import { newsCopy } from "@/content/admin";
 export interface NewsPaginationProps {
   page: number;
   totalPages: number;
-  /** e.g. "/news" or "/news/events" — page 1 omits ?page= entirely. */
+  /** e.g. "/news" — page 1 omits ?page= entirely. */
   basePath: string;
 }
 

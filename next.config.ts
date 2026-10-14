@@ -43,6 +43,12 @@ const nextConfig: NextConfig = {
       // own page (documented deviation from the reference's address).
       { source: "/resources/photo-gallery", destination: "/resources#photo-gallery", permanent: true },
       { source: "/resources/scarlet-mobile-apps", destination: "/resources", permanent: true },
+      // News categories are a label on each post now, not pages of their own.
+      ...["head-office", "events", "activities", "achievements", "announcements"].map((key) => ({
+        source: `/news/${key}`,
+        destination: "/news",
+        permanent: true,
+      })),
       // Resources entries that left the menu land on the Resources page.
       ...["prospectus", "monthly-arqam", "newsletters", "useful-links", "our-books"].map((slug) => ({
         source: `/resources/${slug}`,

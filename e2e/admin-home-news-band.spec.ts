@@ -159,23 +159,28 @@ for (const width of [375, 768, 1024, 1440]) {
     expect(await excerpt.evaluate((el) => el.scrollWidth > el.clientWidth)).toBe(true); // cut with an ellipsis (CSS only)
     expect(await excerpt.evaluate((el) => getComputedStyle(el).textOverflow)).toBe("ellipsis");
 
-    // Category as plain text, "Read More" as styled text with an arrow (neither is a link); the cover has a fixed 5:4 ratio.
+    // The category is a label over the cover's top-left corner (plain text, not a link), "Read More" is styled text with an arrow; the cover has a fixed 5:4 ratio.
     const first = cards.first();
-    await expect(first.locator("div[dir] > div:last-child")).toContainText("Events");
+    await expect(first.getByTestId("category-label")).toHaveText("Events");
+    await expect(first.locator("a a")).toHaveCount(0);
+    const [labelBox, coverBox] = [await first.getByTestId("category-label").boundingBox(), await first.locator(".aspect-home-news-card").first().boundingBox()];
+    expect(labelBox!.x - coverBox!.x).toBeLessThan(24);
+    expect(labelBox!.y - coverBox!.y).toBeLessThan(24);
     await expect(first.locator("div[dir] > div:last-child")).toContainText("Read More");
     const cover = await first.locator('[data-variant="home"], .aspect-home-news-card').first().boundingBox();
     expect(Math.abs(cover!.width / cover!.height - 5 / 4)).toBeLessThan(0.02);
 
-    // Urdu is mirrored: right-to-left text, the footer row flipped, the ellipsis on the left.
+    // Urdu is mirrored: right-to-left text, the label top-right, the ellipsis on the left.
     await expect(urduCard.locator("div[dir]").first()).toHaveAttribute("dir", "rtl");
     await urduCard.scrollIntoViewIfNeeded();
     const mirrored = await urduCard.evaluate((el) => {
-      const footer = el.querySelector("div[dir] > div:last-child") as HTMLElement;
-      const [cat, more] = Array.from(footer.children) as HTMLElement[];
+      const label = el.querySelector('[data-testid="category-label"]') as HTMLElement;
+      const cover = el.querySelector(".aspect-home-news-card") as HTMLElement;
       const ex = el.querySelector("div[dir] > p:nth-of-type(2)") as HTMLElement;
-      return { catRight: cat.getBoundingClientRect().left > more.getBoundingClientRect().left, direction: getComputedStyle(ex).direction, align: getComputedStyle(ex).textAlign };
+      return { labelRight: cover.getBoundingClientRect().right - label.getBoundingClientRect().right < 24, text: label.textContent, direction: getComputedStyle(ex).direction, align: getComputedStyle(ex).textAlign };
     });
-    expect(mirrored.catRight).toBe(true); // the category is on the right, "Read More" on the left
+    expect(mirrored.labelRight).toBe(true); // the label sits top-right on an Urdu card
+    expect(mirrored.text).toBe("Achievements"); // and stays in English
     expect(mirrored.direction).toBe("rtl");
 
     // The button below the cards is outlined and goes to /news.
