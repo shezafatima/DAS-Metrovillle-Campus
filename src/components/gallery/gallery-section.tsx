@@ -10,8 +10,7 @@ import { AlbumCard } from "./album-card";
  * heading, no empty grid (FR-031). If the gallery cannot be read it is
  * likewise hidden, never an error (FR-033).
  *
- * On the 019 Resources page it is the first of two sections (Photo Gallery,
- * Mobile Apps), in the shared AboutSection wrapper.
+ * It is the only section of the Resources page, in the shared AboutSection wrapper.
  */
 export async function GallerySection() {
   const { albums } = await getPublicGallery();

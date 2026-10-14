@@ -4,9 +4,10 @@ import { PIXEL_PNG } from "./helpers/pixel";
 import { waitForScrollSettled } from "./helpers/scroll";
 
 /**
- * 019 Resources with a seeded gallery: section order, both menu anchors and the
- * fixed backgrounds. Named admin-* so it runs in the serial admin project, which
- * owns the one shared gallery document.
+ * The Resources page with a seeded gallery: the Photo Gallery is the only section,
+ * its menu entry lands clear of the header, and it is hidden when empty. Named
+ * admin-* so it runs in the serial admin project, which owns the one shared
+ * gallery document.
  */
 
 const stubImages = (page: Page) =>
@@ -15,10 +16,10 @@ const stubImages = (page: Page) =>
 const seed = () =>
   seedAlbums([{ id: albumId("annualday"), title: "Annual Day", photos: Array.from({ length: 3 }, (_, i) => ({ name: `annual${i}` })) }]);
 
-async function landsClear(page: Page, id: string) {
+async function landsClear(page: Page) {
   await waitForScrollSettled(page);
   const header = await page.getByRole("banner").evaluate((el) => el.getBoundingClientRect().bottom);
-  const r = await page.locator(`section#${id} h2`).evaluate((el) => {
+  const r = await page.locator("section#photo-gallery h2").evaluate((el) => {
     const b = el.getBoundingClientRect();
     return { top: b.top, bottom: b.bottom, vh: window.innerHeight };
   });
@@ -31,55 +32,50 @@ test.afterAll(async () => {
   await clearGallery();
 });
 
-test("with a gallery, Photo Gallery comes before Mobile Apps with fixed backgrounds", async ({ page }) => {
+test("with a gallery, Photo Gallery is the only section", async ({ page }) => {
   await seed();
   await stubImages(page);
   await page.goto("/resources");
-  expect(await page.locator("main section").evaluateAll((els) => els.map((e) => e.id))).toEqual(["photo-gallery", "mobile-apps"]);
+  expect(await page.locator("main section").evaluateAll((els) => els.map((e) => e.id))).toEqual(["photo-gallery"]);
   await expect(page.locator("section#photo-gallery")).toHaveAttribute("data-background", "surface");
-  await expect(page.locator("section#mobile-apps")).toHaveAttribute("data-background", "muted");
 });
 
-test.describe("both menu entries land clear of the header", () => {
-  test.use({ viewport: { width: 1440, height: 900 } });
-  test("desktop dropdown", async ({ page }) => {
-    await seed();
-    await stubImages(page);
-    for (const [label, id] of [
-      ["Photo Gallery", "photo-gallery"],
-      ["Mobile Apps", "mobile-apps"],
-    ]) {
+test.describe("menu entry lands clear of the header", () => {
+  test.describe("desktop", () => {
+    test.use({ viewport: { width: 1440, height: 900 } });
+    test("dropdown lists only Photo Gallery", async ({ page }) => {
+      await seed();
+      await stubImages(page);
       await page.goto("/contact");
       const nav = page.getByRole("navigation", { name: "Main menu" });
       await nav.getByRole("link", { name: "Resources", exact: true }).hover();
-      await nav.getByRole("link", { name: label, exact: true }).click();
-      await expect(page).toHaveURL(new RegExp(`/resources#${id}$`));
-      await landsClear(page, id);
-    }
+      expect((await nav.locator('a[href^="/resources#"]').allTextContents()).map((t) => t.trim())).toEqual(["Photo Gallery"]);
+      await nav.getByRole("link", { name: "Photo Gallery", exact: true }).click();
+      await expect(page).toHaveURL(/\/resources#photo-gallery$/);
+      await landsClear(page);
+    });
   });
-});
 
-test.describe("mobile group", () => {
-  test.use({ viewport: { width: 375, height: 800 } });
-  test("both entries land clear of the header", async ({ page }) => {
-    await seed();
-    await stubImages(page);
-    for (const id of ["photo-gallery", "mobile-apps"]) {
+  test.describe("mobile", () => {
+    test.use({ viewport: { width: 375, height: 800 } });
+    test("group lists only Photo Gallery", async ({ page }) => {
+      await seed();
+      await stubImages(page);
       await page.goto("/contact");
       await page.getByRole("button", { name: /menu/i }).first().click();
       const dialog = page.getByRole("dialog");
       await dialog.getByRole("button", { name: "Resources" }).click();
-      await dialog.locator(`a[href="/resources#${id}"]`).click();
-      await expect(page).toHaveURL(new RegExp(`/resources#${id}$`));
-      await landsClear(page, id);
-    }
+      expect((await dialog.locator('a[href^="/resources#"]').allTextContents()).map((t) => t.trim())).toEqual(["Photo Gallery"]);
+      await dialog.locator('a[href="/resources#photo-gallery"]').click();
+      await expect(page).toHaveURL(/\/resources#photo-gallery$/);
+      await landsClear(page);
+    });
   });
 });
 
-test("without a gallery, Mobile Apps is the only section and stays muted", async ({ page }) => {
+test("without a gallery, the page has no section at all", async ({ page }) => {
   await clearGallery();
   await page.goto("/resources");
-  await expect(page.locator("section#photo-gallery")).toHaveCount(0);
-  expect(await page.locator("main section").evaluateAll((els) => els.map((e) => e.id))).toEqual(["mobile-apps"]);
-  await expect(page.locator("section#mobile-apps")).toHaveAttribute("data-background", "muted");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Resources");
+  await expect(page.locator("main section")).toHaveCount(0);
 });

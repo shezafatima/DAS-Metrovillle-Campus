@@ -25,7 +25,7 @@ const REDIRECTS: [string, string][] = [
   ["/academics/examinations", "/academics"],
   ["/academics/teachers-training", "/academics#teachers-training"],
   ["/hifz-e-quran", "/academics#hifz-e-quran"],
-  ["/resources/scarlet-mobile-apps", "/resources#mobile-apps"],
+  ["/resources/scarlet-mobile-apps", "/resources"],
   ["/resources/photo-gallery", "/resources#photo-gallery"],
   ["/resources/prospectus", "/resources"],
   ["/resources/monthly-arqam", "/resources"],
