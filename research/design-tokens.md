@@ -705,13 +705,6 @@ Deviation (flagged, Constitution I): every value above is composed, not extracte
 
 ## Resources page (019 — no matching reference layout)
 
-das.edu.pk's Scarlet Mobile Apps page is text, one photo and three button images, so the page is composed from existing tokens. Two values are added, each named here first.
+The Resources page is the Photo Gallery only. It adds no tokens. The album cards use `--radius-card`, `--shadow-card`, `--motion-fast` and the `black` scrim already used by the album photo grid. The heading stroke reads `--heading-stroke-color`, which `#photo-gallery` sets to `--color-gold`, because the bright yellow `--color-topbar` is faint on white (other sections keep `--color-topbar`).
 
-| Token | Value | Use |
-|---|---|---|
-| `--size-resources-flyer-max-h` | `36rem` | Maximum height of the Scarlet Series flyer (744 x 1280). The width follows from its aspect ratio, so the flyer is shown whole |
-| `--spacing-resources-card-lift` | `4px` | How far an app card lifts on hover (transform only, motion-safe) |
-
-Reused: `bg-surface`, `--color-home-muted-band`, `bg-primary`, `--color-topbar`, `--radius-card`, `--shadow-card`, `max-w-prose`, `anchor-section`, the `SectionHeading` tokens.
-
-Deviation (flagged, Constitution I): both values are composed, not extracted. If the client supplies a design, extract it here first.
+Deviation (flagged, Constitution I): the card design is composed, not extracted from the reference.
