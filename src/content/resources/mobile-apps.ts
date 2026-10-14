@@ -6,10 +6,10 @@ import type { LinkType, MobileApps } from "@/lib/resources/schema";
 export const mobileApps: MobileApps = {
   heading: "Scarlet Series Mobile Applications",
   body: "Scarlet series applications are interactive educational game applications to cover the subject areas of Mathematics, Knowledge and Understanding of the World, Urdu and English concepts to establish a foundation of knowledge for our children. These applications feature multiple interactive and fun learning games, each designed to teach a specific concept. The content specifically chosen for ECE children helps to develop their literacy and numeracy skills and encourages their curiosity. All of the games include voiced instructions, so our young children will find it easy to learn and play for making something in the real rather than the virtual world. Kindly click on the following links to download the three Applications.",
-  image: { url: "/images/resources/scarlet-series-playgroup.jpeg", publicId: "", width: 744, height: 1280 },
-  // PENDING CLIENT APPROVAL: R7. A transcription of the flyer's text (its head office web address is left out).
-  imageAlt:
-    "Flyer: Dar-e-Arqam Schools proudly introducing Scarlet Series for Playgroup. A set of 6 Readers. Workbooks for the whole year. Mobile Apps for Creative Development of our children. Helping Kit for Teachers. Activity based assessments. Teacher's Manual containing daily plans and activities. Training Sessions. 3D classroom model. Beginning from New Session 2020-21. The series will be provided in parallel to the old series of Play Group.",
+  // The Scarlet Series flyer was removed at the owner's request (2026-10-14), so the text uses the full width.
+  // The file is still in public/images/resources/ and the schema still accepts an image (R7 is moot while it is off).
+  image: null,
+  imageAlt: "",
   apps: [
     {
       id: "scarlet-english",

@@ -14,11 +14,6 @@ const WIDTHS = [375, 768, 1024, 1440];
 const DRIVE = "https://drive.google.com/file/d/15V_ogaFhGTmkaMHTggAcIFiLDDHevpxy/view?usp=sharing";
 
 const cards = (page: Page) => page.locator("[data-testid=app-card]");
-const box = async (page: Page, selector: string) => {
-  const b = await page.locator(selector).boundingBox();
-  expect(b, selector).not.toBeNull();
-  return b!;
-};
 
 test.describe("US1 Mobile Apps", () => {
   test("has the reference heading and body, word for word", async ({ page }) => {
@@ -28,37 +23,14 @@ test.describe("US1 Mobile Apps", () => {
     await expect(section).toContainText(BODY);
   });
 
-  test("the flyer is local, loaded, uncropped, and beside the text from 768px", async ({ page }) => {
-    await page.setViewportSize({ width: 1024, height: 900 });
+  test("has no flyer, and the heading and text use the full section width", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto("/resources");
-    const img = page.locator("section#mobile-apps figure img");
-    await img.scrollIntoViewIfNeeded();
-    await expect(img).toHaveAttribute("src", /scarlet-series-playgroup/);
-    await expect.poll(() => img.evaluate((el: HTMLImageElement) => el.naturalWidth)).toBeGreaterThan(0);
-    const b = (await img.boundingBox())!;
-    expect(Math.abs(b.width / b.height - 744 / 1280) / (744 / 1280)).toBeLessThan(0.01);
-    const text = await box(page, "section#mobile-apps p >> nth=0");
-    expect(b.x).toBeGreaterThan(text.x + text.width - 1);
-
-    await page.setViewportSize({ width: 375, height: 800 });
-    const stacked = (await page.locator("section#mobile-apps figure").boundingBox())!;
-    const body = await box(page, "section#mobile-apps p >> nth=0");
-    expect(stacked.y).toBeGreaterThanOrEqual(body.y + body.height - 1);
-  });
-
-  test("the flyer frame keeps its size when the image fails to load", async ({ page }) => {
-    await page.setViewportSize({ width: 1024, height: 900 });
-    await page.goto("/resources");
-    const figure = page.locator("section#mobile-apps figure");
-    await figure.scrollIntoViewIfNeeded();
-    await expect.poll(() => figure.locator("img").evaluate((el: HTMLImageElement) => el.naturalWidth)).toBeGreaterThan(0);
-    const loaded = (await figure.boundingBox())!;
-
-    await page.route("**/scarlet-series-playgroup*", (r) => r.abort());
-    await page.goto("/resources");
-    const failed = (await page.locator("section#mobile-apps figure").boundingBox())!;
-    expect(Math.round(failed.width)).toBe(Math.round(loaded.width));
-    expect(Math.round(failed.height)).toBe(Math.round(loaded.height));
+    const section = page.locator("section#mobile-apps");
+    await expect(section.locator("figure, img")).toHaveCount(0);
+    const text = (await section.locator("p").first().boundingBox())!;
+    const cardsRow = (await section.locator("ul").boundingBox())!;
+    expect(text.width).toBeGreaterThan(cardsRow.width * 0.95);
   });
 
   for (const [width, columns] of [

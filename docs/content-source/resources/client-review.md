@@ -43,7 +43,7 @@ Until then, these three cards show "Not available at the moment" and have no but
 | R4 | The Math, Urdu and LMS links are dead (see App links). | Cards kept, no button, "Not available at the moment". | - [ ] Approve  - [ ] Links supplied |
 | R5 | The text describes the network-wide Scarlet Series, not the Metroville Campus. | Kept. | - [ ] Approve  - [ ] Change to: |
 | R6 | "Not available at the moment" and "Installs from outside the Play Store" are new wording, not from the reference. | Shown. | - [ ] Approve  - [ ] Change to: |
-| R7 | The Scarlet Series photo is a flyer that advertises "Beginning from New Session 2020-21" and shows the head office web address. Its alt text on the reference, "Scarlet Series for Playgroup", does not describe the flyer. | Shown whole, with alt text that transcribes the flyer. | - [ ] Approve  - [ ] Replace the photo |
+| R7 | The Scarlet Series photo is a flyer that advertises "Beginning from New Session 2020-21" and shows the head office web address. Its alt text on the reference, "Scarlet Series for Playgroup", does not describe the flyer. | Not shown: the flyer was removed from the page at the owner's request (2026-10-14). | - [ ] Approve  - [ ] Replace the photo |
 
 ## Open questions
 

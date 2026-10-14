@@ -44,7 +44,7 @@ export function MobileAppsSection({ value, copy }: { value: MobileApps; copy: ty
         </ul>
       }
     >
-      <div className="flex max-w-prose flex-col gap-4">
+      <div className="flex flex-col gap-4">
         <Paragraphs text={value.body} />
       </div>
     </AboutSection>

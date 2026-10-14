@@ -4,10 +4,9 @@ import { describe, expect, it } from "vitest";
 import { mobileApps, mobileAppsCopy, mobileAppsReview, mobileAppsSource } from "./index";
 
 describe("Mobile Apps content invariants", () => {
-  it("the flyer is a local 744 x 1280 image", () => {
-    expect(mobileApps.image?.url.startsWith("/images/resources/")).toBe(true);
-    expect(mobileApps.image?.width).toBe(744);
-    expect(mobileApps.image?.height).toBe(1280);
+  it("shows no flyer (removed at the owner's request, 2026-10-14)", () => {
+    expect(mobileApps.image).toBeNull();
+    expect(mobileApps.imageAlt).toBe("");
   });
 
   it("nothing that renders contains das.edu.pk", () => {
