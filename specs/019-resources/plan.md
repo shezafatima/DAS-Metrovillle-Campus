@@ -12,7 +12,6 @@ The Photo Gallery is wrapped in the shared `AboutSection`, its album cards are r
 - `src/components/gallery/gallery-section.tsx`: `AboutSection` wrapper (`surface`, with the stroke).
 - `src/components/gallery/album-card.tsx`: the photo-tile card.
 - `src/components/home/heading-stroke.tsx` and `src/app/globals.css`: the stroke colour reads `--heading-stroke-color`; `#photo-gallery` sets it to `--color-gold`.
-- `src/components/about/about-section.tsx`: optional `beside` and `below` props, added for the removed section and now unused.
 - `src/content/site-shell.ts`: `pageSections.resources` is Photo Gallery only.
 - `next.config.ts`: `/resources/scarlet-mobile-apps` redirects to `/resources`.
 
