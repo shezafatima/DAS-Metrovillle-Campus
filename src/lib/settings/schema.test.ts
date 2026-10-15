@@ -111,6 +111,69 @@ describe("schemaFor: text and long text", () => {
   });
 });
 
+// 020: the date field and the group-level dateOrder rule, on their own TEST-ONLY definition.
+const datesDef: GroupDefinition = {
+  key: "admission",
+  label: "Dates",
+  fields: [
+    { type: "date", key: "from", label: "From" },
+    { type: "date", key: "to", label: "To" },
+    { type: "date", key: "must", label: "Must", required: true },
+  ],
+  rules: [{ kind: "dateOrder", from: "from", to: "to", message: "to before from" }],
+};
+
+function checkDates(input: Record<string, unknown>) {
+  const result = schemaFor(datesDef).safeParse({ from: "", to: "", must: "2027-01-01", ...input });
+  return result.success
+    ? { ok: true as const, data: result.data as Record<string, unknown> }
+    : { ok: false as const, fields: fieldErrors(result.error) };
+}
+
+describe("schemaFor: date (020)", () => {
+  it("accepts an empty value and a real calendar date, trimmed", () => {
+    expect(checkDates({ from: "" }).ok).toBe(true);
+    const r = checkDates({ from: " 2027-03-31 " });
+    expect(r.ok && r.data.from).toBe("2027-03-31");
+    expect(checkDates({ from: "2028-02-29" }).ok).toBe(true); // leap day
+  });
+
+  it("refuses impossible and wrongly written dates", () => {
+    for (const bad of ["2027-02-30", "2027-02-29", "31/03/2027", "2027-3-1", "2027-13-01", "tomorrow"]) {
+      expect(checkDates({ from: bad })).toMatchObject({ ok: false, fields: { from: settingsCopy.errors.date } });
+    }
+  });
+
+  it("requires a required date", () => {
+    expect(checkDates({ must: "" })).toMatchObject({ ok: false, fields: { must: settingsCopy.errors.required } });
+  });
+
+  it("reads a missing date as empty", () => {
+    const result = schemaFor(datesDef).safeParse({ must: "2027-01-01" });
+    expect(result.success && result.data.from).toBe("");
+  });
+});
+
+describe("schemaFor: group rule dateOrder (020)", () => {
+  it("refuses an end before the start, with the message on the end field", () => {
+    expect(checkDates({ from: "2027-03-31", to: "2027-01-01" })).toEqual({ ok: false, fields: { to: "to before from" } });
+  });
+
+  it("accepts the same day and a later end", () => {
+    expect(checkDates({ from: "2027-01-15", to: "2027-01-15" }).ok).toBe(true);
+    expect(checkDates({ from: "2027-01-01", to: "2027-03-31" }).ok).toBe(true);
+  });
+
+  it("does not apply while either date is empty", () => {
+    expect(checkDates({ from: "2027-03-31", to: "" }).ok).toBe(true);
+    expect(checkDates({ from: "", to: "2027-01-01" }).ok).toBe(true);
+  });
+
+  it("leaves a definition without rules unaffected", () => {
+    expect(check(valid()).ok).toBe(true);
+  });
+});
+
 describe("schemaFor: number", () => {
   it.each([-1, 2.5, 101, "abc", "", null, "1e3", "-4", "2.5"])("refuses %j", (value) => {
     expect(check(valid({ count: value }))).toMatchObject({ ok: false, fields: { count: "whole 0-100" } });

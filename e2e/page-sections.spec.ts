@@ -7,13 +7,15 @@ const PAGES: Record<string, string[]> = {
   // Team and Messages visibility is checked in about.spec.ts.
   "/about": ["our-story", "vision-mission", "core-values"],
   "/academics": ["academic-overview", "teachers-training", "hifz-e-quran"],
-  "/admission": ["admission-procedure", "class-levels", "uniform"],
+  "/admission": ["admission-procedure", "uniform"],
 };
 
 const REDIRECTS: [string, string][] = [
   ...Object.entries(PAGES)
     .filter(([page]) => page === "/admission")
     .flatMap(([page, ids]) => ids.map((id): [string, string] => [`${page}/${id}`, `${page}#${id}`])),
+  // 020: Class Levels is skipped until the client confirms it.
+  ["/admission/class-levels", "/admission"],
   // About was remapped in 017 (contracts/page-structure.md).
   ["/about/overview", "/about#our-story"],
   ["/about/salient-features", "/about"],
@@ -114,6 +116,16 @@ test.describe("single pages with anchored sections", () => {
       expect(await page.evaluate(() => (window as unknown as { __kept?: boolean }).__kept)).toBe(true);
     });
 
+    test("the Admission dropdown lists exactly Admission Procedure then Uniform (020)", async ({ page }) => {
+      await page.goto("/contact");
+      const nav = page.getByRole("navigation", { name: "Main menu" });
+      await nav.getByRole("link", { name: "Admission", exact: true }).hover();
+      const links = nav.locator('a[href^="/admission#"]');
+      await expect(links).toHaveText(["Admission Procedure", "Uniform"]);
+      await expect(links.first()).toHaveAttribute("href", "/admission#admission-procedure");
+      await expect(nav.getByRole("link", { name: "Class Levels" })).toHaveCount(0);
+    });
+
     test("from another page the link lands on the section", async ({ page }) => {
       await page.goto("/contact");
       const nav = page.getByRole("navigation", { name: "Main menu" });
@@ -155,10 +167,12 @@ test.describe("single pages with anchored sections", () => {
       await page.getByRole("button", { name: "Open menu" }).click();
       const menu = page.getByRole("navigation", { name: "Mobile menu" });
       await menu.getByRole("button", { name: "Admission" }).click();
-      await menu.getByRole("link", { name: "Class Levels" }).click();
+      // 020: exactly two Admission entries, in order.
+      await expect(menu.locator('a[href^="/admission#"]')).toHaveText(["Admission Procedure", "Uniform"]);
+      await menu.getByRole("link", { name: "Uniform" }).click();
       await expect(menu).toBeHidden();
-      await expect(page).toHaveURL("/admission#class-levels");
-      await clearOfHeader(page, "class-levels");
+      await expect(page).toHaveURL("/admission#uniform");
+      await clearOfHeader(page, "uniform");
     });
   });
 });

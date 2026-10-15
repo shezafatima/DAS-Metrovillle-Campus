@@ -37,6 +37,8 @@ const nextConfig: NextConfig = {
       ...sectionRedirects,
       ...legacyAboutRedirects.map((redirect) => ({ ...redirect, permanent: true })),
       ...legacyAcademicsRedirects.map((redirect) => ({ ...redirect, permanent: true })),
+      // 020: Class Levels is skipped until the client confirms its content; a later feature restores the section.
+      { source: "/admission/class-levels", destination: "/admission", permanent: true },
       // Hifz-e-Quran was a top-level page; it is now a section of Academics.
       { source: "/hifz-e-quran", destination: "/academics#hifz-e-quran", permanent: true },
       // 007: the gallery is the #photo-gallery section of /resources, not its

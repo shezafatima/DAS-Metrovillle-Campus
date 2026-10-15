@@ -554,6 +554,37 @@
 - `NEXT_DIST_DIR` (optional) moves the Next build folder, so a second `next
   dev` (the Playwright one on the test database) can run beside a developer's
   own dev server.
+- 020 added a `date` field type (a calendar date stored as "YYYY-MM-DD", or
+  "" when empty; no time or zone) and group-level `rules`. The one rule kind,
+  `dateOrder`, refuses a save where the `to` date is before the `from` date,
+  with the message on `to`; it runs in the same group schema, so the browser
+  and the server apply it alike.
+
+## Admission (020)
+- Settings group `admission`: Opens on, Closes on (date fields, `dateOrder`),
+  Announcement and Closed message (text, 160 characters). Empty dates mean
+  closed. Saves follow the 005 rules above (Settings permission, version
+  check, `settings_saved` log).
+- Whether admissions are open is never stored or cached. The pure
+  `admissionWindowState(value, now)` (src/lib/admission/window.ts) compares
+  the saved dates with today's calendar date in Asia/Karachi; open from the
+  start of Opens on to the end of Closes on, inclusive. `/admission` calls
+  `connection()`, so it renders per request and switches at midnight Pakistan
+  time with no save or redeploy (ADR-0011). The saved dates themselves come
+  through the cached `getPublicSettings("admission")`, which a save refreshes.
+- `getAdmissionWindow()` and `isAdmissionApplyOpen()` (src/lib/admission/server.ts)
+  are the only entry points: the public banner, the Settings status line and
+  the Apply Now button use them, and 013 reuses `getAdmissionWindow()` to refuse
+  registrations outside the dates. Apply Now also needs
+  `registrationFormExists` (src/content/admission/registration.ts), shipped
+  false; 013 deletes it.
+- Test hook: on the Playwright dev server only (`E2E_FRESH_READS=1`, never in
+  production) an `e2e-now` cookie holding an ISO instant replaces "now" for
+  the window, so specs can check 23:59 and 00:00 Pakistan time.
+- The flip-card coverflow is one shared component
+  (src/components/ui/flip-coverflow.tsx) used by the home quick-access cards
+  and the Admission uniform cards. Its props are serialisable except a back
+  given as a function (client callers only), so a server component can use it.
 
 ## Gallery albums (007) data rules
 - The gallery left the Settings group engine: `GROUP_KEYS` is contact, hero,

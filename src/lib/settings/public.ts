@@ -53,11 +53,22 @@ export interface PublicVideo {
   youtubeId: string | null;
 }
 
+/** The admission window as saved (020). Whether it is open is decided per request (src/lib/admission/window.ts). */
+export interface PublicAdmission {
+  /** "YYYY-MM-DD", or "" when not set. */
+  opensOn: string;
+  closesOn: string;
+  /** "" when not set. */
+  announcement: string;
+  closedMessage: string;
+}
+
 export interface PublicShapes {
   contact: ContactInfo;
   hero: PublicHero;
   stats: PublicStats;
   video: PublicVideo;
+  admission: PublicAdmission;
 }
 
 // Same order as the content file and as SocialLinks' fixed order.
@@ -108,6 +119,13 @@ export function toPublicShape<G extends GroupKey>(group: G, value: GroupValue): 
         const youtubeUrl = str(value.youtubeUrl);
         return { youtubeUrl, youtubeId: parseYouTubeAddress(youtubeUrl)?.id ?? null } satisfies PublicVideo;
       }
+      case "admission":
+        return {
+          opensOn: str(value.opensOn),
+          closesOn: str(value.closesOn),
+          announcement: str(value.announcement),
+          closedMessage: str(value.closedMessage),
+        } satisfies PublicAdmission;
     }
   })();
   return shape as PublicShapes[G];

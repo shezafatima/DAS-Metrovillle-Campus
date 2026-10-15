@@ -7,7 +7,7 @@ import { GROUP_KEYS } from "@/lib/settings/types";
 import { cn } from "cn";
 
 /**
- * Links to the four settings groups, one URL each (research R9), so the
+ * Links to the settings groups (GROUP_KEYS; Admission added in 020), one URL each (research R9), so the
  * existing unsaved-changes link guard covers switching between groups, plus
  * the Photo gallery (007), which is no longer a group but lives in the same
  * area and permission. On narrow screens the links wrap, so the page never

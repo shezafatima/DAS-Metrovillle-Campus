@@ -1,3 +1,4 @@
+import { admissionDefinition } from "./groups/admission";
 import { contactDefinition } from "./groups/contact";
 import { heroDefinition } from "./groups/hero";
 import { statsDefinition } from "./groups/stats";
@@ -15,6 +16,7 @@ export const GROUPS: Record<GroupKey, GroupDefinition> = {
   hero: heroDefinition,
   stats: statsDefinition,
   video: videoDefinition,
+  admission: admissionDefinition,
 };
 
 export { GROUP_KEYS };

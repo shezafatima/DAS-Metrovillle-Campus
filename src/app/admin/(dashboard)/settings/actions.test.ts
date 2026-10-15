@@ -160,6 +160,36 @@ describeWithDb(
       expect(revalidateTag).not.toHaveBeenCalled();
     });
 
+    it("020 admission: a full window saves with its editor and logs settings_saved for the group", async () => {
+      await seedTestContentManager(CM_EMAIL, PASSWORD, ["settings"]);
+      const cookie = await getTestSessionCookie(CM_EMAIL, PASSWORD);
+      const info = vi.spyOn(console, "info");
+      const data = { opensOn: "2027-01-01", closesOn: "2027-03-31", announcement: "Admissions are now open", closedMessage: "Opening soon" };
+      expect(await run(cookie, { group: "admission", expectedVersion: 0, data })).toMatchObject({ status: "success", version: 1, data });
+      expect(await settingsDoc("admission")).toMatchObject({ version: 1, updatedBy: CM_EMAIL, data });
+      expect(revalidateTag).toHaveBeenCalledWith("settings:admission", { expire: 0 });
+      expect(
+        info.mock.calls.some(([line]) => String(line).includes('"settings_saved"') && String(line).includes('"admission"') && String(line).includes(CM_EMAIL)),
+      ).toBe(true);
+    });
+
+    it("020 admission: Closes on before Opens on, or a text over 160 characters, is refused and nothing is written", async () => {
+      await seedTestAdmin(ADMIN_EMAIL, PASSWORD);
+      const cookie = await getTestSessionCookie(ADMIN_EMAIL, PASSWORD);
+      const base = defaultsFor(GROUPS.admission);
+      expect(await run(cookie, { group: "admission", expectedVersion: 0, data: { ...base, opensOn: "2027-03-31", closesOn: "2027-01-01" } })).toMatchObject({
+        status: "error",
+        error: "invalid",
+        fields: { closesOn: expect.any(String) },
+      });
+      expect(await run(cookie, { group: "admission", expectedVersion: 0, data: { ...base, announcement: "a".repeat(161) } })).toMatchObject({
+        status: "error",
+        error: "invalid",
+        fields: { announcement: expect.any(String) },
+      });
+      expect(await settingsDoc("admission")).toBeNull();
+    });
+
     it("invalid data comes back with field errors, and the group stays unsaved", async () => {
       await seedTestAdmin(ADMIN_EMAIL, PASSWORD);
       const cookie = await getTestSessionCookie(ADMIN_EMAIL, PASSWORD);

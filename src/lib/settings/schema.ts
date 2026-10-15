@@ -4,6 +4,7 @@ import { fieldErrors } from "@/lib/validation/field-errors";
 import { parseYouTubeAddress } from "./youtube";
 import {
   PLACEHOLDER_IMAGE_URLS,
+  type DateField,
   type Field,
   type GroupDefinition,
   type GroupValue,
@@ -80,6 +81,24 @@ function videoSchema(field: Extract<Field, { type: "video" }>): z.ZodType {
   return z.preprocess(
     emptyIfNil,
     base.refine((value) => (value === "" && !field.required) || parseYouTubeAddress(value) !== null, msg.youtube),
+  );
+}
+
+/** True for a real calendar date written "YYYY-MM-DD" (so "2027-02-30" is refused). */
+export function isCalendarDate(value: string): boolean {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+  if (!match) return false;
+  const [year, month, day] = [Number(match[1]), Number(match[2]), Number(match[3])];
+  const date = new Date(Date.UTC(year, month - 1, day));
+  return date.getUTCFullYear() === year && date.getUTCMonth() === month - 1 && date.getUTCDate() === day;
+}
+
+function dateSchema(field: DateField): z.ZodType {
+  let base = z.string({ error: msg.date }).trim();
+  if (field.required) base = base.min(1, msg.required);
+  return z.preprocess(
+    emptyIfNil,
+    base.refine((value) => value === "" || isCalendarDate(value), msg.date),
   );
 }
 
@@ -164,6 +183,8 @@ function fieldSchema(field: Field): z.ZodType {
       return imageSchema(field);
     case "boolean":
       return z.preprocess((value) => (value === undefined ? (field.default ?? false) : value), z.boolean());
+    case "date":
+      return dateSchema(field);
     case "group":
       return z.preprocess(
         (value) => (value === null || value === undefined ? {} : value),
@@ -176,11 +197,28 @@ function fieldSchema(field: Field): z.ZodType {
 
 const cache = new WeakMap<GroupDefinition, z.ZodType<GroupValue>>();
 
-/** The Zod schema for a group's value. Unknown keys are dropped. */
+/**
+ * The Zod schema for a group's value. Unknown keys are dropped. Group rules
+ * (020) run after every field is valid, so they only compare clean values.
+ */
 export function schemaFor(def: GroupDefinition): z.ZodType<GroupValue> {
   let schema = cache.get(def);
   if (!schema) {
-    schema = z.object(Object.fromEntries(def.fields.map((field) => [field.key, fieldSchema(field)]))) as unknown as z.ZodType<GroupValue>;
+    const object = z.object(Object.fromEntries(def.fields.map((field) => [field.key, fieldSchema(field)])));
+    const rules = def.rules ?? [];
+    schema = (
+      rules.length === 0
+        ? object
+        : object.superRefine((value: Record<string, unknown>, ctx) => {
+            for (const rule of rules) {
+              if (rule.kind !== "dateOrder") continue;
+              const from = String(value[rule.from] ?? "");
+              const to = String(value[rule.to] ?? "");
+              // Zero-padded ISO dates compare correctly as strings.
+              if (from !== "" && to !== "" && to < from) ctx.addIssue({ code: "custom", path: [rule.to], message: rule.message });
+            }
+          })
+    ) as unknown as z.ZodType<GroupValue>;
     cache.set(def, schema);
   }
   return schema;

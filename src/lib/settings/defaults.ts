@@ -18,6 +18,8 @@ export function defaultForField(field: Field): unknown {
       return field.default ?? field.min;
     case "boolean":
       return field.default ?? false;
+    case "date":
+      return field.default ?? "";
     case "image":
       return null;
     case "group":

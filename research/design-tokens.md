@@ -708,3 +708,18 @@ Deviation (flagged, Constitution I): every value above is composed, not extracte
 The Resources page is the Photo Gallery only. It adds no tokens. The album cards use `--radius-card`, `--shadow-card`, `--motion-fast` and the `black` scrim already used by the album photo grid. The heading stroke reads `--heading-stroke-color`, which `#photo-gallery` sets to `--color-gold`, because the bright yellow `--color-topbar` is faint on white (other sections keep `--color-topbar`).
 
 Deviation (flagged, Constitution I): the card design is composed, not extracted from the reference.
+
+## Admission page (020)
+
+The reference Uniform page lists each group in a Boys card (`#ddffff`, corners 40/0/40/0) and a Girls card (`#ffeeee`, corners 0/40/0/40) beside the photos. This feature shows the groups as flip cards on the shared coverflow instead (spec deviation V7), so only the card size is new. The cyan/pink card colours are deliberately not adopted (requester, 2026-10-14): they are not theme colours, and colour-coding boys/girls is not wanted.
+
+| Token | Value | Use |
+|---|---|---|
+| `--spacing-uniform-card-w` | `18rem` | Uniform card width below `lg` (the home card width) |
+| `--spacing-uniform-card-h` | `26rem` | Uniform card height below `lg`: a photo and the two-line heading on the front; the heading and five items at body size on the back at 375px |
+| `--spacing-uniform-card-w-lg` | `21rem` | Uniform card width from `lg` (the home card width) |
+| `--spacing-uniform-card-h-lg` | `27rem` | Uniform card height from `lg` |
+
+Reused: `bg-primary` (card backs, as on the home coverflow), `bg-surface` (photo-less fronts), `--radius-home-flip`, `--spacing-home-flip-padding`, `text-h3`, `text-body`, `bg-topbar` with `text-primary` (the open-admissions banner), `text-text-muted` (the closed note), the careers button tokens (Apply Now), `anchor-section`, the `SectionHeading` tokens, `--color-home-muted-band`.
+
+Deviation (flagged, Constitution I): the card sizes are composed, not extracted (the reference has no flip cards).

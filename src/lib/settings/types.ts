@@ -6,7 +6,7 @@
 
 // The photo gallery left this engine in 007: albums are written only by
 // src/lib/gallery/store.ts (ADR-0005), so "gallery" is no longer a group key.
-export const GROUP_KEYS = ["contact", "hero", "stats", "video"] as const;
+export const GROUP_KEYS = ["contact", "hero", "stats", "video", "admission"] as const;
 export type GroupKey = (typeof GROUP_KEYS)[number];
 
 type FieldBase = {
@@ -65,6 +65,16 @@ export type BooleanField = FieldBase & {
   default?: boolean;
 };
 
+/**
+ * A calendar date with no time or zone (020): stored as "YYYY-MM-DD", or ""
+ * when empty. Whatever the date means in time (e.g. Pakistan midnight) is
+ * decided by the code that reads it, never by the stored value.
+ */
+export type DateField = FieldBase & {
+  type: "date";
+  default?: string;
+};
+
 /** A nested object of fields, e.g. contact.social. */
 export type GroupField = FieldBase & {
   type: "group";
@@ -101,15 +111,24 @@ export type Field =
   | ImageFieldDef
   | VideoField
   | BooleanField
+  | DateField
   | GroupField
   | ListField;
 
 export type FieldType = Field["type"];
 
+/**
+ * A rule across two top-level fields of a group (020). `dateOrder`: when both
+ * date fields are set, `to` must be on or after `from`; the message is shown
+ * on `to`.
+ */
+export type GroupRule = { kind: "dateOrder"; from: string; to: string; message: string };
+
 export interface GroupDefinition {
   key: GroupKey;
   label: string;
   fields: Field[];
+  rules?: GroupRule[];
 }
 
 /** A Cloudinary image reference (data-model.md "ImageRef"). Never a binary. */

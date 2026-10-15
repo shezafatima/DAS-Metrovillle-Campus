@@ -82,3 +82,9 @@ Errors from the action are keyed by path and rendered under the matching control
 | Stats | integer 0–100 000 000 |
 | Live slides / gallery images | 10 / 200 |
 | Images per gallery selection | 20 |
+
+## Addendum (020-admission, 2026-10-14)
+
+- New field type `date`: `{ type: "date", key, label, hint?, required?, default? }`. Value "YYYY-MM-DD" (a real calendar date) or "" when empty; default "". Rendered as a native `<input type="date">`. Message for anything else: `settingsCopy.errors.date`.
+- `GroupDefinition.rules?: GroupRule[]`, with one kind: `{ kind: "dateOrder", from, to, message }`. When both dates are set and `to < from`, the save is refused with `message` at path `to`. Applied in `schemaFor()`, so client and server share it.
+- New group `admission` (specs/020-admission/contracts/settings-admission-group.md).
