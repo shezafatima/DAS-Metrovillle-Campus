@@ -90,7 +90,7 @@ describe("ContactForm", () => {
     fireEvent.click(screen.getByRole("button", { name: "Send" }));
 
     expect(await screen.findByText("Message must be 5,000 characters or fewer.")).toBeInTheDocument();
-    expect(screen.getByText("5,001 / 5,000")).toHaveClass("text-error");
+    expect(screen.getByText("5,001 / 5,000")).toHaveClass("text-error-strong");
   });
 
   it("keeps line breaks in the typed message", () => {
