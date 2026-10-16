@@ -26,6 +26,9 @@ export default defineConfig({
         // 012 careers public specs run in the serial `forms` project. Anchored on the
         // file name so admin-careers-*.spec.ts is not caught here or in `forms`.
         /(^|[\\/])careers-[^\\/]*\.spec\.ts$/,
+        // 013 registration public specs share the form rate limit and the Settings
+        // admission group, so they run serially in `forms` too.
+        /registration-(public|window|protection)\.spec\.ts$/,
       ],
       use: { ...devices["Desktop Chrome"], channel: "chrome" },
     },
@@ -56,6 +59,7 @@ export default defineConfig({
       testMatch: [
         /contact-(public|details|protection|visual)\.spec\.ts/,
         /(^|[\\/])careers-[^\\/]*\.spec\.ts$/,
+        /registration-(public|window|protection)\.spec\.ts$/,
       ],
       fullyParallel: false,
       workers: 1,

@@ -39,6 +39,7 @@ test.describe("settings — admission (020 US2)", () => {
       closesOn: closes,
       announcement: "Admissions are now open for Playgroup, Nursery, Class 1 and Class 2",
       closedMessage: "",
+      classes: [],
     });
     await expect(status(page)).toHaveText(`Open now until ${formatAdmissionDate(closes)}`, { timeout: 60_000 });
   });
@@ -77,5 +78,39 @@ test.describe("settings — admission (020 US2)", () => {
     await expect(opens).not.toHaveValue("");
     const result = await new AxeBuilder({ page }).include("#admin-content").withTags(["wcag2a", "wcag2aa"]).analyze();
     expect(result.violations.map((v) => v.id)).toEqual([]);
+  });
+});
+
+test.describe("settings — admission classes (013 US5)", () => {
+  test.beforeEach(async () => {
+    await clearSettings();
+  });
+  test.afterEach(async () => {
+    await clearSettings();
+  });
+
+  test("an open window with no class shows the warning; adding a class and saving removes it", async ({ browser }) => {
+    test.setTimeout(300_000);
+    await seedSettingsGroup("admission", { opensOn: shift(today, -1), closesOn: shift(today, 30), announcement: "", closedMessage: "", classes: [] });
+    const { page } = await adminSession(browser);
+    await openGroup(page, "admission");
+    await expect(page.getByTestId("settings-warning")).toHaveText(settingsCopy.admissionWarnings.noClasses);
+
+    await page.getByRole("button", { name: "Add class" }).click();
+    const panel = page.getByRole("dialog", { name: /Add class/ });
+    await panel.getByLabel("Class name").fill("Playgroup");
+    await panel.getByRole("button", { name: "Done" }).click();
+    await page.getByRole("button", { name: "Save" }).click();
+    await expect(savedToast(page, settingsCopy.groups.admission.title)).toBeVisible({ timeout: 60_000 });
+    const stored = (await readSettingsGroup("admission"))?.data as { classes: Array<{ name: string }> };
+    expect(stored.classes.map((item) => item.name)).toEqual(["Playgroup"]);
+    await expect(page.getByTestId("settings-warning")).toHaveCount(0, { timeout: 60_000 });
+  });
+
+  test("no warning while the window is closed, even with no class", async ({ browser }) => {
+    test.setTimeout(300_000);
+    const { page } = await adminSession(browser);
+    await openGroup(page, "admission");
+    await expect(page.getByTestId("settings-warning")).toHaveCount(0);
   });
 });
