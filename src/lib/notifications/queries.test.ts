@@ -133,7 +133,7 @@ describeWithDb(
 
         const summary = await getNotificationsSummary(manager("cm-none", []));
 
-        expect(summary).toEqual({ messagesNew: 0, applicationsNew: 0, items: [] });
+        expect(summary).toEqual({ messagesNew: 0, applicationsNew: 0, registrationsNew: 0, items: [] });
         expect(messageFind).not.toHaveBeenCalled();
         expect(applicationFind).not.toHaveBeenCalled();
         expect(messageCount).not.toHaveBeenCalled();
@@ -160,7 +160,7 @@ describeWithDb(
       it("grants for unrelated sections (news, settings) reveal nothing", async () => {
         await seedBoth("cm-news");
         const summary = await getNotificationsSummary(manager("cm-news", ["news", "settings", "pages"]));
-        expect(summary).toEqual({ messagesNew: 0, applicationsNew: 0, items: [] });
+        expect(summary).toEqual({ messagesNew: 0, applicationsNew: 0, registrationsNew: 0, items: [] });
       });
     });
   },

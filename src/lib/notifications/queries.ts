@@ -1,9 +1,11 @@
 import { connectDb } from "@/lib/db";
 import { Message, type MessageDoc } from "@/models/message";
 import { CareerApplication, type CareerApplicationDoc } from "@/models/career-application";
+import { StudentRegistration, type StudentRegistrationDoc } from "@/models/student-registration";
 import { countNewMessages } from "@/lib/messages/admin-queries";
 import { buildApplicationsFilter } from "@/lib/careers/admin-queries";
-import { getCareersLastOpenedAt } from "@/lib/notifications/state";
+import { getCareersLastOpenedAt, getRegistrationsLastOpenedAt } from "@/lib/notifications/state";
+import { buildRegistrationsFilter } from "@/lib/registration/admin-queries";
 import { canAccess } from "@/lib/permissions";
 import type { NotificationItem, NotificationViewer, NotificationsSummary } from "@/lib/notifications/types";
 
@@ -20,6 +22,28 @@ export async function countNewApplications(adminId: string): Promise<number> {
   await connectDb();
   const lastOpened = await getCareersLastOpenedAt(adminId);
   return CareerApplication.countDocuments({ ...buildApplicationsFilter(), createdAt: { $gt: lastOpened } });
+}
+
+/**
+ * A registration counts as new when it arrived after the main admin's last
+ * Registrations visit (013). Deleted ones are hidden by the soft-delete plugin.
+ */
+export async function countNewRegistrations(adminId: string): Promise<number> {
+  await connectDb();
+  const lastOpened = await getRegistrationsLastOpenedAt(adminId);
+  return StudentRegistration.countDocuments({ ...buildRegistrationsFilter(), createdAt: { $gt: lastOpened } });
+}
+
+function registrationToItem(doc: Pick<StudentRegistrationDoc, "_id" | "reference" | "className" | "createdAt">): NotificationItem {
+  return {
+    kind: "registration",
+    id: doc._id.toString(),
+    // Reference and class only: no name, phone, email, health or reference details (FR-039).
+    title: `Registration ${doc.reference}`,
+    description: doc.className,
+    timestamp: doc.createdAt!.toISOString(),
+    href: `/admin/registrations/${doc._id.toString()}`,
+  };
 }
 
 function messageToItem(doc: Pick<MessageDoc, "_id" | "name" | "subject" | "createdAt">): NotificationItem {
@@ -50,12 +74,18 @@ function applicationToItem(
 export interface NotificationKinds {
   messages: boolean;
   applications: boolean;
+  /** Main admin only (013). */
+  registrations: boolean;
 }
 
-const ALL_KINDS: NotificationKinds = { messages: true, applications: true };
+const ALL_KINDS: NotificationKinds = { messages: true, applications: true, registrations: false };
 
 function kindsFor(viewer: NotificationViewer): NotificationKinds {
-  return { messages: canAccess(viewer, "messages"), applications: canAccess(viewer, "careers") };
+  return {
+    messages: canAccess(viewer, "messages"),
+    applications: canAccess(viewer, "careers"),
+    registrations: canAccess(viewer, "main_admin"),
+  };
 }
 
 /** Up to `limit` newest items across the permitted kinds, mixed and re-sorted by arrival time (research.md §2). */
@@ -64,11 +94,13 @@ export async function listNotificationItems(
   limit: number = ITEM_LIMIT,
   kinds: NotificationKinds = ALL_KINDS,
 ): Promise<NotificationItem[]> {
-  if (!kinds.messages && !kinds.applications) return [];
+  if (!kinds.messages && !kinds.applications && !kinds.registrations) return [];
   await connectDb();
   const lastOpened = kinds.applications ? await getCareersLastOpenedAt(adminId) : new Date(0);
 
-  const [messages, applications] = await Promise.all([
+  const lastOpenedRegistrations = kinds.registrations ? await getRegistrationsLastOpenedAt(adminId) : new Date(0);
+
+  const [messages, applications, registrations] = await Promise.all([
     kinds.messages
       ? Message.find({ status: "new" })
           .sort({ createdAt: -1 })
@@ -83,11 +115,20 @@ export async function listNotificationItems(
           .select({ name: 1, qualification: 1, createdAt: 1 })
           .lean()
       : [],
+    kinds.registrations
+      ? StudentRegistration.find({ ...buildRegistrationsFilter(), createdAt: { $gt: lastOpenedRegistrations } })
+          .sort({ createdAt: -1 })
+          .limit(limit)
+          // Only what the preview shows: never a name, phone, email, health or reference field.
+          .select({ reference: 1, className: 1, createdAt: 1 })
+          .lean()
+      : [],
   ]);
 
   const items = [
     ...(messages as unknown as MessageDoc[]).map(messageToItem),
     ...(applications as unknown as CareerApplicationDoc[]).map(applicationToItem),
+    ...(registrations as unknown as StudentRegistrationDoc[]).map(registrationToItem),
   ];
 
   items.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
@@ -100,10 +141,11 @@ export async function listNotificationItems(
  */
 export async function getNotificationsSummary(viewer: NotificationViewer): Promise<NotificationsSummary> {
   const kinds = kindsFor(viewer);
-  const [messagesNew, applicationsNew, items] = await Promise.all([
+  const [messagesNew, applicationsNew, registrationsNew, items] = await Promise.all([
     kinds.messages ? countNewMessages() : 0,
     kinds.applications ? countNewApplications(viewer.userId) : 0,
+    kinds.registrations ? countNewRegistrations(viewer.userId) : 0,
     listNotificationItems(viewer.userId, ITEM_LIMIT, kinds),
   ]);
-  return { messagesNew, applicationsNew, items };
+  return { messagesNew, applicationsNew, registrationsNew, items };
 }

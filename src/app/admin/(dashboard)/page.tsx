@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Briefcase, Mail, Newspaper } from "lucide-react";
+import { Briefcase, ClipboardList, Mail, Newspaper } from "lucide-react";
 import { StatCard } from "@/components/admin/stat-card";
 import { requireAdminPage } from "@/lib/dal";
 import { canAccess } from "@/lib/permissions";
 import { countPublishedPosts } from "@/lib/news/admin-queries";
 import { countApplications } from "@/lib/careers/admin-queries";
+import { countRegistrations } from "@/lib/registration/admin-queries";
 import { countMessages } from "@/lib/messages/admin-queries";
-import { countNewApplications } from "@/lib/notifications/queries";
-import { accessCopy } from "@/content/admin";
+import { countNewApplications, countNewRegistrations } from "@/lib/notifications/queries";
+import { accessCopy, registrationsAdminCopy } from "@/content/admin";
 
 export const metadata: Metadata = { title: "Overview" };
 
@@ -25,15 +26,19 @@ export default async function AdminOverviewPage({ searchParams }: PageProps<"/ad
   const showNews = canAccess(session, "news");
   const showMessages = canAccess(session, "messages");
   const showApplications = canAccess(session, "careers");
+  // 013: main admin only; for anyone else the registrations are not even counted.
+  const showRegistrations = canAccess(session, "main_admin");
 
-  const [newsCount, messages, applicationsCount, applicationsNew] = await Promise.all([
+  const [newsCount, messages, applicationsCount, applicationsNew, registrationsCount, registrationsNew] = await Promise.all([
     showNews ? countPublishedPosts() : 0,
     showMessages ? countMessages() : { total: 0, new: 0 },
     showApplications ? countApplications() : 0,
     showApplications ? countNewApplications(session.userId) : 0,
+    showRegistrations ? countRegistrations() : 0,
+    showRegistrations ? countNewRegistrations(session.userId) : 0,
   ]);
 
-  const hasAnyCard = showNews || showMessages || showApplications;
+  const hasAnyCard = showNews || showMessages || showApplications || showRegistrations;
 
   return (
     <div className="flex flex-col gap-6 p-6">
@@ -69,6 +74,15 @@ export default async function AdminOverviewPage({ searchParams }: PageProps<"/ad
               value={applicationsCount}
               icon={Briefcase}
               highlightCount={applicationsNew}
+              highlightLabel="new"
+            />
+          )}
+          {showRegistrations && (
+            <StatCard
+              title={registrationsAdminCopy.overviewCard}
+              value={registrationsCount}
+              icon={ClipboardList}
+              highlightCount={registrationsNew}
               highlightLabel="new"
             />
           )}

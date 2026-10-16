@@ -1,6 +1,6 @@
 import { connectDb } from "@/lib/db";
 import { Message } from "@/models/message";
-import { markCareersOpened } from "@/lib/notifications/state";
+import { markCareersOpened, markRegistrationsOpened } from "@/lib/notifications/state";
 import { canAccess } from "@/lib/permissions";
 import type { NotificationViewer } from "@/lib/notifications/types";
 
@@ -21,5 +21,6 @@ export async function markAllNotificationsRead(viewer: NotificationViewer, now: 
       ? Message.updateMany({ status: "new" }, { $set: { status: "read", statusChangedAt: now } })
       : undefined,
     canAccess(viewer, "careers") ? markCareersOpened(viewer.userId, now) : undefined,
+    canAccess(viewer, "main_admin") ? markRegistrationsOpened(viewer.userId, now) : undefined,
   ]);
 }

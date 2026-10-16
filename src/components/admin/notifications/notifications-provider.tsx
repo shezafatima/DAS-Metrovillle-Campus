@@ -9,6 +9,7 @@ import { NOTIFICATIONS_POLL_MS } from "@/lib/notifications/poll-interval";
 interface NotificationsState {
   messagesNew: number;
   applicationsNew: number;
+  registrationsNew: number;
   items: NotificationItem[];
   /** True only until the very first fetch settles. */
   loading: boolean;
@@ -33,15 +34,18 @@ const NotificationsContext = createContext<NotificationsContextValue | null>(nul
 export function NotificationsProvider({
   initialMessagesNew,
   initialApplicationsNew,
+  initialRegistrationsNew = 0,
   children,
 }: {
   initialMessagesNew: number;
   initialApplicationsNew: number;
+  initialRegistrationsNew?: number;
   children: ReactNode;
 }) {
   const [state, setState] = useState<NotificationsState>({
     messagesNew: initialMessagesNew,
     applicationsNew: initialApplicationsNew,
+    registrationsNew: initialRegistrationsNew,
     items: [],
     loading: true,
   });
@@ -54,7 +58,13 @@ export function NotificationsProvider({
       const response = await fetch("/api/admin/notifications");
       if (response.ok) {
         const body = await response.json();
-        setState({ messagesNew: body.messagesNew, applicationsNew: body.applicationsNew, items: body.items, loading: false });
+        setState({
+          messagesNew: body.messagesNew,
+          applicationsNew: body.applicationsNew,
+          registrationsNew: body.registrationsNew ?? 0,
+          items: body.items,
+          loading: false,
+        });
       } else {
         setState((prev) => ({ ...prev, loading: false }));
       }
@@ -66,7 +76,7 @@ export function NotificationsProvider({
   }, []);
 
   const markAllRead = useCallback(async () => {
-    setState((prev) => ({ ...prev, messagesNew: 0, applicationsNew: 0, items: [] }));
+    setState((prev) => ({ ...prev, messagesNew: 0, applicationsNew: 0, registrationsNew: 0, items: [] }));
     try {
       const response = await fetch("/api/admin/notifications/read", { method: "POST" });
       if (!response.ok) {

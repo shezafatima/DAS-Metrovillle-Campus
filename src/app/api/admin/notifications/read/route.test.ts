@@ -54,7 +54,7 @@ describeWithDb(
 
       const response = await POST();
       expect(response.status).toBe(200);
-      expect(await response.json()).toEqual({ messagesNew: 0, applicationsNew: 0 });
+      expect(await response.json()).toEqual({ messagesNew: 0, applicationsNew: 0, registrationsNew: 0 });
 
       expect((await Message.findById(msg1._id))!.status).toBe("read");
       expect((await Message.findById(msg2._id))!.status).toBe("read");

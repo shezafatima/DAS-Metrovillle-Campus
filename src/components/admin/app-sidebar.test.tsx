@@ -32,10 +32,10 @@ function menuLabels() {
 }
 
 describe("AppSidebar", () => {
-  it("renders the five sections in the fixed order, then Users, for a main admin", () => {
+  it("renders the sections in the fixed order, then Registrations and Users, for a main admin", () => {
     vi.mocked(usePathname).mockReturnValue("/admin");
     renderSidebar();
-    expect(menuLabels()).toEqual(["Overview", "News", "Messages", "Applications", "Settings", "Users"]);
+    expect(menuLabels()).toEqual(["Overview", "News", "Messages", "Applications", "Registrations", "Settings", "Users"]);
     expect(ALL_HREFS).toEqual(MAIN_ADMIN_HREFS);
   });
 
