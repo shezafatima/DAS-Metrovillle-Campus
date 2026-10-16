@@ -13,6 +13,7 @@
     "seed:admin": "tsx scripts/seed-admin.ts",
     "migrate:gallery": "tsx scripts/migrate-gallery.ts",
     "sweep:careers": "tsx scripts/sweep-careers.ts",
+    "sweep:registrations": "tsx scripts/sweep-registrations.ts",
     "retire:signups": "tsx scripts/retire-signups.ts"
   },
   "dependencies": {
