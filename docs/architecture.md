@@ -574,10 +574,10 @@
   through the cached `getPublicSettings("admission")`, which a save refreshes.
 - `getAdmissionWindow()` and `isAdmissionApplyOpen()` (src/lib/admission/server.ts)
   are the only entry points: the public banner, the Settings status line and
-  the Apply Now button use them, and 013 reuses `getAdmissionWindow()` to refuse
-  registrations outside the dates. Apply Now also needs
-  `registrationFormExists` (src/content/admission/registration.ts), shipped
-  false; 013 deletes it.
+  the Apply Now button use them. 013 deleted the old `registrationFormExists`
+  constant: `isAdmissionApplyOpen()` now returns
+  `getRegistrationAvailability().open` (window open AND a non-empty class list;
+  ADR-0012 amends ADR-0011).
 - Test hook: on the Playwright dev server only (`E2E_FRESH_READS=1`, never in
   production) an `e2e-now` cookie holding an ISO instant replaces "now" for
   the window, so specs can check 23:59 and 00:00 Pakistan time.
@@ -585,6 +585,32 @@
   (src/components/ui/flip-coverflow.tsx) used by the home quick-access cards
   and the Admission uniform cards. Its props are serialisable except a back
   given as a function (client callers only), so a server component can use it.
+
+## Student registrations (013) data rules
+
+- **Flow**: `/admission/register` (server page) asks `getRegistrationAvailability()`
+  (src/lib/registration/availability.ts): one Settings read and one "now" (the
+  `e2e-now` cookie on the test server) give `{ open, classes, closedMessage, today }`.
+  Closed renders no form. `POST /api/public/registrations` runs: 64 KiB guard →
+  JSON parse → honeypot → rate limit (5 per 10 min per IP) → open? (403) →
+  `buildRegistrationSchema({ classes, today })` (400) → insert → `after(sweep)`.
+  The reference is 8 random characters; a unique index plus up to 5 retries.
+- **Write rule (ADR-0012)**: append-only, no natural key; siblings share contacts.
+  The "likely duplicate" flag is computed on read from `duplicateKey` (a hash of
+  student name, date of birth and father's mobile) and follows deletes and restores.
+- **Access**: main admin only. Pages call `requireAdminPageOr404("main_admin")`
+  (src/lib/dal.ts): no session → login, anyone else → the not-found page. Routes
+  call `requireAdminAccess("main_admin")` (401/403). Notifications, the sidebar
+  badge and the Overview card are gated by role in the query layer too.
+- **Data handling**: at-rest encryption only (no field-level encryption). No log line,
+  notification or public response carries a registration field; logs carry the id.
+  Exports are recorded in `registrationExports` (who, when, rows; never the search text).
+- **Deletion and retention**: soft delete with a 30-day restore period
+  (`REGISTRATION_DELETE_GRACE_DAYS`), then hard delete. Registrations also go at
+  `REGISTRATION_RETENTION_MONTHS` (default 12). The sweep runs at most hourly and is
+  triggered by submissions, the register page and the admin registration pages
+  (`after()`), plus `npm run sweep:registrations`. The release gate blocks production
+  while the privacy notice is a placeholder or the retention variable is unset.
 
 ## Gallery albums (007) data rules
 - The gallery left the Settings group engine: `GROUP_KEYS` is contact, hero,
