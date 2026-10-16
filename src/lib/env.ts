@@ -80,6 +80,19 @@ const envSchema = z.object({
         .transform(Number)
         .pipe(z.number().int().min(1, "CAREERS_RETENTION_MONTHS must be from 1 to 120").max(120, "CAREERS_RETENTION_MONTHS must be from 1 to 120")),
     ),
+  // How long student registrations are kept (013, ADR-0012). Same parsing as
+  // CAREERS_RETENTION_MONTHS; the release gate blocks production until it is set.
+  REGISTRATION_RETENTION_MONTHS: z
+    .string()
+    .optional()
+    .transform((value) => value?.trim() || "12")
+    .pipe(
+      z
+        .string()
+        .regex(/^\d+$/, "REGISTRATION_RETENTION_MONTHS must be a whole number of months from 1 to 120")
+        .transform(Number)
+        .pipe(z.number().int().min(1, "REGISTRATION_RETENTION_MONTHS must be from 1 to 120").max(120, "REGISTRATION_RETENTION_MONTHS must be from 1 to 120")),
+    ),
 }).superRefine((env, ctx) => {
   if (env.DOCUMENT_STORE_DRIVER === "local" && process.env.NODE_ENV === "production") {
     ctx.addIssue({ code: "custom", message: "DOCUMENT_STORE_DRIVER=local is not allowed in production" });

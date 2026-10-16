@@ -17,6 +17,21 @@ export const admissionDefinition: GroupDefinition = {
     { type: "date", key: "closesOn", label: labels.closesOn, hint: hints.closesOn },
     { type: "text", key: "announcement", label: labels.announcement, hint: hints.announcement, maxLength: 160 },
     { type: "text", key: "closedMessage", label: labels.closedMessage, hint: hints.closedMessage, maxLength: 160 },
+    // 013: the class list of the registration form, in saved order. An empty list keeps the form closed.
+    {
+      type: "list",
+      key: "classes",
+      label: labels.classes,
+      hint: hints.classes,
+      itemLabel: "class",
+      itemFields: [{ type: "text", key: "name", label: labels.className, required: true, maxLength: 50 }],
+      inlineFields: ["name"],
+      layout: "cards",
+      summary: { title: ["name"] },
+      maxItems: 30,
+      rules: [{ kind: "uniqueText", field: "name", message: settingsCopy.errors.classDuplicate }],
+      default: [],
+    },
   ],
   rules: [{ kind: "dateOrder", from: "opensOn", to: "closesOn", message: settingsCopy.errors.closesBeforeOpens }],
 };

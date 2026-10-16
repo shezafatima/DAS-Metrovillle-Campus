@@ -165,6 +165,48 @@ describe("getEnv — private document store (012 careers)", () => {
   });
 });
 
+describe("getEnv — REGISTRATION_RETENTION_MONTHS (013)", () => {
+  const originalEnv = { ...process.env };
+
+  function setEnv(extra: Record<string, string> = {}) {
+    delete process.env.REGISTRATION_RETENTION_MONTHS;
+    Object.assign(process.env, BASE_ENV, { NODE_ENV: "development" }, extra);
+  }
+
+  beforeEach(() => {
+    __resetEnvCacheForTests();
+    for (const key of Object.keys(process.env)) delete process.env[key];
+    Object.assign(process.env, originalEnv);
+  });
+
+  afterEach(() => {
+    for (const key of Object.keys(process.env)) delete process.env[key];
+    Object.assign(process.env, originalEnv);
+    __resetEnvCacheForTests();
+  });
+
+  it("defaults to 12 when unset or blank", () => {
+    setEnv();
+    expect(getEnv().REGISTRATION_RETENTION_MONTHS).toBe(12);
+    __resetEnvCacheForTests();
+    setEnv({ REGISTRATION_RETENTION_MONTHS: "  " });
+    expect(getEnv().REGISTRATION_RETENTION_MONTHS).toBe(12);
+  });
+
+  it("accepts the bounds 1 and 120", () => {
+    setEnv({ REGISTRATION_RETENTION_MONTHS: "1" });
+    expect(getEnv().REGISTRATION_RETENTION_MONTHS).toBe(1);
+    __resetEnvCacheForTests();
+    setEnv({ REGISTRATION_RETENTION_MONTHS: "120" });
+    expect(getEnv().REGISTRATION_RETENTION_MONTHS).toBe(120);
+  });
+
+  it.each(["0", "121", "6.5"])("rejects %s with a message naming the variable", (value) => {
+    setEnv({ REGISTRATION_RETENTION_MONTHS: value });
+    expect(() => getEnv()).toThrow(/REGISTRATION_RETENTION_MONTHS/);
+  });
+});
+
 describe("getSeedEnv", () => {
   const originalEnv = { ...process.env };
 

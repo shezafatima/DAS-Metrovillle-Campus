@@ -11,6 +11,8 @@ const adminNotificationStateSchema = new Schema(
     _id: { type: String, required: true },
     // 012: the moment this admin last opened Applications (replaces the signups one).
     careersLastOpenedAt: { type: Date, required: true },
+    // 013: the moment this admin last opened Registrations (main admin only); filled lazily on first read.
+    registrationsLastOpenedAt: { type: Date },
     // Legacy (004 signups): no longer read or written; unset by `npm run retire:signups` (012 US7).
     signupsLastOpenedAt: { type: Date },
   },

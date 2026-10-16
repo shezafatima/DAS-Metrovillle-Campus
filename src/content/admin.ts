@@ -18,6 +18,8 @@ export const adminNavItems: AdminNavItem[] = [
   { label: "News", href: "/admin/news", access: "news" },
   { label: "Messages", href: "/admin/messages", access: "messages" },
   { label: "Applications", href: "/admin/careers", access: "careers" },
+  // 013: student registrations, main admin only (a content manager never sees the item).
+  { label: "Registrations", href: "/admin/registrations", access: "main_admin" },
   { label: "Settings", href: "/admin/settings", access: "settings" },
   { label: "Users", href: "/admin/users", access: "main_admin" },
 ];
@@ -174,6 +176,130 @@ export const newsCopy = {
 } as const;
 
 // Career applications (012) admin copy: list, detail, CV download, delete and export.
+/**
+ * Registrations (013) admin copy: list, detail, Deleted view, status and
+ * delete. Status labels come from the public content file so both sides agree.
+ */
+export const registrationsAdminCopy = {
+  pageTitle: "Registrations",
+  export: "Export CSV",
+  deletedLink: "Deleted registrations",
+  table: {
+    headers: {
+      reference: "Reference",
+      student: "Student",
+      className: "Class",
+      father: "Father",
+      mobile: "Mobile",
+      submitted: "Submitted",
+    },
+    empty: "No registrations yet.",
+    emptyFiltered: "No registrations match your search or filter.",
+    duplicate: "Likely duplicate",
+  },
+  filters: {
+    searchPlaceholder: "Search by student, father or mother name…",
+    classLabel: "Class",
+    allClasses: "All classes",
+    apply: "Filter",
+  },
+  pagination: {
+    previous: "Previous",
+    next: "Next",
+    pageOf: (page: number, totalPages: number) => `Page ${page} of ${totalPages}`,
+  },
+  detail: {
+    back: "Back to registrations",
+    sections: {
+      student: "Student",
+      parents: "Parents",
+      contact: "Contact & address",
+      health: "Health information",
+      reference: "Reference",
+      remarks: "Remarks",
+      record: "Record",
+      history: "History",
+    },
+    labels: {
+      studentName: "Student's name",
+      dateOfBirth: "Date of birth",
+      className: "Class",
+      motherTongue: "Mother tongue",
+      fatherName: "Father's name",
+      motherName: "Mother's name",
+      fatherMobile: "Father's mobile",
+      motherMobile: "Mother's mobile",
+      email: "Email",
+      address: "Address",
+      emergencyName: "Emergency contact",
+      emergencyPhone: "Emergency phone",
+      vaccinated: "Vaccinated",
+      medicalHistory: "Medical history",
+      referenceName: "Reference student",
+      referenceClass: "Reference student's class",
+      referenceRelation: "Relation",
+      remarks: "Remarks",
+      reference: "Reference number",
+      status: "Status",
+      submittedAt: "Submitted",
+      consentAt: "Consent given",
+      duplicate: "Likely duplicate",
+    },
+    yes: "Yes",
+    no: "No",
+    none: "Not given",
+    duplicateYes: "Yes: another registration has the same student, date of birth and father's mobile.",
+    duplicateNo: "No",
+    noHistory: "No changes yet.",
+    historyStatus: (from: string, to: string, by: string) => `Status changed from ${from} to ${to} by ${by}`,
+    historyDeleted: (by: string) => `Deleted by ${by}`,
+    historyRestored: (by: string) => `Restored by ${by}`,
+  },
+  statusControl: {
+    label: "Status",
+    save: "Save status",
+    saved: "Status updated",
+    failed: "Couldn't update the status. Please try again.",
+  },
+  deleteDialog: {
+    trigger: "Delete registration",
+    title: "Delete this registration?",
+    body: "It will be hidden from the list, search, counts and export. You can restore it from Deleted registrations for 30 days; after that it is removed permanently.",
+    cancel: "Cancel",
+    confirm: "Delete",
+  },
+  deleted: {
+    pageTitle: "Deleted registrations",
+    back: "Back to registrations",
+    headers: {
+      reference: "Reference",
+      student: "Student",
+      className: "Class",
+      deletedOn: "Deleted on",
+      daysLeft: "Days left",
+      actions: "Actions",
+    },
+    empty: "No deleted registrations.",
+    daysLeft: (days: number) => (days === 1 ? "1 day" : `${days} days`),
+  },
+  restoreDialog: {
+    trigger: "Restore",
+    title: "Restore this registration?",
+    body: "It returns to the list unchanged, with its reference number and status.",
+    cancel: "Cancel",
+    confirm: "Restore",
+    done: "Registration restored",
+    notRestorable: "This registration can no longer be restored.",
+    unavailable: "Couldn't restore right now. Please try again.",
+  },
+  toasts: {
+    deleted: "Registration deleted",
+    gone: "This registration is no longer available",
+    unavailable: loginCopy.errors.unavailable,
+  },
+  overviewCard: "Registrations",
+} as const;
+
 export const careersAdminCopy = {
   pageTitle: "Applications",
   export: "Export CSV",
@@ -520,6 +646,8 @@ export const settingsCopy = {
       closesOn: "Closes on",
       announcement: "Announcement",
       closedMessage: "Closed message",
+      classes: "Classes open for admission",
+      className: "Class name",
     },
     gallery: { images: "Images", image: "Image", caption: "Caption (optional)" },
   },
@@ -536,6 +664,7 @@ export const settingsCopy = {
     closesOn: "Pakistan time. Admissions close at the end of this day.",
     announcement: "Shown on the Admission page while admissions are open. For example: Admissions are now open for Playgroup, Nursery, Class 1 and Class 2.",
     closedMessage: "Shown on the Admission page while admissions are closed. For example: Admissions for the new session will open soon.",
+    classes: "Shown in this order in the registration form's class list.",
     heroMobile:
       "JPG, PNG or WebP, up to 5 MB. Best size: 1080 × 1920 pixels (portrait, 9:16). Keep text and faces inside the middle 60% of the height; the menu covers the top edge and the dots and arrow the bottom edge. Without a phone picture, phones show the desktop picture whole, with blue bars above and below it.",
   },
@@ -569,6 +698,11 @@ export const settingsCopy = {
     unknownItem: "This item can no longer be saved. Reload and try again.",
     date: "Enter a real date.",
     closesBeforeOpens: "Closes on must be on or after Opens on.",
+    classDuplicate: "This class is already in the list.",
+  },
+  /** Warnings shown under the status line on a Settings group (013). */
+  admissionWarnings: {
+    noClasses: "Admissions are open but no classes are listed, so the registration form is hidden. Add at least one class.",
   },
   /** What the public currently sees, shown on Settings → Admission (020 FR-012). */
   admissionStatus: {

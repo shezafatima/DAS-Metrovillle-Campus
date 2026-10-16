@@ -1,5 +1,5 @@
 import { cookies as nextCookies, headers as nextHeaders } from "next/headers";
-import { redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { getAuth } from "@/lib/auth";
 import { logSecurityEvent } from "@/lib/log";
 import { canAccess, isRole, normalizePermissions, type Access, type Permission, type Role } from "@/lib/permissions";
@@ -122,6 +122,26 @@ export async function requireAdminPage(access: Access): Promise<AdminSession> {
   }
   await logDenied(session!, access);
   redirect("/admin?denied=1");
+}
+
+/**
+ * For pages whose very existence a forbidden user should not learn (013
+ * registrations, research §12). No session redirects to login exactly like
+ * requireAdminPage; a forbidden user is logged and gets the not-found page
+ * instead of `/admin?denied=1`.
+ */
+export async function requireAdminPageOr404(access: Access): Promise<AdminSession> {
+  const session = await getAdminSession();
+  const denial = decideAccess(session, access);
+  if (!denial) return session!;
+
+  if (denial === "unauthorized") {
+    const headerList = await nextHeaders();
+    const next = safeAdminReturnPath(headerList.get("x-pathname"));
+    redirect(`/admin/login?next=${encodeURIComponent(next)}`);
+  }
+  await logDenied(session!, access);
+  notFound();
 }
 
 /**

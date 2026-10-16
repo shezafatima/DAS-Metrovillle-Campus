@@ -61,6 +61,8 @@ export interface PublicAdmission {
   /** "" when not set. */
   announcement: string;
   closedMessage: string;
+  /** Class names open for registration (013), live items only, in saved order. */
+  classes: string[];
 }
 
 export interface PublicShapes {
@@ -125,6 +127,9 @@ export function toPublicShape<G extends GroupKey>(group: G, value: GroupValue): 
           closesOn: str(value.closesOn),
           announcement: str(value.announcement),
           closedMessage: str(value.closedMessage),
+          classes: records(value.classes)
+            .map((item) => str(item.name).trim())
+            .filter((name) => name !== ""),
         } satisfies PublicAdmission;
     }
   })();

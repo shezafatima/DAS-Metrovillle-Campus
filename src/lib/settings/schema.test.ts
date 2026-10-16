@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { randomUUID } from "node:crypto";
 import { fieldErrors } from "@/lib/validation/field-errors";
 import { settingsCopy } from "@/content/admin";
-import { schemaFor } from "./schema";
+import { parseGroup, schemaFor } from "./schema";
 import { defaultsFor, mergeWithDefaults } from "./defaults";
 import type { GroupDefinition } from "./types";
 
@@ -323,5 +323,43 @@ describe("defaultsFor and mergeWithDefaults", () => {
     expect(defaultsFor(extended)).toMatchObject({ motto: "hi" });
     expect(schemaFor(extended).safeParse(valid({ motto: "much too long" })).success).toBe(false);
     expect(schemaFor(extended).safeParse(valid({ motto: "ok" })).success).toBe(true);
+  });
+});
+
+describe("schemaFor: list rule uniqueText (013)", () => {
+  const classesDef: GroupDefinition = {
+    key: "admission",
+    label: "Classes",
+    fields: [
+      {
+        type: "list",
+        key: "classes",
+        label: "Classes",
+        itemLabel: "class",
+        maxItems: 30,
+        default: [],
+        itemFields: [{ type: "text", key: "name", label: "Name", required: true, maxLength: 50 }],
+        rules: [{ kind: "uniqueText", field: "name", message: "dup" }],
+      },
+    ],
+  };
+  const row = (name: string) => ({ id: randomUUID(), name });
+
+  it("refuses a later duplicate ignoring case and extra spaces, on that entry's field", () => {
+    expect(parseGroup(classesDef, { classes: [row("Class 1"), row(" class  1 ")] })).toEqual({
+      ok: false,
+      fields: { "classes.1.name": "dup" },
+    });
+  });
+
+  it("accepts distinct names", () => {
+    expect(parseGroup(classesDef, { classes: [row("Playgroup"), row("Nursery"), row("Class 1")] }).ok).toBe(true);
+  });
+
+  it("leaves empty names to the required rule", () => {
+    expect(parseGroup(classesDef, { classes: [row(""), row("  ")] })).toEqual({
+      ok: false,
+      fields: { "classes.0.name": settingsCopy.errors.required, "classes.1.name": settingsCopy.errors.required },
+    });
   });
 });

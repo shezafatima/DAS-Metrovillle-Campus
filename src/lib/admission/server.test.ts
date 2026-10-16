@@ -5,22 +5,16 @@ const connection = vi.fn(async () => undefined);
 const cookieGet = vi.fn<(name: string) => { value: string } | undefined>();
 const getPublicSettings = vi.fn();
 const freshReads = vi.fn(() => false);
-const flag = { registrationFormExists: false };
 
 vi.mock("next/server", () => ({ connection: () => connection() }));
 vi.mock("next/headers", () => ({ cookies: async () => ({ get: (name: string) => cookieGet(name) }) }));
 vi.mock("@/lib/settings/public", () => ({ getPublicSettings: (...args: unknown[]) => getPublicSettings(...args) }));
 vi.mock("@/lib/e2e-fresh-reads", () => ({ freshReadsForTests: () => freshReads() }));
-vi.mock("@/content/admission/registration", () => ({
-  get registrationFormExists() {
-    return flag.registrationFormExists;
-  },
-}));
 
 const { getAdmissionWindow, isAdmissionApplyOpen, E2E_NOW_COOKIE } = await import("./server");
 
-const SPRING = { opensOn: "2027-01-01", closesOn: "2027-03-31", announcement: "Admissions are open", closedMessage: "Opening soon" };
-const EMPTY = { opensOn: "", closesOn: "", announcement: "", closedMessage: "" };
+const SPRING = { opensOn: "2027-01-01", closesOn: "2027-03-31", announcement: "Admissions are open", closedMessage: "Opening soon", classes: ["Class 1"] };
+const EMPTY = { opensOn: "", closesOn: "", announcement: "", closedMessage: "", classes: [] };
 
 beforeEach(() => {
   vi.useRealTimers();
@@ -28,7 +22,6 @@ beforeEach(() => {
   cookieGet.mockReset();
   getPublicSettings.mockReset();
   freshReads.mockReturnValue(false);
-  flag.registrationFormExists = false;
 });
 
 describe("getAdmissionWindow (020)", () => {
@@ -75,15 +68,8 @@ describe("getAdmissionWindow (020)", () => {
   });
 });
 
-describe("isAdmissionApplyOpen (020 FR-018)", () => {
-  it("is false while the registration form does not exist, even with the window open", async () => {
-    vi.useFakeTimers({ now: new Date("2027-02-01T06:00:00Z"), toFake: ["Date"] });
-    getPublicSettings.mockResolvedValue(SPRING);
-    await expect(isAdmissionApplyOpen()).resolves.toBe(false);
-  });
-
-  it("with the form, is true only while the window is open", async () => {
-    flag.registrationFormExists = true;
+describe("isAdmissionApplyOpen (020 FR-018, 013 FR-020)", () => {
+  it("is true only while the window is open and at least one class is listed", async () => {
     getPublicSettings.mockResolvedValue(SPRING);
     vi.useFakeTimers({ now: new Date("2027-02-01T06:00:00Z"), toFake: ["Date"] });
     await expect(isAdmissionApplyOpen()).resolves.toBe(true);
@@ -92,6 +78,12 @@ describe("isAdmissionApplyOpen (020 FR-018)", () => {
     vi.setSystemTime(new Date("2027-04-02T06:00:00Z")); // after the end
     await expect(isAdmissionApplyOpen()).resolves.toBe(false);
     getPublicSettings.mockResolvedValue(EMPTY);
+    await expect(isAdmissionApplyOpen()).resolves.toBe(false);
+  });
+
+  it("is false for an open window with no classes", async () => {
+    vi.useFakeTimers({ now: new Date("2027-02-01T06:00:00Z"), toFake: ["Date"] });
+    getPublicSettings.mockResolvedValue({ ...SPRING, classes: [] });
     await expect(isAdmissionApplyOpen()).resolves.toBe(false);
   });
 });
