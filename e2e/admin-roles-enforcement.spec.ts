@@ -53,7 +53,7 @@ test.describe("roles — permissions are enforced everywhere (011 US3)", () => {
       await page.keyboard.press("Escape");
       const response = await page.request.get("/api/admin/notifications");
       expect(response.status()).toBe(200);
-      expect(await response.json()).toEqual({ messagesNew: 0, applicationsNew: 0, items: [] });
+      expect(await response.json()).toEqual({ messagesNew: 0, applicationsNew: 0, registrationsNew: 0, items: [] });
     });
 
     await test.step("pages they lack redirect to the overview with a clear message", async () => {
@@ -164,7 +164,7 @@ test.describe("roles — permissions are enforced everywhere (011 US3)", () => {
   test("the seeded main admin still sees everything, Users included", async ({ browser }) => {
     test.setTimeout(240_000);
     const { page } = await adminSession(browser);
-    expect(await sidebarLabels(page)).toEqual(["Overview", "News", "Messages", "Applications", "Settings", "Users"]);
+    expect(await sidebarLabels(page)).toEqual(["Overview", "News", "Messages", "Applications", "Registrations", "Settings", "Users"]);
     await page.goto("/admin/users");
     await expect(page.getByRole("heading", { name: usersCopy.pageTitle, level: 1 })).toBeVisible();
     await expect(page.getByTestId("user-row").filter({ hasText: E2E_ADMIN.email })).toContainText(usersCopy.you);
