@@ -1,7 +1,7 @@
 import AxeBuilder from "@axe-core/playwright";
 import { test, expect } from "@playwright/test";
 import { adminSession } from "./helpers/users";
-import { clearSettings, openGroup, readSettingsGroup, seedSettingsGroup, savedToast } from "./helpers/settings";
+import { clearSettings, fillStable, openGroup, readSettingsGroup, seedSettingsGroup, savedToast } from "./helpers/settings";
 import { settingsCopy } from "../src/content/admin";
 import { formatAdmissionDate, karachiToday } from "../src/lib/admission/window";
 
@@ -29,8 +29,8 @@ test.describe("settings — admission (020 US2)", () => {
     await expect(status(page)).toHaveText(settingsCopy.admissionStatus.closed);
 
     const closes = shift(today, 30);
-    await page.getByLabel("Opens on").fill(shift(today, -1));
-    await page.getByLabel("Closes on").fill(closes);
+    await fillStable(page, "Opens on", shift(today, -1));
+    await fillStable(page, "Closes on", closes);
     await page.getByLabel("Announcement").fill("Admissions are now open for Playgroup, Nursery, Class 1 and Class 2");
     await page.getByRole("button", { name: "Save" }).click();
     await expect(savedToast(page, settingsCopy.groups.admission.title)).toBeVisible({ timeout: 60_000 });
@@ -51,7 +51,7 @@ test.describe("settings — admission (020 US2)", () => {
     await openGroup(page, "admission");
     await expect(status(page)).toHaveText(`Opens on ${formatAdmissionDate(shift(today, 30))}`);
 
-    await page.getByLabel("Opens on").fill("");
+    await fillStable(page, "Opens on", "");
     await page.getByRole("button", { name: "Save" }).click();
     await expect(savedToast(page, settingsCopy.groups.admission.title)).toBeVisible({ timeout: 60_000 });
     await expect(status(page)).toHaveText(settingsCopy.admissionStatus.closed, { timeout: 60_000 });
@@ -61,8 +61,8 @@ test.describe("settings — admission (020 US2)", () => {
     test.setTimeout(300_000);
     const { page } = await adminSession(browser);
     await openGroup(page, "admission");
-    await page.getByLabel("Opens on").fill("2027-03-31");
-    await page.getByLabel("Closes on").fill("2027-01-01");
+    await fillStable(page, "Opens on", "2027-03-31");
+    await fillStable(page, "Closes on", "2027-01-01");
     await page.getByRole("button", { name: "Save" }).click();
     await expect(page.getByText(settingsCopy.errors.closesBeforeOpens)).toBeVisible({ timeout: 60_000 });
     expect(await readSettingsGroup("admission")).toBeNull();

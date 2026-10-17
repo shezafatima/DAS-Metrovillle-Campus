@@ -96,6 +96,21 @@ export async function openGroup(page: Page, group: SettingsGroupKey): Promise<vo
   await expect(page.locator("#admin-content form")).toBeVisible({ timeout: 90_000 });
 }
 
+/**
+ * Types a value and keeps it: a value typed before React has taken the form over is wiped by hydration,
+ * so the fill is repeated until the field still holds it (a flake seen on the 020 admission spec).
+ */
+export async function fillStable(page: Page, label: string, value: string): Promise<void> {
+  const field = page.getByLabel(label);
+  await expect(async () => {
+    await field.fill(value);
+    await expect(field).toHaveValue(value, { timeout: 1_000 });
+  }).toPass({ timeout: 30_000 });
+  // Hydration may land just after a successful check: confirm once more after a beat.
+  await page.waitForTimeout(500);
+  await expect(field).toHaveValue(value);
+}
+
 /** The success toast after a save ("<Group> saved"). */
 export function savedToast(page: Page, groupTitle: string) {
   // `.last()`: an earlier "saved" toast may still be on screen after a second save.
