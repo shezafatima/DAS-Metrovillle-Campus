@@ -1,5 +1,7 @@
 # Contract: Access Matrix changes (007)
 
+> **Superseded for Settings by `specs/014-page-settings/contracts/access-matrix.md` (2026-10-19):** the Settings pages are now page tabs, hero/stats/video/gallery and the upload signer need the Pages permission, and the save action is two panel actions.
+
 The outcome rules are unchanged from 011 and 005. Pages give a login redirect with no session, or `/admin?denied=1` without the permission. Actions return `unauthorized` or `forbidden`, send no data and log `access_denied`. Every file below MUST be in `EXPECTED` in `src/test/access-inventory.test.ts`. `EXPECTED` is keyed per file, one entry for each page file and one `kind: "action"` entry for the actions file, and the test itself checks that every exported action in that file calls `requireAdminAccess` with the listed access.
 
 ## Pages (access `settings`, each calls `requireAdminPage("settings")`)
