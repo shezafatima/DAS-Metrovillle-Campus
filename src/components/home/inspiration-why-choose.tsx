@@ -3,6 +3,7 @@ import type { PublicVideo } from "@/lib/settings/public";
 import { SectionHeading } from "./section-heading";
 import { VideoEmbed } from "@/components/media/video-embed";
 import { youTubeEmbedUrl } from "@/lib/video/embed";
+import { cn } from "cn";
 
 /**
  * The reference's row 2 (006 FR-009, FR-010): the "Inspired By Excellence &
@@ -22,7 +23,7 @@ export function InspirationWhyChoose({ video }: { video: PublicVideo }) {
         </div>
       </div>
       <div className="mx-auto flex w-full max-w-(--container-max-width) flex-col gap-10 px-(--container-gutter-x) pt-10 pb-(--spacing-home-band-y)">
-      <div className={video.youtubeId ? "grid items-center gap-8 lg:grid-cols-2" : "flex flex-col"} data-testid="why-choose">
+      <div id="why-choose" className={cn("anchor-section", video.youtubeId ? "grid items-center gap-8 lg:grid-cols-2" : "flex flex-col")} data-testid="why-choose">
         <div className="flex flex-col gap-4">
           <h2 className="font-bold font-heading text-(--color-home-dark-text) text-h3 uppercase leading-(--text-h3--line-height)">{whyChoose.heading}</h2>
           <h3 className="font-bold font-heading text-(--color-home-dark-text) text-lg">{whyChoose.subheading}</h3>

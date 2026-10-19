@@ -45,7 +45,8 @@ const routes: RouteCase[] = [
   { name: "POST /api/admin/news/[id]/unpublish", load: () => import("@/app/api/admin/news/[id]/unpublish/route") as never, method: "POST", access: "news" },
   { name: "POST /api/admin/uploads/sign", load: () => import("@/app/api/admin/uploads/sign/route") as never, method: "POST", access: "news", body: { kind: "nope" } },
   // 005: an unknown kind keeps the "correct permission" case from signing anything (it ends in a 400, not 401/403).
-  { name: "POST /api/admin/settings/uploads/sign", load: () => import("@/app/api/admin/settings/uploads/sign/route") as never, method: "POST", access: "settings", body: { kind: "nope" } },
+  // 014: Pages, since hero slides and the gallery moved to the page tabs.
+  { name: "POST /api/admin/settings/uploads/sign", load: () => import("@/app/api/admin/settings/uploads/sign/route") as never, method: "POST", access: "pages", body: { kind: "nope" } },
   { name: "PATCH /api/admin/messages/[id]", load: () => import("@/app/api/admin/messages/[id]/route") as never, method: "PATCH", access: "messages", body: {} },
   { name: "DELETE /api/admin/messages/[id]", load: () => import("@/app/api/admin/messages/[id]/route") as never, method: "DELETE", access: "messages" },
   { name: "POST /api/admin/messages/[id]/read", load: () => import("@/app/api/admin/messages/[id]/read/route") as never, method: "POST", access: "messages" },

@@ -14,7 +14,8 @@
     "migrate:gallery": "tsx scripts/migrate-gallery.ts",
     "sweep:careers": "tsx scripts/sweep-careers.ts",
     "sweep:registrations": "tsx scripts/sweep-registrations.ts",
-    "retire:signups": "tsx scripts/retire-signups.ts"
+    "retire:signups": "tsx scripts/retire-signups.ts",
+    "grant:pages": "tsx scripts/grant-pages.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",

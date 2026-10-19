@@ -46,7 +46,9 @@ export function AdminShell({
           <AppSidebar allowedHrefs={allowedHrefs} />
           <SidebarInset>
             <AdminTopBar email={email} />
-            <main id="admin-content" className="flex-1 overflow-x-hidden">
+            {/* overflow-x-clip, not -hidden: hidden makes <main> a scroll container that never scrolls, which stops
+                sticky headers inside it (014 Settings panels) from sticking. Clip cuts the overflow the same way. */}
+            <main id="admin-content" className="flex-1 overflow-x-clip">
               {children}
             </main>
           </SidebarInset>

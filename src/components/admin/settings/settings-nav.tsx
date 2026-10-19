@@ -1,44 +1,60 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { settingsCopy } from "@/content/admin";
-import { GROUP_KEYS } from "@/lib/settings/types";
 import { cn } from "cn";
 
-/**
- * Links to the settings groups (GROUP_KEYS; Admission added in 020), one URL each (research R9), so the
- * existing unsaved-changes link guard covers switching between groups, plus
- * the Photo gallery (007), which is no longer a group but lives in the same
- * area and permission. On narrow screens the links wrap, so the page never
- * scrolls sideways.
- */
-const LINKS = [
-  ...GROUP_KEYS.map((key) => ({ key, href: `/admin/settings/${key}`, label: settingsCopy.groups[key].title })),
-  { key: "gallery", href: "/admin/settings/gallery", label: settingsCopy.groups.gallery.title },
-];
+export interface SettingsTabLink {
+  key: string;
+  label: string;
+  href: string;
+}
 
-export function SettingsNav() {
+/**
+ * The Settings tab bar (014, contracts/tabs-and-panels.md): one link per tab
+ * the user may open, computed on the server (presentation only; every tab
+ * page checks access itself). Each tab is its own page, so this is site
+ * navigation with aria-current, not an ARIA tablist, and the tab's
+ * unsaved-changes guard sees a tab change as a link click.
+ *
+ * One row at every width: the bar scrolls sideways on its own and the page
+ * never does. The active tab, and any tab reached with the keyboard, is
+ * scrolled into view. Album pages (/admin/settings/resources/gallery/<id>)
+ * keep Resources active.
+ */
+export function SettingsNav({ tabs }: { tabs: readonly SettingsTabLink[] }) {
   const pathname = usePathname();
+  const activeRef = useRef<HTMLAnchorElement>(null);
+
+  useEffect(() => {
+    activeRef.current?.scrollIntoView({ inline: "nearest", block: "nearest" });
+  }, [pathname]);
+
   return (
-    <nav aria-label={settingsCopy.navLabel} className="flex flex-wrap gap-2">
-      {LINKS.map(({ key, href, label }) => {
-        // The gallery's album pages (/admin/settings/gallery/<id>) keep its link active.
-        const active = pathname === href || (key === "gallery" && pathname.startsWith(`${href}/`));
-        return (
-          <Link
-            key={key}
-            href={href}
-            aria-current={active ? "page" : undefined}
-            className={cn(
-              "rounded-full border px-3 py-1 font-light text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring",
-              active ? "border-primary bg-primary text-primary-foreground" : "border-border text-foreground hover:bg-muted",
-            )}
-          >
-            {label}
-          </Link>
-        );
-      })}
+    <nav aria-label={settingsCopy.tabsNavLabel} className="min-w-0 max-w-full overflow-x-auto" data-testid="settings-tabs">
+      <ul className="flex w-max min-w-full flex-nowrap gap-1 border-border border-b">
+        {tabs.map(({ key, label, href }) => {
+          const active = pathname === href || pathname.startsWith(`${href}/`);
+          return (
+            <li key={key} className="shrink-0">
+              <Link
+                ref={active ? activeRef : undefined}
+                href={href}
+                aria-current={active ? "page" : undefined}
+                onFocus={(event) => event.currentTarget.scrollIntoView({ inline: "nearest", block: "nearest" })}
+                className={cn(
+                  "-mb-px block whitespace-nowrap border-b-2 px-3 py-2 font-light text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset",
+                  active ? "border-primary font-semibold text-foreground" : "border-transparent text-muted-foreground hover:text-foreground",
+                )}
+              >
+                {label}
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
     </nav>
   );
 }

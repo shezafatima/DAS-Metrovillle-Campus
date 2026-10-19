@@ -23,8 +23,8 @@ import { SETTINGS_TAG } from "@/lib/settings/public";
 /**
  * Gallery album and photo actions (007, contracts/gallery-actions.md).
  *
- * Every action starts with `requireAdminAccess("settings")`: the gallery is
- * part of the Settings permission (011). The acting admin is only ever the
+ * Every action starts with `requireAdminAccess("pages")`: the gallery is
+ * page content since 014 (it was the Settings permission in 007/011). The acting admin is only ever the
  * session; nothing in the input names an actor. Next checks the request's
  * Origin against the host for every Server Action (FR-002). Each action saves
  * at once (research R3); the caps are enforced in src/lib/gallery (ADR-0005).
@@ -55,7 +55,7 @@ function finish<T>(outcome: gallery.MutationResult<T>, email: string): GalleryRe
 const invalid = (fields: Record<string, string>) => ({ status: "error", error: "invalid", fields }) as const;
 
 export async function createGalleryAlbum(input: unknown): Promise<GalleryResult<AdminGallery>> {
-  const access = await requireAdminAccess("settings");
+  const access = await requireAdminAccess("pages");
   if (!access.ok) return { status: "error", error: access.reason };
   const parsed = parse(createAlbumInput, input);
   if (!parsed.ok) return invalid(parsed.fields);
@@ -63,7 +63,7 @@ export async function createGalleryAlbum(input: unknown): Promise<GalleryResult<
 }
 
 export async function updateGalleryAlbum(input: unknown): Promise<GalleryResult<AdminGallery>> {
-  const access = await requireAdminAccess("settings");
+  const access = await requireAdminAccess("pages");
   if (!access.ok) return { status: "error", error: access.reason };
   const parsed = parse(updateAlbumInput, input);
   if (!parsed.ok) return invalid(parsed.fields);
@@ -71,7 +71,7 @@ export async function updateGalleryAlbum(input: unknown): Promise<GalleryResult<
 }
 
 export async function reorderGalleryAlbums(input: unknown): Promise<GalleryResult<AdminGallery>> {
-  const access = await requireAdminAccess("settings");
+  const access = await requireAdminAccess("pages");
   if (!access.ok) return { status: "error", error: access.reason };
   const parsed = parse(reorderAlbumsInput, input);
   if (!parsed.ok) return invalid(parsed.fields);
@@ -79,7 +79,7 @@ export async function reorderGalleryAlbums(input: unknown): Promise<GalleryResul
 }
 
 export async function deleteGalleryAlbum(input: unknown): Promise<GalleryResult<AdminGallery>> {
-  const access = await requireAdminAccess("settings");
+  const access = await requireAdminAccess("pages");
   if (!access.ok) return { status: "error", error: access.reason };
   const parsed = parse(deleteAlbumInput, input);
   if (!parsed.ok) return invalid(parsed.fields);
@@ -87,7 +87,7 @@ export async function deleteGalleryAlbum(input: unknown): Promise<GalleryResult<
 }
 
 export async function addGalleryPhotos(input: unknown): Promise<GalleryResult<AddPhotosResult>> {
-  const access = await requireAdminAccess("settings");
+  const access = await requireAdminAccess("pages");
   if (!access.ok) return { status: "error", error: access.reason };
   const parsed = parse(addPhotosInput, input);
   if (!parsed.ok) return invalid(parsed.fields);
@@ -95,7 +95,7 @@ export async function addGalleryPhotos(input: unknown): Promise<GalleryResult<Ad
 }
 
 export async function updateGalleryPhoto(input: unknown): Promise<GalleryResult<AdminAlbum>> {
-  const access = await requireAdminAccess("settings");
+  const access = await requireAdminAccess("pages");
   if (!access.ok) return { status: "error", error: access.reason };
   const parsed = parse(updatePhotoInput, input);
   if (!parsed.ok) return invalid(parsed.fields);
@@ -103,7 +103,7 @@ export async function updateGalleryPhoto(input: unknown): Promise<GalleryResult<
 }
 
 export async function reorderGalleryPhotos(input: unknown): Promise<GalleryResult<AdminAlbum>> {
-  const access = await requireAdminAccess("settings");
+  const access = await requireAdminAccess("pages");
   if (!access.ok) return { status: "error", error: access.reason };
   const parsed = parse(reorderPhotosInput, input);
   if (!parsed.ok) return invalid(parsed.fields);
@@ -111,7 +111,7 @@ export async function reorderGalleryPhotos(input: unknown): Promise<GalleryResul
 }
 
 export async function setGalleryCover(input: unknown): Promise<GalleryResult<AdminAlbum>> {
-  const access = await requireAdminAccess("settings");
+  const access = await requireAdminAccess("pages");
   if (!access.ok) return { status: "error", error: access.reason };
   const parsed = parse(photoRefInput, input);
   if (!parsed.ok) return invalid(parsed.fields);
@@ -119,7 +119,7 @@ export async function setGalleryCover(input: unknown): Promise<GalleryResult<Adm
 }
 
 export async function deleteGalleryPhoto(input: unknown): Promise<GalleryResult<AdminAlbum>> {
-  const access = await requireAdminAccess("settings");
+  const access = await requireAdminAccess("pages");
   if (!access.ok) return { status: "error", error: access.reason };
   const parsed = parse(photoRefInput, input);
   if (!parsed.ok) return invalid(parsed.fields);

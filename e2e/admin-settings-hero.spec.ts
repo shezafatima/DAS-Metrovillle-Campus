@@ -1,10 +1,10 @@
 import path from "node:path";
 import { test, expect, type Page } from "@playwright/test";
 import { adminSession } from "./helpers/users";
-import { clearSettings, openGroup, readSettingsGroup, savedToast, stubCloudinaryUpload } from "./helpers/settings";
+import { clearSettings, openGroup, panel, readSettingsGroup, savedToast, stubCloudinaryUpload } from "./helpers/settings";
 import { settingsCopy } from "../src/content/admin";
 
-const TITLE = settingsCopy.groups.hero.title;
+const TITLE = settingsCopy.panels.hero;
 const IMAGE = path.join(__dirname, "fixtures", "cover.jpg");
 
 const rows = (page: Page) => page.getByTestId("list-item");
@@ -78,7 +78,7 @@ test.describe("settings — hero slides (005 US3)", () => {
     await page.getByRole("button", { name: "Hide slide 1" }).click();
     await expect(rows(page).first()).toContainText(settingsCopy.list.hidden);
 
-    await page.getByRole("button", { name: "Save" }).click();
+    await panel(page, "hero").getByRole("button", { name: "Save" }).click();
     await expect(savedToast(page, TITLE)).toBeVisible({ timeout: 60_000 });
 
     expect(await storedAlts()).toEqual([
@@ -108,7 +108,7 @@ test.describe("settings — hero slides (005 US3)", () => {
     await openGroup(page, "hero");
     await addSlide(page, { alt: "Second slide" });
     // A slide that was never saved has nothing to keep, so save it first.
-    await page.getByRole("button", { name: "Save" }).click();
+    await panel(page, "hero").getByRole("button", { name: "Save" }).click();
     await expect(savedToast(page, TITLE)).toBeVisible({ timeout: 60_000 });
 
     await page.getByRole("button", { name: "Delete slide: slide 2" }).click();
@@ -122,7 +122,7 @@ test.describe("settings — hero slides (005 US3)", () => {
     await page.getByRole("alertdialog").getByRole("button", { name: settingsCopy.deleteSlide.confirm }).click();
     await expect(rows(page)).toHaveCount(1);
 
-    await page.getByRole("button", { name: "Save" }).click();
+    await panel(page, "hero").getByRole("button", { name: "Save" }).click();
     await expect.poll(async () => (await storedAlts()).some((s) => s.deleted), { timeout: 60_000 }).toBe(true);
 
     const stored = await storedAlts();
@@ -192,11 +192,11 @@ test.describe("settings — hero slides (005 US3)", () => {
     await expect(field).toHaveValue("5");
 
     await field.fill("2");
-    await page.getByRole("button", { name: "Save" }).click();
+    await panel(page, "hero").getByRole("button", { name: "Save" }).click();
     await expect(page.getByText(settingsCopy.errors.displaySeconds)).toBeVisible();
 
     await field.fill("8");
-    await page.getByRole("button", { name: "Save" }).click();
+    await panel(page, "hero").getByRole("button", { name: "Save" }).click();
     await expect(savedToast(page, TITLE)).toBeVisible({ timeout: 60_000 });
     expect((await readSettingsGroup("hero"))?.data.displaySeconds).toBe(8);
   });

@@ -1,9 +1,12 @@
 // @vitest-environment node
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, expect, it, vi } from "vitest";
 import { randomUUID } from "node:crypto";
 import { describeWithDb } from "@/test/db";
 import { settingsCopy } from "@/content/admin";
-import { defaultsFor } from "./defaults";
+import { defaultsFor, mergeWithDefaults } from "./defaults";
+import { panelFingerprint } from "./fingerprint";
+import { toLiveValue } from "./items";
+import { PANELS, type PanelKey } from "./panels";
 import { GROUPS } from "./registry";
 
 vi.setConfig({ testTimeout: 120_000, hookTimeout: 120_000 });
@@ -34,10 +37,6 @@ function cloudImage(name: string, folder = "settings/gallery") {
   };
 }
 
-function heroWith(...names: string[]) {
-  return { displaySeconds: 5, slides: names.map((name) => slide({ desktop: cloudImage(name, "settings/hero") })) };
-}
-
 function slide(o: Record<string, unknown> = {}) {
   return {
     id: randomUUID(),
@@ -52,95 +51,188 @@ function slide(o: Record<string, unknown> = {}) {
   };
 }
 
-describeWithDb("saveGroup (compare-and-set save)", ["settings"], () => {
+function heroWith(...names: string[]) {
+  return { displaySeconds: 5, slides: names.map((name) => slide({ desktop: cloudImage(name, "settings/hero") })) };
+}
+
+function fields(key: PanelKey) {
+  const source = PANELS[key].source;
+  if (source.kind !== "group") throw new Error("not a group panel");
+  return source;
+}
+
+/** The fingerprint a never-saved group's panel loads with. */
+function freshFingerprint(key: PanelKey): string {
+  const { group, fields: keys } = fields(key);
+  const def = GROUPS[group];
+  return panelFingerprint(keys, toLiveValue(def, mergeWithDefaults(def, defaultsFor(def))));
+}
+
+async function api() {
+  return import("./mutations");
+}
+
+async function save(key: PanelKey, expectedFingerprint: string, data: unknown, actorEmail = ACTOR) {
+  const { savePanel } = await api();
+  return savePanel({ panel: PANELS[key], expectedFingerprint, data, actorEmail });
+}
+
+/** Saves and returns the new fingerprint, failing the test if the save did not succeed. */
+async function saveOk(key: PanelKey, expectedFingerprint: string, data: unknown, actorEmail = ACTOR): Promise<string> {
+  const result = await save(key, expectedFingerprint, data, actorEmail);
+  if (!result.ok) throw new Error(`expected ${key} to save, got ${JSON.stringify(result)}`);
+  return result.fingerprint;
+}
+
+async function doc(group: string) {
+  const { Settings } = await import("@/models/settings");
+  return Settings.findById(group).lean();
+}
+
+describeWithDb("savePanel (014: partial saves, fingerprint check, group compare-and-set)", ["settings"], () => {
   beforeEach(() => {
     vi.clearAllMocks();
     verifyUploadedImage.mockResolvedValue({ ok: true });
   });
 
-  async function api() {
-    return import("./mutations");
-  }
-
-  it("the first save inserts version 1 with the actor", async () => {
-    const { saveGroup } = await api();
-    const result = await saveGroup({ group: "stats", expectedVersion: 0, data: statsData(), actorEmail: ACTOR });
-    expect(result).toMatchObject({ ok: true, version: 1 });
-
-    const { Settings } = await import("@/models/settings");
-    const doc = await Settings.findById("stats").lean();
-    expect(doc).toMatchObject({ _id: "stats", version: 1, updatedBy: ACTOR, data: { students: 1000 } });
+  it("the first save inserts version 1 with the actor and the panel's own save marker", async () => {
+    const result = await save("stats", freshFingerprint("stats"), statsData());
+    expect(result).toMatchObject({ ok: true, version: 1, data: { students: 1000 } });
+    expect(await doc("stats")).toMatchObject({ _id: "stats", version: 1, updatedBy: ACTOR, data: { students: 1000 }, panelSaves: { stats: { by: ACTOR } } });
   });
 
-  it("a save with the right version moves to the next version", async () => {
-    const { saveGroup } = await api();
-    await saveGroup({ group: "stats", expectedVersion: 0, data: statsData(1), actorEmail: ACTOR });
-    const second = await saveGroup({ group: "stats", expectedVersion: 1, data: statsData(2), actorEmail: "other@school.pk" });
+  it("a save with the current fingerprint moves to the next version and returns a new fingerprint", async () => {
+    const first = await saveOk("stats", freshFingerprint("stats"), statsData(1));
+    const second = await save("stats", first, statsData(2), "other@school.pk");
     expect(second).toMatchObject({ ok: true, version: 2, data: { students: 2 } });
-
-    const { Settings } = await import("@/models/settings");
-    expect(await Settings.findById("stats").lean()).toMatchObject({ version: 2, updatedBy: "other@school.pk" });
+    expect(second.ok && second.fingerprint).not.toBe(first);
+    expect(await doc("stats")).toMatchObject({ version: 2, updatedBy: "other@school.pk" });
   });
 
-  it("a stale version is refused as a conflict and stores nothing", async () => {
-    const { saveGroup } = await api();
-    await saveGroup({ group: "stats", expectedVersion: 0, data: statsData(1), actorEmail: ACTOR });
-    await saveGroup({ group: "stats", expectedVersion: 1, data: statsData(2), actorEmail: ACTOR });
-
-    const stale = await saveGroup({ group: "stats", expectedVersion: 1, data: statsData(99), actorEmail: ACTOR });
-    expect(stale).toEqual({ ok: false, error: "conflict" });
-
-    const { Settings } = await import("@/models/settings");
-    expect(await Settings.findById("stats").lean()).toMatchObject({ version: 2, data: { students: 2 } });
+  it("a stale fingerprint is refused as a conflict and stores nothing", async () => {
+    const first = await saveOk("stats", freshFingerprint("stats"), statsData(1));
+    await saveOk("stats", first, statsData(2));
+    expect(await save("stats", first, statsData(99))).toEqual({ ok: false, error: "conflict" });
+    expect(await doc("stats")).toMatchObject({ version: 2, data: { students: 2 } });
   });
 
-  it("expecting version 0 when a document exists, or a version when none exists, is a conflict", async () => {
-    const { saveGroup } = await api();
-    expect(await saveGroup({ group: "stats", expectedVersion: 3, data: statsData(), actorEmail: ACTOR })).toEqual({ ok: false, error: "conflict" });
-    await saveGroup({ group: "stats", expectedVersion: 0, data: statsData(), actorEmail: ACTOR });
-    expect(await saveGroup({ group: "stats", expectedVersion: 0, data: statsData(5), actorEmail: ACTOR })).toEqual({ ok: false, error: "conflict" });
+  it("saving the same values again is not a conflict (the fingerprint is of the data, not a counter)", async () => {
+    const first = await saveOk("stats", freshFingerprint("stats"), statsData(1));
+    const again = await save("stats", first, statsData(1));
+    expect(again).toMatchObject({ ok: true, version: 2 });
+    expect(again.ok && again.fingerprint).toBe(first);
   });
 
-  it("two simultaneous saves with the same expected version: exactly one succeeds", async () => {
-    const { saveGroup } = await api();
-    await saveGroup({ group: "stats", expectedVersion: 0, data: statsData(1), actorEmail: ACTOR });
-    const results = await Promise.all([
-      saveGroup({ group: "stats", expectedVersion: 1, data: statsData(10), actorEmail: "a@school.pk" }),
-      saveGroup({ group: "stats", expectedVersion: 1, data: statsData(20), actorEmail: "b@school.pk" }),
-    ]);
+  it("two simultaneous saves of the same panel from the same state: exactly one succeeds", async () => {
+    const base = await saveOk("stats", freshFingerprint("stats"), statsData(1));
+    const results = await Promise.all([save("stats", base, statsData(10), "a@school.pk"), save("stats", base, statsData(20), "b@school.pk")]);
     expect(results.filter((r) => r.ok)).toHaveLength(1);
     expect(results.filter((r) => !r.ok)).toEqual([{ ok: false, error: "conflict" }]);
   });
 
-  it("two first saves racing at version 0: exactly one succeeds", async () => {
-    const { saveGroup } = await api();
-    const results = await Promise.all([
-      saveGroup({ group: "stats", expectedVersion: 0, data: statsData(10), actorEmail: "a@school.pk" }),
-      saveGroup({ group: "stats", expectedVersion: 0, data: statsData(20), actorEmail: "b@school.pk" }),
-    ]);
+  it("two first saves racing on a never-saved group: exactly one succeeds", async () => {
+    const fp = freshFingerprint("stats");
+    const results = await Promise.all([save("stats", fp, statsData(10), "a@school.pk"), save("stats", fp, statsData(20), "b@school.pk")]);
     expect(results.filter((r) => r.ok)).toHaveLength(1);
     expect(results.filter((r) => !r.ok)).toEqual([{ ok: false, error: "conflict" }]);
   });
 
   it("invalid data is refused with field errors and nothing is written", async () => {
-    const { saveGroup } = await api();
-    const result = await saveGroup({ group: "stats", expectedVersion: 0, data: { ...statsData(), students: -5 }, actorEmail: ACTOR });
+    const result = await save("stats", freshFingerprint("stats"), { ...statsData(), students: -5 });
     expect(result).toMatchObject({ ok: false, error: "invalid", fields: { students: settingsCopy.errors.wholeNumber } });
-
-    const { Settings } = await import("@/models/settings");
-    expect(await Settings.findById("stats").lean()).toBeNull();
+    expect(await doc("stats")).toBeNull();
   });
 
-  it("only images that are new since the stored version are verified", async () => {
-    const { saveGroup } = await api();
+  // ── 014: partial saves of the admission group ──────────────────────────
+
+  it("keys outside the panel are never stored", async () => {
+    const result = await save("admission-messages", freshFingerprint("admission-messages"), {
+      announcement: "Open for Class 1",
+      closedMessage: "Opening soon",
+      opensOn: "2027-01-01",
+      closesOn: "2027-03-31",
+      classes: [{ id: randomUUID(), name: "Class 1" }],
+      somethingElse: "x",
+    });
+    expect(result).toMatchObject({ ok: true, data: { announcement: "Open for Class 1", closedMessage: "Opening soon" } });
+    expect(result.ok && Object.keys(result.data).sort()).toEqual(["announcement", "closedMessage"]);
+    const stored = await doc("admission");
+    expect(stored?.data).toEqual({ opensOn: "", closesOn: "", announcement: "Open for Class 1", closedMessage: "Opening soon", classes: [] });
+  });
+
+  it("an admin's own save of one panel never makes a sibling panel stale (FR-012)", async () => {
+    const windowFp = freshFingerprint("admission-window");
+    await saveOk("admission-messages", freshFingerprint("admission-messages"), { announcement: "Open", closedMessage: "Soon" });
+    const windowSave = await save("admission-window", windowFp, { opensOn: "2027-01-01", closesOn: "2027-03-31" });
+    expect(windowSave).toMatchObject({ ok: true, version: 2 });
+    expect((await doc("admission"))?.data).toMatchObject({ announcement: "Open", closedMessage: "Soon", opensOn: "2027-01-01", closesOn: "2027-03-31" });
+  });
+
+  it("another admin's save of a sibling panel is kept, never overwritten (FR-010)", async () => {
+    const classesFp = freshFingerprint("admission-classes");
+    await saveOk("admission-messages", freshFingerprint("admission-messages"), { announcement: "From X", closedMessage: "X" }, "x@school.pk");
+    await saveOk("admission-classes", classesFp, { classes: [{ id: randomUUID(), name: "Class 1" }] }, "y@school.pk");
+    const stored = await doc("admission");
+    expect(stored?.data).toMatchObject({ announcement: "From X", closedMessage: "X", classes: [{ name: "Class 1", deletedAt: null }] });
+    expect(stored?.panelSaves).toMatchObject({ "admission-messages": { by: "x@school.pk" }, "admission-classes": { by: "y@school.pk" } });
+  });
+
+  it("admin X saves a panel, then admin Y saves the same panel from the old state → conflict, X's value stays", async () => {
+    const fp = freshFingerprint("admission-messages");
+    await saveOk("admission-messages", fp, { announcement: "From X", closedMessage: "X" }, "x@school.pk");
+    expect(await save("admission-messages", fp, { announcement: "From Y", closedMessage: "Y" }, "y@school.pk")).toEqual({ ok: false, error: "conflict" });
+    expect((await doc("admission"))?.data).toMatchObject({ announcement: "From X", closedMessage: "X" });
+  });
+
+  it("two concurrent saves of sibling panels both succeed and the record holds both", async () => {
+    const results = await Promise.all([
+      save("admission-messages", freshFingerprint("admission-messages"), { announcement: "Open", closedMessage: "Soon" }, "a@school.pk"),
+      save("admission-window", freshFingerprint("admission-window"), { opensOn: "2027-01-01", closesOn: "2027-03-31" }, "b@school.pk"),
+    ]);
+    expect(results.every((r) => r.ok)).toBe(true);
+    const stored = await doc("admission");
+    expect(stored).toMatchObject({ version: 2, data: { announcement: "Open", closedMessage: "Soon", opensOn: "2027-01-01", closesOn: "2027-03-31" } });
+  });
+
+  it("the window's date-order rule applies to the window panel", async () => {
+    const result = await save("admission-window", freshFingerprint("admission-window"), { opensOn: "2027-03-31", closesOn: "2027-01-01" });
+    expect(result).toMatchObject({ ok: false, error: "invalid", fields: { closesOn: settingsCopy.errors.closesBeforeOpens } });
+  });
+
+  it("deleting a class keeps it soft-deleted, and a later save of another panel keeps it soft-deleted", async () => {
+    const a = { id: randomUUID(), name: "Class 1" };
+    const b = { id: randomUUID(), name: "Class 2" };
+    const first = await saveOk("admission-classes", freshFingerprint("admission-classes"), { classes: [a, b] });
+    await saveOk("admission-classes", first, { classes: [a] });
+    await saveOk("admission-messages", freshFingerprint("admission-messages"), { announcement: "Open", closedMessage: "" });
+    const classes = (await doc("admission"))?.data.classes as { id: string; deletedAt: Date | null }[];
+    expect(classes.find((c) => c.id === a.id)?.deletedAt).toBeNull();
+    expect(classes.find((c) => c.id === b.id)?.deletedAt).toBeInstanceOf(Date);
+  });
+
+  it("a write that keeps losing to other saves gives up as a conflict after the attempt limit", async () => {
+    const { Settings } = await import("@/models/settings");
+    const { MAX_SAVE_ATTEMPTS } = await api();
+    await saveOk("admission-messages", freshFingerprint("admission-messages"), { announcement: "Open", closedMessage: "" });
+    const spy = vi.spyOn(Settings, "findOneAndUpdate").mockReturnValue({ lean: async () => null } as never);
+    try {
+      expect(await save("admission-window", freshFingerprint("admission-window"), { opensOn: "2027-01-01", closesOn: "" })).toEqual({ ok: false, error: "conflict" });
+      expect(spy).toHaveBeenCalledTimes(MAX_SAVE_ATTEMPTS);
+    } finally {
+      spy.mockRestore();
+    }
+  });
+
+  // ── carried over from 005 (whole-group panels behave as groups did) ────
+
+  it("only images that are new since the stored value are verified", async () => {
     const first = heroWith("a");
-    await saveGroup({ group: "hero", expectedVersion: 0, data: first, actorEmail: ACTOR });
+    const fp = await saveOk("hero", freshFingerprint("hero"), first);
     expect(verifyUploadedImage).toHaveBeenCalledTimes(1);
     expect(verifyUploadedImage).toHaveBeenCalledWith("settings/hero/a", "settings/hero");
 
     verifyUploadedImage.mockClear();
-    const second = { ...first, slides: [...first.slides, ...heroWith("b").slides] };
-    await saveGroup({ group: "hero", expectedVersion: 1, data: second, actorEmail: ACTOR });
+    await saveOk("hero", fp, { ...first, slides: [...first.slides, ...heroWith("b").slides] });
     expect(verifyUploadedImage).toHaveBeenCalledTimes(1);
     expect(verifyUploadedImage).toHaveBeenCalledWith("settings/hero/b", "settings/hero");
   });
@@ -149,97 +241,101 @@ describeWithDb("saveGroup (compare-and-set save)", ["settings"], () => {
     "a %s image is refused with the limit message, nothing is stored and the asset is removed",
     async (reason) => {
       verifyUploadedImage.mockResolvedValue({ ok: false, reason });
-      const { saveGroup } = await api();
-      const result = await saveGroup({ group: "hero", expectedVersion: 0, data: heroWith("bad"), actorEmail: ACTOR });
+      const result = await save("hero", freshFingerprint("hero"), heroWith("bad"));
       expect(result).toMatchObject({ ok: false, error: "image_rejected", fields: { "slides.0.desktop": settingsCopy.errors.imageLimits } });
       expect(deleteUploadedImage).toHaveBeenCalledWith("settings/hero/bad");
-
-      const { Settings } = await import("@/models/settings");
-      expect(await Settings.findById("hero").lean()).toBeNull();
+      expect(await doc("hero")).toBeNull();
     },
   );
 
   it("an unavailable verification is reported as unavailable, storing nothing", async () => {
     verifyUploadedImage.mockResolvedValue({ ok: false, reason: "unavailable" });
-    const { saveGroup } = await api();
-    const result = await saveGroup({ group: "hero", expectedVersion: 0, data: heroWith("x"), actorEmail: ACTOR });
-    expect(result).toEqual({ ok: false, error: "unavailable" });
+    expect(await save("hero", freshFingerprint("hero"), heroWith("x"))).toEqual({ ok: false, error: "unavailable" });
     expect(deleteUploadedImage).not.toHaveBeenCalled();
   });
 
   it("placeholder images (empty publicId) are never sent to verification", async () => {
-    const { saveGroup } = await api();
-    const defaults = defaultsFor(GROUPS.hero);
-    const result = await saveGroup({ group: "hero", expectedVersion: 0, data: defaults, actorEmail: ACTOR });
-    expect(result).toMatchObject({ ok: true, version: 1 });
+    expect(await save("hero", freshFingerprint("hero"), defaultsFor(GROUPS.hero))).toMatchObject({ ok: true, version: 1 });
     expect(verifyUploadedImage).not.toHaveBeenCalled();
   });
 
   it("a hero payload with every slide hidden is refused and the stored group is unchanged (last visible slide)", async () => {
-    const { saveGroup } = await api();
     const keep = slide();
-    await saveGroup({ group: "hero", expectedVersion: 0, data: { displaySeconds: 5, slides: [keep] }, actorEmail: ACTOR });
-
-    const hidden = await saveGroup({
-      group: "hero",
-      expectedVersion: 1,
-      data: { displaySeconds: 5, slides: [{ ...keep, visible: false }] },
-      actorEmail: ACTOR,
+    const fp = await saveOk("hero", freshFingerprint("hero"), { displaySeconds: 5, slides: [keep] });
+    expect(await save("hero", fp, { displaySeconds: 5, slides: [{ ...keep, visible: false }] })).toMatchObject({
+      ok: false,
+      error: "invalid",
+      fields: { slides: settingsCopy.errors.lastVisibleSlide },
     });
-    expect(hidden).toMatchObject({ ok: false, error: "invalid", fields: { slides: settingsCopy.errors.lastVisibleSlide } });
-
-    const emptied = await saveGroup({ group: "hero", expectedVersion: 1, data: { displaySeconds: 5, slides: [] }, actorEmail: ACTOR });
-    expect(emptied).toMatchObject({ ok: false, error: "invalid", fields: { slides: settingsCopy.errors.lastVisibleSlide } });
-
-    const { Settings } = await import("@/models/settings");
-    const doc = (await Settings.findById("hero").lean()) as { version: number; data: { slides: { id: string; visible: boolean; deletedAt: unknown }[] } };
-    expect(doc.version).toBe(1);
-    expect(doc.data.slides).toHaveLength(1);
-    expect(doc.data.slides[0]).toMatchObject({ id: keep.id, visible: true, deletedAt: null });
+    expect(await save("hero", fp, { displaySeconds: 5, slides: [] })).toMatchObject({ ok: false, error: "invalid", fields: { slides: settingsCopy.errors.lastVisibleSlide } });
+    const stored = (await doc("hero")) as unknown as { version: number; data: { slides: { id: string; visible: boolean; deletedAt: unknown }[] } };
+    expect(stored.version).toBe(1);
+    expect(stored.data.slides).toEqual([expect.objectContaining({ id: keep.id, visible: true, deletedAt: null })]);
   });
 
   it("deleting a slide keeps it in the document with deletedAt and hides it from the returned value", async () => {
-    const { saveGroup } = await api();
     const a = slide({ alt: "A" });
     const b = slide({ alt: "B" });
-    await saveGroup({ group: "hero", expectedVersion: 0, data: { displaySeconds: 5, slides: [a, b] }, actorEmail: ACTOR });
-
-    const result = await saveGroup({ group: "hero", expectedVersion: 1, data: { displaySeconds: 5, slides: [a] }, actorEmail: ACTOR });
+    const fp = await saveOk("hero", freshFingerprint("hero"), { displaySeconds: 5, slides: [a, b] });
+    const result = await save("hero", fp, { displaySeconds: 5, slides: [a] });
     expect(result.ok && (result.data.slides as unknown[]).length).toBe(1);
 
-    const { Settings } = await import("@/models/settings");
-    const doc = (await Settings.findById("hero").lean()) as { data: { slides: { id: string; deletedAt: Date | null }[] } };
-    const stored = doc.data.slides.find((s) => s.id === b.id);
-    expect(stored?.deletedAt).toBeInstanceOf(Date);
+    const stored = (await doc("hero")) as unknown as { data: { slides: { id: string; deletedAt: Date | null }[] } };
+    expect(stored.data.slides.find((s) => s.id === b.id)?.deletedAt).toBeInstanceOf(Date);
 
-    const { getAdminSettings } = await import("./admin");
-    const admin = await getAdminSettings("hero");
-    expect((admin.data.slides as { id: string }[]).map((s) => s.id)).toEqual([a.id]);
-    expect(JSON.stringify(admin.data)).not.toContain("deletedAt");
+    const { getAdminPanels } = await import("./admin");
+    const panels = await getAdminPanels("hero", ["hero"]);
+    expect((panels.hero.data.slides as { id: string }[]).map((s) => s.id)).toEqual([a.id]);
+    expect(JSON.stringify(panels.hero.data)).not.toContain("deletedAt");
+    expect(panels.hero.fingerprint).toBe(result.ok && result.fingerprint);
   });
 
   it("re-sending a deleted slide's id is refused", async () => {
-    const { saveGroup } = await api();
     const a = slide();
     const b = slide();
-    await saveGroup({ group: "hero", expectedVersion: 0, data: { displaySeconds: 5, slides: [a, b] }, actorEmail: ACTOR });
-    await saveGroup({ group: "hero", expectedVersion: 1, data: { displaySeconds: 5, slides: [a] }, actorEmail: ACTOR });
-
-    const result = await saveGroup({ group: "hero", expectedVersion: 2, data: { displaySeconds: 5, slides: [a, b] }, actorEmail: ACTOR });
-    expect(result).toMatchObject({ ok: false, error: "invalid" });
+    const first = await saveOk("hero", freshFingerprint("hero"), { displaySeconds: 5, slides: [a, b] });
+    const second = await saveOk("hero", first, { displaySeconds: 5, slides: [a] });
+    expect(await save("hero", second, { displaySeconds: 5, slides: [a, b] })).toMatchObject({ ok: false, error: "invalid" });
   });
 
   it("a hero image outside the hero folder is refused", async () => {
-    const { saveGroup } = await api();
     const wrongFolder = { displaySeconds: 5, slides: [slide({ desktop: cloudImage("a", "settings/gallery") })] };
-    const folder = await saveGroup({ group: "hero", expectedVersion: 0, data: wrongFolder, actorEmail: ACTOR });
-    expect(folder).toMatchObject({ ok: false, error: "invalid" });
+    expect(await save("hero", freshFingerprint("hero"), wrongFolder)).toMatchObject({ ok: false, error: "invalid" });
   });
 
   it("clearing the home video stores an empty string", async () => {
-    const { saveGroup } = await api();
-    await saveGroup({ group: "video", expectedVersion: 0, data: { youtubeUrl: "https://youtu.be/dQw4w9WgXcQ" }, actorEmail: ACTOR });
-    const cleared = await saveGroup({ group: "video", expectedVersion: 1, data: { youtubeUrl: "" }, actorEmail: ACTOR });
-    expect(cleared).toMatchObject({ ok: true, data: { youtubeUrl: "" } });
+    const fp = await saveOk("video", freshFingerprint("video"), { youtubeUrl: "https://youtu.be/dQw4w9WgXcQ" });
+    expect(await save("video", fp, { youtubeUrl: "" })).toMatchObject({ ok: true, data: { youtubeUrl: "" } });
+  });
+
+  it("the gallery panel cannot be saved here", async () => {
+    const { savePanel } = await api();
+    expect(await savePanel({ panel: PANELS["photo-gallery"], expectedFingerprint: "0".repeat(32), data: {}, actorEmail: ACTOR })).toMatchObject({ ok: false, error: "invalid" });
+  });
+});
+
+describeWithDb("getAdminPanels (014)", ["settings"], () => {
+  it("a never-saved group loads defaults, the fresh fingerprint and no last save", async () => {
+    const { getAdminPanels } = await import("./admin");
+    const panels = await getAdminPanels("admission", ["admission-window", "admission-messages"]);
+    expect(panels["admission-window"]).toEqual({ data: { opensOn: "", closesOn: "" }, fingerprint: freshFingerprint("admission-window"), lastSaved: null });
+    expect(panels["admission-messages"].data).toEqual({ announcement: "", closedMessage: "" });
+  });
+
+  it("each panel's last save is its own; a record saved before 014 falls back to the record's editor", async () => {
+    const { Settings } = await import("@/models/settings");
+    await Settings.create({ _id: "admission", data: { ...defaultsFor(GROUPS.admission), announcement: "Old" }, version: 4, updatedBy: "legacy@school.pk" });
+    const { getAdminPanels } = await import("./admin");
+    const before = await getAdminPanels("admission", ["admission-messages"]);
+    expect(before["admission-messages"].lastSaved).toMatchObject({ by: "legacy@school.pk" });
+
+    await saveOk("admission-messages", before["admission-messages"].fingerprint, { announcement: "New", closedMessage: "" }, "new@school.pk");
+    const after = await getAdminPanels("admission", ["admission-messages", "admission-window"]);
+    expect(after["admission-messages"].lastSaved).toMatchObject({ by: "new@school.pk" });
+  });
+
+  it("refuses a panel that belongs to another group", async () => {
+    const { getAdminPanels } = await import("./admin");
+    await expect(getAdminPanels("stats", ["hero" as never])).rejects.toThrow();
   });
 });

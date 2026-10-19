@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { ArrowDown, ArrowUp, GripVertical, ImageIcon } from "lucide-react";
-import { deleteGalleryAlbum, reorderGalleryAlbums } from "@/app/admin/(dashboard)/settings/gallery/actions";
+import { deleteGalleryAlbum, reorderGalleryAlbums } from "@/app/admin/(dashboard)/settings/resources/gallery/actions";
 import { AdminConfirmDeleteDialog } from "@/components/admin/admin-delete-dialog";
 import { ImagePreview } from "@/components/admin/settings/image-field";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -114,7 +114,7 @@ export function AlbumList({ initial }: { initial: AdminGallery }) {
               </div>
 
               <div className="flex flex-wrap items-center gap-2">
-                <Link href={`/admin/settings/gallery/${album.id}`} className={buttonVariants({ size: "sm" })} aria-label={`${galleryCopy.open}: ${album.title}`}>
+                <Link href={`/admin/settings/resources/gallery/${album.id}`} className={buttonVariants({ size: "sm" })} aria-label={`${galleryCopy.open}: ${album.title}`}>
                   {galleryCopy.open}
                 </Link>
                 <AlbumPanel

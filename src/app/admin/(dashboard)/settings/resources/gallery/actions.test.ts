@@ -103,7 +103,7 @@ async function signIn(kind: "admin" | "cm-with" | "cm-without"): Promise<string>
     await seedTestAdmin(ADMIN_EMAIL, PASSWORD);
     return getTestSessionCookie(ADMIN_EMAIL, PASSWORD);
   }
-  await seedTestContentManager(CM_EMAIL, PASSWORD, kind === "cm-with" ? ["settings"] : PERMISSION_KEYS.filter((key) => key !== "settings"));
+  await seedTestContentManager(CM_EMAIL, PASSWORD, kind === "cm-with" ? ["pages"] : PERMISSION_KEYS.filter((key) => key !== "pages"));
   return getTestSessionCookie(CM_EMAIL, PASSWORD);
 }
 
@@ -132,17 +132,17 @@ describeWithDb("gallery actions: the three access cases (Constitution XI) and be
       expect(revalidateTag).not.toHaveBeenCalled();
     });
 
-    it(`${name}: a content manager without settings → forbidden, nothing changes, access_denied logged`, async () => {
+    it(`${name}: a content manager without pages (holding every other grant, settings included) → forbidden, nothing changes, access_denied logged`, async () => {
       await seedDefault();
       const cookie = await signIn("cm-without");
       const info = vi.spyOn(console, "info");
       const before = await stored();
       expect(await run(cookie, name, VALID[name])).toEqual({ status: "error", error: "forbidden" });
       expect(await stored()).toEqual(before);
-      expect(info.mock.calls.some(([line]) => String(line).includes('"access_denied"') && String(line).includes('"settings"'))).toBe(true);
+      expect(info.mock.calls.some(([line]) => String(line).includes('"access_denied"') && String(line).includes('"pages"'))).toBe(true);
     });
 
-    it(`${name}: a content manager with settings → succeeds`, async () => {
+    it(`${name}: a content manager with pages → succeeds`, async () => {
       await seedDefault();
       const cookie = await signIn("cm-with");
       expect(await run(cookie, name, VALID[name])).toMatchObject({ status: "success" });

@@ -1,4 +1,4 @@
-import { expect, type Page } from "@playwright/test";
+import { expect, type Locator, type Page } from "@playwright/test";
 import mongoose from "mongoose";
 
 /**
@@ -89,12 +89,6 @@ export async function stubCloudinaryUpload(
   return { count: () => uploads };
 }
 
-/** Opens a group's page and waits for its form. */
-export async function openGroup(page: Page, group: SettingsGroupKey): Promise<void> {
-  await page.goto(`/admin/settings/${group}`);
-  // The settings form, not the profile menu's logout form.
-  await expect(page.locator("#admin-content form")).toBeVisible({ timeout: 90_000 });
-}
 
 /**
  * Types a value and keeps it: a value typed before React has taken the form over is wiped by hydration,
@@ -111,8 +105,55 @@ export async function fillStable(page: Page, label: string, value: string): Prom
   await expect(field).toHaveValue(value);
 }
 
-/** The success toast after a save ("<Group> saved"). */
+/** The success toast after a save ("<Panel title> saved"). */
 export function savedToast(page: Page, groupTitle: string) {
   // `.last()`: an earlier "saved" toast may still be on screen after a second save.
   return page.getByText(`${groupTitle} saved`).last();
+}
+
+// ── 014: Settings by page ────────────────────────────────────────────────
+
+/** A Settings panel on the current tab (contracts/tabs-and-panels.md). */
+export function panel(page: Page, key: string): Locator {
+  return page.locator(`section[data-panel="${key}"]`);
+}
+
+/** Where each 005 group is edited since 014: its tab and the panel that holds most of it. */
+export const GROUP_PANEL: Record<SettingsGroupKey, { tab: string; panel: string }> = {
+  contact: { tab: "site-wide", panel: "contact" },
+  hero: { tab: "home", panel: "hero" },
+  video: { tab: "home", panel: "video" },
+  stats: { tab: "home", panel: "stats" },
+  admission: { tab: "admission", panel: "admission-window" },
+};
+
+/** Opens the tab that holds a group, at its panel, and waits for that panel's form. Returns the panel. */
+export async function openGroup(page: Page, group: SettingsGroupKey): Promise<Locator> {
+  const { tab, panel: key } = GROUP_PANEL[group];
+  await page.goto(`/admin/settings/${tab}#${key}`);
+  const section = panel(page, key);
+  await expect(section.locator("form")).toBeVisible({ timeout: 90_000 });
+  return section;
+}
+
+/** An old (pre-014) Settings URL and where it now lands (014 US3; shared by the redirect and access-matrix specs). */
+export interface OldSettingsUrl {
+  from: string;
+  /** The destination path; `hash`, when set, names the panel. */
+  to: string;
+  hash?: string;
+  /** Who may open the destination. */
+  needs: "settings" | "pages";
+}
+
+export const OLD_SETTINGS_URLS: readonly OldSettingsUrl[] = [
+  { from: "/admin/settings/contact", to: "/admin/settings/site-wide", hash: "contact", needs: "settings" },
+  { from: "/admin/settings/hero", to: "/admin/settings/home", hash: "hero", needs: "pages" },
+  { from: "/admin/settings/video", to: "/admin/settings/home", hash: "video", needs: "pages" },
+  { from: "/admin/settings/stats", to: "/admin/settings/home", hash: "stats", needs: "pages" },
+  { from: "/admin/settings/gallery", to: "/admin/settings/resources", hash: "photo-gallery", needs: "pages" },
+];
+
+export function oldAlbumUrl(albumId: string): OldSettingsUrl {
+  return { from: `/admin/settings/gallery/${albumId}`, to: `/admin/settings/resources/gallery/${albumId}`, needs: "pages" };
 }

@@ -28,7 +28,7 @@ function postRequest(body: unknown) {
 const allowed = {
   requireAdminAccess: async () => ({
     ok: true,
-    session: { email: "cm@example.com", sessionId: "s1", userId: "u1", role: "content_manager", permissions: ["settings"] },
+    session: { email: "cm@example.com", sessionId: "s1", userId: "u1", role: "content_manager", permissions: ["pages"] },
   }),
 };
 
@@ -47,7 +47,7 @@ it("returns 401 without a session and signs nothing", async () => {
   expect(signImageUpload).not.toHaveBeenCalled();
 });
 
-it('returns 403 for a user without the settings permission, and requires exactly "settings"', async () => {
+it('returns 403 for a user without the pages permission, and requires exactly "pages" (014)', async () => {
   const calls: string[] = [];
   vi.doMock("@/lib/dal", () => ({
     requireAdminAccess: async (access: string) => {
@@ -60,7 +60,7 @@ it('returns 403 for a user without the settings permission, and requires exactly
   const response = await POST(postRequest({ kind: "gallery" }));
   expect(response.status).toBe(403);
   expect(await response.json()).toEqual({ error: "forbidden" });
-  expect(calls).toEqual(["settings"]);
+  expect(calls).toEqual(["pages"]);
   expect(signImageUpload).not.toHaveBeenCalled();
 });
 

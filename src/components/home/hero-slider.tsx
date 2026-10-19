@@ -107,10 +107,11 @@ export function HeroSlider({ hero }: { hero: PublicHero }) {
 
   return (
     <section
+      id="hero"
       aria-roledescription="carousel"
       aria-label={t.label}
       data-testid="hero"
-      className="hero-full relative min-h-[26rem] w-full overflow-hidden bg-primary"
+      className="hero-full anchor-section relative min-h-[26rem] w-full overflow-hidden bg-primary"
       onPointerEnter={() => setPaused(true)}
       onPointerLeave={() => setPaused(false)}
       onFocus={(event) => {

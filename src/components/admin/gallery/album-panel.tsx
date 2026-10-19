@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { createGalleryAlbum, updateGalleryAlbum } from "@/app/admin/(dashboard)/settings/gallery/actions";
+import { createGalleryAlbum, updateGalleryAlbum } from "@/app/admin/(dashboard)/settings/resources/gallery/actions";
 import { useSheetDirtyGuard } from "@/components/admin/settings/use-sheet-dirty-guard";
 import { Button } from "@/components/ui/button";
 import { FormControl, FormField, FormLabel, FormMessage } from "@/components/ui/form";

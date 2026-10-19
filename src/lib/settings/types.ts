@@ -158,8 +158,11 @@ export const PLACEHOLDER_IMAGE_URLS = [
   "/images/hero/placeholder-mobile.svg",
 ] as const;
 
-/** What the `saveSettingsGroup` Server Action returns (contracts/settings-actions.md). */
-export type SaveSettingsResult =
-  | { status: "success"; version: number; data: GroupValue; savedAt: string; updatedBy: string }
+/**
+ * What the panel save actions return (014, contracts/panel-actions.md):
+ * `saveSettingsPanel` and `savePagesPanel`. `data` holds the panel's fields only.
+ */
+export type SavePanelResult =
+  | { status: "success"; version: number; fingerprint: string; data: GroupValue; savedAt: string; updatedBy: string }
   | { status: "error"; error: "unauthorized" | "forbidden" | "conflict" | "unavailable" }
   | { status: "error"; error: "invalid" | "image_rejected"; fields: Record<string, string> };

@@ -2,7 +2,7 @@ import mongoose, { Schema, type Model } from "mongoose";
 
 /**
  * Settings (005) — one document per group, `_id` = the group key (`contact`,
- * `hero`, `stats`, `video`, `gallery`). Using the key as `_id` makes "one
+ * `hero`, `stats`, `video`, `admission`, `gallery`). Using the key as `_id` makes "one
  * record per group" (PRD §7) a database guarantee (Constitution VI) with no
  * extra index. A group with no document has never been saved and reads as
  * its definition defaults (`version` 0).
@@ -12,8 +12,10 @@ import mongoose, { Schema, type Model } from "mongoose";
  * List items carry their own `deletedAt`, so the shared soft-delete plugin
  * (which filters whole documents) is deliberately not used here.
  *
- * `version` is the compare-and-set counter that makes a stale save fail
- * (src/lib/settings/mutations.ts).
+ * `version` is the compare-and-set counter every write is conditional on
+ * (src/lib/settings/mutations.ts). `panelSaves` (014, optional) records who
+ * last saved each Settings panel and when; a record saved before 014 has
+ * none, and readers fall back to `updatedBy` / `updatedAt`.
  */
 export interface SettingsDoc {
   _id: string;
@@ -21,6 +23,7 @@ export interface SettingsDoc {
   version: number;
   updatedBy: string;
   updatedAt: Date;
+  panelSaves?: Record<string, { by: string; at: Date }>;
 }
 
 const settingsSchema = new Schema<SettingsDoc>(
@@ -29,6 +32,7 @@ const settingsSchema = new Schema<SettingsDoc>(
     data: { type: Schema.Types.Mixed, required: true },
     version: { type: Number, required: true, min: 1 },
     updatedBy: { type: String, required: true },
+    panelSaves: { type: Schema.Types.Mixed, required: false },
   },
   { collection: "settings", timestamps: { createdAt: false, updatedAt: true }, minimize: false },
 );
