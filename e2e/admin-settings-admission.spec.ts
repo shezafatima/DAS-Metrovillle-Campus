@@ -1,11 +1,16 @@
 import AxeBuilder from "@axe-core/playwright";
 import { test, expect } from "@playwright/test";
 import { adminSession } from "./helpers/users";
-import { clearSettings, fillStable, openGroup, readSettingsGroup, seedSettingsGroup, savedToast } from "./helpers/settings";
+import { clearSettings, fillStable, openGroup, panel, readSettingsGroup, seedSettingsGroup, savedToast } from "./helpers/settings";
 import { settingsCopy } from "../src/content/admin";
 import { formatAdmissionDate, karachiToday } from "../src/lib/admission/window";
 
 // 020 US2: Settings → Admission. Dates are relative to today in Pakistan, so the status line is predictable.
+// 014: the tab has three panels (window, messages, classes), each saved on its own.
+const save = (page: import("@playwright/test").Page, key: string) => panel(page, key).getByRole("button", { name: "Save" }).click();
+const WINDOW = settingsCopy.panels["admission-window"];
+const MESSAGES = settingsCopy.panels["admission-messages"];
+const CLASSES = settingsCopy.panels["admission-classes"];
 
 const today = karachiToday(new Date());
 function shift(iso: string, days: number) {
@@ -31,9 +36,11 @@ test.describe("settings — admission (020 US2)", () => {
     const closes = shift(today, 30);
     await fillStable(page, "Opens on", shift(today, -1));
     await fillStable(page, "Closes on", closes);
+    await save(page, "admission-window");
+    await expect(savedToast(page, WINDOW)).toBeVisible({ timeout: 60_000 });
     await page.getByLabel("Announcement").fill("Admissions are now open for Playgroup, Nursery, Class 1 and Class 2");
-    await page.getByRole("button", { name: "Save" }).click();
-    await expect(savedToast(page, settingsCopy.groups.admission.title)).toBeVisible({ timeout: 60_000 });
+    await save(page, "admission-messages");
+    await expect(savedToast(page, MESSAGES)).toBeVisible({ timeout: 60_000 });
     expect((await readSettingsGroup("admission"))?.data).toEqual({
       opensOn: shift(today, -1),
       closesOn: closes,
@@ -52,8 +59,8 @@ test.describe("settings — admission (020 US2)", () => {
     await expect(status(page)).toHaveText(`Opens on ${formatAdmissionDate(shift(today, 30))}`);
 
     await fillStable(page, "Opens on", "");
-    await page.getByRole("button", { name: "Save" }).click();
-    await expect(savedToast(page, settingsCopy.groups.admission.title)).toBeVisible({ timeout: 60_000 });
+    await save(page, "admission-window");
+    await expect(savedToast(page, WINDOW)).toBeVisible({ timeout: 60_000 });
     await expect(status(page)).toHaveText(settingsCopy.admissionStatus.closed, { timeout: 60_000 });
   });
 
@@ -63,7 +70,7 @@ test.describe("settings — admission (020 US2)", () => {
     await openGroup(page, "admission");
     await fillStable(page, "Opens on", "2027-03-31");
     await fillStable(page, "Closes on", "2027-01-01");
-    await page.getByRole("button", { name: "Save" }).click();
+    await save(page, "admission-window");
     await expect(page.getByText(settingsCopy.errors.closesBeforeOpens)).toBeVisible({ timeout: 60_000 });
     expect(await readSettingsGroup("admission")).toBeNull();
   });
@@ -97,11 +104,11 @@ test.describe("settings — admission classes (013 US5)", () => {
     await expect(page.getByTestId("settings-warning")).toHaveText(settingsCopy.admissionWarnings.noClasses);
 
     await page.getByRole("button", { name: "Add class" }).click();
-    const panel = page.getByRole("dialog", { name: /Add class/ });
-    await panel.getByLabel("Class name").fill("Playgroup");
-    await panel.getByRole("button", { name: "Done" }).click();
-    await page.getByRole("button", { name: "Save" }).click();
-    await expect(savedToast(page, settingsCopy.groups.admission.title)).toBeVisible({ timeout: 60_000 });
+    const dialog = page.getByRole("dialog", { name: /Add class/ });
+    await dialog.getByLabel("Class name").fill("Playgroup");
+    await dialog.getByRole("button", { name: "Done" }).click();
+    await save(page, "admission-classes");
+    await expect(savedToast(page, CLASSES)).toBeVisible({ timeout: 60_000 });
     const stored = (await readSettingsGroup("admission"))?.data as { classes: Array<{ name: string }> };
     expect(stored.classes.map((item) => item.name)).toEqual(["Playgroup"]);
     await expect(page.getByTestId("settings-warning")).toHaveCount(0, { timeout: 60_000 });

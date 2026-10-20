@@ -168,16 +168,19 @@
   shared by the browser form and the Server Action), defaults.ts (starting
   values; contact defaults are imported from contactInfo), items.ts (live
   items, reorder, soft-delete reconciliation), youtube.ts, mutations.ts
-  (saveGroup — validate, reconcile, verify new images, version
-  compare-and-set), admin.ts (getAdminSettings), public.ts
+  (savePanel — validate, reconcile, verify new images, panel fingerprint
+  check + version compare-and-set; 014), panels.ts (014 tabs and panels),
+  fingerprint.ts, admin.ts (getAdminSettings, getAdminPanels), public.ts
   (getPublicSettings — cached, never throws), form-state.ts
 - src/models/settings.ts   collection `settings`, one document per group
 - src/lib/uploads/   image-limits.ts (JPG/PNG/WebP, 5 MB, real leading
   bytes) and direct-upload.ts (signed browser→Cloudinary upload), lifted
   out of the news CoverImageField so news and Settings share them
-- src/components/admin/settings/   the one generated group form
-  (SettingsGroupForm, FieldControl), ListEditor + SlidePanel (right-hand
-  Sheet), ImageField, GalleryUploader, SettingsNav — 005 settings.
+- src/components/admin/settings/   the one generated panel form
+  (SettingsPanelForm, FieldControl), SettingsPanel (collapsible, sticky
+  header), UnsavedPanelsProvider (one leave guard per tab), ListEditor +
+  SlidePanel (right-hand Sheet), ImageField, SettingsNav (the tab bar) —
+  005 settings, reorganised by page in 014.
   AdminConfirmDeleteDialog (admin-delete-dialog.tsx) is the confirm step
   on its own; AdminDeleteDialog is built on it
 - src/components/contact/   public Contact page UI (ContactBanner,
@@ -226,9 +229,10 @@
   contact-messages; /api/admin/notifications (GET — combined counts +
   panel items), /api/admin/notifications/read (POST — mark all as
   read) — 009 admin-notifications
-- /api/admin/settings/uploads/sign  (005, access `settings`) signs a
+- /api/admin/settings/uploads/sign  (005; access `pages` since 014) signs a
   direct Cloudinary upload into settings/hero or settings/gallery. Saving a
-  settings group is a Server Action (`saveSettingsGroup`), not a route.
+  settings panel is a Server Action (`saveSettingsPanel` / `savePagesPanel`,
+  014), not a route.
 - /api/public/* no auth — includes /api/public/careers (012; multipart
   with one PDF: body-size guard → capped read → honeypot → 5-per-10-minute
   submission limit → 10-per-24-hour upload limit → validation incl. the
@@ -519,12 +523,32 @@
 - Each group is a typed field definition. The admin form, the client and
   server validation and the defaults are all derived from it
   (src/lib/settings/); adding a field means editing that one definition.
-- A save (`saveSettingsGroup`) stores the whole group or nothing: validate
-  with the group schema, reconcile list items, re-verify any image new since
-  the stored version (Cloudinary size/format/folder), then one atomic write
-  guarded by the version the form was loaded with (insert at version 0,
-  `findOneAndUpdate({_id, version})` otherwise). A stale version is a
-  conflict and stores nothing; no transactions are assumed.
+- 014 (ADR-0013): Settings is one tab per public page plus Site-wide
+  (/admin/settings/<tab>); each tab shows panels in page order
+  (src/lib/settings/panels.ts). A panel edits a whole group, or part of one:
+  the admission group is three panels, the window and the class list under
+  Settings and the messages under Pages. Tabs: Site-wide `settings`; Home and
+  Resources `pages`; Admission `settings_or_pages` (a panel the user cannot
+  save is read-only). About, Academics and Careers have no panels yet, so no
+  tab and no route. The old group URLs redirect from next.config.ts.
+- A save is one panel: `saveSettingsPanel` (`settings`) or `savePagesPanel`
+  (`pages`), each accepting only its own panels (a mismatch is forbidden and
+  logged). `savePanel` keeps only the panel's fields (others are dropped),
+  refuses with `conflict` when the stored panel no longer matches the
+  fingerprint it was loaded with (a hash of the panel's fields), validates the
+  whole merged group, reconciles list items, re-verifies new images
+  (Cloudinary size/format/folder), then writes the whole record with the
+  version compare-and-set (insert at version 0, `findOneAndUpdate({_id,
+  version})` otherwise), re-reading up to 3 times if a sibling panel's save
+  landed in between. So a same-panel race is a conflict, sibling panels never
+  block or overwrite each other, and no transactions are assumed. Each save
+  sets `panelSaves.<panel>` (who, when) and logs `settings_saved` with the
+  group and panel. Panel forms are keyed on the panel, never the version, so
+  the refresh after a save never resets a sibling's unsaved edits.
+- Release step for 014: `npm run grant:pages -- --dry-run`, then
+  `npm run grant:pages`, against production BEFORE the deploy. It gives Pages
+  to every content manager who holds Settings (idempotent; one change-record
+  entry per account changed; prints the database host and name first).
 - List items (hero slides) carry a UUID `id` and `deletedAt`
   inside the group document. The editor sends live items only; absent ones
   are marked deleted, deleted items are kept (soft delete, developer
@@ -563,8 +587,10 @@
 ## Admission (020)
 - Settings group `admission`: Opens on, Closes on (date fields, `dateOrder`),
   Announcement and Closed message (text, 160 characters). Empty dates mean
-  closed. Saves follow the 005 rules above (Settings permission, version
-  check, `settings_saved` log).
+  closed. Saves follow the 005 rules above (version check, `settings_saved`
+  log); since 014 the dates and the class list are the Admission window and
+  Classes panels (Settings permission) and the two messages are the Admission
+  messages panel (Pages permission).
 - Whether admissions are open is never stored or cached. The pure
   `admissionWindowState(value, now)` (src/lib/admission/window.ts) compares
   the saved dates with today's calendar date in Asia/Karachi; open from the
@@ -627,7 +653,8 @@
   this design is valid only while the 6/8 caps keep the record small; raising
   them means revisiting the ADR first.
 - Album and photo actions save immediately (nine Server Actions in
-  admin/(dashboard)/settings/gallery/actions.ts, permission `settings`).
+  admin/(dashboard)/settings/resources/gallery/actions.ts, permission `pages`
+  since 014; it was `settings`).
   Uploads go straight to Cloudinary (folder settings/gallery); one
   `addGalleryPhotos` call per selection verifies each image, keeps the ones
   that fit and deletes every refused or rejected asset.

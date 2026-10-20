@@ -17,8 +17,11 @@ export type Role = "main_admin" | "content_manager";
  * What an admin page, route or action requires: a grantable section, the
  * main-admin role itself, or `"any"` (any active user whose password is
  * set — the overview, their own Account page, the session probe).
+ * `"settings_or_pages"` (014) admits a holder of either key: the Settings
+ * index, the Admission tab and the sidebar's Settings item. It is not a
+ * grantable key; nothing stores it.
  */
-export type Access = Permission | "main_admin" | "any";
+export type Access = Permission | "main_admin" | "any" | "settings_or_pages";
 
 export const ROLES: readonly Role[] = ["main_admin", "content_manager"];
 
@@ -48,6 +51,7 @@ export function normalizePermissions(values: unknown): Permission[] {
 export function canAccess(user: { role: Role; permissions: readonly string[] }, access: Access): boolean {
   if (user.role === "main_admin") return true;
   if (access === "any") return true;
+  if (access === "settings_or_pages") return user.permissions.includes("settings") || user.permissions.includes("pages");
   if (access === "main_admin") return false;
   return user.permissions.includes(access);
 }

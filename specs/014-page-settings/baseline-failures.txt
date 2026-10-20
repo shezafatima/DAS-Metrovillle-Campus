@@ -1,0 +1,17 @@
+# 014 T001 baseline on unchanged code (2026-10-19, HEAD 750f81b)
+
+## Vitest (npx vitest run, no DB env): 5 failed / 1036 passed / 629 skipped
+ FAIL  src/content/about/fidelity.test.ts > fidelity to the client's documents > Core Values
+ FAIL  src/content/about/fidelity.test.ts > fidelity to the client's documents > Messages
+ FAIL  src/content/about/fidelity.test.ts > fidelity to the client's documents > Our Story
+ FAIL  src/content/about/fidelity.test.ts > fidelity to the client's documents > Vision & Mission
+ FAIL  src/lib/gallery/public.test.ts > getPublicGallery: what the site may see > only live albums with live photos, in order, without revs, deletions or retired images
+
+## Playwright (targeted settings/gallery/roles/home/admission/registrations specs): 5 failed, 27 did not run, 128 passed
+### failed
+[admin] › e2e\admin-home-page.spec.ts:189:7 › home — sections, news, books, stats, links (006 US2–US9) › Latest News: newest published first, Urdu right-to-left, no-cover placeholder, hidden when empty 
+[admin] › e2e\admin-roles-access-matrix.spec.ts:112:13 › roles — every admin page: no session, wrong role, correct role (011 Constitution XI) › /admin/settings (settings) › 3. correct role or permission → the page opens, not redirected 
+[admin] › e2e\admin-settings-contact.spec.ts:22:7 › settings — contact & social (005 US2) › nothing has been saved: the top bar, footer and Contact page show the content-file values (SC-001) 
+[admin] › e2e\admin-settings-contact.spec.ts:44:7 › settings — contact & social (005 US2) › the admin edits the details and the Contact page, top bar and footer show them; a cleared link hides its icon 
+[admin] › e2e\admin-settings-hero.spec.ts:104:7 › settings — hero slides (005 US3) › deleting a slide asks first, and it is kept as deleted (soft delete) 
+### did not run (serial blocks after a failure)

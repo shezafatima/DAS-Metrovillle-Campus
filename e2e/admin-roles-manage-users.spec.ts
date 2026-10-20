@@ -48,7 +48,8 @@ test.describe("roles — managing users (011 US4)", () => {
       await expect(row()).not.toContainText("News");
 
       await cm.page.goto("/admin/settings");
-      await expect(cm.page).toHaveURL("/admin/settings");
+      // 014: Settings opens on the first tab this user may see (Site-wide, for the Settings permission).
+      await expect(cm.page).toHaveURL("/admin/settings/site-wide", { timeout: 90_000 });
       expect(await sidebarLabels(cm.page)).toEqual(["Overview", "Settings"]);
     });
 

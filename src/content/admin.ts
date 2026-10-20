@@ -20,7 +20,8 @@ export const adminNavItems: AdminNavItem[] = [
   { label: "Applications", href: "/admin/careers", access: "careers" },
   // 013: student registrations, main admin only (a content manager never sees the item).
   { label: "Registrations", href: "/admin/registrations", access: "main_admin" },
-  { label: "Settings", href: "/admin/settings", access: "settings" },
+  // 014: either key opens Settings (Site-wide needs settings; the page tabs need pages).
+  { label: "Settings", href: "/admin/settings", access: "settings_or_pages" },
   { label: "Users", href: "/admin/users", access: "main_admin" },
 ];
 
@@ -34,12 +35,11 @@ export function visibleNavItems(user: { role: Role; permissions: readonly string
 export const adminExtraPageTitles: Record<string, string> = {
   "/admin/account": "Account",
   "/admin/users/activity": "Change record",
-  // 005: Settings group pages (the sidebar item itself is "Settings").
-  "/admin/settings/contact": "Contact & social",
-  "/admin/settings/hero": "Hero slides",
-  "/admin/settings/stats": "Stats",
-  "/admin/settings/video": "Home video",
-  "/admin/settings/gallery": "Photo gallery",
+  // 014: Settings tabs, one per public page plus Site-wide (the sidebar item itself is "Settings").
+  "/admin/settings/site-wide": "Site-wide",
+  "/admin/settings/home": "Home",
+  "/admin/settings/admission": "Admission",
+  "/admin/settings/resources": "Resources",
 };
 
 export const loginCopy = {
@@ -599,6 +599,36 @@ export const notificationsCopy = {
 export const settingsCopy = {
   pageTitle: "Settings",
   navLabel: "Settings groups",
+  /** 014: one tab per public page plus Site-wide (src/lib/settings/panels.ts). */
+  tabsNavLabel: "Settings sections",
+  tabs: {
+    "site-wide": "Site-wide",
+    home: "Home",
+    about: "About",
+    academics: "Academics",
+    admission: "Admission",
+    resources: "Resources",
+    careers: "Careers",
+  },
+  /** 014: each panel is titled with the public section it edits. */
+  panels: {
+    contact: "Contact & social",
+    hero: "Hero slides",
+    video: "Why Choose video",
+    stats: "Progress dashboard",
+    "admission-window": "Admission window",
+    "admission-messages": "Admission messages",
+    "admission-classes": "Classes open for admission",
+    "photo-gallery": "Photo gallery",
+  },
+  viewOnSite: "View on site",
+  unsavedBadge: "Unsaved changes",
+  /** A panel shown to someone who may open its tab but not save it (014 FR-018). */
+  readOnly: {
+    needs: (permission: string) => `You need the ${permission} permission to change this.`,
+  },
+  /** A Home panel whose group could not be read; the rest of the tab still works (014). */
+  panelUnavailable: "This section couldn't be loaded. Reload to try again.",
   groups: {
     contact: { title: "Contact & social", description: "Shown on the Contact page, and as social icons in the top bar and footer." },
     hero: { title: "Hero slides", description: "The pictures at the top of the home page. Images only." },
@@ -670,12 +700,12 @@ export const settingsCopy = {
   },
   save: "Save",
   saving: "Saving…",
-  unsavedPrompt: "You have unsaved changes in this group. Leave without saving?",
+  unsavedPrompt: "You have unsaved changes on this page. Leave without saving?",
   notSavedYet: "Not saved yet — showing the starting values.",
   lastSaved: (by: string, at: string) => `Last saved by ${by} on ${at}`,
   toasts: {
     saved: (group: string) => `${group} saved`,
-    conflict: "This group was changed by someone else. Reload to see their changes.",
+    conflict: "This section was changed by someone else. Reload to see their changes.",
     unavailable: "Couldn't save right now. Please try again.",
     invalid: "Check the highlighted fields.",
     forbidden: "You don't have access to that section.",

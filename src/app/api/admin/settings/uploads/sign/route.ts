@@ -15,7 +15,8 @@ const FOLDERS = {
 } as const;
 
 export async function POST(request: Request) {
-  const access = await requireAdminAccess("settings");
+  // 014: hero slides and the gallery are page content, so signing their uploads needs Pages.
+  const access = await requireAdminAccess("pages");
   if (!access.ok) return accessErrorResponse(access.reason);
 
   let body: unknown;

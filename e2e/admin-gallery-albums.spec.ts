@@ -99,15 +99,15 @@ test.describe("gallery — admin manages albums (007 US1)", () => {
     expect((await liveAlbums())[0].title).toBe("From tab one");
   });
 
-  test("unsaved edits in another Settings group do not block gallery actions (FR-025)", async ({ browser }) => {
+  test("unsaved edits on another Settings tab do not block gallery actions (FR-025)", async ({ browser }) => {
     test.setTimeout(400_000);
     const { page } = await adminSession(browser);
-    await page.goto("/admin/settings/stats");
-    await expect(page.locator("#admin-content form")).toBeVisible({ timeout: 90_000 });
+    await page.goto("/admin/settings/home#stats");
+    await expect(page.locator("section[data-panel=\"stats\"] form")).toBeVisible({ timeout: 90_000 });
     await page.getByLabel("Students").fill("123");
 
     page.once("dialog", (dialog) => void dialog.accept());
-    await page.getByRole("navigation", { name: settingsCopy.navLabel }).getByRole("link", { name: settingsCopy.groups.gallery.title }).click();
+    await page.getByRole("navigation", { name: settingsCopy.tabsNavLabel }).getByRole("link", { name: settingsCopy.tabs.resources }).click();
     await expect(page.getByTestId("album-list")).toBeVisible({ timeout: 90_000 });
     await createAlbum(page, "Not blocked");
     expect((await liveAlbums()).map((a) => a.title)).toEqual(["Not blocked"]);

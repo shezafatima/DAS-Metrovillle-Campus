@@ -59,6 +59,14 @@ const nextConfig: NextConfig = {
       })),
       // The Campuses page is gone; Contact is the nearest page.
       { source: "/campuses", destination: "/contact", permanent: true },
+      // 014: Settings moved into page tabs. Each old group page lands on its tab, at its panel. The
+      // destination page checks access itself, so a redirect reveals nothing but this fixed mapping.
+      { source: "/admin/settings/contact", destination: "/admin/settings/site-wide#contact", permanent: true },
+      { source: "/admin/settings/hero", destination: "/admin/settings/home#hero", permanent: true },
+      { source: "/admin/settings/video", destination: "/admin/settings/home#video", permanent: true },
+      { source: "/admin/settings/stats", destination: "/admin/settings/home#stats", permanent: true },
+      { source: "/admin/settings/gallery", destination: "/admin/settings/resources#photo-gallery", permanent: true },
+      { source: "/admin/settings/gallery/:albumId", destination: "/admin/settings/resources/gallery/:albumId", permanent: true },
     ];
   },
 };

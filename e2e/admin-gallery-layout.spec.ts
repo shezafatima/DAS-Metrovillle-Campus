@@ -39,7 +39,7 @@ test.describe("gallery — admin layout (007)", () => {
     for (const width of WIDTHS) {
       await page.setViewportSize({ width, height: 900 });
 
-      await page.goto("/admin/settings/gallery");
+      await page.goto("/admin/settings/resources");
       await expect(page.getByTestId("album-list")).toBeVisible({ timeout: 90_000 });
       expect(await hasNoHorizontalScroll(page), `album list at ${width}px`).toBe(true);
 
@@ -54,7 +54,7 @@ test.describe("gallery — admin layout (007)", () => {
       await expect(panel).toBeHidden();
 
       for (const id of [LONG, URDU]) {
-        await page.goto(`/admin/settings/gallery/${id}`);
+        await page.goto(`/admin/settings/resources/gallery/${id}`);
         await expect(page.getByTestId("album-photos")).toBeVisible({ timeout: 90_000 });
         expect(await hasNoHorizontalScroll(page), `album ${id} at ${width}px`).toBe(true);
       }

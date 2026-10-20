@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 import { Loader2, Upload, X } from "lucide-react";
-import { addGalleryPhotos } from "@/app/admin/(dashboard)/settings/gallery/actions";
+import { addGalleryPhotos } from "@/app/admin/(dashboard)/settings/resources/gallery/actions";
 import { SETTINGS_SIGN_ENDPOINT } from "@/components/admin/settings/image-field";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/toaster";

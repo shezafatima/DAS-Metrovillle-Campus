@@ -19,7 +19,7 @@ export async function ProgressDashboard() {
   const stats = await getPublicSettings("stats");
   const { heading, line, stats: labels } = homeContent.progressDashboard;
   return (
-    <section aria-labelledby="dashboard-heading" className="bg-(--color-topbar) py-(--spacing-home-dashboard-y)" data-testid="progress-dashboard">
+    <section id="progress-dashboard" aria-labelledby="dashboard-heading" className="anchor-section bg-(--color-topbar) py-(--spacing-home-dashboard-y)" data-testid="progress-dashboard">
       <div className="mx-auto flex max-w-(--container-max-width) flex-col gap-6 px-(--container-gutter-x)">
         <SectionHeading id="dashboard-heading" heading={heading} line={line} tone="navy" />
         <ul className="mx-auto grid w-full max-w-(--container-home-stats-max-width) grid-cols-2 gap-4 lg:grid-cols-4 lg:gap-6">

@@ -3,30 +3,29 @@ import { adminSession, loginSeeded, resetUsers, seedActiveUser, sidebarLabels } 
 import { clearSettings, openGroup, readSettingsGroup, savedToast } from "./helpers/settings";
 import { accessCopy, settingsCopy } from "../src/content/admin";
 
-const GROUP_PATHS = ["contact", "hero", "stats", "video", "admission"].map((g) => `/admin/settings/${g}`);
-// 007: the gallery lives in Settings but is no longer a group form (see admin-gallery-access.spec.ts).
-const GALLERY_PATH = "/admin/settings/gallery";
+// 014: the Settings pages are tabs (005's group pages redirect to them; see admin-settings-redirects.spec.ts).
+const TAB_PATHS = ["/admin/settings/site-wide", "/admin/settings/home", "/admin/settings/admission", "/admin/settings/resources"];
 
 async function expectDenied(page: Page, path: string) {
   await page.goto(path);
-  await expect(page, path).toHaveURL("/admin?denied=1");
+  await expect(page, path).toHaveURL("/admin?denied=1", { timeout: 90_000 });
   await expect(page.getByText(accessCopy.denied)).toBeVisible();
 }
 
-test.describe("settings — permission-gated (005 US1)", () => {
+test.describe("settings — permission-gated (005 US1, on 014 tabs)", () => {
   test.beforeEach(async () => {
     await resetUsers();
     await clearSettings();
   });
 
-  test("signed out, every settings page goes to the login page and returns afterwards", async ({ page }) => {
-    for (const path of ["/admin/settings", ...GROUP_PATHS, GALLERY_PATH]) {
+  test("signed out, every settings page goes to the login page", async ({ page }) => {
+    for (const path of ["/admin/settings", ...TAB_PATHS]) {
       await page.goto(path);
       await expect(page, path).toHaveURL(/\/admin\/login/);
     }
   });
 
-  test("a content manager without settings does not see it, is redirected from every page, and is refused the requests", async ({
+  test("a content manager with neither settings nor pages does not see it, is redirected from every page, and is refused the requests", async ({
     browser,
   }) => {
     test.setTimeout(300_000);
@@ -34,8 +33,7 @@ test.describe("settings — permission-gated (005 US1)", () => {
     const { page } = await loginSeeded(browser, user);
 
     expect(await sidebarLabels(page)).toEqual(["Overview", "News"]);
-
-    for (const path of ["/admin/settings", ...GROUP_PATHS, GALLERY_PATH]) await expectDenied(page, path);
+    for (const path of ["/admin/settings", ...TAB_PATHS]) await expectDenied(page, path);
 
     const sign = await page.request.post("/api/admin/settings/uploads/sign", { data: { kind: "gallery" } });
     expect(sign.status()).toBe(403);
@@ -43,24 +41,20 @@ test.describe("settings — permission-gated (005 US1)", () => {
     expect(await readSettingsGroup("stats")).toBeNull();
   });
 
-  test("a content manager with settings sees the section, opens every group and saves Stats", async ({ browser }) => {
+  test("a content manager with pages sees Settings, opens the page tabs and saves the stats", async ({ browser }) => {
     test.setTimeout(300_000);
-    const user = await seedActiveUser({ email: "settings-yes@example.test", permissions: ["settings"] });
+    const user = await seedActiveUser({ email: "settings-yes@example.test", permissions: ["pages"] });
     const { page } = await loginSeeded(browser, user);
 
     expect(await sidebarLabels(page)).toEqual(["Overview", "Settings"]);
 
     await page.goto("/admin/settings");
-    await expect(page).toHaveURL("/admin/settings/contact", { timeout: 90_000 });
-    const nav = page.getByRole("navigation", { name: settingsCopy.navLabel });
-    for (const key of ["contact", "hero", "stats", "video", "admission", "gallery"] as const) {
-      await expect(nav.getByRole("link", { name: settingsCopy.groups[key].title })).toBeVisible();
-    }
+    await expect(page).toHaveURL("/admin/settings/home", { timeout: 90_000 });
 
-    await openGroup(page, "stats");
-    await page.getByLabel("Students").fill("310000");
-    await page.getByRole("button", { name: "Save" }).click();
-    await expect(savedToast(page, "Stats")).toBeVisible({ timeout: 60_000 });
+    const stats = await openGroup(page, "stats");
+    await stats.getByLabel("Students").fill("310000");
+    await stats.getByRole("button", { name: "Save" }).click();
+    await expect(savedToast(page, settingsCopy.panels.stats)).toBeVisible({ timeout: 60_000 });
     expect((await readSettingsGroup("stats"))?.data).toMatchObject({ students: 310000 });
 
     const sign = await page.request.post("/api/admin/settings/uploads/sign", { data: { kind: "gallery" } });
@@ -68,13 +62,13 @@ test.describe("settings — permission-gated (005 US1)", () => {
     expect(JSON.stringify(await sign.json())).not.toMatch(/secret/i);
   });
 
-  test("the main admin can use every group", async ({ browser }) => {
+  test("the main admin can open every tab", async ({ browser }) => {
     test.setTimeout(300_000);
     const { page } = await adminSession(browser);
-    for (const path of GROUP_PATHS) {
+    for (const path of TAB_PATHS) {
       await page.goto(path);
       await expect(page, path).toHaveURL(path);
-      await expect(page.locator("#admin-content form")).toBeVisible({ timeout: 90_000 });
+      await expect(page.locator('section[data-testid="settings-panel"]').first()).toBeVisible({ timeout: 90_000 });
     }
   });
 });

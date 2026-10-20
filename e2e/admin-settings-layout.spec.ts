@@ -9,7 +9,8 @@ import { settingsCopy } from "../src/content/admin";
  * controls.
  */
 const WIDTHS = [375, 768, 1024, 1440];
-const GROUPS: SettingsGroupKey[] = ["contact", "hero", "stats", "video"];
+// 014: each group is a panel on a page tab; the admission group's three panels are covered on its tab.
+const GROUPS: SettingsGroupKey[] = ["contact", "hero", "stats", "video", "admission"];
 
 async function noSidewaysScroll(page: Page) {
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
@@ -40,16 +41,16 @@ test.describe("settings — layout at four widths (005 FR-035)", () => {
   });
 
   for (const width of WIDTHS) {
-    test(`${width}px: every group page fits and its controls do not overlap`, async ({ browser }) => {
+    test(`${width}px: every group's panel fits and its controls do not overlap`, async ({ browser }) => {
       test.setTimeout(400_000);
       const { page } = await adminSession(browser);
       await page.setViewportSize({ width, height: 900 });
 
       for (const group of GROUPS) {
-        await openGroup(page, group);
+        const section = await openGroup(page, group);
         await noSidewaysScroll(page);
-        await boxesDoNotOverlap(page, [`nav[aria-label="${settingsCopy.navLabel}"]`, "#admin-content form"]);
-        const save = page.getByRole("button", { name: "Save" });
+        await boxesDoNotOverlap(page, [`nav[aria-label="${settingsCopy.tabsNavLabel}"]`, "#admin-content form"]);
+        const save = section.getByRole("button", { name: "Save" });
         await expect(save).toBeVisible();
         const box = await save.boundingBox();
         expect((box?.x ?? 0) + (box?.width ?? 0)).toBeLessThanOrEqual(width);

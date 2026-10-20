@@ -41,17 +41,16 @@ const EXPECTED: Record<string, Expected> = {
   // 012 careers: the Applications list and one application.
   "admin/(dashboard)/careers/page.tsx": { kind: "page", access: "careers" },
   "admin/(dashboard)/careers/[id]/page.tsx": { kind: "page", access: "careers" },
-  "admin/(dashboard)/settings/page.tsx": { kind: "page", access: "settings" },
-  // 005: one page per settings group; settings/layout.tsx is not an access gate (each page checks).
-  "admin/(dashboard)/settings/contact/page.tsx": { kind: "page", access: "settings" },
-  "admin/(dashboard)/settings/hero/page.tsx": { kind: "page", access: "settings" },
-  "admin/(dashboard)/settings/stats/page.tsx": { kind: "page", access: "settings" },
-  "admin/(dashboard)/settings/video/page.tsx": { kind: "page", access: "settings" },
-  // 020: the admission window; 013 adds the class list to it.
-  "admin/(dashboard)/settings/admission/page.tsx": { kind: "page", access: "settings" },
-  "admin/(dashboard)/settings/gallery/page.tsx": { kind: "page", access: "settings" },  // 007: now the album list
-  // 007: one album's photos.
-  "admin/(dashboard)/settings/gallery/[albumId]/page.tsx": { kind: "page", access: "settings" },
+  // 014: Settings by page (specs/014-page-settings/contracts/access-matrix.md). The index opens for
+  // either key and redirects to the first tab; settings/layout.tsx is not an access gate (each page checks).
+  "admin/(dashboard)/settings/page.tsx": { kind: "page", access: "settings_or_pages" },
+  "admin/(dashboard)/settings/site-wide/page.tsx": { kind: "page", access: "settings" },
+  "admin/(dashboard)/settings/home/page.tsx": { kind: "page", access: "pages" },
+  // Opens for either key; each panel's save checks its own permission (the window and classes: settings).
+  "admin/(dashboard)/settings/admission/page.tsx": { kind: "page", access: "settings_or_pages" },
+  // The 007 album list and one album's photos, under the Resources tab.
+  "admin/(dashboard)/settings/resources/page.tsx": { kind: "page", access: "pages" },
+  "admin/(dashboard)/settings/resources/gallery/[albumId]/page.tsx": { kind: "page", access: "pages" },
   "admin/(dashboard)/design-system/page.tsx": { kind: "page", access: "main_admin" },
   "admin/(dashboard)/users/page.tsx": { kind: "page", access: "main_admin" },
   "admin/(dashboard)/users/activity/page.tsx": { kind: "page", access: "main_admin" },
@@ -65,7 +64,7 @@ const EXPECTED: Record<string, Expected> = {
   "api/admin/news/[id]/publish/route.ts": { kind: "route", access: "news" },
   "api/admin/news/[id]/unpublish/route.ts": { kind: "route", access: "news" },
   "api/admin/uploads/sign/route.ts": { kind: "route", access: "news" },
-  "api/admin/settings/uploads/sign/route.ts": { kind: "route", access: "settings" },
+  "api/admin/settings/uploads/sign/route.ts": { kind: "route", access: "pages" }, // 014
   "api/admin/messages/[id]/route.ts": { kind: "route", access: "messages" },
   "api/admin/messages/[id]/read/route.ts": { kind: "route", access: "messages" },
   // 012 careers: the CV download. Only the careers permission may fetch a CV.
@@ -90,9 +89,10 @@ const EXPECTED: Record<string, Expected> = {
     perAccess: { main_admin: 1, any: 1 },
   },
   "admin/(dashboard)/users/actions.ts": { kind: "action", access: "main_admin" },
-  "admin/(dashboard)/settings/actions.ts": { kind: "action", access: "settings" },
-  // 007: the nine album and photo actions.
-  "admin/(dashboard)/settings/gallery/actions.ts": { kind: "action", access: "settings" },
+  // 014: one panel save per permission (contracts/panel-actions.md).
+  "admin/(dashboard)/settings/actions.ts": { kind: "action", access: "settings", perAccess: { settings: 1, pages: 1 } },
+  // 007: the nine album and photo actions (Pages since 014).
+  "admin/(dashboard)/settings/resources/gallery/actions.ts": { kind: "action", access: "pages" },
   "admin/login/actions.ts": { kind: "public" },
 };
 

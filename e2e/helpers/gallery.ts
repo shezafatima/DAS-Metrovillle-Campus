@@ -129,13 +129,13 @@ export async function liveAlbums(): Promise<StoredAlbum[]> {
 
 /** Opens the admin album list and waits for it. */
 export async function openAlbumList(page: Page): Promise<void> {
-  await page.goto("/admin/settings/gallery");
+  await page.goto("/admin/settings/resources");
   await expect(page.getByTestId("album-list")).toBeVisible({ timeout: 90_000 });
 }
 
 /** Opens one album's admin screen and waits for it. */
 export async function openAlbum(page: Page, id: string): Promise<void> {
-  await page.goto(`/admin/settings/gallery/${id}`);
+  await page.goto(`/admin/settings/resources/gallery/${id}`);
   await expect(page.getByTestId("album-photos")).toBeVisible({ timeout: 90_000 });
 }
 

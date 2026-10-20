@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { ArrowDown, ArrowUp, GripVertical } from "lucide-react";
-import { deleteGalleryPhoto, reorderGalleryPhotos, setGalleryCover, updateGalleryPhoto } from "@/app/admin/(dashboard)/settings/gallery/actions";
+import { deleteGalleryPhoto, reorderGalleryPhotos, setGalleryCover, updateGalleryPhoto } from "@/app/admin/(dashboard)/settings/resources/gallery/actions";
 import { AdminConfirmDeleteDialog } from "@/components/admin/admin-delete-dialog";
 import { ImagePreview } from "@/components/admin/settings/image-field";
 import { Badge } from "@/components/ui/badge";

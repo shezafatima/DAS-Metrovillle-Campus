@@ -66,6 +66,8 @@ export interface SecurityEvent {
   group?: string;
   /** The gallery action name, for `gallery_changed` (007). Never captions or descriptions; `target` carries the album title. */
   action?: string;
+  /** The Settings panel key, for `settings_saved` and a panel refused by its save action's `access_denied` (014). Never field values. */
+  panel?: string;
 }
 
 export function logSecurityEvent(event: SecurityEvent): void {
@@ -80,6 +82,7 @@ export function logSecurityEvent(event: SecurityEvent): void {
     access: event.access ?? null,
     group: event.group ?? null,
     action: event.action ?? null,
+    panel: event.panel ?? null,
   };
   console.info(JSON.stringify(line));
 }

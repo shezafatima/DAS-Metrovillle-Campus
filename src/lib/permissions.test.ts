@@ -7,7 +7,7 @@ import {
   type Access,
 } from "@/lib/permissions";
 
-const ALL_ACCESS: Access[] = [...PERMISSION_KEYS, "main_admin", "any"];
+const ALL_ACCESS: Access[] = [...PERMISSION_KEYS, "main_admin", "any", "settings_or_pages"];
 
 describe("canAccess", () => {
   it("lets a main admin use every access, whatever grants are stored", () => {
@@ -24,6 +24,17 @@ describe("canAccess", () => {
     expect(canAccess(user, "careers")).toBe(false);
     expect(canAccess(user, "settings")).toBe(false);
     expect(canAccess(user, "pages")).toBe(false);
+  });
+
+  it("settings_or_pages (014): either key admits, neither refuses, main admin always", () => {
+    const cm = (permissions: string[]) => ({ role: "content_manager" as const, permissions });
+    expect(canAccess(cm(["settings"]), "settings_or_pages")).toBe(true);
+    expect(canAccess(cm(["pages"]), "settings_or_pages")).toBe(true);
+    expect(canAccess(cm(["settings", "pages"]), "settings_or_pages")).toBe(true);
+    expect(canAccess(cm(["news", "messages", "careers"]), "settings_or_pages")).toBe(false);
+    expect(canAccess(cm([]), "settings_or_pages")).toBe(false);
+    expect(canAccess({ role: "main_admin", permissions: [] }, "settings_or_pages")).toBe(true);
+    expect(PERMISSION_KEYS as readonly string[]).not.toContain("settings_or_pages");
   });
 
   it("never lets a content manager reach main_admin, even holding every grant", () => {

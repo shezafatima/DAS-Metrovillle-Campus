@@ -107,4 +107,11 @@ describe("AppSidebar", () => {
     renderSidebar(0, 2);
     expect(screen.getByText("2")).toBeInTheDocument();
   });
+
+  it("014: Settings shows for a holder of settings or pages, and for neither it is hidden", () => {
+    const hrefs = (permissions: string[]) => visibleNavItems({ role: "content_manager", permissions }).map((item) => item.href);
+    expect(hrefs(["pages"])).toContain("/admin/settings");
+    expect(hrefs(["settings"])).toContain("/admin/settings");
+    expect(hrefs(["news", "messages", "careers"])).not.toContain("/admin/settings");
+  });
 });

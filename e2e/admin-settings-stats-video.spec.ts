@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 import { adminSession } from "./helpers/users";
-import { clearSettings, openGroup, readSettingsGroup, savedToast } from "./helpers/settings";
+import { clearSettings, openGroup, panel, readSettingsGroup, savedToast } from "./helpers/settings";
 import { settingsCopy } from "../src/content/admin";
 
 test.describe("settings — stats (005 US4)", () => {
@@ -24,8 +24,8 @@ test.describe("settings — stats (005 US4)", () => {
     await page.getByLabel("Books").fill("60");
     await page.getByLabel("Teachers").fill("15000");
     await page.getByLabel("Campuses").fill("720");
-    await page.getByRole("button", { name: "Save" }).click();
-    await expect(savedToast(page, settingsCopy.groups.stats.title)).toBeVisible({ timeout: 60_000 });
+    await panel(page, "stats").getByRole("button", { name: "Save" }).click();
+    await expect(savedToast(page, settingsCopy.panels.stats)).toBeVisible({ timeout: 60_000 });
     expect((await readSettingsGroup("stats"))?.data).toEqual({ students: 310000, books: 60, teachers: 15000, campuses: 720 });
 
     await openGroup(page, "stats");
@@ -43,7 +43,7 @@ test.describe("settings — stats (005 US4)", () => {
 
       await page.getByLabel("Books").fill("61");
       await page.getByLabel("Students").fill(bad);
-      await page.getByRole("button", { name: "Save" }).click();
+      await panel(page, "stats").getByRole("button", { name: "Save" }).click();
 
       await expect(page.getByText(settingsCopy.errors.wholeNumber)).toBeVisible();
       // The valid edit stays in the form, and nothing in the group was saved.
@@ -66,11 +66,11 @@ test.describe("settings — home video (005 US5)", () => {
     const { page } = await adminSession(browser);
     await openGroup(page, "video");
     const field = page.getByLabel(settingsCopy.fields.video.youtubeUrl);
-    const title = settingsCopy.groups.video.title;
+    const title = settingsCopy.panels.video;
 
     await expect(field).toHaveValue("");
     await field.fill("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
-    await page.getByRole("button", { name: "Save" }).click();
+    await panel(page, "video").getByRole("button", { name: "Save" }).click();
     await expect(savedToast(page, title)).toBeVisible({ timeout: 60_000 });
     expect((await readSettingsGroup("video"))?.data).toEqual({ youtubeUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ" });
 
@@ -79,19 +79,20 @@ test.describe("settings — home video (005 US5)", () => {
 
     // Another site's address is refused and the saved value is kept.
     await field.fill("https://vimeo.com/123456");
-    await page.getByRole("button", { name: "Save" }).click();
+    await panel(page, "video").getByRole("button", { name: "Save" }).click();
     await expect(page.getByText(settingsCopy.errors.youtube)).toBeVisible();
     expect((await readSettingsGroup("video"))?.data).toEqual({ youtubeUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ" });
 
     // Short links and Shorts are fine.
     await field.fill("https://youtu.be/dQw4w9WgXcQ");
-    await page.getByRole("button", { name: "Save" }).click();
-    await expect(savedToast(page, title)).toBeVisible({ timeout: 60_000 });
+    await panel(page, "video").getByRole("button", { name: "Save" }).click();
+    // The first save's toast may still be showing, so wait for the stored value instead.
+    await expect.poll(async () => (await readSettingsGroup("video"))?.data, { timeout: 60_000 }).toEqual({ youtubeUrl: "https://youtu.be/dQw4w9WgXcQ" });
+    await expect(panel(page, "video").getByRole("button", { name: "Save" })).toBeDisabled();
 
     // Clearing it stores an empty address (no video).
     await field.fill("");
-    await page.getByRole("button", { name: "Save" }).click();
-    await expect(savedToast(page, title).last()).toBeVisible({ timeout: 60_000 });
-    expect((await readSettingsGroup("video"))?.data).toEqual({ youtubeUrl: "" });
+    await panel(page, "video").getByRole("button", { name: "Save" }).click();
+    await expect.poll(async () => (await readSettingsGroup("video"))?.data, { timeout: 60_000 }).toEqual({ youtubeUrl: "" });
   });
 });
