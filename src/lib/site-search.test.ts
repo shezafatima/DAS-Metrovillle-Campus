@@ -62,3 +62,12 @@ describe("buildSearchIndex", () => {
     ]);
   });
 });
+
+describe("searchIndex (Resources)", () => {
+  it("lists exactly Photo Gallery under Resources, and no removed anchor", () => {
+    expect(searchIndex.filter((r) => r.parentLabel === "Resources").map((r) => [r.label, r.href])).toEqual([
+      ["Photo Gallery", "/resources#photo-gallery"],
+    ]);
+    for (const r of searchIndex) expect(r.href).not.toMatch(/#(downloads|our-books)/);
+  });
+});

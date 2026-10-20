@@ -576,11 +576,10 @@
   that fit and deletes every refused or rejected asset.
 - Deletes are soft (`deletedAt`); at most 50 deleted albums and 200 deleted
   photos are kept, the oldest are then removed with their images.
-- Public: `/resources` (minimal until 016) shows `#photo-gallery`, hidden when
-  no album has photos; `/resources/gallery/<12-char id>` is an album page
+- Public: `/resources` shows `#photo-gallery` (hidden when no album has
+  photos) and `#mobile-apps` (019); `/resources/gallery/<12-char id>` is an album page
   (404 when unknown, deleted or empty); `/resources/gallery` and the old
-  `/resources/photo-gallery` redirect to `/resources#photo-gallery`. Feature
-  016 adds `#downloads` and `#our-books` around the gallery section.
+  `/resources/photo-gallery` redirect to `/resources#photo-gallery`.
   `getPublicGallery()` mirrors `getPublicSettings`: 60 s cache (tags
   `settings`, `settings:gallery`), 3 s timeout, last-good fallback, never
   throws.

@@ -76,10 +76,9 @@ export const pageSections = {
     { id: "class-levels", label: "Class Levels" },
     { id: "uniform", label: "Uniform" },
   ],
-  /** Photo Gallery is rendered by GallerySection (007); Mobile Apps is a placeholder. */
+  /** Photo Gallery is rendered by GallerySection (007, hidden when empty). The menu, search and the page all read this list. */
   resources: [
     { id: "photo-gallery", label: "Photo Gallery" },
-    { id: "mobile-apps", label: "Mobile Apps" },
   ],
 } satisfies Record<string, PageSection[]>;
 

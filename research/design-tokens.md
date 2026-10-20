@@ -702,3 +702,9 @@ das.edu.pk has no single Academics page with these sections (its Teachers' Train
 Reused: `bg-surface`, `--color-home-muted-band`, `bg-primary`, `max-w-prose`, `max-w-4xl`, `rounded-xl`, `--spacing-home-section-y`, `anchor-section`, the `SectionHeading` tokens.
 
 Deviation (flagged, Constitution I): every value above is composed, not extracted. If the client supplies a design, extract it here first.
+
+## Resources page (019 — no matching reference layout)
+
+The Resources page is the Photo Gallery only. It adds no tokens. The album cards use `--radius-card`, `--shadow-card`, `--motion-fast` and the `black` scrim already used by the album photo grid. The heading stroke reads `--heading-stroke-color`, which `#photo-gallery` sets to `--color-gold`, because the bright yellow `--color-topbar` is faint on white (other sections keep `--color-topbar`).
+
+Deviation (flagged, Constitution I): the card design is composed, not extracted from the reference.

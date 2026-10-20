@@ -25,7 +25,7 @@ const REDIRECTS: [string, string][] = [
   ["/academics/examinations", "/academics"],
   ["/academics/teachers-training", "/academics#teachers-training"],
   ["/hifz-e-quran", "/academics#hifz-e-quran"],
-  ["/resources/scarlet-mobile-apps", "/resources#mobile-apps"],
+  ["/resources/scarlet-mobile-apps", "/resources"],
   ["/resources/photo-gallery", "/resources#photo-gallery"],
   ["/resources/prospectus", "/resources"],
   ["/resources/monthly-arqam", "/resources"],
@@ -56,14 +56,6 @@ test.describe("single pages with anchored sections", () => {
     });
   }
 
-  test("/resources has a Mobile Apps placeholder with the LMS App link", async ({ page }) => {
-    await page.goto("/resources");
-    const section = page.locator("section#mobile-apps");
-    await expect(section.getByRole("heading", { level: 2, name: "Mobile Apps" })).toBeVisible();
-    await expect(section).toContainText("coming soon");
-    await expect(section.getByRole("link", { name: "LMS App" })).toHaveAttribute("href", "/portal/lms-app");
-  });
-
   test("the old sub-routes redirect permanently to their anchors", async ({ request }) => {
     test.setTimeout(120_000);
     for (const [from, to] of REDIRECTS) {
@@ -87,12 +79,11 @@ test.describe("single pages with anchored sections", () => {
     }
   });
 
-  test("every portal link in the footer and the Mobile Apps section opens a placeholder page, not a 404", async ({ page, request }) => {
+  test("every portal link in the footer opens a placeholder page, not a 404", async ({ page, request }) => {
     test.setTimeout(180_000);
     await page.goto("/resources");
     const hrefs = new Set<string>();
     for (const link of await page.getByRole("contentinfo").locator('a[href^="/portal/"]').all()) hrefs.add((await link.getAttribute("href"))!);
-    for (const link of await page.locator("section#mobile-apps").locator('a[href^="/portal/"]').all()) hrefs.add((await link.getAttribute("href"))!);
     expect(hrefs.size).toBeGreaterThanOrEqual(6);
     for (const href of hrefs) {
       const res = await request.get(href, { timeout: 90_000 });
