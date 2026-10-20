@@ -55,6 +55,12 @@ const routes: RouteCase[] = [
   { name: "DELETE /api/admin/careers/[id]", load: () => import("@/app/api/admin/careers/[id]/route") as never, method: "DELETE", access: "main_admin" },
   { name: "GET /api/admin/careers/export", load: () => import("@/app/api/admin/careers/export/route") as never, method: "GET", access: "careers" },
   { name: "POST /api/admin/careers/opened", load: () => import("@/app/api/admin/careers/opened/route") as never, method: "POST", access: "careers" },
+  // 013 registrations: main admin only. Case 3 uses an unknown id (404) so no data is touched; the export ends in 200.
+  { name: "PATCH /api/admin/registrations/[id]", load: () => import("@/app/api/admin/registrations/[id]/route") as never, method: "PATCH", access: "main_admin", body: { status: "new" } },
+  { name: "DELETE /api/admin/registrations/[id]", load: () => import("@/app/api/admin/registrations/[id]/route") as never, method: "DELETE", access: "main_admin" },
+  { name: "POST /api/admin/registrations/[id]/restore", load: () => import("@/app/api/admin/registrations/[id]/restore/route") as never, method: "POST", access: "main_admin" },
+  { name: "GET /api/admin/registrations/export", load: () => import("@/app/api/admin/registrations/export/route") as never, method: "GET", access: "main_admin" },
+  { name: "POST /api/admin/registrations/opened", load: () => import("@/app/api/admin/registrations/opened/route") as never, method: "POST", access: "main_admin" },
   { name: "GET /api/admin/session", load: () => import("@/app/api/admin/session/route") as never, method: "GET", access: "any" },
   { name: "GET /api/admin/notifications", load: () => import("@/app/api/admin/notifications/route") as never, method: "GET", access: "any" },
   { name: "POST /api/admin/notifications/read", load: () => import("@/app/api/admin/notifications/read/route") as never, method: "POST", access: "any" },
@@ -81,7 +87,7 @@ function allExcept(key: Permission): Permission[] {
   return PERMISSION_KEYS.filter((k) => k !== key);
 }
 
-describeWithDb("admin route access matrix (three cases per route)", ["user", "account", "session", "messages", "news", "careerApplications"], () => {
+describeWithDb("admin route access matrix (three cases per route)", ["user", "account", "session", "messages", "news", "careerApplications", "studentRegistrations", "registrationExports", "adminNotificationStates"], () => {
   beforeEach(() => {
     vi.doUnmock("next/headers");
     vi.resetModules();

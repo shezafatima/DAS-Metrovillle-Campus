@@ -31,3 +31,25 @@ export async function markCareersOpened(adminId: string, now: Date = new Date())
   );
   return now;
 }
+
+/** Same lazy "now, never the epoch" default as careers, for the main admin's Registrations badge (013). */
+export async function getRegistrationsLastOpenedAt(adminId: string): Promise<Date> {
+  await connectDb();
+  const doc = await AdminNotificationState.collection.findOneAndUpdate(
+    { _id: adminId as never },
+    [{ $set: { registrationsLastOpenedAt: { $ifNull: ["$registrationsLastOpenedAt", new Date()] } } }],
+    { upsert: true, returnDocument: "after" },
+  );
+  return (doc as unknown as { registrationsLastOpenedAt: Date }).registrationsLastOpenedAt;
+}
+
+/** Advances the admin's "last opened Registrations" moment (upsert). */
+export async function markRegistrationsOpened(adminId: string, now: Date = new Date()): Promise<Date> {
+  await connectDb();
+  await AdminNotificationState.findByIdAndUpdate(
+    adminId,
+    { registrationsLastOpenedAt: now },
+    { upsert: true, returnDocument: "after" },
+  );
+  return now;
+}

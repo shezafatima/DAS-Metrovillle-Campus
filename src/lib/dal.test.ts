@@ -5,6 +5,7 @@ const headersMock = vi.fn();
 const cookiesMock = vi.fn();
 const getSessionMock = vi.fn();
 const redirectMock = vi.fn();
+const notFoundMock = vi.fn();
 const logMock = vi.fn();
 
 vi.mock("next/headers", () => ({
@@ -16,6 +17,11 @@ vi.mock("next/navigation", () => ({
   redirect: (url: string) => {
     redirectMock(url);
     throw new Error(`NEXT_REDIRECT:${url}`);
+  },
+  // Like Next's notFound(), never returns: it throws.
+  notFound: () => {
+    notFoundMock();
+    throw new Error("NEXT_NOT_FOUND");
   },
 }));
 vi.mock("@/lib/auth", () => ({
@@ -44,6 +50,7 @@ beforeEach(() => {
   cookiesMock.mockReset();
   getSessionMock.mockReset();
   redirectMock.mockReset();
+  notFoundMock.mockReset();
   logMock.mockReset();
 });
 
@@ -205,6 +212,41 @@ describe("requireAdminPage", () => {
     const { requireAdminPage } = await import("@/lib/dal");
     const session = await requireAdminPage("news");
     expect(session.userId).toBe("u1");
+    expect(redirectMock).not.toHaveBeenCalled();
+  });
+});
+
+describe("requireAdminPageOr404 (013)", () => {
+  it("redirects to login, carrying the current path, when there is no session", async () => {
+    setupRequest("/admin/registrations?page=2");
+    getSessionMock.mockResolvedValue(null);
+    const { requireAdminPageOr404 } = await import("@/lib/dal");
+    await expect(requireAdminPageOr404("main_admin")).rejects.toThrow("NEXT_REDIRECT");
+    expect(redirectMock).toHaveBeenCalledWith("/admin/login?next=%2Fadmin%2Fregistrations%3Fpage%3D2");
+    expect(notFoundMock).not.toHaveBeenCalled();
+  });
+
+  it("gives a content manager with every permission the not-found page, logs it, and never redirects", async () => {
+    setupRequest("/admin/registrations");
+    getSessionMock.mockResolvedValue(
+      betterAuthResult({ role: "content_manager", permissions: ["news", "messages", "careers", "settings", "pages"] }),
+    );
+    const { requireAdminPageOr404 } = await import("@/lib/dal");
+    await expect(requireAdminPageOr404("main_admin")).rejects.toThrow("NEXT_NOT_FOUND");
+    expect(notFoundMock).toHaveBeenCalledTimes(1);
+    expect(redirectMock).not.toHaveBeenCalled();
+    expect(logMock).toHaveBeenCalledWith(
+      expect.objectContaining({ type: "access_denied", email: "admin@example.com", access: "main_admin", outcome: "/admin/registrations" }),
+    );
+  });
+
+  it("returns the session for the main admin", async () => {
+    setupRequest("/admin/registrations");
+    getSessionMock.mockResolvedValue(betterAuthResult());
+    const { requireAdminPageOr404 } = await import("@/lib/dal");
+    const session = await requireAdminPageOr404("main_admin");
+    expect(session.role).toBe("main_admin");
+    expect(notFoundMock).not.toHaveBeenCalled();
     expect(redirectMock).not.toHaveBeenCalled();
   });
 });

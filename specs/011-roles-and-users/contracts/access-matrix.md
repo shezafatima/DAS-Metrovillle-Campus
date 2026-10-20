@@ -36,6 +36,7 @@ Every refusal is `Cache-Control: no-store`, returns no section data, and logs an
 | `/admin/news`, `/admin/news/new`, `/admin/news/[id]` | news | |
 | `/admin/messages`, `/admin/messages/[id]` | messages | |
 | `/admin/careers`, `/admin/careers/[id]` | careers | 012 Applications (replaced `/admin/signups`) |
+| `/admin/registrations`, `/admin/registrations/[id]`, `/admin/registrations/deleted` | **main_admin** | 013: inventory kind `page404`: `requireAdminPageOr404`, so a content manager (any grants) gets the not-found page, not `/admin?denied=1` |
 | `/admin/settings` | settings | Redirects to `/admin/settings/contact` (005) |
 | `/admin/settings/contact`, `/hero`, `/stats`, `/video` | settings | 005: one page per group; see `specs/005-settings/contracts/access-matrix.md` |
 | `/admin/settings/gallery`, `/admin/settings/gallery/[albumId]` | settings | 007: album list and one album's photos; see `specs/007-gallery-albums/contracts/access-matrix.md` |
@@ -64,6 +65,10 @@ Every refusal is `Cache-Control: no-store`, returns no section data, and logs an
 | `DELETE /api/admin/careers/[id]` | **main_admin** (012: a content manager with `careers` gets 403) |
 | `POST /api/admin/careers/opened` | careers |
 | `GET /api/admin/careers/export` | careers |
+| `PATCH · DELETE /api/admin/registrations/[id]` | **main_admin** (013) |
+| `POST /api/admin/registrations/[id]/restore` | **main_admin** (013) |
+| `GET /api/admin/registrations/export` | **main_admin** (013) |
+| `POST /api/admin/registrations/opened` | **main_admin** (013) |
 | `/api/auth/*` closed by `disabledPaths` in 010 | 404 for every role (unchanged) |
 
 ## Server Actions

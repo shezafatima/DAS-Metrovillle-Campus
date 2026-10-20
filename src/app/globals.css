@@ -181,6 +181,8 @@
      colours". */
   --color-error: #f44336;
   --color-success: #00bcd4;
+  /* 013: a darker error red for text on white (7:1 on #fff); --color-error is 3.68:1 there, below WCAG AA. */
+  --color-error-strong: #b3261e;
 
   /* Signup band (004 signup) — extracted per-element from
      https://das.edu.pk/'s signup form, not the page-level aggregate
@@ -244,6 +246,12 @@
   --spacing-contact-icon: 200px;
   --spacing-contact-columns-gap: 51px;
   --spacing-contact-map-height: 552px;
+
+  /* Student registration form (013): a long form on the contact band. Reuses the signup/contact-form
+     input, textarea, button and gap tokens; only these two are new (research/design-tokens.md
+     "Registration form (013)"). */
+  --spacing-registration-section-gap: 40px;
+  --spacing-registration-field-gap-y: 24px;
 
   /* Home sections (006) — extracted per section from https://das.edu.pk/;
      see research/design-tokens.md "Home sections (006)". */

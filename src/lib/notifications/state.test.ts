@@ -2,7 +2,12 @@
 import { it, expect } from "vitest";
 import { describeWithDb } from "@/test/db";
 import { AdminNotificationState } from "@/models/admin-notification-state";
-import { getCareersLastOpenedAt, markCareersOpened } from "@/lib/notifications/state";
+import {
+  getCareersLastOpenedAt,
+  getRegistrationsLastOpenedAt,
+  markCareersOpened,
+  markRegistrationsOpened,
+} from "@/lib/notifications/state";
 
 describeWithDb("notifications state", ["adminNotificationStates"], () => {
   it("creates a document defaulted to now for an unknown admin id", async () => {
@@ -71,5 +76,21 @@ describeWithDb("notifications state", ["adminNotificationStates"], () => {
 
     expect(b.getTime()).not.toBe(new Date("2026-01-01T00:00:00.000Z").getTime());
     expect(a).toBeInstanceOf(Date);
+  });
+
+  it("registrations: creates a now default, keeps it, and does not disturb the careers moment", async () => {
+    const earlier = new Date("2026-09-26T09:00:00.000Z");
+    await markCareersOpened("admin-reg-1", earlier);
+    const before = Date.now();
+    const first = await getRegistrationsLastOpenedAt("admin-reg-1");
+    expect(first.getTime()).toBeGreaterThanOrEqual(before);
+    expect((await getRegistrationsLastOpenedAt("admin-reg-1")).getTime()).toBe(first.getTime());
+    expect(await getCareersLastOpenedAt("admin-reg-1")).toEqual(earlier);
+  });
+
+  it("markRegistrationsOpened advances the moment, with an upsert for an unknown admin", async () => {
+    const now = new Date("2026-09-26T12:00:00.000Z");
+    await markRegistrationsOpened("admin-reg-2", now);
+    expect(await getRegistrationsLastOpenedAt("admin-reg-2")).toEqual(now);
   });
 });

@@ -1,6 +1,7 @@
 import { connectDb } from "@/lib/db";
 import { getEnv } from "@/lib/env";
 import { logSecurityEvent } from "@/lib/log";
+import { retentionCutoff } from "@/lib/retention";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { getDocumentStore, type DocumentStore } from "@/lib/documents/store";
 import { CareerApplication } from "@/models/career-application";
@@ -16,12 +17,7 @@ export interface SweepCounts {
   abandoned: number;
 }
 
-/** `now` minus whole calendar months (UTC). */
-export function retentionCutoff(now: Date, months: number): Date {
-  const cutoff = new Date(now);
-  cutoff.setUTCMonth(cutoff.getUTCMonth() - months);
-  return cutoff;
-}
+export { retentionCutoff };
 
 /**
  * Retention and clean-up (contracts/document-store.md, FR-031). Idempotent.

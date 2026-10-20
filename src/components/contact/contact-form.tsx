@@ -5,6 +5,7 @@ import { contactCopy } from "@/content/contact";
 import { messageInputSchema, MESSAGE_MAX_LENGTH } from "@/lib/validation/message";
 import { fieldErrors as extractFieldErrors } from "@/lib/validation/field-errors";
 import { HONEYPOT_FIELD } from "@/lib/honeypot";
+import { ERROR_CLASS, INPUT_CLASS, TEXTAREA_CLASS } from "@/components/forms/public-form-styles";
 
 interface FormValues {
   name: string;
@@ -111,7 +112,7 @@ export function ContactForm() {
   return (
     <form onSubmit={handleSubmit} noValidate className="w-full">
       {status.kind === "error" && (
-        <p role="alert" className="mb-(--spacing-contact-form-gap-y) rounded-md bg-white px-3 py-2 text-center text-sm font-bold text-error">
+        <p role="alert" className="mb-(--spacing-contact-form-gap-y) rounded-md bg-white px-3 py-2 text-center text-sm font-bold text-error-strong">
           {status.banner}
         </p>
       )}
@@ -186,16 +187,16 @@ export function ContactForm() {
             onChange={(event) => updateField("message", event.target.value)}
             aria-invalid={fieldErrors.message ? true : undefined}
             aria-describedby="contact-message-error"
-            className="h-(--spacing-contact-textarea-height) w-full resize-none rounded-signup-input border border-signup-input-border bg-signup-input-bg px-4 py-2 font-body text-(length:--text-signup-input) text-foreground outline-none placeholder:text-signup-input-text focus-visible:ring-2 focus-visible:ring-ring"
+            className={TEXTAREA_CLASS}
           />
           <p
             aria-live={messageLength >= MESSAGE_MAX_LENGTH * 0.9 ? "polite" : undefined}
-            className={`text-right text-xs ${overLimit ? "text-error" : "text-muted-foreground"}`}
+            className={`text-right text-xs ${overLimit ? "text-error-strong" : "text-muted-foreground"}`}
           >
             {copy.counter(messageLength, MESSAGE_MAX_LENGTH)}
           </p>
           {fieldErrors.message && (
-            <p id="contact-message-error" className="rounded-signup-input bg-signup-input-bg px-2 py-1 text-left text-xs font-bold text-error">
+            <p id="contact-message-error" className={ERROR_CLASS}>
               {fieldErrors.message}
             </p>
           )}
@@ -245,10 +246,10 @@ function Field({ id, label, type, autoComplete, maxLength, required = true, valu
         onChange={(event) => onChange(event.target.value)}
         aria-invalid={error ? true : undefined}
         aria-describedby={error ? errorId : undefined}
-        className="h-(--spacing-signup-input-height) w-full rounded-signup-input border border-signup-input-border bg-signup-input-bg px-4 font-body text-(length:--text-signup-input) text-foreground outline-none placeholder:text-signup-input-text focus-visible:ring-2 focus-visible:ring-ring"
+        className={INPUT_CLASS}
       />
       {error && (
-        <p id={errorId} className="rounded-signup-input bg-signup-input-bg px-2 py-1 text-left text-xs font-bold text-error">
+        <p id={errorId} className={ERROR_CLASS}>
           {error}
         </p>
       )}

@@ -18,6 +18,8 @@ import { describe, expect, it } from "vitest";
  */
 type Expected =
   | { kind: "page"; access: string }
+  // 013: a page that answers a forbidden user with the not-found page (requireAdminPageOr404).
+  | { kind: "page404"; access: string }
   | { kind: "route"; access: string }
   // `perAccess` is for an actions file whose actions ask for different access: on the
   // account page, changing a password is main-admin only (011: the main admin controls
@@ -45,6 +47,8 @@ const EXPECTED: Record<string, Expected> = {
   "admin/(dashboard)/settings/hero/page.tsx": { kind: "page", access: "settings" },
   "admin/(dashboard)/settings/stats/page.tsx": { kind: "page", access: "settings" },
   "admin/(dashboard)/settings/video/page.tsx": { kind: "page", access: "settings" },
+  // 020: the admission window; 013 adds the class list to it.
+  "admin/(dashboard)/settings/admission/page.tsx": { kind: "page", access: "settings" },
   "admin/(dashboard)/settings/gallery/page.tsx": { kind: "page", access: "settings" },  // 007: now the album list
   // 007: one album's photos.
   "admin/(dashboard)/settings/gallery/[albumId]/page.tsx": { kind: "page", access: "settings" },
@@ -70,6 +74,14 @@ const EXPECTED: Record<string, Expected> = {
   "api/admin/careers/[id]/route.ts": { kind: "route", access: "main_admin" },
   "api/admin/careers/export/route.ts": { kind: "route", access: "careers" },
   "api/admin/careers/opened/route.ts": { kind: "route", access: "careers" },
+  // 013 registrations: main admin only, even for a content manager holding every permission.
+  "admin/(dashboard)/registrations/page.tsx": { kind: "page404", access: "main_admin" },
+  "admin/(dashboard)/registrations/[id]/page.tsx": { kind: "page404", access: "main_admin" },
+  "admin/(dashboard)/registrations/deleted/page.tsx": { kind: "page404", access: "main_admin" },
+  "api/admin/registrations/[id]/route.ts": { kind: "route", access: "main_admin" },
+  "api/admin/registrations/[id]/restore/route.ts": { kind: "route", access: "main_admin" },
+  "api/admin/registrations/export/route.ts": { kind: "route", access: "main_admin" },
+  "api/admin/registrations/opened/route.ts": { kind: "route", access: "main_admin" },
   // Server Actions
   "admin/(dashboard)/actions.ts": { kind: "none" }, // logout: harmless without a session
   "admin/(dashboard)/account/actions.ts": {
@@ -139,6 +151,12 @@ describe("admin access inventory", () => {
         // Only real awaited calls count — a comment may mention the helper.
         expect(count(source, /await requireAdminPage\(/g)).toBe(1);
         expect(source).toContain(`await requireAdminPage("${expected.access}")`);
+      });
+    } else if (expected.kind === "page404") {
+      it(`calls requireAdminPageOr404("${expected.access}") exactly once and never requireAdminPage`, () => {
+        expect(count(source, /await requireAdminPageOr404\(/g)).toBe(1);
+        expect(source).toContain(`await requireAdminPageOr404("${expected.access}")`);
+        expect(source).not.toContain("requireAdminPage(");
       });
     } else if (expected.kind === "route") {
       it(`calls requireAdminAccess("${expected.access}") once per exported handler`, () => {

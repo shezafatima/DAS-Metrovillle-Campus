@@ -10,9 +10,9 @@ import { useNotifications } from "@/components/admin/notifications/notifications
 
 /** The bell trigger + its panel (contracts/notification-ui.md). */
 export function NotificationBell() {
-  const { messagesNew, applicationsNew, loading, refresh } = useNotifications();
+  const { messagesNew, applicationsNew, registrationsNew, loading, refresh } = useNotifications();
   const [open, setOpen] = useState(false);
-  const total = messagesNew + applicationsNew;
+  const total = messagesNew + applicationsNew + registrationsNew;
 
   function handleOpenChange(next: boolean) {
     setOpen(next);

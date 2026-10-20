@@ -83,7 +83,9 @@ export type GroupField = FieldBase & {
 
 export type ListRule =
   | { kind: "atLeastOneVisible"; field: string; message: string }
-  | { kind: "allOrNone"; fields: string[]; message: string };
+  | { kind: "allOrNone"; fields: string[]; message: string }
+  // 013: no two items may share a value in `field` (compared ignoring case and extra spaces).
+  | { kind: "uniqueText"; field: string; message: string };
 
 export type ListField = FieldBase & {
   type: "list";

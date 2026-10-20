@@ -6,6 +6,7 @@ import { precheckCv, type CvFailure } from "@/lib/careers/cv-limits";
 import { careerApplicationFieldsSchema } from "@/lib/validation/career-application";
 import { fieldErrors as extractFieldErrors } from "@/lib/validation/field-errors";
 import { HONEYPOT_FIELD } from "@/lib/honeypot";
+import { ERROR_CLASS, INPUT_CLASS } from "@/components/forms/public-form-styles";
 
 interface FormValues {
   name: string;
@@ -25,9 +26,6 @@ const CV_MESSAGES: Record<CvFailure, string> = {
   not_pdf: careersCopy.fieldErrors.cv.notPdf,
 };
 
-const INPUT_CLASS =
-  "h-(--spacing-signup-input-height) w-full rounded-signup-input border border-signup-input-border bg-signup-input-bg px-4 font-body text-(length:--text-signup-input) text-foreground outline-none placeholder:text-signup-input-text focus-visible:ring-2 focus-visible:ring-ring";
-const ERROR_CLASS = "rounded-signup-input bg-signup-input-bg px-2 py-1 text-left text-xs font-bold text-error";
 
 /**
  * The application form (contracts/careers-page.md, public-careers-api.md).
@@ -152,7 +150,7 @@ export function CareersForm() {
   return (
     <form onSubmit={handleSubmit} noValidate className="w-full">
       {status.kind === "error" && (
-        <p role="alert" className="mb-(--spacing-contact-form-gap-y) rounded-md bg-white px-3 py-2 text-center text-sm font-bold text-error">
+        <p role="alert" className="mb-(--spacing-contact-form-gap-y) rounded-md bg-white px-3 py-2 text-center text-sm font-bold text-error-strong">
           {status.banner}
         </p>
       )}

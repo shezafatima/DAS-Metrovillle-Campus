@@ -18,8 +18,8 @@ export interface NotificationPanelProps {
  * and "Mark all as read" (contracts/notification-ui.md).
  */
 export function NotificationPanel({ onChooseItem }: NotificationPanelProps) {
-  const { messagesNew, applicationsNew, items, markAllRead } = useNotifications();
-  const total = messagesNew + applicationsNew;
+  const { messagesNew, applicationsNew, registrationsNew, items, markAllRead } = useNotifications();
+  const total = messagesNew + applicationsNew + registrationsNew;
 
   // Deferred to the next tick: closing the popover synchronously in the
   // same click that a Link's own navigation handler processes can race

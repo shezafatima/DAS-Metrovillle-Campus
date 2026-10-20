@@ -44,7 +44,14 @@ export type SecurityEventType =
   // 012 careers: `target` carries the application id only, never a name, file key or URL.
   | "career_cv_missing"
   | "career_cv_delete_failed"
-  | "careers_sweep_failed";
+  | "careers_sweep_failed"
+  // 013 registrations: `target` carries the registration id only, never a name, phone or any form value.
+  | "registration_status_changed"
+  | "registration_deleted"
+  | "registration_restored"
+  | "registration_exported"
+  | "registration_save_failed"
+  | "registrations_sweep_failed";
 
 export interface SecurityEvent {
   type: SecurityEventType;

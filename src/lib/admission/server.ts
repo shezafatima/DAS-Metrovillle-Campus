@@ -1,8 +1,8 @@
 import "server-only";
 import { cookies } from "next/headers";
 import { connection } from "next/server";
-import { registrationFormExists } from "@/content/admission/registration";
 import { freshReadsForTests } from "@/lib/e2e-fresh-reads";
+import { getRegistrationAvailability } from "@/lib/registration/availability";
 import { getPublicSettings } from "@/lib/settings/public";
 import { admissionWindowState, type AdmissionWindowState } from "./window";
 
@@ -27,7 +27,7 @@ export interface AdmissionWindow {
 /** Test-only: Playwright sets this cookie to an ISO instant to stand in for "now". */
 export const E2E_NOW_COOKIE = "e2e-now";
 
-async function currentTime(): Promise<Date> {
+export async function currentTime(): Promise<Date> {
   // Never honoured in production (freshReadsForTests() is false there).
   if (freshReadsForTests()) {
     const value = (await cookies()).get(E2E_NOW_COOKIE)?.value;
@@ -48,11 +48,11 @@ export async function getAdmissionWindow(): Promise<AdmissionWindow> {
 }
 
 /**
- * The one switch for the Apply Now button (020 FR-017, FR-018): the window is
- * open AND the registration form exists. 013 removes the second condition when
- * it builds /admission/register.
+ * The one switch for the Apply Now button (020 FR-017, FR-018; 013 FR-020):
+ * registration is open, meaning the window is open AND the class list is not
+ * empty (ADR-0012 amends ADR-0011's second condition). The same answer drives
+ * the /admission/register page and the submit route.
  */
 export async function isAdmissionApplyOpen(): Promise<boolean> {
-  if (!registrationFormExists) return false;
-  return (await getAdmissionWindow()).state.kind === "open";
+  return (await getRegistrationAvailability()).open;
 }

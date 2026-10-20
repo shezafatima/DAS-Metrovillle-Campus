@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { settingsCopy } from "@/content/admin";
-import { fieldErrors } from "@/lib/validation/field-errors";
+import { collapseSpaces, fieldErrors } from "@/lib/validation/field-errors";
 import { parseYouTubeAddress } from "./youtube";
 import {
   PLACEHOLDER_IMAGE_URLS,
@@ -148,6 +148,7 @@ function listSchema(field: ListField): z.ZodType {
   const item = listItemSchema(field);
 
   const visibleRules = (field.rules ?? []).filter((rule) => rule.kind === "atLeastOneVisible");
+  const uniqueRules = (field.rules ?? []).filter((rule) => rule.kind === "uniqueText");
   const array = z
     .array(item)
     .max(field.maxItems, msg.tooMany(field.maxItems))
@@ -158,6 +159,16 @@ function listSchema(field: ListField): z.ZodType {
         if (seen.has(id)) ctx.addIssue({ code: "custom", path: [index, "id"], message: msg.unknownItem });
         seen.add(id);
       });
+      for (const rule of uniqueRules) {
+        if (rule.kind !== "uniqueText") continue;
+        const seenText = new Set<string>();
+        items.forEach((value, index) => {
+          const text = collapseSpaces(String((value as Record<string, unknown>)[rule.field] ?? "")).toLowerCase();
+          if (text === "") return;
+          if (seenText.has(text)) ctx.addIssue({ code: "custom", path: [index, rule.field], message: rule.message });
+          seenText.add(text);
+        });
+      }
       for (const rule of visibleRules) {
         if (rule.kind !== "atLeastOneVisible") continue;
         if (!items.some((value) => (value as Record<string, unknown>)[rule.field] === true)) {

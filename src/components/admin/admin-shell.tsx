@@ -15,6 +15,7 @@ interface AdminShellProps {
   /** SSR-computed counts (009) seeding NotificationsProvider — the bell/sidebar's flash-free first paint. */
   initialMessagesNew: number;
   initialApplicationsNew: number;
+  initialRegistrationsNew: number;
   children: ReactNode;
 }
 
@@ -24,10 +25,15 @@ export function AdminShell({
   defaultSidebarOpen,
   initialMessagesNew,
   initialApplicationsNew,
+  initialRegistrationsNew,
   children,
 }: AdminShellProps) {
   return (
-    <NotificationsProvider initialMessagesNew={initialMessagesNew} initialApplicationsNew={initialApplicationsNew}>
+    <NotificationsProvider
+      initialMessagesNew={initialMessagesNew}
+      initialApplicationsNew={initialApplicationsNew}
+      initialRegistrationsNew={initialRegistrationsNew}
+    >
       <PageTitleBadge />
       {/* flex-1 is required here: the root layout's <body> is itself a
       flex column, and a flex-col container does NOT stretch its

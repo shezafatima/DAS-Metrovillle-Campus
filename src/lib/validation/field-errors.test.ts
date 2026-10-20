@@ -1,6 +1,29 @@
 import { describe, expect, it } from "vitest";
 import { z } from "zod";
-import { collapseSpaces, fieldErrors } from "@/lib/validation/field-errors";
+import { collapseInlineSpaces, collapseSpaces, fieldErrors } from "@/lib/validation/field-errors";
+
+describe("collapseInlineSpaces", () => {
+  it("normalises CRLF and CR to LF", () => {
+    expect(collapseInlineSpaces("a\r\nb\rc")).toBe("a\nb\nc");
+  });
+
+  it("trims the whole value and each line", () => {
+    expect(collapseInlineSpaces("  a  \n  b  ")).toBe("a\nb");
+  });
+
+  it("collapses runs of spaces and tabs inside a line", () => {
+    expect(collapseInlineSpaces("a \t  b")).toBe("a b");
+  });
+
+  it("collapses 3 or more newlines to 2 and keeps a single blank line", () => {
+    expect(collapseInlineSpaces("a\n\n\n\nb")).toBe("a\n\nb");
+    expect(collapseInlineSpaces("a\n\nb")).toBe("a\n\nb");
+  });
+
+  it("returns an empty string for whitespace only", () => {
+    expect(collapseInlineSpaces(" \n\t ")).toBe("");
+  });
+});
 
 describe("collapseSpaces", () => {
   it("collapses inner whitespace runs and trims", () => {

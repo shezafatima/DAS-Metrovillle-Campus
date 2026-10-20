@@ -477,6 +477,7 @@ per spec.md "Deviations from the Reference":
 | Token | Value | Source |
 |---|---|---|
 | `--color-error` | `#f44336` | `color-cta` — already the admin's `--destructive` slot (see "Admin redesign" above) |
+| `--color-error-strong` | `#b3261e` | 013: error text on white for the public forms; `--color-error` is 3.68:1 on white (below WCAG AA) |
 | `--color-success` | `#00bcd4` | `color-accent` |
 
 General tokens, not signup-specific — reusable by the contact form
@@ -723,3 +724,21 @@ The reference Uniform page lists each group in a Boys card (`#ddffff`, corners 4
 Reused: `bg-primary` (card backs, as on the home coverflow), `bg-surface` (photo-less fronts), `--radius-home-flip`, `--spacing-home-flip-padding`, `text-h3`, `text-body`, `bg-topbar` with `text-primary` (the open-admissions banner), `text-text-muted` (the closed note), the careers button tokens (Apply Now), `anchor-section`, the `SectionHeading` tokens, `--color-home-muted-band`.
 
 Deviation (flagged, Constitution I): the card sizes are composed, not extracted (the reference has no flip cards).
+
+## Registration form (013)
+
+The student registration form is a long form on the same yellow band as the contact and careers forms. The reference site has no equivalent page, so the values below are composed (Constitution I flag), not extracted.
+
+| Value | Source |
+|---|---|
+| Band, input height, border, radius, font size, button | Reused: `--color-contact-form-band`, `--spacing-signup-input-height`, `--color-signup-input-border`, `--radius-signup-input/-button`, `--text-signup-input`, `--color-cta/-hover` |
+| Textarea height | Reused: `--spacing-contact-textarea-height` |
+| Column gap at `md` | Reused: `--spacing-contact-form-gap-x` |
+| Gap between sections | New: `--spacing-registration-section-gap` = `40px` |
+| Gap between fields in a column | New: `--spacing-registration-field-gap-y` = `24px` (the contact form's `60px` is too tall for 20 fields) |
+| Section legend | Reused: `font-heading`, `text-h3`, `text-primary` |
+| Field label | Reused: `font-body`, `--text-signup-input`, bold, `text-foreground` (visible labels, unlike the placeholder-only contact form, because the fields need hints) |
+| Submit button | Deviation (flagged): `--color-cta-hover` at rest and `--color-primary` on hover instead of the reference red `--color-cta`, because white on `#f44336` is 3.68:1 and FR-010 requires zero axe violations |
+| Error text and banner | New: `--color-error-strong` = `#b3261e` (about 7:1 on white). The reference `--color-error` `#f44336` is 3.68:1 on white, below WCAG AA. Used by the registration, contact and careers forms (shared `ERROR_CLASS` / `BANNER_CLASS` in `src/components/forms/public-form-styles.ts`) |
+| Radio and checkbox | Native control with `accent-cta` |
+| Health block (admin detail) | Reused: `bg-surface` with a `border-error`-free border; see the admin detail component |

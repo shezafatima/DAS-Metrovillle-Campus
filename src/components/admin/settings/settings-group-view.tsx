@@ -6,11 +6,11 @@ import { SettingsGroupForm } from "./settings-group-form";
 
 /**
  * The body shared by the settings group pages: heading, description, an
- * optional status line (020: what the public sees now) and the generated
+ * optional status line (020: what the public sees now), an optional warning (013) and the generated
  * form. It is not an access gate; every page calls
  * `requireAdminPage("settings")` itself before loading the data it passes here.
  */
-export function SettingsGroupView({ group, initial, status }: { group: GroupKey; initial: AdminSettings; status?: string }) {
+export function SettingsGroupView({ group, initial, status, warning }: { group: GroupKey; initial: AdminSettings; status?: string; warning?: string }) {
   const copy = settingsCopy.groups[group];
   return (
     <section aria-labelledby="settings-group-title" className="flex flex-col gap-5">
@@ -22,6 +22,11 @@ export function SettingsGroupView({ group, initial, status }: { group: GroupKey;
         {status && (
           <p role="status" data-testid="settings-status" className="font-semibold text-foreground text-sm">
             {status}
+          </p>
+        )}
+        {warning && (
+          <p role="alert" data-testid="settings-warning" className="rounded-md border border-destructive bg-destructive/10 px-3 py-2 font-semibold text-foreground text-sm">
+            {warning}
           </p>
         )}
       </div>

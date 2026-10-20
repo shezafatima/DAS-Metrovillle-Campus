@@ -237,6 +237,7 @@ When 013 builds the registration form and the window is open, a prominent "Apply
 
 - **FR-017**: A prominent "Apply Now" link to /admission/register, in the site's primary button style, MUST be placed directly below the procedure and shown only when `isAdmissionApplyOpen()` returns true.
 - **FR-018**: `isAdmissionApplyOpen()` MUST return true only when BOTH the window is open (FR-013) AND the "registration form exists" constant in the admission content file is on. The constant MUST ship off. No other condition on the page may affect the button.
+  - *Superseded by 013: the constant is removed; Apply Now depends on the window and a non-empty class list (ADR-0012, ADR-0011 amendment).*
 - **FR-019**: When the button is hidden, nothing MUST be rendered in its place (no "coming soon", no empty space).
 - **FR-020**: /admission/register, the registration form and server-side refusal of submissions MUST NOT be built in this feature.
 
