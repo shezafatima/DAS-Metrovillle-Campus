@@ -5,4 +5,4 @@
  * this list is not empty. To clear it: put the real photo in Cloudinary, set
  * it in src/content/about/our-story.ts, and empty this list.
  */
-export const TEMPORARY_IMAGE_HOSTS: string[] = ["picsum.photos", "fastly.picsum.photos"];
+export const TEMPORARY_IMAGE_HOSTS: string[] = [];

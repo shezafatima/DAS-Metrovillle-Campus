@@ -49,10 +49,10 @@ describe("checkReleaseContent (release gate)", () => {
     expect(result.problems[0]).toMatch(/picsum.photos/);
   });
 
-  it("passes with an empty host list, and the real list is what next.config.ts allows", async () => {
+  it("passes with an empty host list, and the real list is empty now that Our Story has its own photo", async () => {
     const { TEMPORARY_IMAGE_HOSTS } = await import("../src/lib/temporary-image-hosts");
     expect(checkReleaseContent({ ...REG_OK, vercelEnv: "production", privacyPlaceholder: false, retentionMonths: "24", temporaryImageHosts: [] }).ok).toBe(true);
-    expect(TEMPORARY_IMAGE_HOSTS).toContain("picsum.photos");
+    expect(TEMPORARY_IMAGE_HOSTS).toEqual([]);
   });
 
   it("blocks a production build while the registration privacy notice is pending, and names it", () => {
