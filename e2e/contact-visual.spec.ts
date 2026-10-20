@@ -177,7 +177,7 @@ test("axe finds no violations on /contact (at 375 and 1440)", async ({ page }) =
     await page.setViewportSize({ width, height: 900 });
     await page.goto("/contact");
     await page.waitForLoadState("networkidle");
-    const results = await new AxeBuilder({ page }).include("main").withTags(["wcag2a", "wcag2aa"]).analyze();
+    const results = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa"]).analyze();
     expect(results.violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(" ")).join(", ")}`)).toEqual([]);
   }
 });

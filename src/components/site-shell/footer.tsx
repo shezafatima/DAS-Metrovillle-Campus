@@ -103,7 +103,7 @@ export function Footer({ contact }: { contact: ContactInfo }) {
           <p>{footerContent.copyright(year)}</p>
           <p className="mt-1">
             {credit.before} <span aria-hidden="true">❤️</span> {credit.by}{" "}
-            <a href={credit.href} target="_blank" rel="noopener noreferrer" className={link}>
+            <a href={credit.href} target="_blank" rel="noopener noreferrer" className={`${link} underline underline-offset-2`}>
               {credit.name}
             </a>
           </p>
