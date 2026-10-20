@@ -20,7 +20,7 @@ async function withDb<T>(fn: (db: mongoose.mongo.Db) => Promise<T>): Promise<T> 
   }
 }
 
-export type SettingsGroupKey = "contact" | "hero" | "stats" | "video";
+export type SettingsGroupKey = "contact" | "hero" | "stats" | "video" | "admission";
 
 /** Empties the settings collection, so every group reads as its starting values. */
 export async function clearSettings(): Promise<void> {

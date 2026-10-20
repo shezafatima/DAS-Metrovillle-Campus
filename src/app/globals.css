@@ -302,6 +302,12 @@
   --spacing-home-hero-height: 424px;
   --spacing-home-hero-height-sm: 328px;
   --spacing-home-divider-width: 300px;
+  /* 020 Admission uniform cards (research/design-tokens.md "Admission page (020)"): the home card width, taller so a photo
+     plus the heading fit on the front and five items at body size fit on the back at 375px. */
+  --spacing-uniform-card-w: 18rem;
+  --spacing-uniform-card-h: 26rem;
+  --spacing-uniform-card-w-lg: 21rem;
+  --spacing-uniform-card-h-lg: 27rem;
   --radius-home-flip: 4px;
   --radius-home-careers-button: 6px;
   --color-home-careers-button-hover: var(--color-signup-highlight);

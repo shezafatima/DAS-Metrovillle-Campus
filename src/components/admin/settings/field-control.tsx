@@ -62,6 +62,27 @@ export function FieldControl({ field, path, value, onChange, errors, clearError 
       );
     }
 
+    case "date": {
+      // A native date input (020): keyboard entry and a picker on every browser and phone. Its value is "YYYY-MM-DD" or "".
+      const text = typeof value === "string" ? value : "";
+      return (
+        <FormField name={path} invalid={Boolean(error)}>
+          <FormLabel>{field.label}</FormLabel>
+          <FormControl
+            type="date"
+            className="w-fit"
+            value={text}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+              onChange(event.target.value);
+              if (error) clearError(path);
+            }}
+          />
+          {field.hint && <FormDescription>{field.hint}</FormDescription>}
+          {error && <FormMessage match>{error}</FormMessage>}
+        </FormField>
+      );
+    }
+
     case "boolean":
       return (
         <label className="flex items-center gap-2 font-light text-foreground text-sm">

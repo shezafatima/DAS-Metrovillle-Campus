@@ -478,6 +478,10 @@ export const settingsCopy = {
     hero: { title: "Hero slides", description: "The pictures at the top of the home page. Images only." },
     stats: { title: "Stats", description: "The four numbers in the home page progress dashboard." },
     video: { title: "Home video", description: "The one video shown on the home page." },
+    admission: {
+      title: "Admission",
+      description: "When admissions are open, and the messages shown on the Admission page. Dates are in Pakistan time.",
+    },
     gallery: { title: "Photo gallery", description: "Pictures for the Photo Gallery page." },
   },
   fields: {
@@ -511,6 +515,12 @@ export const settingsCopy = {
       campuses: "Campuses",
     },
     video: { youtubeUrl: "Home video (YouTube address)" },
+    admission: {
+      opensOn: "Opens on",
+      closesOn: "Closes on",
+      announcement: "Announcement",
+      closedMessage: "Closed message",
+    },
     gallery: { images: "Images", image: "Image", caption: "Caption (optional)" },
   },
   hints: {
@@ -522,6 +532,10 @@ export const settingsCopy = {
     imageLimits: "JPG, PNG or WebP, up to 5 MB.",
     heroDesktop:
       "JPG, PNG or WebP, up to 5 MB. Best size: 1920 × 1080 pixels (landscape, 16:9). The slide fills the whole screen, so the edges are cropped on different screens: keep text and faces inside the middle 70% of the width and the middle 60% of the height. The menu covers the top edge and the dots and arrow cover the bottom edge.",
+    opensOn: "Pakistan time. Admissions open at the start of this day. Leave empty to keep admissions closed.",
+    closesOn: "Pakistan time. Admissions close at the end of this day.",
+    announcement: "Shown on the Admission page while admissions are open. For example: Admissions are now open for Playgroup, Nursery, Class 1 and Class 2.",
+    closedMessage: "Shown on the Admission page while admissions are closed. For example: Admissions for the new session will open soon.",
     heroMobile:
       "JPG, PNG or WebP, up to 5 MB. Best size: 1080 × 1920 pixels (portrait, 9:16). Keep text and faces inside the middle 60% of the height; the menu covers the top edge and the dots and arrow the bottom edge. Without a phone picture, phones show the desktop picture whole, with blue bars above and below it.",
   },
@@ -553,6 +567,14 @@ export const settingsCopy = {
     buttonPair: "Add a button label and a link together, or neither.",
     tooMany: (max: number) => `You can have at most ${max} here.`,
     unknownItem: "This item can no longer be saved. Reload and try again.",
+    date: "Enter a real date.",
+    closesBeforeOpens: "Closes on must be on or after Opens on.",
+  },
+  /** What the public currently sees, shown on Settings → Admission (020 FR-012). */
+  admissionStatus: {
+    open: (date: string) => `Open now until ${date}`,
+    upcoming: (date: string) => `Opens on ${date}`,
+    closed: "Closed",
   },
   list: {
     addSlide: "Add slide",

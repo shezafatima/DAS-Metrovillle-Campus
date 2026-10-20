@@ -3,7 +3,7 @@ import { adminSession, loginSeeded, resetUsers, seedActiveUser, sidebarLabels } 
 import { clearSettings, openGroup, readSettingsGroup, savedToast } from "./helpers/settings";
 import { accessCopy, settingsCopy } from "../src/content/admin";
 
-const GROUP_PATHS = ["contact", "hero", "stats", "video"].map((g) => `/admin/settings/${g}`);
+const GROUP_PATHS = ["contact", "hero", "stats", "video", "admission"].map((g) => `/admin/settings/${g}`);
 // 007: the gallery lives in Settings but is no longer a group form (see admin-gallery-access.spec.ts).
 const GALLERY_PATH = "/admin/settings/gallery";
 
@@ -53,7 +53,7 @@ test.describe("settings — permission-gated (005 US1)", () => {
     await page.goto("/admin/settings");
     await expect(page).toHaveURL("/admin/settings/contact", { timeout: 90_000 });
     const nav = page.getByRole("navigation", { name: settingsCopy.navLabel });
-    for (const key of ["contact", "hero", "stats", "video", "gallery"] as const) {
+    for (const key of ["contact", "hero", "stats", "video", "admission", "gallery"] as const) {
       await expect(nav.getByRole("link", { name: settingsCopy.groups[key].title })).toBeVisible();
     }
 

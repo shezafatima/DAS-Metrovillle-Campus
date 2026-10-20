@@ -71,9 +71,9 @@ export const pageSections = {
     { id: "teachers-training", label: "Teachers' Training" },
     { id: "hifz-e-quran", label: "Hifz-e-Quran" },
   ],
+  /** 020: Class Levels is skipped until the client confirms it; /admission/class-levels redirects to /admission (next.config.ts). */
   admission: [
     { id: "admission-procedure", label: "Admission Procedure" },
-    { id: "class-levels", label: "Class Levels" },
     { id: "uniform", label: "Uniform" },
   ],
   /** Photo Gallery is rendered by GallerySection (007, hidden when empty). The menu, search and the page all read this list. */
