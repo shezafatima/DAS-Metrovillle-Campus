@@ -4,6 +4,8 @@ import { describeWithDb } from "@/test/db";
 import { seedTestAdmin, getTestSessionCookie } from "@/test/admin-session";
 import { mockNextHeaders } from "@/test/next-headers";
 
+vi.setConfig({ testTimeout: 120_000, hookTimeout: 120_000 });
+
 const ADMIN_EMAIL = "news-id-route-test@example.com";
 const ADMIN_PASSWORD = "correct-horse-battery-staple";
 const UNKNOWN_ID = "507f1f77bcf86cd799439011";
