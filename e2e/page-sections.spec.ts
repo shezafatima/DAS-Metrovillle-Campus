@@ -4,13 +4,21 @@ import { test, expect, type Page } from "@playwright/test";
 // anchored sections. Old sub-routes redirect permanently; unknown slugs are 404s.
 
 const PAGES: Record<string, string[]> = {
-  "/about": ["overview", "salient-features", "management", "messages"],
+  // Team and Messages visibility is checked in about.spec.ts.
+  "/about": ["our-story", "vision-mission", "core-values"],
   "/academics": ["academics-overview", "syllabi", "examinations", "teachers-training", "hifz-e-quran"],
   "/admission": ["admission-procedure", "class-levels", "uniform"],
 };
 
 const REDIRECTS: [string, string][] = [
-  ...Object.entries(PAGES).flatMap(([page, ids]) => ids.filter((id) => id !== "hifz-e-quran").map((id): [string, string] => [`${page}/${id}`, `${page}#${id}`])),
+  ...Object.entries(PAGES)
+    .filter(([page]) => page !== "/about")
+    .flatMap(([page, ids]) => ids.filter((id) => id !== "hifz-e-quran").map((id): [string, string] => [`${page}/${id}`, `${page}#${id}`])),
+  // About was remapped in 017 (contracts/page-structure.md).
+  ["/about/overview", "/about#our-story"],
+  ["/about/salient-features", "/about"],
+  ["/about/management", "/about#management-team"],
+  ["/about/messages", "/about#messages"],
   ["/hifz-e-quran", "/academics#hifz-e-quran"],
   ["/resources/scarlet-mobile-apps", "/resources#mobile-apps"],
   ["/resources/photo-gallery", "/resources#photo-gallery"],
@@ -60,10 +68,31 @@ test.describe("single pages with anchored sections", () => {
     }
   });
 
+  test("the home Salient Features card links to /about, and nothing links to a removed anchor", async ({ page, request }) => {
+    const html = await (await request.get("/")).text();
+    expect(html).not.toContain('href="/about#salient-features"');
+    await page.goto("/");
+    await expect(page.locator('a[href="/about"][aria-label$="Salient Features"]')).toHaveCount(1);
+  });
+
   test("unknown sub-routes are 404s", async ({ request }) => {
     test.setTimeout(180_000);
     for (const path of ["/about/unknown", "/academics/unknown", "/admission/unknown", "/resources/unknown"]) {
       expect((await request.get(path, { timeout: 90_000 })).status(), path).toBe(404);
+    }
+  });
+
+  test("every portal link in the footer and the Mobile Apps section opens a placeholder page, not a 404", async ({ page, request }) => {
+    test.setTimeout(180_000);
+    await page.goto("/resources");
+    const hrefs = new Set<string>();
+    for (const link of await page.getByRole("contentinfo").locator('a[href^="/portal/"]').all()) hrefs.add((await link.getAttribute("href"))!);
+    for (const link of await page.locator("section#mobile-apps").locator('a[href^="/portal/"]').all()) hrefs.add((await link.getAttribute("href"))!);
+    expect(hrefs.size).toBeGreaterThanOrEqual(6);
+    for (const href of hrefs) {
+      const res = await request.get(href, { timeout: 90_000 });
+      expect(res.status(), href).toBe(200);
+      expect(await res.text(), href).toContain("content is coming in a later feature");
     }
   });
 
@@ -109,9 +138,9 @@ test.describe("single pages with anchored sections", () => {
         await expect(about).toHaveAttribute("aria-expanded", "true", { timeout: 1000 });
       }).toPass({ timeout: 30_000 });
       await page.keyboard.press("Tab");
-      await expect(nav.getByRole("link", { name: "Overview" })).toBeFocused();
+      await expect(nav.getByRole("link", { name: "Our Story" })).toBeFocused();
       await page.keyboard.press("Enter");
-      await expect(page).toHaveURL("/about#overview");
+      await expect(page).toHaveURL("/about#our-story");
     });
 
     test("smooth scrolling is on, and off for reduced motion", async ({ page }) => {

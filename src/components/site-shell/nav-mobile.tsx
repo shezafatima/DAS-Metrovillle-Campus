@@ -14,9 +14,12 @@ import {
 import { isNavItemActive } from "./nav-desktop";
 import { isRtlScript } from "@/lib/rtl-text";
 import { SearchBox } from "./search-box";
+import type { SearchResult } from "@/lib/site-search";
 
 interface NavMobileProps {
   items?: NavigationItem[];
+  /** The search index to use (the header passes one built from the same items). */
+  searchIndex?: SearchResult[];
 }
 
 // modal (default true) gives focus trap + page-scroll lock for free
@@ -25,7 +28,7 @@ interface NavMobileProps {
 // is controlled (rather than using Drawer.Close on the links) so the menu
 // links stay real <a> elements with their native link role — Drawer.Close's
 // render-prop polymorphism forces role="button" onto whatever it wraps.
-export function NavMobile({ items = defaultNavigationItems }: NavMobileProps) {
+export function NavMobile({ items = defaultNavigationItems, searchIndex }: NavMobileProps) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
@@ -46,7 +49,7 @@ export function NavMobile({ items = defaultNavigationItems }: NavMobileProps) {
                 Menu
               </Drawer.Title>
               <div className="flex items-center gap-1">
-                <SearchBox />
+                <SearchBox index={searchIndex} />
                 <Drawer.Close
                   aria-label="Close menu"
                   className="flex items-center justify-center rounded-md p-2 text-text"

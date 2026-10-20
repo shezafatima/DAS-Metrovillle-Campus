@@ -7,7 +7,10 @@
  * preview) prints a warning and passes, so day-to-day builds are never
  * blocked.
  *
- * To clear it: set `careersCopy.privacy.placeholder` to `false` in
+ * It also blocks while stock-photo hosts are still allowed in next.config.ts
+ * (TEMPORARY_IMAGE_HOSTS, 017).
+ *
+ * To clear the careers items: set `careersCopy.privacy.placeholder` to `false` in
  * src/content/careers.ts once the client has approved the notice, and set
  * CAREERS_RETENTION_MONTHS in the production environment to the period the
  * client agreed.
@@ -19,6 +22,8 @@ export interface ReleaseContentInput {
   vercelEnv: string | undefined;
   privacyPlaceholder: boolean;
   retentionMonths: string | undefined;
+  /** Stock-photo hosts still allowed in next.config.ts (017). Defaults to none. */
+  temporaryImageHosts?: string[];
 }
 
 export interface ReleaseContentResult {
@@ -41,16 +46,23 @@ export function checkReleaseContent(input: ReleaseContentInput): ReleaseContentR
       "CAREERS_RETENTION_MONTHS is not set. Set it explicitly to the retention period the client agreed (1 to 120 months); the built-in 12 is not a client-agreed value.",
     );
   }
+  if (input.temporaryImageHosts?.length) {
+    problems.push(
+      `Stock photos are still allowed in next.config.ts (${input.temporaryImageHosts.join(", ")}). Get a real photo for Our Story from the client, upload it, set it in src/content/about/our-story.ts, then empty TEMPORARY_IMAGE_HOSTS in src/lib/temporary-image-hosts.ts.`,
+    );
+  }
   return { ok: problems.length === 0, problems, blocking: input.vercelEnv === "production" && problems.length > 0 };
 }
 
 async function main(): Promise<void> {
   loadEnvConfig(path.resolve(__dirname, ".."));
   const { careersCopy } = await import("@/content/careers");
+  const { TEMPORARY_IMAGE_HOSTS } = await import("@/lib/temporary-image-hosts");
   const result = checkReleaseContent({
     vercelEnv: process.env.VERCEL_ENV,
     privacyPlaceholder: careersCopy.privacy.placeholder,
     retentionMonths: process.env.CAREERS_RETENTION_MONTHS,
+    temporaryImageHosts: TEMPORARY_IMAGE_HOSTS,
   });
 
   if (result.ok) return;

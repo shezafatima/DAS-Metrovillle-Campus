@@ -34,4 +34,21 @@ describe("checkReleaseContent (release gate)", () => {
     const result = checkReleaseContent({ vercelEnv: "production", privacyPlaceholder: false, retentionMonths: "24" });
     expect(result).toEqual({ ok: true, problems: [], blocking: false });
   });
+
+  it("blocks a production build while a stock-photo host is still allowed, and names it", () => {
+    const result = checkReleaseContent({
+      vercelEnv: "production",
+      privacyPlaceholder: false,
+      retentionMonths: "24",
+      temporaryImageHosts: ["picsum.photos"],
+    });
+    expect(result.blocking).toBe(true);
+    expect(result.problems[0]).toMatch(/picsum.photos/);
+  });
+
+  it("passes with an empty host list, and the real list is what next.config.ts allows", async () => {
+    const { TEMPORARY_IMAGE_HOSTS } = await import("../src/lib/temporary-image-hosts");
+    expect(checkReleaseContent({ vercelEnv: "production", privacyPlaceholder: false, retentionMonths: "24", temporaryImageHosts: [] }).ok).toBe(true);
+    expect(TEMPORARY_IMAGE_HOSTS).toContain("picsum.photos");
+  });
 });

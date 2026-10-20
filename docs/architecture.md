@@ -605,6 +605,7 @@
   src/app/api/admin/access-matrix.test.ts (real sessions); every user
   Server Action in its own actions.test.ts; every page in
   e2e/admin-roles-access-matrix.spec.ts.
+- @axe-core/playwright 4.13.0: dev only, accessibility scan in E2E (017, owner-approved 2026-10-10).
 - Vitest: unit tests and route handler tests (validation failures,
   401 for admin routes). DB-backed suites use describeWithDb()
   (src/test/db.ts), which connects to MONGODB_DB_NAME=dar_e_arqam_test

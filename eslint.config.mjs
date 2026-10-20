@@ -12,6 +12,13 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Generated folders (all git-ignored): the Playwright dev build, reports and local data.
+    ".next-e2e/**",
+    "test-results/**",
+    "playwright-report/**",
+    "blob-report/**",
+    "coverage/**",
+    ".data/**",
   ]),
 ]);
 

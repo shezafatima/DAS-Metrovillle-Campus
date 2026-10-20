@@ -59,9 +59,10 @@ export interface PageSection {
 
 export const pageSections = {
   about: [
-    { id: "overview", label: "Overview" },
-    { id: "salient-features", label: "Salient Features" },
-    { id: "management", label: "Management" },
+    { id: "our-story", label: "Our Story" },
+    { id: "vision-mission", label: "Vision & Mission" },
+    { id: "core-values", label: "Core Values" },
+    { id: "management-team", label: "Our Management Team" },
     { id: "messages", label: "Messages" },
   ],
   academics: [
@@ -82,6 +83,19 @@ export const pageSections = {
     { id: "mobile-apps", label: "Mobile Apps" },
   ],
 } satisfies Record<string, PageSection[]>;
+
+/**
+ * About's old section ids (overview, salient-features, management, messages)
+ * were remapped in 017. These four old sub-routes still redirect, to the
+ * nearest new section. next.config.ts reads this; Academics and Admission
+ * derive theirs from `pageSections`.
+ */
+export const legacyAboutRedirects: { source: string; destination: string }[] = [
+  { source: "/about/overview", destination: "/about#our-story" },
+  { source: "/about/salient-features", destination: "/about" },
+  { source: "/about/management", destination: "/about#management-team" },
+  { source: "/about/messages", destination: "/about#messages" },
+];
 
 function anchors(path: string, sections: PageSection[]): NavigationItem[] {
   return sections.map((section) => ({ label: section.label, href: `${path}#${section.id}` }));

@@ -16,10 +16,12 @@ import { getContactDetails } from "@/lib/contact-details";
  */
 export async function PublicShell({ children }: { children: React.ReactNode }) {
   const contact = await getContactDetails();
+  // Header is async since 017 (its About entries come from the About view); awaiting it here keeps the shell testable.
+  const header = await Header();
   return (
     <>
       <SkipLink />
-      <Header />
+      {header}
       <main id="main-content" className="flex flex-1 flex-col">
         {children}
       </main>

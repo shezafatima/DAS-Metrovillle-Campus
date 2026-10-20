@@ -2,6 +2,7 @@ import { test, expect, type Page } from "@playwright/test";
 import fs from "node:fs";
 import path from "node:path";
 import { homeContent } from "../src/content/home";
+import { waitForScrollSettled } from "./helpers/scroll";
 
 /**
  * The Books band (006 FR-011): a full-width navy section with the heading and text on the left from 1024px (stacked
@@ -41,6 +42,7 @@ function contrast(a: string, b: string): number {
 async function openBooks(page: Page) {
   await page.goto("/", { timeout: 120_000 });
   await page.getByTestId("books").evaluate((el) => el.scrollIntoView({ block: "center" }));
+  await waitForScrollSettled(page);
 }
 
 test.beforeEach(() => restore());

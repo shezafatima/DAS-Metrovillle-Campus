@@ -152,6 +152,11 @@
   --aspect-news-card: 400 / 187;
   /* The home page's news cards (HomeNewsCard): a 5:4 cover. */
   --aspect-home-news-card: 5 / 4;
+  /* About (017): no reference page; composed values, see research/design-tokens.md "About page". */
+  --aspect-about-person: 4 / 5;
+  --aspect-about-story: 4 / 3;
+  /* An alias of an existing navy (--color-cta-hover), not a new colour. */
+  --color-about-panel: var(--color-cta-hover);
   /* Asymmetric shorthand (30px 25px 20px), so it isn't named
      --spacing-news-*: Tailwind's --spacing-* namespace only makes
      sense for single-dimension scale steps. Applied via .news-card in
@@ -182,6 +187,8 @@
      component to need a hover state for it. */
   --color-signup-band: #1e294b;
   --color-signup-highlight: #ffd700;
+  /* A neutral name for the same deep yellow (#ffd700), for components that are not the signup band: About Core Values ring (017). */
+  --color-gold: #ffd700;
   --color-signup-supporting: #d3d3d3;
   --color-signup-input-bg: #ffffff;
   --color-signup-input-border: #d2d2d2;
@@ -835,5 +842,101 @@
 @media (min-width: 1024px) {
   :root {
     --spacing-home-section-y: 80px;
+  }
+}
+
+/* About (017): the Core Values cards have a yellow light that travels around
+   the border. Only existing tokens (--color-topbar). A conic-gradient square,
+   larger than the card, turns behind it using a `transform` animation (compositor
+   only: no repaint, no layout, no animated custom property). Two layers share the
+   idea: the ring (3px, the deep gold --color-gold) is clipped to the card; the halo
+   (the pale yellow --color-topbar) is a fainter, blurred copy clipped 7px wider. The card face has a solid background and covers the
+   centre, so only the ring and a soft outer glow show and the text is never
+   covered. One loop is --about-glow-duration; each card gets its own negative
+   delay (--about-glow-delay, set inline) so they never move in step. */
+.about-value-card {
+  --about-glow-duration: 5s;
+  position: relative;
+}
+
+.about-glow-ring,
+.about-glow-halo {
+  position: absolute;
+  overflow: hidden;
+  pointer-events: none;
+  border-radius: var(--radius-xl);
+  transition: opacity 200ms ease;
+}
+
+.about-glow-ring {
+  --about-glow-color: var(--color-gold);
+  inset: 0;
+  opacity: 1;
+}
+
+.about-glow-halo {
+  inset: -7px;
+  border-radius: calc(var(--radius-xl) + 7px);
+  opacity: 0.4;
+  filter: blur(5px);
+}
+
+.about-glow-spin {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 220%;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%) rotate(0deg);
+  background: conic-gradient(
+    transparent 0deg,
+    transparent 200deg,
+    var(--about-glow-color, var(--color-topbar)) 340deg,
+    transparent 360deg
+  );
+  will-change: transform;
+  animation: about-glow-spin var(--about-glow-duration) linear infinite;
+  animation-delay: var(--about-glow-delay, 0s);
+}
+
+@keyframes about-glow-spin {
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+/* The solid face: covers the middle of the ring, so only a 2px border shows. */
+.about-value-card-face {
+  position: relative;
+  margin: 3px;
+  border-radius: calc(var(--radius-xl) - 3px);
+}
+
+/* Brighter on hover and keyboard focus within the card. */
+.about-value-card:hover .about-glow-ring,
+.about-value-card:focus-within .about-glow-ring {
+  opacity: 1;
+}
+
+.about-value-card:hover .about-glow-halo,
+.about-value-card:focus-within .about-glow-halo {
+  opacity: 0.85;
+}
+
+/* Paused while the grid is off screen (AboutGlowGrid sets data-offscreen). */
+[data-offscreen="true"] .about-glow-spin {
+  animation-play-state: paused;
+}
+
+/* Reduced motion: no movement, a static yellow border. */
+@media (prefers-reduced-motion: reduce) {
+  .about-glow-spin,
+  .about-glow-halo {
+    display: none;
+  }
+
+  .about-glow-ring {
+    background: var(--color-gold);
+    opacity: 1;
   }
 }

@@ -1,5 +1,26 @@
 import { describe, expect, it } from "vitest";
-import { contactInfo, footerContent, navigationItems, portalLinks } from "./site-shell";
+import { contactInfo, footerContent, legacyAboutRedirects, navigationItems, pageSections, portalLinks } from "./site-shell";
+
+describe("About sections (017)", () => {
+  it("are the five anchored sections, in order", () => {
+    expect(pageSections.about).toEqual([
+      { id: "our-story", label: "Our Story" },
+      { id: "vision-mission", label: "Vision & Mission" },
+      { id: "core-values", label: "Core Values" },
+      { id: "management-team", label: "Our Management Team" },
+      { id: "messages", label: "Messages" },
+    ]);
+  });
+
+  it("redirects the four old sub-routes to a new section", () => {
+    expect(legacyAboutRedirects).toEqual([
+      { source: "/about/overview", destination: "/about#our-story" },
+      { source: "/about/salient-features", destination: "/about" },
+      { source: "/about/management", destination: "/about#management-team" },
+      { source: "/about/messages", destination: "/about#messages" },
+    ]);
+  });
+});
 
 describe("navigationItems", () => {
   it("renders in the exact fixed order", () => {

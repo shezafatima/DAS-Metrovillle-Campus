@@ -16,13 +16,13 @@ import { searchSite, type SearchResult } from "@/lib/site-search";
 // not a replacement for it — and it positions via `top-full` against the
 // nearest `position: relative` ancestor (the header row in header.tsx),
 // so it opens below the whole row, not below the icon's own short height.
-export function SearchBox() {
+export function SearchBox({ index }: { index?: SearchResult[] } = {}) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const listboxId = useId();
-  const results: SearchResult[] = open ? searchSite(query) : [];
+  const results: SearchResult[] = open ? searchSite(query, index) : [];
 
   const close = () => {
     setOpen(false);

@@ -1,5 +1,6 @@
-import { test, expect, type Page } from "@playwright/test";
+import { test, expect, type Locator, type Page } from "@playwright/test";
 import { homeContent } from "../src/content/home";
+import { waitForScrollSettled } from "./helpers/scroll";
 
 // The quick-access cards are a looping coverflow (006 FR-008): one centred card, one on each side, auto-advance
 // with no buttons or dots, swipe on touch, arrow keys, and a card that is a button (never one big link).
@@ -15,7 +16,22 @@ async function openCards(page: Page) {
   await page.goto("/", { timeout: 120_000 });
   // Centre it: the sticky header would otherwise cover the top of the card.
   await card(page, 0).evaluate((el) => el.scrollIntoView({ block: "center" }));
+  await waitForScrollSettled(page);
   await expect(card(page, 0)).toHaveAttribute("data-centre", "true");
+}
+
+/** The element's box once it has stopped changing (a card mid-flip has a moving box). */
+async function settledBox(locator: Locator) {
+  let previous = "";
+  await expect
+    .poll(async () => {
+      const current = JSON.stringify(await locator.boundingBox());
+      const settled = current === previous;
+      previous = current;
+      return settled;
+    }, { intervals: [100] })
+    .toBe(true);
+  return (await locator.boundingBox())!;
 }
 
 /** One touch gesture through the browser's input pipeline: press, move in steps, release. */
@@ -201,7 +217,7 @@ test.describe("quick-access cards on touch", () => {
     await touch(page, from, 6); // a wobble under the threshold: a tap
     await expect(card(page, 0)).toHaveAttribute("data-flipped", "true");
     expect(await centreIndex(page)).toBe(0);
-    const top = (await card(page, 0).boundingBox())!;
+    const top = await settledBox(card(page, 0)); // after the flip has finished turning
     await page.touchscreen.tap(top.x + top.width / 2, top.y + 12); // tap the back, away from its link: turns it back over
     await expect(card(page, 0)).toHaveAttribute("data-flipped", "false");
 
