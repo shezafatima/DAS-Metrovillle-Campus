@@ -944,8 +944,10 @@
   opacity: 0.85;
 }
 
-/* Paused while the grid is off screen (AboutGlowGrid sets data-offscreen). */
-[data-offscreen="true"] .about-glow-spin {
+/* Paused while the grid is off screen (AboutGlowGrid sets data-offscreen), and for GlowFrame (Contact form)
+   while a control inside has focus or the pointer is over it (data-glow-paused). */
+[data-offscreen="true"] .about-glow-spin,
+[data-glow-paused="true"] .about-glow-spin {
   animation-play-state: paused;
 }
 

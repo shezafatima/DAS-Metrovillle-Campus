@@ -10,31 +10,12 @@ export const contactCopy = {
     title: "Contact",
     breadcrumbHome: "Home",
   },
-  columns: {
-    phone: {
-      heading: "BY PHONE",
-      // The reference's subtitle here is the office hours text itself,
-      // not a static label — rendered from contactInfo.officeHours at
-      // render time (contracts/contact-page.md "Column contents").
-      subtitle: null,
-      icon: { src: "/images/contact/by-phone.png", alt: "Phone Us" },
-    },
-    email: {
-      heading: "BY EMAIL",
-      subtitle: "Write email on any of the following addresses",
-      icon: { src: "/images/contact/by-email.png", alt: "Email Us" },
-    },
-    visit: {
-      heading: "VISIT US",
-      subtitle: "Visit us in person and meet our representative",
-      icon: { src: "/images/contact/visit-us.png", alt: "Visit Us" },
-    },
-    write: {
-      heading: "WRITE US",
-      subtitle: "Write us an inquiry by filling form below",
-      icon: { src: "/images/contact/write-us.png", alt: "Write Us" },
-      writeLink: "Click this link to view inquiry form",
-    },
+  details: {
+    heading: "Get in touch",
+    address: "Address",
+    phone: "Phone",
+    email: "Email",
+    timings: "School timings",
   },
   map: {
     heading: "Locate Us on Google Maps",
