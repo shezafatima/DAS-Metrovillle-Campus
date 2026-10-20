@@ -2,6 +2,7 @@ import AxeBuilder from "@axe-core/playwright";
 import { test, expect } from "@playwright/test";
 import { adminSession } from "./helpers/users";
 import { clearSettings, fillStable, openGroup, panel, readSettingsGroup, seedSettingsGroup, savedToast } from "./helpers/settings";
+import { levelId, seedClassLevels } from "./helpers/registrations";
 import { settingsCopy } from "../src/content/admin";
 import { formatAdmissionDate, karachiToday } from "../src/lib/admission/window";
 
@@ -88,7 +89,7 @@ test.describe("settings — admission (020 US2)", () => {
   });
 });
 
-test.describe("settings — admission classes (013 US5)", () => {
+test.describe("settings — admission classes (013 US5, 014b: a checklist of Class Levels)", () => {
   test.beforeEach(async () => {
     await clearSettings();
   });
@@ -96,22 +97,80 @@ test.describe("settings — admission classes (013 US5)", () => {
     await clearSettings();
   });
 
-  test("an open window with no class shows the warning; adding a class and saving removes it", async ({ browser }) => {
+  test("an open window with no class offered shows the warning; ticking a level and saving removes it", async ({ browser }) => {
     test.setTimeout(300_000);
+    await seedClassLevels(["Playgroup", "Class 1"]);
     await seedSettingsGroup("admission", { opensOn: shift(today, -1), closesOn: shift(today, 30), announcement: "", closedMessage: "", classes: [] });
     const { page } = await adminSession(browser);
     await openGroup(page, "admission");
     await expect(page.getByTestId("settings-warning")).toHaveText(settingsCopy.admissionWarnings.noClasses);
 
-    await page.getByRole("button", { name: "Add class" }).click();
-    const dialog = page.getByRole("dialog", { name: /Add class/ });
-    await dialog.getByLabel("Class name").fill("Playgroup");
-    await dialog.getByRole("button", { name: "Done" }).click();
+    const box = panel(page, "admission-classes").getByRole("checkbox", { name: "Playgroup" });
+    // A tick made before React has taken the form over is lost, so it is repeated until it holds.
+    await expect(async () => {
+      await box.check();
+      await expect(box).toBeChecked({ timeout: 1_000 });
+    }).toPass({ timeout: 30_000 });
     await save(page, "admission-classes");
     await expect(savedToast(page, CLASSES)).toBeVisible({ timeout: 60_000 });
-    const stored = (await readSettingsGroup("admission"))?.data as { classes: Array<{ name: string }> };
-    expect(stored.classes.map((item) => item.name)).toEqual(["Playgroup"]);
+    const stored = (await readSettingsGroup("admission"))?.data as { classes: Array<{ name: string; levelId: string; deletedAt: unknown }> };
+    expect(stored.classes.filter((item) => !item.deletedAt).map((item) => [item.name, item.levelId])).toEqual([["Playgroup", levelId(0)]]);
     await expect(page.getByTestId("settings-warning")).toHaveCount(0, { timeout: 60_000 });
+  });
+
+  test("a typed class from before Class Levels existed is listed as not linked and is still offered; linking it ticks the level", async ({ browser }) => {
+    test.setTimeout(300_000);
+    await seedClassLevels(["Playgroup", "Class 1"]);
+    await seedSettingsGroup("admission", {
+      opensOn: shift(today, -1),
+      closesOn: shift(today, 30),
+      announcement: "",
+      closedMessage: "",
+      classes: [{ id: "00000003-0000-4000-8000-000000000001", name: "class 1", deletedAt: null }],
+    });
+    const { page } = await adminSession(browser);
+    await openGroup(page, "admission");
+    // An old item (no level id) is not linked, and the form still offers it, so there is no "no classes" warning.
+    const notLinked = panel(page, "admission-classes").getByTestId("not-linked");
+    await expect(notLinked).toContainText("class 1");
+    await expect(page.getByTestId("settings-warning")).toHaveCount(0);
+
+    const select = notLinked.getByLabel("Link class 1 to a class level");
+    await expect(async () => {
+      await select.selectOption({ label: "Class 1" });
+      await expect(panel(page, "admission-classes").getByTestId("not-linked")).toHaveCount(0, { timeout: 1_000 });
+    }).toPass({ timeout: 30_000 });
+    await expect(panel(page, "admission-classes").getByRole("checkbox", { name: "Class 1" })).toBeChecked();
+    await save(page, "admission-classes");
+    await expect(savedToast(page, CLASSES)).toBeVisible({ timeout: 60_000 });
+    const stored = (await readSettingsGroup("admission"))?.data as { classes: Array<{ name: string; levelId: string; deletedAt: unknown }> };
+    expect(stored.classes.filter((item) => !item.deletedAt).map((item) => [item.name, item.levelId])).toEqual([["Class 1", levelId(1)]]);
+  });
+
+  test("a ticked level that was deleted from Class Levels drops out and the tab warns, naming it", async ({ browser }) => {
+    test.setTimeout(300_000);
+    await seedClassLevels(["Playgroup"]);
+    await seedSettingsGroup("admission", {
+      opensOn: shift(today, -1),
+      closesOn: shift(today, 30),
+      announcement: "",
+      closedMessage: "",
+      classes: [
+        { id: "00000002-0000-4000-8000-000000000001", name: "Playgroup", levelId: levelId(0), deletedAt: null },
+        { id: "00000002-0000-4000-8000-000000000002", name: "Class 9", levelId: "00000001-0000-4000-8000-0000000000ff", deletedAt: null },
+      ],
+    });
+    const { page } = await adminSession(browser);
+    await openGroup(page, "admission");
+    const section = panel(page, "admission-classes");
+    await expect(section.getByTestId("removed-levels-warning")).toContainText('"Class 9" was removed from Class levels');
+    await expect(section.getByRole("checkbox", { name: "Playgroup" })).toBeChecked();
+    await expect(section.getByRole("checkbox", { name: "Class 9" })).toHaveCount(0);
+
+    await section.getByRole("button", { name: "Clear this warning" }).click();
+    await save(page, "admission-classes");
+    await expect(savedToast(page, CLASSES)).toBeVisible({ timeout: 60_000 });
+    await expect(page.getByTestId("removed-levels-warning")).toHaveCount(0, { timeout: 60_000 });
   });
 
   test("no warning while the window is closed, even with no class", async ({ browser }) => {

@@ -250,7 +250,13 @@ export function ListEditor({ field, path, items, onChange, errors, clearError }:
 
                   <AdminConfirmDeleteDialog
                     itemName={name}
-                    copy={field.itemLabel === "slide" ? settingsCopy.deleteSlide : settingsCopy.deleteImage}
+                    copy={
+                      field.itemLabel === "slide"
+                        ? settingsCopy.deleteSlide
+                        : field.itemLabel === "image"
+                          ? settingsCopy.deleteImage
+                          : settingsCopy.deleteItem(field.itemLabel)
+                    }
                     disabled={isLastVisible}
                     onConfirm={() => removeAt(index)}
                   />

@@ -19,11 +19,13 @@ export function defaultForField(field: Field): unknown {
     case "boolean":
       return field.default ?? false;
     case "date":
+    case "dayMonth":
       return field.default ?? "";
     case "image":
       return null;
     case "group":
       return Object.fromEntries(field.fields.map((child) => [child.key, defaultForField(child)]));
+    case "lines":
     case "list":
       return structuredClone(field.default ?? []);
   }

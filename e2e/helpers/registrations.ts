@@ -29,27 +29,45 @@ export const OPEN_NOW = "2027-02-01T06:00:00Z";
 export const OPEN_WINDOW = { opensOn: "2027-01-01", closesOn: "2027-03-31" };
 export const CLASSES = ["Playgroup", "Nursery", "Class 1"];
 
-/** Seeds the Settings admission group with a window and a class list. */
+const uuid = (prefix: string, i: number) => `${prefix}-0000-4000-8000-${String(i + 1).padStart(12, "0")}`;
+
+/** The id `seedClassLevels` gives the i-th level (0-based), so a spec can rename or delete one directly. */
+export const levelId = (i: number) => uuid("00000001", i);
+
+/**
+ * Seeds the Class Levels group (the rows, in this order, 014b) and returns their ids.
+ * The admission group's "open" list ticks levels by these ids (see `openAdmission`).
+ */
+export async function seedClassLevels(names: string[]): Promise<{ id: string; name: string }[]> {
+  const levels = names.map((name, i) => ({ id: levelId(i), name, ageRule: "3 to 4 years", deletedAt: null }));
+  await seedSettingsGroup("classLevels", { ageReferenceDate: "07-31", levels });
+  return levels.map(({ id, name }) => ({ id, name }));
+}
+
+/**
+ * Seeds the Settings admission group with a window and the classes open for admission (014b: Class Levels,
+ * all ticked). `classes` names the levels, in Class Levels order; `unlinked` adds typed names that are not
+ * linked to a level (the pre-014b shape, still offered after the ticked levels).
+ */
 export async function openAdmission(
-  options: { classes?: string[]; opensOn?: string; closesOn?: string; announcement?: string; closedMessage?: string } = {},
+  options: { classes?: string[]; unlinked?: string[]; opensOn?: string; closesOn?: string; announcement?: string; closedMessage?: string } = {},
 ): Promise<void> {
-  const classes = (options.classes ?? CLASSES).map((name, i) => ({
-    id: `00000000-0000-4000-8000-${String(i + 1).padStart(12, "0")}`,
-    name,
-    deletedAt: null,
-  }));
+  const levels = await seedClassLevels(options.classes ?? CLASSES);
+  const ticked = levels.map((level, i) => ({ id: uuid("00000002", i), name: level.name, levelId: level.id, deletedAt: null }));
+  const unlinked = (options.unlinked ?? []).map((name, i) => ({ id: uuid("00000003", i), name, levelId: "", deletedAt: null }));
   await seedSettingsGroup("admission", {
     opensOn: options.opensOn ?? OPEN_WINDOW.opensOn,
     closesOn: options.closesOn ?? OPEN_WINDOW.closesOn,
     announcement: options.announcement ?? "",
     closedMessage: options.closedMessage ?? "",
-    classes,
+    classes: [...ticked, ...unlinked],
   });
 }
 
-/** Resets the admission group (closed, no classes). */
+/** Resets the admission and Class Levels groups (closed, no classes, no levels). */
 export async function closeAdmission(): Promise<void> {
   await seedSettingsGroup("admission", { opensOn: "", closesOn: "", announcement: "", closedMessage: "", classes: [] });
+  await seedSettingsGroup("classLevels", { ageReferenceDate: "07-31", levels: [] });
 }
 
 /** Makes the server treat `iso` as "now" for this browser (test server only). */

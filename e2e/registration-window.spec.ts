@@ -1,6 +1,7 @@
 import { expect, test, type BrowserContext, type Page } from "@playwright/test";
 import {
   CLASSES,
+  OPEN_WINDOW,
   VALID_VALUES,
   clearRegistrations,
   clearRegistrationRateLimit,
@@ -8,9 +9,11 @@ import {
   fillValidRegistration,
   findRegistrations,
   forwardedFor,
+  levelId,
   openAdmission,
   setNow,
 } from "./helpers/registrations";
+import { seedSettingsGroup } from "./helpers/settings";
 
 // 013 US2 and US5: the page, the server and the Apply Now link all follow the
 // Pakistan-time window and the class list. The e2e-now cookie stands in for
@@ -151,12 +154,83 @@ test.describe("classes drive the form (013 US5)", () => {
     expect((await post(page, 166, body(), context)).status()).toBe(403);
   });
 
-  test("the class select lists exactly the saved classes in saved order", async ({ page, context }) => {
+  const classOptions = async (page: import("@playwright/test").Page) => {
+    await expect(page.locator("#registration-className")).toBeVisible({ timeout: 90_000 });
+    return page.locator("#registration-className option").allTextContents();
+  };
+
+  test("the class select lists exactly the ticked Class Levels, in Class Levels order (014b)", async ({ page, context }) => {
     await openAdmission({ ...WINDOW, classes: ["Nursery", "Playgroup", "Class 1", "Class 2"] });
     await setNow(context, MID);
     await page.goto("/admission/register", { timeout: 180_000 });
-    await expect(page.locator("#registration-className")).toBeVisible({ timeout: 90_000 });
-    expect(await page.locator("#registration-className option").allTextContents()).toEqual(["Choose a class", "Nursery", "Playgroup", "Class 1", "Class 2"]);
+    expect(await classOptions(page)).toEqual(["Choose a class", "Nursery", "Playgroup", "Class 1", "Class 2"]);
     void CLASSES;
+  });
+
+  test("a level that exists but is not ticked is not offered, and the order is the table's, not the tick order (014b)", async ({ page, context }) => {
+    await openAdmission({ ...WINDOW, classes: ["Playgroup", "Nursery", "Class 1"] });
+    // Untick Nursery: the admission list keeps only the first and the last level.
+    await seedSettingsGroup("admission", {
+      ...OPEN_WINDOW,
+      announcement: "",
+      closedMessage: "",
+      classes: [
+        { id: "00000002-0000-4000-8000-000000000009", name: "Class 1", levelId: levelId(2), deletedAt: null },
+        { id: "00000002-0000-4000-8000-000000000008", name: "Playgroup", levelId: levelId(0), deletedAt: null },
+      ],
+    });
+    await setNow(context, MID);
+    await page.goto("/admission/register", { timeout: 180_000 });
+    expect(await classOptions(page)).toEqual(["Choose a class", "Playgroup", "Class 1"]);
+  });
+
+  test("a level renamed in Class Levels is offered under its new name (014b)", async ({ page, context }) => {
+    await openAdmission({ ...WINDOW, classes: ["Playgroup", "Class 1"] });
+    await seedSettingsGroup("classLevels", {
+      ageReferenceDate: "07-31",
+      levels: [
+        { id: levelId(0), name: "Pre-School", ageRule: "3 to 4 years", deletedAt: null },
+        { id: levelId(1), name: "Class 1", ageRule: "5 to 6 years", deletedAt: null },
+      ],
+    });
+    await setNow(context, MID);
+    await page.goto("/admission/register", { timeout: 180_000 });
+    expect(await classOptions(page)).toEqual(["Choose a class", "Pre-School", "Class 1"]);
+  });
+
+  test("a ticked level that was deleted is no longer offered, and with none left the form is closed (014b)", async ({ page, context }) => {
+    await openAdmission({ ...WINDOW, classes: ["Playgroup", "Class 1"] });
+    await seedSettingsGroup("classLevels", {
+      ageReferenceDate: "07-31",
+      levels: [{ id: levelId(0), name: "Playgroup", ageRule: "3 to 4 years", deletedAt: null }, { id: levelId(1), name: "Class 1", ageRule: "x", deletedAt: new Date() }],
+    });
+    await setNow(context, MID);
+    await page.goto("/admission/register", { timeout: 180_000 });
+    expect(await classOptions(page)).toEqual(["Choose a class", "Playgroup"]);
+
+    await seedSettingsGroup("classLevels", { ageReferenceDate: "07-31", levels: [] });
+    await page.goto("/admission/register", { timeout: 180_000 });
+    await expect(page.getByTestId("registration-closed")).toBeVisible({ timeout: 90_000 });
+    await expect(page.locator("form")).toHaveCount(0);
+  });
+
+  test("a typed name that is not linked to a level is still offered, after the ticked levels (014b, Clarification 1)", async ({ page, context }) => {
+    await openAdmission({ ...WINDOW, classes: ["Playgroup", "Class 1"], unlinked: ["Grade 9"] });
+    await setNow(context, MID);
+    await page.goto("/admission/register", { timeout: 180_000 });
+    expect(await classOptions(page)).toEqual(["Choose a class", "Playgroup", "Class 1", "Grade 9"]);
+  });
+
+  test("an old submission keeps the class name it was sent with, whatever the level is called later (014b)", async ({ page, context }) => {
+    await openAdmission({ ...WINDOW, classes: ["Playgroup", "Class 1"] });
+    await setNow(context, MID);
+    const sent = await post(page, 167, { ...body(), className: "Class 1" }, context);
+    expect(sent.status()).toBe(200);
+    await seedSettingsGroup("classLevels", {
+      ageReferenceDate: "07-31",
+      levels: [{ id: levelId(1), name: "Grade 1", ageRule: "5 to 6 years", deletedAt: null }],
+    });
+    const rows = await findRegistrations();
+    expect(rows.map((row) => row.className)).toEqual(["Class 1"]);
   });
 });

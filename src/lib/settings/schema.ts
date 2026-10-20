@@ -1,15 +1,18 @@
 import { z } from "zod";
 import { settingsCopy } from "@/content/admin";
+import { isDayMonth } from "@/lib/text/day-month";
 import { collapseSpaces, fieldErrors } from "@/lib/validation/field-errors";
 import { parseYouTubeAddress } from "./youtube";
 import {
   PLACEHOLDER_IMAGE_URLS,
   type DateField,
+  type DayMonthField,
   type Field,
   type GroupDefinition,
   type GroupValue,
   type ImageFieldDef,
   type ImageRef,
+  type LinesField,
   type ListField,
 } from "./types";
 
@@ -27,13 +30,25 @@ const msg = settingsCopy.errors;
 
 const EMAIL = z.email();
 
-function isAllowedUrl(value: string, allowPath: boolean | undefined): boolean {
+function isAllowedUrl(value: string, allowPath: boolean | undefined, rejectCredentials?: boolean): boolean {
   if (/\s/.test(value)) return false;
   if (allowPath && value.startsWith("/") && !value.startsWith("//") && !value.includes("\\")) return true;
   if (!/^https?:\/\//i.test(value)) return false;
   try {
     const url = new URL(value);
+    if (rejectCredentials && (url.username !== "" || url.password !== "")) return false;
     return (url.protocol === "https:" || url.protocol === "http:") && url.hostname.length > 0;
+  } catch {
+    return false;
+  }
+}
+
+/** True for `https://user:pass@host` style addresses (used to give them their own message). */
+function hasCredentials(value: string): boolean {
+  if (!/^https?:\/\//i.test(value) || /\s/.test(value)) return false;
+  try {
+    const url = new URL(value);
+    return url.username !== "" || url.password !== "";
   } catch {
     return false;
   }
@@ -69,10 +84,24 @@ function urlSchema(field: Extract<Field, { type: "url" }>): z.ZodType {
     .trim()
     .max(field.maxLength, msg.maxLength(field.maxLength));
   if (field.required) base = base.min(1, msg.required);
+  // 014b: a field that warns about http:// also stores its scheme in lower case ("HTTPS://x" is "https://x").
+  const normalise = (value: unknown) => {
+    const text = emptyIfNil(value);
+    return field.warnInsecure && typeof text === "string" ? text.trim().replace(/^(https?):\/\//i, (_match, scheme: string) => `${scheme.toLowerCase()}://`) : text;
+  };
   return z.preprocess(
-    emptyIfNil,
-    base.refine((value) => (value === "" && !field.required) || isAllowedUrl(value, field.allowPath), message),
+    normalise,
+    base.superRefine((value, ctx) => {
+      if (value === "" && !field.required) return;
+      if (isAllowedUrl(value, field.allowPath, field.rejectCredentials)) return;
+      ctx.addIssue({ code: "custom", message: field.rejectCredentials && hasCredentials(value) ? msg.urlCredentials : message });
+    }),
   );
+}
+
+/** True when `value` would pass a URL field's schema (the "Test link" control enables itself with this). */
+export function urlFieldAccepts(field: Extract<Field, { type: "url" }>, value: string): boolean {
+  return value.trim() !== "" && urlSchema(field).safeParse(value).success;
 }
 
 function videoSchema(field: Extract<Field, { type: "video" }>): z.ZodType {
@@ -99,6 +128,38 @@ function dateSchema(field: DateField): z.ZodType {
   return z.preprocess(
     emptyIfNil,
     base.refine((value) => value === "" || isCalendarDate(value), msg.date),
+  );
+}
+
+function dayMonthSchema(field: DayMonthField): z.ZodType {
+  let base = z.string({ error: msg.dayMonth }).trim();
+  if (field.required) base = base.min(1, msg.required);
+  return z.preprocess(
+    emptyIfNil,
+    base.refine((value) => (value === "" && !field.required) || isDayMonth(value), msg.dayMonth),
+  );
+}
+
+/**
+ * A `lines` field (014b): a string is split on line breaks, an array is taken as it is; each line is
+ * trimmed and blank lines are dropped. Then the count and every line's length are checked, the first
+ * line over the limit being named by its number.
+ */
+function linesSchema(field: LinesField): z.ZodType {
+  const toLines = (value: unknown) => (value === null || value === undefined ? [] : typeof value === "string" ? value.split(/\r?\n/) : value);
+  return z.preprocess(
+    toLines,
+    z
+      .array(z.string({ error: msg.required }))
+      .transform((lines) => lines.map((line) => line.trim()).filter((line) => line !== ""))
+      .superRefine((lines, ctx) => {
+        if (lines.length > field.maxItems) {
+          ctx.addIssue({ code: "custom", message: msg.tooManyLines(field.maxItems) });
+          return;
+        }
+        const tooLong = lines.findIndex((line) => line.length > field.maxLength);
+        if (tooLong >= 0) ctx.addIssue({ code: "custom", message: msg.lineTooLong(tooLong + 1, field.maxLength) });
+      }),
   );
 }
 
@@ -133,6 +194,8 @@ export function listItemSchema(field: ListField): z.ZodType<Record<string, unkno
   for (const child of field.itemFields) itemShape[child.key] = fieldSchema(child);
 
   const allOrNone = (field.rules ?? []).filter((rule) => rule.kind === "allOrNone");
+  const anyOf = (field.rules ?? []).filter((rule) => rule.kind === "anyOf");
+  const hasContent = (entry: unknown) => (Array.isArray(entry) ? entry.length > 0 : String(entry ?? "").trim() !== "");
   return z.object(itemShape).superRefine((value, ctx) => {
     for (const rule of allOrNone) {
       if (rule.kind !== "allOrNone") continue;
@@ -140,6 +203,10 @@ export function listItemSchema(field: ListField): z.ZodType<Record<string, unkno
       if (filled > 0 && filled < rule.fields.length) {
         ctx.addIssue({ code: "custom", path: [rule.fields[0]], message: rule.message });
       }
+    }
+    for (const rule of anyOf) {
+      if (rule.kind !== "anyOf") continue;
+      if (!rule.fields.some((key) => hasContent(value[key]))) ctx.addIssue({ code: "custom", path: [rule.fields[0]], message: rule.message });
     }
   }) as unknown as z.ZodType<Record<string, unknown>>;
 }
@@ -163,9 +230,12 @@ function listSchema(field: ListField): z.ZodType {
         if (rule.kind !== "uniqueText") continue;
         const seenText = new Set<string>();
         items.forEach((value, index) => {
-          const text = collapseSpaces(String((value as Record<string, unknown>)[rule.field] ?? "")).toLowerCase();
+          const typed = collapseSpaces(String((value as Record<string, unknown>)[rule.field] ?? ""));
+          const text = typed.toLowerCase();
           if (text === "") return;
-          if (seenText.has(text)) ctx.addIssue({ code: "custom", path: [index, rule.field], message: rule.message });
+          if (seenText.has(text)) {
+            ctx.addIssue({ code: "custom", path: [index, rule.field], message: typeof rule.message === "function" ? rule.message(typed) : rule.message });
+          }
           seenText.add(text);
         });
       }
@@ -196,6 +266,10 @@ function fieldSchema(field: Field): z.ZodType {
       return z.preprocess((value) => (value === undefined ? (field.default ?? false) : value), z.boolean());
     case "date":
       return dateSchema(field);
+    case "dayMonth":
+      return dayMonthSchema(field);
+    case "lines":
+      return linesSchema(field);
     case "group":
       return z.preprocess(
         (value) => (value === null || value === undefined ? {} : value),
@@ -204,6 +278,15 @@ function fieldSchema(field: Field): z.ZodType {
     case "list":
       return listSchema(field);
   }
+}
+
+/** How many lines the `lines` fields found by following `segments` through nested lists hold in all (014b, `maxTotalLines`). */
+function countLines(value: unknown, segments: readonly string[]): number {
+  if (!value || typeof value !== "object") return 0;
+  const next = (value as Record<string, unknown>)[segments[0]];
+  if (!Array.isArray(next)) return 0;
+  if (segments.length === 1) return next.length;
+  return next.reduce((sum: number, entry) => sum + countLines(entry, segments.slice(1)), 0);
 }
 
 const cache = new WeakMap<GroupDefinition, z.ZodType<GroupValue>>();
@@ -222,11 +305,15 @@ export function schemaFor(def: GroupDefinition): z.ZodType<GroupValue> {
         ? object
         : object.superRefine((value: Record<string, unknown>, ctx) => {
             for (const rule of rules) {
-              if (rule.kind !== "dateOrder") continue;
-              const from = String(value[rule.from] ?? "");
-              const to = String(value[rule.to] ?? "");
-              // Zero-padded ISO dates compare correctly as strings.
-              if (from !== "" && to !== "" && to < from) ctx.addIssue({ code: "custom", path: [rule.to], message: rule.message });
+              if (rule.kind === "dateOrder") {
+                const from = String(value[rule.from] ?? "");
+                const to = String(value[rule.to] ?? "");
+                // Zero-padded ISO dates compare correctly as strings.
+                if (from !== "" && to !== "" && to < from) ctx.addIssue({ code: "custom", path: [rule.to], message: rule.message });
+              } else if (rule.kind === "maxTotalLines") {
+                const segments = rule.path.split(".");
+                if (countLines(value, segments) > rule.max) ctx.addIssue({ code: "custom", path: [segments[0]], message: rule.message });
+              }
             }
           })
     ) as unknown as z.ZodType<GroupValue>;

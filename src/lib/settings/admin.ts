@@ -43,6 +43,11 @@ export interface AdminPanel {
   fingerprint: string;
   /** This panel's last save, else the record's (saved before 014), else null (never saved). */
   lastSaved: { by: string; at: string } | null;
+  /**
+   * Set while seeded content awaits the client's confirmation (014b): where it was copied from and when.
+   * It belongs to the whole group record, so every panel of that group shows it.
+   */
+  pending: { source: string; seededAt: string } | null;
 }
 
 /**
@@ -76,6 +81,8 @@ export async function getAdminPanels<K extends PanelKey>(group: GroupKey, panelK
   const doc = await Settings.findById(group).lean();
   const live = toLiveValue(def, mergeWithDefaults(def, doc?.data ?? {}));
   const panelSaves = (doc?.panelSaves ?? {}) as Record<string, { by?: unknown; at?: unknown } | undefined>;
+  const seededAt = iso(doc?.pendingConfirmation?.seededAt);
+  const pending = doc?.pendingConfirmation && seededAt ? { source: String(doc.pendingConfirmation.source ?? ""), seededAt } : null;
 
   const out = {} as Record<K, AdminPanel>;
   for (const key of panelKeys) {
@@ -95,6 +102,7 @@ export async function getAdminPanels<K extends PanelKey>(group: GroupKey, panelK
       data: Object.fromEntries(fields.map((field) => [field, live[field]])),
       fingerprint: panelFingerprint(fields, live),
       lastSaved,
+      pending,
     };
   }
   return out;

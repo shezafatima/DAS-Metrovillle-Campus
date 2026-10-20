@@ -53,7 +53,7 @@ test.describe("settings by page — permissions (014 US2)", () => {
     expect(await sidebarLabels(page)).toEqual(["Overview", "Settings"]);
     await page.goto("/admin/settings");
     await expect(page).toHaveURL("/admin/settings/home", { timeout: 90_000 });
-    expect(await tabLabels(page)).toEqual(["Home", "Admission", "Resources"]);
+    expect(await tabLabels(page)).toEqual(["Home", "Academics", "Admission", "Resources"]);
 
     await expectDenied(page, "/admin/settings/site-wide");
 
@@ -62,6 +62,8 @@ test.describe("settings by page — permissions (014 US2)", () => {
     await expectReadOnly(page, "admission-window", "Settings");
     await expectReadOnly(page, "admission-classes", "Settings");
     await expectEditable(page, "admission-messages");
+    // 014b: the Class Levels table is page content, so Pages edits it.
+    await expectEditable(page, "class-levels");
     await expect(panel(page, "admission-window").getByTestId("settings-status")).toBeVisible();
     await axeClean(page, "Admission, Pages only");
 
@@ -82,6 +84,7 @@ test.describe("settings by page — permissions (014 US2)", () => {
     expect(await tabLabels(page)).toEqual(["Site-wide", "Admission"]);
 
     await expectDenied(page, "/admin/settings/home");
+    await expectDenied(page, "/admin/settings/academics");
     await expectDenied(page, "/admin/settings/resources");
 
     await page.goto("/admin/settings/admission");
@@ -89,6 +92,7 @@ test.describe("settings by page — permissions (014 US2)", () => {
     await expectEditable(page, "admission-window");
     await expectEditable(page, "admission-classes");
     await expectReadOnly(page, "admission-messages", "Page content");
+    await expectReadOnly(page, "class-levels", "Page content");
     await axeClean(page, "Admission, Settings only");
 
     // Uploads are for hero slides and the gallery, both Pages now.
@@ -105,6 +109,7 @@ test.describe("settings by page — permissions (014 US2)", () => {
       "/admin/settings",
       "/admin/settings/site-wide",
       "/admin/settings/home",
+      "/admin/settings/academics",
       "/admin/settings/admission",
       "/admin/settings/resources",
     ]) {

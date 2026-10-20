@@ -14,6 +14,7 @@ import { PANELS, panelDefinition, type PanelKey } from "@/lib/settings/panels";
 import { parseGroup } from "@/lib/settings/schema";
 import type { GroupValue } from "@/lib/settings/types";
 import { FieldControl } from "./field-control";
+import { PanelEditor } from "./panel-editor";
 import { useReportUnsaved } from "./unsaved-panels";
 
 /**
@@ -29,10 +30,24 @@ import { useReportUnsaved } from "./unsaved-panels";
  *   panel's save never resets this one (research R4, "Client side").
  * - Unsaved edits are reported to the tab's single leave guard.
  * - Read-only: shown to someone who may open the tab but not save this panel.
+ * - A panel with an `editor` (014b: Syllabi, the classes checklist) renders that
+ *   component in place of the generic fields; everything else here is shared.
+ *   `extra` is server data such an editor needs (the checklist's Class Levels).
  */
-export function SettingsPanelForm({ panel, initial, readOnly = false }: { panel: PanelKey; initial: AdminPanel; readOnly?: boolean }) {
+export function SettingsPanelForm({
+  panel,
+  initial,
+  readOnly = false,
+  extra,
+}: {
+  panel: PanelKey;
+  initial: AdminPanel;
+  readOnly?: boolean;
+  extra?: unknown;
+}) {
   const definition = panelDefinition(PANELS[panel]);
   const saveAccess = PANELS[panel].saveAccess;
+  const editor = PANELS[panel].editor;
   const [saved, setSaved] = useState(initial);
   const [value, setValue] = useState<GroupValue>(initial.data);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -62,7 +77,7 @@ export function SettingsPanelForm({ panel, initial, readOnly = false }: { panel:
 
       if (result.status === "success") {
         setValue(result.data);
-        setSaved({ data: result.data, fingerprint: result.fingerprint, lastSaved: { by: result.updatedBy, at: result.savedAt } });
+        setSaved((current) => ({ ...current, data: result.data, fingerprint: result.fingerprint, lastSaved: { by: result.updatedBy, at: result.savedAt } }));
         toast({ title: settingsCopy.toasts.saved(definition.label), type: "success" });
         return;
       }
@@ -95,17 +110,21 @@ export function SettingsPanelForm({ panel, initial, readOnly = false }: { panel:
     <Form className="flex max-w-3xl flex-col gap-6" onSubmit={handleSubmit} noValidate>
       {/* A disabled fieldset disables every control inside, list and image buttons included. */}
       <fieldset disabled={readOnly} className="flex min-w-0 flex-col gap-6">
-        {definition.fields.map((field) => (
-          <FieldControl
-            key={field.key}
-            field={field}
-            path={field.key}
-            value={value[field.key]}
-            onChange={(next) => setValue((current) => ({ ...current, [field.key]: next }))}
-            errors={errors}
-            clearError={clearError}
-          />
-        ))}
+        {editor ? (
+          <PanelEditor kind={editor} value={value} onChange={setValue} errors={errors} clearError={clearError} readOnly={readOnly} extra={extra} />
+        ) : (
+          definition.fields.map((field) => (
+            <FieldControl
+              key={field.key}
+              field={field}
+              path={field.key}
+              value={value[field.key]}
+              onChange={(next) => setValue((current) => ({ ...current, [field.key]: next }))}
+              errors={errors}
+              clearError={clearError}
+            />
+          ))
+        )}
       </fieldset>
 
       <div className="flex flex-wrap items-center gap-4 border-border border-t pt-4">

@@ -1,7 +1,14 @@
 import { render, screen, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { Footer } from "./footer";
-import { contactInfo, footerContent, portalLinks, type ContactInfo } from "@/content/site-shell";
+import { contactInfo, footerContent, type ContactInfo } from "@/content/site-shell";
+import type { PublicPortalLink } from "@/lib/settings/public";
+
+const portalLinks: PublicPortalLink[] = [
+  { id: "a", label: "DAS Portal", url: "https://portal.example.org/", insecure: false },
+  { id: "b", label: "Student Login", url: "http://203.0.113.5/login", insecure: true },
+  { id: "c", label: "LMS App", url: "https://lms.example.org/", insecure: false },
+];
 
 describe("Footer", () => {
   it("is a white contentinfo landmark with no headings (the page's heading order is untouched)", () => {
@@ -24,11 +31,56 @@ describe("Footer", () => {
     expect(within(nav).queryByRole("link", { name: "Campuses" })).not.toBeInTheDocument();
   });
 
-  it("lists every portal link, with its current target", () => {
-    render(<Footer contact={contactInfo} />);
-    const nav = screen.getByRole("navigation", { name: "Portal Links" });
-    for (const link of portalLinks) expect(within(nav).getByRole("link", { name: link.label })).toHaveAttribute("href", link.href);
-    expect(within(nav).getAllByRole("link")).toHaveLength(portalLinks.length);
+  describe("Portal Links (014b)", () => {
+    const gridOf = (container: HTMLElement) => container.querySelector("footer > div")!;
+
+    it("lists the links in order, each opening its external site in a new tab, safely", () => {
+      render(<Footer contact={contactInfo} portalLinks={portalLinks} />);
+      const nav = screen.getByRole("navigation", { name: "Portal Links" });
+      const links = within(nav).getAllByRole("link");
+      expect(links.map((a) => a.getAttribute("href"))).toEqual(portalLinks.map((link) => link.url));
+      for (const a of links) {
+        expect(a).toHaveAttribute("target", "_blank");
+        expect(a).toHaveAttribute("rel", "noopener noreferrer");
+      }
+    });
+
+    it("names each link as opening an external site in a new tab", () => {
+      render(<Footer contact={contactInfo} portalLinks={portalLinks} />);
+      const nav = screen.getByRole("navigation", { name: "Portal Links" });
+      for (const link of portalLinks) {
+        expect(within(nav).getByRole("link", { name: `${link.label} (opens external site in a new tab)` })).toHaveAttribute("href", link.url);
+      }
+    });
+
+    it("has four columns at desktop width when there are links", () => {
+      const { container } = render(<Footer contact={contactInfo} portalLinks={portalLinks} />);
+      expect(gridOf(container)).toHaveClass("lg:grid-cols-4");
+      expect(gridOf(container)).not.toHaveClass("lg:grid-cols-3");
+    });
+
+    it("with no links, the whole column and its heading are gone and the other columns reflow to three", () => {
+      const { container } = render(<Footer contact={contactInfo} portalLinks={[]} />);
+      expect(screen.queryByRole("navigation", { name: "Portal Links" })).not.toBeInTheDocument();
+      expect(screen.queryByText("Portal Links")).not.toBeInTheDocument();
+      expect(gridOf(container)).toHaveClass("lg:grid-cols-3");
+      expect(gridOf(container).children).toHaveLength(3);
+    });
+
+    it("without the prop at all it behaves as having no links", () => {
+      render(<Footer contact={contactInfo} />);
+      expect(screen.queryByRole("navigation", { name: "Portal Links" })).not.toBeInTheDocument();
+    });
+
+    it("shows a label that contains markup as plain text", () => {
+      render(<Footer contact={contactInfo} portalLinks={[{ id: "x", label: "<b>Portal</b>", url: "https://x.example.org/", insecure: false }]} />);
+      expect(screen.getByText("<b>Portal</b>")).toBeInTheDocument();
+    });
+
+    it("is the footer landmark with the id the Portal links panel's View on site link targets", () => {
+      render(<Footer contact={contactInfo} />);
+      expect(screen.getByRole("contentinfo")).toHaveAttribute("id", "site-footer");
+    });
   });
 
   it("shows the contact details from Settings: a tel: link, a mailto: link, the address, the timings, and Get directions", () => {

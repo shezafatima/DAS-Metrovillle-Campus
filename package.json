@@ -15,7 +15,9 @@
     "sweep:careers": "tsx scripts/sweep-careers.ts",
     "sweep:registrations": "tsx scripts/sweep-registrations.ts",
     "retire:signups": "tsx scripts/retire-signups.ts",
-    "grant:pages": "tsx scripts/grant-pages.ts"
+    "grant:pages": "tsx scripts/grant-pages.ts",
+    "migrate:class-levels": "tsx scripts/link-classes.ts",
+    "seed:sections": "tsx scripts/seed-sections.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",

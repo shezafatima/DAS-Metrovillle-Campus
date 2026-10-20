@@ -6,7 +6,7 @@
 
 // The photo gallery left this engine in 007: albums are written only by
 // src/lib/gallery/store.ts (ADR-0005), so "gallery" is no longer a group key.
-export const GROUP_KEYS = ["contact", "hero", "stats", "video", "admission"] as const;
+export const GROUP_KEYS = ["contact", "hero", "stats", "video", "admission", "portalLinks", "classLevels", "syllabi", "examination"] as const;
 export type GroupKey = (typeof GROUP_KEYS)[number];
 
 type FieldBase = {
@@ -43,6 +43,15 @@ export type UrlField = FieldBase & {
   maxLength: number;
   /** Also accept a site path starting with a single "/". */
   allowPath?: boolean;
+  /** Refuse an address that carries a username or password (`https://user:pass@host`) (014b). */
+  rejectCredentials?: boolean;
+  /**
+   * 014b: the control shows "Visitors' browsers will mark this site as not secure." under an `http://`
+   * address, and the scheme is stored in lower case. The address is still accepted.
+   */
+  warnInsecure?: boolean;
+  /** 014b: the control shows a "Test link" that opens a valid address in a new tab and changes nothing. */
+  testLink?: boolean;
   default?: string;
 };
 
@@ -75,6 +84,29 @@ export type DateField = FieldBase & {
   default?: string;
 };
 
+/**
+ * A day and month with no year (014b), stored as "MM-DD" (the Class Levels
+ * age reference date). The control is two selects, Day and Month. The day must
+ * exist in that month in a leap year ("02-29" yes, "04-31" no).
+ */
+export type DayMonthField = FieldBase & {
+  type: "dayMonth";
+  default?: string;
+};
+
+/**
+ * A list of plain text lines (014b), stored as `string[]` (a syllabus group's
+ * topics). The control is one textarea, one line each. A string is split on line
+ * breaks; every line is trimmed and blank lines are dropped before the limits
+ * apply (`maxItems` lines, `maxLength` characters each).
+ */
+export type LinesField = FieldBase & {
+  type: "lines";
+  maxItems: number;
+  maxLength: number;
+  default?: string[];
+};
+
 /** A nested object of fields, e.g. contact.social. */
 export type GroupField = FieldBase & {
   type: "group";
@@ -84,8 +116,11 @@ export type GroupField = FieldBase & {
 export type ListRule =
   | { kind: "atLeastOneVisible"; field: string; message: string }
   | { kind: "allOrNone"; fields: string[]; message: string }
-  // 013: no two items may share a value in `field` (compared ignoring case and extra spaces).
-  | { kind: "uniqueText"; field: string; message: string };
+  // 013: no two items may share a value in `field` (compared ignoring case and extra spaces). A function message
+  // (014b) is given the repeated text as typed, so the error can name it.
+  | { kind: "uniqueText"; field: string; message: string | ((value: string) => string) }
+  // 014b: at least one of `fields` must have content (a non-blank text, or a non-empty list); the message is shown on the first.
+  | { kind: "anyOf"; fields: string[]; message: string };
 
 export type ListField = FieldBase & {
   type: "list";
@@ -98,6 +133,8 @@ export type ListField = FieldBase & {
   layout?: "table" | "cards";
   /** Item keys for the row thumbnail and the row title (first non-empty wins). */
   summary?: { image?: string; title: string[] };
+  /** Deleted items kept for this list instead of the default 500 (014b: a syllabus keeps its 10 most recent removed levels). */
+  maxDeletedRetained?: number;
   /** Add through the right-hand panel (the only mode since 007 moved the gallery out). */
   addMode?: "panel";
   /** Item fields edited directly on the card, with no panel. */
@@ -114,6 +151,8 @@ export type Field =
   | VideoField
   | BooleanField
   | DateField
+  | DayMonthField
+  | LinesField
   | GroupField
   | ListField;
 
@@ -124,7 +163,11 @@ export type FieldType = Field["type"];
  * date fields are set, `to` must be on or after `from`; the message is shown
  * on `to`.
  */
-export type GroupRule = { kind: "dateOrder"; from: string; to: string; message: string };
+export type GroupRule =
+  | { kind: "dateOrder"; from: string; to: string; message: string }
+  // 014b: all the `lines` fields found by following `path` ("levels.subjects.groups.topics": list keys, then the lines key)
+  // together hold at most `max` lines. The message is shown on the first key of the path (the top-level list).
+  | { kind: "maxTotalLines"; path: string; max: number; message: string };
 
 export interface GroupDefinition {
   key: GroupKey;
@@ -162,6 +205,11 @@ export const PLACEHOLDER_IMAGE_URLS = [
  * What the panel save actions return (014, contracts/panel-actions.md):
  * `saveSettingsPanel` and `savePagesPanel`. `data` holds the panel's fields only.
  */
+export type ConfirmPanelResult =
+  | { status: "success"; changed: boolean }
+  | { status: "error"; error: "unauthorized" | "forbidden" | "unavailable" }
+  | { status: "error"; error: "invalid"; fields: Record<string, string> };
+
 export type SavePanelResult =
   | { status: "success"; version: number; fingerprint: string; data: GroupValue; savedAt: string; updatedBy: string }
   | { status: "error"; error: "unauthorized" | "forbidden" | "conflict" | "unavailable" }

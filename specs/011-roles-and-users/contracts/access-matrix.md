@@ -4,6 +4,8 @@
 # Contract: Access Matrix (011)
 
 > **Superseded for Settings by `specs/014-page-settings/contracts/access-matrix.md` (2026-10-19):** the Settings pages are now page tabs, hero/stats/video/gallery and the upload signer need the Pages permission, and the save action is two panel actions.
+>
+> **014b adds** the Academics tab page (`/admin/settings/academics`, `pages`) and the actions `confirmSettingsPanel` (`settings`) and `confirmPagesPanel` (`pages`); the Portal links panel saves under `settings` and the Syllabi, Examination and Class levels panels under `pages`. See `specs/014b-dynamic-sections/contracts/access-matrix.md`.
 
 This table is the source of truth for every admin entry point. Two things are generated from it:
 

@@ -50,12 +50,12 @@ describe("settings panel registry (014, data-model.md invariants)", () => {
 
   it("holds exactly the inventory's panels, in page order", () => {
     const panelsOf = (key: string) => SETTINGS_TABS.find((tab) => tab.key === key)!.panels;
-    expect(panelsOf("site-wide")).toEqual(["contact"]);
+    expect(panelsOf("site-wide")).toEqual(["contact", "portal-links"]);
     expect(panelsOf("home")).toEqual(["hero", "video", "stats"]);
-    expect(panelsOf("admission")).toEqual(["admission-window", "admission-messages", "admission-classes"]);
+    expect(panelsOf("admission")).toEqual(["admission-window", "admission-messages", "class-levels", "admission-classes"]);
     expect(panelsOf("resources")).toEqual(["photo-gallery"]);
     expect(panelsOf("about")).toEqual([]);
-    expect(panelsOf("academics")).toEqual([]);
+    expect(panelsOf("academics")).toEqual(["syllabi", "examination"]);
     expect(panelsOf("careers")).toEqual([]);
   });
 
@@ -64,7 +64,11 @@ describe("settings panel registry (014, data-model.md invariants)", () => {
     expect(PANELS["admission-classes"].saveAccess).toBe("settings");
     expect(PANELS["admission-messages"].saveAccess).toBe("pages");
     expect(PANELS.contact.saveAccess).toBe("settings");
-    for (const key of ["hero", "video", "stats", "photo-gallery"] as const) expect(PANELS[key].saveAccess).toBe("pages");
+    // 014b: the footer's Portal links are Settings; the Class Levels table is Pages (ticking which are open stays Settings).
+    expect(PANELS["portal-links"].saveAccess).toBe("settings");
+    expect(PANELS["class-levels"].saveAccess).toBe("pages");
+    // 014b: Syllabi and Examination are page content too.
+    for (const key of ["hero", "video", "stats", "photo-gallery", "syllabi", "examination"] as const) expect(PANELS[key].saveAccess).toBe("pages");
   });
 
   it("getPanel refuses anything that is not a panel key", () => {
@@ -77,10 +81,10 @@ describe("visibleTabs", () => {
   const keys = (u: ReturnType<typeof user>) => visibleTabs(u).map((tab) => tab.key);
 
   it("main admin: every tab that has panels", () => {
-    expect(keys(user([], "main_admin"))).toEqual(["site-wide", "home", "admission", "resources"]);
+    expect(keys(user([], "main_admin"))).toEqual(["site-wide", "home", "academics", "admission", "resources"]);
   });
   it("Pages only", () => {
-    expect(keys(user(["pages"]))).toEqual(["home", "admission", "resources"]);
+    expect(keys(user(["pages"]))).toEqual(["home", "academics", "admission", "resources"]);
   });
   it("Settings only", () => {
     expect(keys(user(["settings"]))).toEqual(["site-wide", "admission"]);
@@ -118,5 +122,30 @@ describe("panelDefinition", () => {
 
   it("throws for the gallery, which has no settings group", () => {
     expect(() => panelDefinition(PANELS["photo-gallery"])).toThrow();
+  });
+});
+
+describe("014b panels", () => {
+  it("each new panel edits its own group, in full", () => {
+    expect(PANELS.syllabi.source).toMatchObject({ kind: "group", group: "syllabi", fields: ["levels"] });
+    expect(PANELS.examination.source).toMatchObject({ kind: "group", group: "examination", fields: ["blocks"] });
+    expect(PANELS["class-levels"].source).toMatchObject({ kind: "group", group: "classLevels", fields: ["ageReferenceDate", "levels"] });
+    expect(PANELS["portal-links"].source).toMatchObject({ kind: "group", group: "portalLinks", fields: ["links"] });
+  });
+
+  it("the custom editors are named by the panels that need them, and by no other", () => {
+    const withEditor = Object.fromEntries(PANEL_KEYS.filter((key) => PANELS[key].editor).map((key) => [key, PANELS[key].editor]));
+    expect(withEditor).toEqual({ "admission-classes": "classes-checklist", syllabi: "syllabus" });
+  });
+
+  it("View on site points at the public section, and the footer for Portal links", () => {
+    expect(PANELS.syllabi.viewOnSite).toBe("/academics#syllabi");
+    expect(PANELS.examination.viewOnSite).toBe("/academics#examination");
+    expect(PANELS["class-levels"].viewOnSite).toBe("/admission#class-levels");
+    expect(PANELS["portal-links"].viewOnSite).toBe("/#site-footer");
+  });
+
+  it("the syllabus panel definition carries the group's total-topics rule", () => {
+    expect(panelDefinition(PANELS.syllabi).rules?.map((rule) => rule.kind)).toEqual(["maxTotalLines"]);
   });
 });

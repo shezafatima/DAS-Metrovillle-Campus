@@ -2,6 +2,7 @@ import { SkipLink } from "@/components/site-shell/skip-link";
 import { Header } from "@/components/site-shell/header";
 import { Footer } from "@/components/site-shell/footer";
 import { getContactDetails } from "@/lib/contact-details";
+import { getPublicSettings } from "@/lib/settings/public";
 
 /**
  * The public site's chrome — skip link, header (nav), the
@@ -11,11 +12,12 @@ import { getContactDetails } from "@/lib/contact-details";
  * root layout without inheriting it.
  *
  * Since 005 it reads the contact details (the social links shown in the top
- * bar and footer) from Settings once, and hands them down. That read is
- * cached and never throws, so the shell always renders.
+ * bar and footer) from Settings once, and hands them down. Since 014b it also
+ * reads the footer's Portal Links. Both reads are cached and never throw, so
+ * the shell always renders.
  */
 export async function PublicShell({ children }: { children: React.ReactNode }) {
-  const contact = await getContactDetails();
+  const [contact, portal] = await Promise.all([getContactDetails(), getPublicSettings("portalLinks")]);
   // Header is async since 017 (its About entries come from the About view); awaiting it here keeps the shell testable.
   const header = await Header();
   return (
@@ -25,7 +27,7 @@ export async function PublicShell({ children }: { children: React.ReactNode }) {
       <main id="main-content" className="flex flex-1 flex-col">
         {children}
       </main>
-      <Footer contact={contact} />
+      <Footer contact={contact} portalLinks={portal.links} />
     </>
   );
 }

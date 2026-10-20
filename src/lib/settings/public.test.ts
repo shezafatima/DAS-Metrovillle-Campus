@@ -175,3 +175,167 @@ describe("getPublicSettings: never an error (FR-032)", () => {
     await expect(getPublicSettings("video")).resolves.toEqual({ youtubeUrl: "", youtubeId: null });
   });
 });
+
+describe("getPublicSettings: portalLinks (014b)", () => {
+  const link = (id: string, o: Record<string, unknown> = {}) => ({ id, deletedAt: null, label: `Link ${id}`, url: `https://${id}.example.org/`, ...o });
+
+  it("a never-saved group has no links, so the footer column is hidden", async () => {
+    findById.mockResolvedValue(null);
+    const { getPublicSettings } = await load();
+    expect(await getPublicSettings("portalLinks")).toEqual({ links: [] });
+  });
+
+  it("returns the live links in saved order, without deleted ones or any envelope", async () => {
+    findById.mockResolvedValue({
+      version: 2,
+      updatedBy: "a@b.pk",
+      data: { links: [link("a"), link("gone", { deletedAt: new Date() }), link("b")] },
+    });
+    const { getPublicSettings } = await load();
+    const result = await getPublicSettings("portalLinks");
+    expect(result.links.map((entry) => entry.id)).toEqual(["a", "b"]);
+    expect(JSON.stringify(result)).not.toContain("deletedAt");
+    expect(JSON.stringify(result)).not.toContain("updatedBy");
+  });
+
+  it("marks an http:// address as insecure and an https:// one as not", async () => {
+    findById.mockResolvedValue({
+      version: 1,
+      updatedBy: "a@b.pk",
+      data: { links: [link("a", { url: "https://secure.example.org/" }), link("b", { url: "http://203.0.113.5/login" }), link("c", { url: "HTTP://UPPER.example.org" })] },
+    });
+    const { getPublicSettings } = await load();
+    expect((await getPublicSettings("portalLinks")).links.map((entry) => entry.insecure)).toEqual([false, true, true]);
+  });
+
+  it("leaves out a link that has lost its label or address", async () => {
+    findById.mockResolvedValue({
+      version: 1,
+      updatedBy: "a@b.pk",
+      data: { links: [link("a", { label: "  " }), link("b", { url: "" }), link("c")] },
+    });
+    const { getPublicSettings } = await load();
+    expect((await getPublicSettings("portalLinks")).links.map((entry) => entry.id)).toEqual(["c"]);
+  });
+});
+
+describe("getPublicSettings: classLevels (014b)", () => {
+  const level = (id: string, o: Record<string, unknown> = {}) => ({ id, deletedAt: null, name: `Level ${id}`, ageRule: "3 to 4 years", ...o });
+
+  it("a never-saved group has no rows and the 31 July reference date", async () => {
+    findById.mockResolvedValue(null);
+    const { getPublicSettings } = await load();
+    expect(await getPublicSettings("classLevels")).toEqual({ ageReferenceDate: "07-31", ageHeader: "31 July", levels: [] });
+  });
+
+  it("returns the live rows in saved order and the header for the saved date", async () => {
+    findById.mockResolvedValue({
+      version: 2,
+      updatedBy: "a@b.pk",
+      data: { ageReferenceDate: "04-01", levels: [level("a"), level("gone", { deletedAt: new Date() }), level("b", { ageRule: "5 to 6 years" })] },
+    });
+    const { getPublicSettings } = await load();
+    const result = await getPublicSettings("classLevels");
+    expect(result.ageHeader).toBe("1 April");
+    expect(result.levels).toEqual([
+      { id: "a", name: "Level a", ageRule: "3 to 4 years" },
+      { id: "b", name: "Level b", ageRule: "5 to 6 years" },
+    ]);
+    expect(JSON.stringify(result)).not.toContain("deletedAt");
+  });
+
+  it("falls back to 31 July when the stored date is not a real day-month", async () => {
+    findById.mockResolvedValue({ version: 1, updatedBy: "a@b.pk", data: { ageReferenceDate: "04-31", levels: [level("a")] } });
+    const { getPublicSettings } = await load();
+    expect(await getPublicSettings("classLevels")).toMatchObject({ ageReferenceDate: "07-31", ageHeader: "31 July" });
+  });
+
+  it("leaves out a row that has lost its name", async () => {
+    findById.mockResolvedValue({ version: 1, updatedBy: "a@b.pk", data: { ageReferenceDate: "07-31", levels: [level("a", { name: "  " }), level("b")] } });
+    const { getPublicSettings } = await load();
+    expect((await getPublicSettings("classLevels")).levels.map((entry) => entry.id)).toEqual(["b"]);
+  });
+});
+
+describe("getPublicSettings: syllabi (014b)", () => {
+  const group = (id: string, o: Record<string, unknown> = {}) => ({ id, heading: "", intro: "", topics: ["a topic"], ...o });
+  const subject = (id: string, groups: Record<string, unknown>[], o: Record<string, unknown> = {}) => ({ id, name: `Subject ${id}`, groups, ...o });
+  const level = (id: string, subjects: Record<string, unknown>[], o: Record<string, unknown> = {}) => ({ id, deletedAt: null, name: `Level ${id}`, subjects, ...o });
+  const load2 = async (levels: unknown[]) => {
+    findById.mockResolvedValue({ version: 1, updatedBy: "a@b.pk", data: { levels } });
+    const { getPublicSettings } = await load();
+    return getPublicSettings("syllabi");
+  };
+
+  it("a never-saved group has no levels, so the section is hidden", async () => {
+    findById.mockResolvedValue(null);
+    const { getPublicSettings } = await load();
+    expect(await getPublicSettings("syllabi")).toEqual({ levels: [] });
+  });
+
+  it("returns the levels with subjects, groups, intro paragraphs and topics, in saved order, with a slug per level", async () => {
+    const result = await load2([
+      level("a", [subject("s1", [group("g1", { heading: "Reading", intro: "First.\n\nSecond.", topics: [" one ", "", "two"] })])], { name: "Play Group" }),
+      level("b", [subject("s2", [group("g2")])], { name: "Class 1" }),
+    ]);
+    expect(result.levels.map((entry) => [entry.name, entry.slug])).toEqual([
+      ["Play Group", "play-group"],
+      ["Class 1", "class-1"],
+    ]);
+    expect(result.levels[0].subjects[0].groups[0]).toEqual({ id: "g1", heading: "Reading", paragraphs: ["First.", "Second."], topics: ["one", "two"] });
+  });
+
+  it("leaves out removed levels, a level with no subject, and a subject or group with nothing to show", async () => {
+    const result = await load2([
+      level("gone", [subject("s", [group("g")])], { deletedAt: new Date() }),
+      level("empty", []),
+      level("no-groups", [subject("s0", [])]),
+      level("blank-group", [subject("s1", [group("g1", { intro: "  ", topics: [] })])]),
+      level("kept", [subject("s2", [group("g2", { intro: "", topics: [] }), group("g3")]), subject("s3", [])]),
+    ]);
+    expect(result.levels.map((entry) => entry.id)).toEqual(["kept"]);
+    expect(result.levels[0].subjects.map((entry) => entry.id)).toEqual(["s2"]);
+    expect(result.levels[0].subjects[0].groups.map((entry) => entry.id)).toEqual(["g3"]);
+  });
+
+  it("numbers repeated level names in the slugs", async () => {
+    const result = await load2([level("a", [subject("s", [group("g")])], { name: "Class 1" }), level("b", [subject("s2", [group("g2")])], { name: "class 1" })]);
+    expect(result.levels.map((entry) => entry.slug)).toEqual(["class-1", "class-1-2"]);
+  });
+
+  it("carries no deletedAt marker, version or author", async () => {
+    const result = await load2([level("a", [subject("s", [group("g")])])]);
+    expect(JSON.stringify(result)).not.toMatch(/deletedAt|updatedBy|version/);
+  });
+});
+
+describe("getPublicSettings: examination (014b)", () => {
+  const block = (id: string, o: Record<string, unknown> = {}) => ({ id, deletedAt: null, heading: `Block ${id}`, body: "One.\n\nTwo.", ...o });
+
+  it("a never-saved group has no blocks, so the section is hidden", async () => {
+    findById.mockResolvedValue(null);
+    const { getPublicSettings } = await load();
+    expect(await getPublicSettings("examination")).toEqual({ blocks: [] });
+  });
+
+  it("returns the live blocks in order with the body split into paragraphs", async () => {
+    findById.mockResolvedValue({
+      version: 1,
+      updatedBy: "a@b.pk",
+      data: { blocks: [block("a"), block("gone", { deletedAt: new Date() }), block("b", { body: "Single\nline folded." })] },
+    });
+    const { getPublicSettings } = await load();
+    const result = await getPublicSettings("examination");
+    expect(result.blocks).toEqual([
+      { id: "a", heading: "Block a", paragraphs: ["One.", "Two."] },
+      { id: "b", heading: "Block b", paragraphs: ["Single line folded."] },
+    ]);
+    expect(JSON.stringify(result)).not.toContain("deletedAt");
+  });
+
+  it("leaves out a block that has lost its heading or its body", async () => {
+    findById.mockResolvedValue({ version: 1, updatedBy: "a@b.pk", data: { blocks: [block("a", { heading: " " }), block("b", { body: "  " }), block("c")] } });
+    const { getPublicSettings } = await load();
+    expect((await getPublicSettings("examination")).blocks.map((entry) => entry.id)).toEqual(["c"]);
+  });
+});

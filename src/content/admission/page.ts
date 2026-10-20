@@ -9,4 +9,9 @@ export const admissionPage: AdmissionPage = {
   uniformLabel: "Uniforms",
   // Same pattern as the home cards' flip button ("…: show details").
   flipUniform: (title) => `${title}: show the uniform list`,
+  classLevels: {
+    levelHeading: "Class level",
+    ageHeading: (date) => `Age on ${date}`,
+    caption: "Class levels and the age a child must be",
+  },
 };

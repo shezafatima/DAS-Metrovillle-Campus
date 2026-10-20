@@ -5,11 +5,12 @@ import { headers } from "next/headers";
 import { settingsCopy } from "@/content/admin";
 import { requireAdminAccess, type AdminSession } from "@/lib/dal";
 import { logSecurityEvent } from "@/lib/log";
+import { confirmPanel } from "@/lib/settings/confirm";
 import { FINGERPRINT_PATTERN } from "@/lib/settings/fingerprint";
 import { savePanel } from "@/lib/settings/mutations";
-import { getPanel, type SaveAccess } from "@/lib/settings/panels";
+import { SETTINGS_TABS, getPanel, type SaveAccess } from "@/lib/settings/panels";
 import { SETTINGS_TAG, settingsGroupTag } from "@/lib/settings/public";
-import type { SavePanelResult } from "@/lib/settings/types";
+import type { ConfirmPanelResult, SavePanelResult } from "@/lib/settings/types";
 
 /**
  * The Settings panel saves (014, contracts/panel-actions.md, ADR-0013): one
@@ -41,6 +42,57 @@ export async function savePagesPanel(input: SavePanelInput): Promise<SavePanelRe
   const access = await requireAdminAccess("pages");
   if (!access.ok) return { status: "error", error: access.reason };
   return savePanelAs("pages", access.session, input);
+}
+
+interface ConfirmPanelInput {
+  panel: string;
+}
+
+/**
+ * "Mark as confirmed by client" (014b, contracts/panel-actions.md): clears the
+ * "pending client confirmation" notice on a seeded section. One action per
+ * permission, like the saves, so the access inventory can prove each one.
+ */
+export async function confirmSettingsPanel(input: ConfirmPanelInput): Promise<ConfirmPanelResult> {
+  const access = await requireAdminAccess("settings");
+  if (!access.ok) return { status: "error", error: access.reason };
+  return confirmPanelAs("settings", access.session, input);
+}
+
+export async function confirmPagesPanel(input: ConfirmPanelInput): Promise<ConfirmPanelResult> {
+  const access = await requireAdminAccess("pages");
+  if (!access.ok) return { status: "error", error: access.reason };
+  return confirmPanelAs("pages", access.session, input);
+}
+
+async function confirmPanelAs(as: SaveAccess, session: AdminSession, input: ConfirmPanelInput): Promise<ConfirmPanelResult> {
+  const panel = getPanel(input?.panel);
+  if (!panel || panel.source.kind !== "group") return { status: "error", error: "invalid", fields: { panel: settingsCopy.toasts.invalid } };
+
+  // A panel of the other permission: the caller holds this action's permission but not the panel's.
+  if (panel.saveAccess !== as) {
+    const headerList = await headers();
+    logSecurityEvent({
+      type: "access_denied",
+      email: session.email,
+      access: panel.saveAccess,
+      panel: panel.key,
+      outcome: headerList.get("x-pathname") ?? "forbidden",
+    });
+    return { status: "error", error: "forbidden" };
+  }
+
+  let result: { changed: boolean };
+  try {
+    result = await confirmPanel(panel, session.email);
+  } catch {
+    return { status: "error", error: "unavailable" };
+  }
+  if (result.changed) {
+    const tab = SETTINGS_TABS.find((entry) => entry.panels.includes(panel.key));
+    if (tab) revalidatePath(tab.href);
+  }
+  return { status: "success", changed: result.changed };
 }
 
 async function savePanelAs(as: SaveAccess, session: AdminSession, input: SavePanelInput): Promise<SavePanelResult> {

@@ -127,7 +127,7 @@ Written by `savePanel` after a successful write whenever the save removed at lea
 | `at` | Date | the save time |
 | `removed` | `{ path: string; label: string; value: object }[]` | one entry per removed item, at the highest level removed (a removed level includes its subjects and groups in `value`); `path` as before the save (`levels.2.subjects.0`); `label` a readable trail ("Class 3 · English") |
 
-Index `{ group: 1, at: -1 }`. Kept indefinitely: public school content, and no personal data beyond the admin's email (as in `userChanges`). Never written for a save that only edits or reorders.
+Index `{ group: 1, at: -1 }`. Kept indefinitely: public school content, and no personal data beyond the admin's email (as in `userChanges`). Never written for a save that only edits or reorders, nor for a group's first save (nothing was stored).
 
 ## Security log (`src/lib/log.ts`) — new event types
 

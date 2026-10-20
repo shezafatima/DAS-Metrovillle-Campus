@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { Shirt } from "lucide-react";
 import { AboutSection } from "@/components/about/about-section";
+import type { AboutBackground } from "@/lib/about/view";
 import { FlipCoverflow } from "@/components/ui/flip-coverflow";
 import type { UniformGroup } from "@/lib/admission/schema";
 
@@ -30,9 +31,12 @@ export function UniformSection({
   label,
   flipLabels,
   positionLabels,
+  background = "muted",
 }: {
   heading: string;
   groups: UniformGroup[];
+  /** "muted" by default; the page passes "surface" when the Class Levels section above is already muted (014b). */
+  background?: AboutBackground;
   label: string;
   /** Per group, in order: the flip button's name ("Kids Uniform – Boys: show the uniform list"). */
   flipLabels: string[];
@@ -40,7 +44,7 @@ export function UniformSection({
   positionLabels: string[];
 }) {
   return (
-    <AboutSection id="uniform" background="muted" heading={heading}>
+    <AboutSection id="uniform" background={background} heading={heading}>
       <FlipCoverflow
         as="div"
         label={label}

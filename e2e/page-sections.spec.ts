@@ -14,8 +14,8 @@ const REDIRECTS: [string, string][] = [
   ...Object.entries(PAGES)
     .filter(([page]) => page === "/admission")
     .flatMap(([page, ids]) => ids.map((id): [string, string] => [`${page}/${id}`, `${page}#${id}`])),
-  // 020: Class Levels is skipped until the client confirms it.
-  ["/admission/class-levels", "/admission"],
+  // 014b: Class Levels is admin-managed; with no rows the anchor matches nothing and the page opens at the top.
+  ["/admission/class-levels", "/admission#class-levels"],
   // About was remapped in 017 (contracts/page-structure.md).
   ["/about/overview", "/about#our-story"],
   ["/about/salient-features", "/about"],
@@ -81,22 +81,21 @@ test.describe("single pages with anchored sections", () => {
     }
   });
 
-  test("every portal link in the footer opens a placeholder page, not a 404", async ({ page, request }) => {
+  test("no link in the footer points at a retired /portal page, and the old placeholder addresses redirect to the home page (014b)", async ({ page, request }) => {
     test.setTimeout(180_000);
     await page.goto("/resources");
-    const hrefs = new Set<string>();
-    for (const link of await page.getByRole("contentinfo").locator('a[href^="/portal/"]').all()) hrefs.add((await link.getAttribute("href"))!);
-    expect(hrefs.size).toBeGreaterThanOrEqual(6);
-    for (const href of hrefs) {
-      const res = await request.get(href, { timeout: 90_000 });
-      expect(res.status(), href).toBe(200);
-      expect(await res.text(), href).toContain("content is coming in a later feature");
+    const hrefs = await page.getByRole("contentinfo").locator("a").evaluateAll((links) => links.map((a) => a.getAttribute("href") ?? ""));
+    expect(hrefs.filter((href) => href.startsWith("/portal"))).toEqual([]);
+    for (const slug of ["das-portal", "eportal", "student-login", "mail-login", "lms-app", "alumni-registration"]) {
+      const res = await request.get(`/portal/${slug}`, { timeout: 90_000, maxRedirects: 0 });
+      expect(res.status(), slug).toBe(308);
+      expect(res.headers().location, slug).toMatch(/^(https?:\/\/[^/]+)?\/$/);
     }
   });
 
-  test("the real pages stay: careers, contact, news, portal", async ({ request }) => {
+  test("the real pages stay: careers, contact, news", async ({ request }) => {
     test.setTimeout(180_000);
-    for (const path of ["/careers", "/contact", "/news", "/portal/lms-app"]) {
+    for (const path of ["/careers", "/contact", "/news"]) {
       expect((await request.get(path, { timeout: 90_000 })).status(), path).toBe(200);
     }
   });

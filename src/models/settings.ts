@@ -16,6 +16,13 @@ import mongoose, { Schema, type Model } from "mongoose";
  * (src/lib/settings/mutations.ts). `panelSaves` (014, optional) records who
  * last saved each Settings panel and when; a record saved before 014 has
  * none, and readers fall back to `updatedBy` / `updatedAt`.
+ *
+ * `pendingConfirmation` (014b, optional) marks content copied from the reference
+ * site by `seed:sections --confirm` as awaiting the client's confirmation. It
+ * lives beside `data`, not in it, so it is in no panel fingerprint and never
+ * bumps `version`: confirming never conflicts with an open editor. Only the
+ * seed script sets it, and only the confirm actions clear it (ordinary saves
+ * never touch it).
  */
 export interface SettingsDoc {
   _id: string;
@@ -24,6 +31,7 @@ export interface SettingsDoc {
   updatedBy: string;
   updatedAt: Date;
   panelSaves?: Record<string, { by: string; at: Date }>;
+  pendingConfirmation?: { source: string; seededAt: Date } | null;
 }
 
 const settingsSchema = new Schema<SettingsDoc>(
@@ -33,6 +41,7 @@ const settingsSchema = new Schema<SettingsDoc>(
     version: { type: Number, required: true, min: 1 },
     updatedBy: { type: String, required: true },
     panelSaves: { type: Schema.Types.Mixed, required: false },
+    pendingConfirmation: { type: Schema.Types.Mixed, required: false },
   },
   { collection: "settings", timestamps: { createdAt: false, updatedAt: true }, minimize: false },
 );

@@ -37,8 +37,6 @@ const nextConfig: NextConfig = {
       ...sectionRedirects,
       ...legacyAboutRedirects.map((redirect) => ({ ...redirect, permanent: true })),
       ...legacyAcademicsRedirects.map((redirect) => ({ ...redirect, permanent: true })),
-      // 020: Class Levels is skipped until the client confirms its content; a later feature restores the section.
-      { source: "/admission/class-levels", destination: "/admission", permanent: true },
       // Hifz-e-Quran was a top-level page; it is now a section of Academics.
       { source: "/hifz-e-quran", destination: "/academics#hifz-e-quran", permanent: true },
       // 007: the gallery is the #photo-gallery section of /resources, not its
@@ -59,6 +57,10 @@ const nextConfig: NextConfig = {
       })),
       // The Campuses page is gone; Contact is the nearest page.
       { source: "/campuses", destination: "/contact", permanent: true },
+      // 014b: the /portal/<slug> "available soon" placeholders are retired. The footer's portal links are
+      // admin-managed external addresses now (Settings → Site-wide), so every old placeholder address lands on the home page.
+      { source: "/portal", destination: "/", permanent: true },
+      { source: "/portal/:path*", destination: "/", permanent: true },
       // 014: Settings moved into page tabs. Each old group page lands on its tab, at its panel. The
       // destination page checks access itself, so a redirect reveals nothing but this fixed mapping.
       { source: "/admin/settings/contact", destination: "/admin/settings/site-wide#contact", permanent: true },

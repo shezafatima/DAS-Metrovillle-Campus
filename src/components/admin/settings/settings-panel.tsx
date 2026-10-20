@@ -3,7 +3,12 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ChevronDown } from "lucide-react";
+import { confirmPagesPanel, confirmSettingsPanel } from "@/app/admin/(dashboard)/settings/actions";
+import { AdminConfirmDeleteDialog } from "@/components/admin/admin-delete-dialog";
+import { toast } from "@/components/ui/toaster";
 import { settingsCopy } from "@/content/admin";
+import { formatAdminDateTime } from "@/lib/admin-datetime";
+import { PANELS, isPanelKey } from "@/lib/settings/panels";
 import { cn } from "cn";
 import { usePanelUnsaved } from "./unsaved-panels";
 
@@ -15,6 +20,9 @@ import { usePanelUnsaved } from "./unsaved-panels";
  * row is sticky, so it stays visible while any part of the panel is on
  * screen. A collapsed body is `hidden`, not unmounted, so its edits survive.
  * Opening `/admin/settings/<tab>#<anchor>` opens that panel and scrolls to it.
+ *
+ * A seeded section (014b) shows a notice that it awaits the client's confirmation, with a
+ * "Mark as confirmed by client" button for someone who may change the panel. Saving never clears it.
  */
 export function SettingsPanel({
   panel,
@@ -23,6 +31,8 @@ export function SettingsPanel({
   viewOnSite,
   status,
   warning,
+  pending,
+  canConfirm = false,
   children,
 }: {
   panel: string;
@@ -33,12 +43,33 @@ export function SettingsPanel({
   status?: string;
   /** A problem to fix (013, no classes listed while open). */
   warning?: string;
+  /** Set while seeded content awaits the client's confirmation (014b): where it was copied from, and when. */
+  pending?: { source: string; seededAt: string } | null;
+  /** The user may change this panel, so they may also mark it as confirmed. */
+  canConfirm?: boolean;
   children: React.ReactNode;
 }) {
   const [open, setOpen] = useState(true);
+  const [confirmed, setConfirmed] = useState(false);
   const unsaved = usePanelUnsaved(panel);
   const titleId = `${anchor}-title`;
   const bodyId = `${anchor}-body`;
+
+  async function markConfirmed() {
+    if (!isPanelKey(panel)) return;
+    const confirm = PANELS[panel].saveAccess === "settings" ? confirmSettingsPanel : confirmPagesPanel;
+    try {
+      const result = await confirm({ panel });
+      if (result.status === "success") {
+        setConfirmed(true);
+        toast({ title: settingsCopy.pending.confirmed(title), type: "success" });
+      } else {
+        toast({ title: result.error === "forbidden" ? settingsCopy.toasts.forbidden : result.error === "unauthorized" ? settingsCopy.toasts.unauthorized : settingsCopy.pending.failed, type: "error" });
+      }
+    } catch {
+      toast({ title: settingsCopy.pending.failed, type: "error" });
+    }
+  }
 
   useEffect(() => {
     function openIfTargeted() {
@@ -82,6 +113,16 @@ export function SettingsPanel({
           <p role="status" data-testid="settings-status" className="font-semibold text-foreground text-sm">
             {status}
           </p>
+        )}
+        {pending && !confirmed && (
+          <div role="status" data-testid="pending-notice" className="flex flex-col gap-3 rounded-md border border-border bg-muted px-3 py-2">
+            <p className="font-semibold text-foreground text-sm">{settingsCopy.pending.notice(pending.source, formatAdminDateTime(new Date(pending.seededAt)))}</p>
+            {canConfirm && (
+              <div>
+                <AdminConfirmDeleteDialog itemName={title} copy={settingsCopy.pending.dialog} triggerLabel={settingsCopy.pending.confirmButton} onConfirm={markConfirmed} />
+              </div>
+            )}
+          </div>
         )}
         {warning && (
           <p role="alert" data-testid="settings-warning" className="rounded-md border border-destructive bg-destructive/10 px-3 py-2 font-semibold text-foreground text-sm">

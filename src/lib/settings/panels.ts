@@ -25,8 +25,12 @@ export const PANEL_KEYS = [
   "stats",
   "admission-window",
   "admission-messages",
+  "class-levels",
   "admission-classes",
   "photo-gallery",
+  "portal-links",
+  "syllabi",
+  "examination",
 ] as const;
 export type PanelKey = (typeof PANEL_KEYS)[number];
 
@@ -34,6 +38,14 @@ export type PanelKey = (typeof PANEL_KEYS)[number];
 export type SaveAccess = "settings" | "pages";
 
 export type PanelSource = { kind: "group"; group: GroupKey; fields: readonly string[] } | { kind: "gallery" };
+
+/**
+ * A custom editor a panel renders instead of the generic field list (014b):
+ * the nested Syllabi editor and the Class Levels checklist. The state, the
+ * schema and the save path are the same as for every other panel; only the
+ * controls differ (SettingsPanelForm renders it, panel-editor.tsx maps it).
+ */
+export type PanelEditorKind = "syllabus" | "classes-checklist";
 
 export interface SettingsPanel {
   key: PanelKey;
@@ -45,6 +57,8 @@ export interface SettingsPanel {
   viewOnSite: string;
   saveAccess: SaveAccess;
   source: PanelSource;
+  /** Set when the panel needs a custom editor; absent for the generic field list. */
+  editor?: PanelEditorKind;
 }
 
 export interface SettingsTab {
@@ -111,6 +125,34 @@ export const PANELS: Record<PanelKey, SettingsPanel> = {
     saveAccess: "pages",
     source: { kind: "group", group: "admission", fields: ["announcement", "closedMessage"] },
   },
+  // The Syllabi section of /academics (014b): nested levels, subjects and groups, edited by its own editor.
+  syllabi: {
+    key: "syllabi",
+    title: titles.syllabi,
+    anchor: "syllabi",
+    viewOnSite: "/academics#syllabi",
+    saveAccess: "pages",
+    source: { kind: "group", group: "syllabi", fields: allFields("syllabi") },
+    editor: "syllabus",
+  },
+  // The Examination section of /academics (014b): headed blocks of text, shown as cards.
+  examination: {
+    key: "examination",
+    title: titles.examination,
+    anchor: "examination",
+    viewOnSite: "/academics#examination",
+    saveAccess: "pages",
+    source: { kind: "group", group: "examination", fields: allFields("examination") },
+  },
+  // The table on /admission (014b). Pages edits it; ticking which levels are open stays under Settings (below).
+  "class-levels": {
+    key: "class-levels",
+    title: titles["class-levels"],
+    anchor: "class-levels",
+    viewOnSite: "/admission#class-levels",
+    saveAccess: "pages",
+    source: { kind: "group", group: "classLevels", fields: allFields("classLevels") },
+  },
   "admission-classes": {
     key: "admission-classes",
     title: titles["admission-classes"],
@@ -118,6 +160,17 @@ export const PANELS: Record<PanelKey, SettingsPanel> = {
     viewOnSite: "/admission/register",
     saveAccess: "settings",
     source: { kind: "group", group: "admission", fields: ["classes"] },
+    // 014b: a checklist of the Class Levels rows instead of typed names.
+    editor: "classes-checklist",
+  },
+  // The footer's Portal Links column (014b). Every public page has the footer, so "View on site" points at it.
+  "portal-links": {
+    key: "portal-links",
+    title: titles["portal-links"],
+    anchor: "portal-links",
+    viewOnSite: "/#site-footer",
+    saveAccess: "settings",
+    source: { kind: "group", group: "portalLinks", fields: allFields("portalLinks") },
   },
   "photo-gallery": {
     key: "photo-gallery",
@@ -139,12 +192,12 @@ const tab = (key: TabKey, access: Access, panels: readonly PanelKey[]): Settings
 
 /** The tab bar's order. About, Academics and Careers get panels in 014 slices 2–3. */
 export const SETTINGS_TABS: readonly SettingsTab[] = [
-  tab("site-wide", "settings", ["contact"]),
+  tab("site-wide", "settings", ["contact", "portal-links"]),
   tab("home", "pages", ["hero", "video", "stats"]),
   tab("about", "pages", []),
-  tab("academics", "pages", []),
+  tab("academics", "pages", ["syllabi", "examination"]),
   // Opens for either permission (spec Q1); each panel enforces its own.
-  tab("admission", "settings_or_pages", ["admission-window", "admission-messages", "admission-classes"]),
+  tab("admission", "settings_or_pages", ["admission-window", "admission-messages", "class-levels", "admission-classes"]),
   tab("resources", "pages", ["photo-gallery"]),
   tab("careers", "pages", []),
 ];
@@ -183,7 +236,7 @@ export function panelDefinition(panel: SettingsPanel): GroupDefinition {
   if (cached) return cached;
   const group = GROUPS[panel.source.group];
   const keys = new Set(panel.source.fields);
-  const rules = (group.rules ?? []).filter((rule) => keys.has(rule.from) && keys.has(rule.to));
+  const rules = (group.rules ?? []).filter((rule) => (rule.kind === "dateOrder" ? keys.has(rule.from) && keys.has(rule.to) : keys.has(rule.path.split(".")[0])));
   const def: GroupDefinition = {
     key: group.key,
     label: panel.title,

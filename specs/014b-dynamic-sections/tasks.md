@@ -35,7 +35,7 @@ description: "Tasks for 014b-dynamic-sections (Syllabi, Examination, Class Level
 
 **Purpose**: Make sure slice 1 is the base, and record the baseline.
 
-- [ ] T001 Confirm with the user that 014 slice 1 is committed on `014-page-settings` (its T066–T068 were open when 014b was specified), and that `014b-dynamic-sections` contains that commit. Do not commit anything yourself unless the user asks. If slice 1 is still uncommitted, stop and ask.
+- [X] T001 Confirm with the user that 014 slice 1 is committed on `014-page-settings` (its T066–T068 were open when 014b was specified), and that `014b-dynamic-sections` contains that commit. Do not commit anything yourself unless the user asks. If slice 1 is still uncommitted, stop and ask.
 - [ ] T002 Record the failure set before any change. Run `npx vitest run`, then (dev server pre-started) `npx playwright test e2e/admin-settings-*.spec.ts e2e/registration*.spec.ts e2e/admin-registrations*.spec.ts e2e/admission*.spec.ts e2e/page-sections.spec.ts e2e/admin-roles-access-matrix.spec.ts e2e/site-shell*.spec.ts`, one run after the other. Save the failing test titles to `specs/014b-dynamic-sections/baseline-failures.txt`.
 
 ---

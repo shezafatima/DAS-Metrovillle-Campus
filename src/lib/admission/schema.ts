@@ -84,4 +84,13 @@ export type AdmissionPage = z.infer<typeof admissionPageSchema> & {
   closesOn: (date: string) => string;
   /** The uniform card flip button's name. */
   flipUniform: (title: string) => string;
+  /** The Class Levels table's words (014b). */
+  classLevels: {
+    /** The first column's header, and the label of the stacked rows on phones. */
+    levelHeading: string;
+    /** The second column's header for a reference date written as "31 July": "Age on 31 July". */
+    ageHeading: (date: string) => string;
+    /** Names the table for screen readers. */
+    caption: string;
+  };
 };

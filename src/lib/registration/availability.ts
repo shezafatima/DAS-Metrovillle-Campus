@@ -4,11 +4,13 @@ import { registrationCopy } from "@/content/registration";
 import { currentTime } from "@/lib/admission/server";
 import { admissionWindowState, karachiToday, type AdmissionWindowState } from "@/lib/admission/window";
 import { getPublicSettings } from "@/lib/settings/public";
+import { offeredClasses } from "./offered-classes";
 
 /**
  * "Is registration open?" (013 research §2, ADR-0012): the admission window is
- * open (020's one window rule) AND at least one class is listed. The page, the
- * submit route and the Apply Now link all ask this one function.
+ * open (020's one window rule) AND at least one class is offered (014b: a ticked
+ * Class Level, or a typed name not linked to one yet; see offeredClasses). The
+ * page, the submit route and the Apply Now link all ask this one function.
  */
 export function registrationOpen(state: AdmissionWindowState, classes: readonly string[]): boolean {
   return state.kind === "open" && classes.length > 0;
@@ -16,7 +18,7 @@ export function registrationOpen(state: AdmissionWindowState, classes: readonly 
 
 export interface RegistrationAvailability {
   open: boolean;
-  /** The class list, in saved order. Empty when closed for that reason too. */
+  /** The classes the form offers (ticked Class Levels in table order, then unlinked names). Empty when closed for that reason too. */
   classes: string[];
   /** The Settings closed message, or the default line. */
   closedMessage: string;
@@ -32,11 +34,12 @@ export interface RegistrationAvailability {
  */
 export async function getRegistrationAvailability(): Promise<RegistrationAvailability> {
   await connection();
-  const [saved, now] = await Promise.all([getPublicSettings("admission"), currentTime()]);
-  const open = registrationOpen(admissionWindowState(saved, now), saved.classes);
+  const [saved, classLevels, now] = await Promise.all([getPublicSettings("admission"), getPublicSettings("classLevels"), currentTime()]);
+  const classes = offeredClasses(saved, classLevels);
+  const open = registrationOpen(admissionWindowState(saved, now), classes);
   return {
     open,
-    classes: saved.classes,
+    classes,
     closedMessage: saved.closedMessage || registrationCopy.closedDefault,
     today: karachiToday(now),
     now,
