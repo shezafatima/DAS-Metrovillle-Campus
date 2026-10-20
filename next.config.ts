@@ -1,12 +1,12 @@
 import type { NextConfig } from "next";
-import { legacyAboutRedirects, pageSections } from "./src/content/site-shell";
+import { legacyAboutRedirects, legacyAcademicsRedirects, pageSections } from "./src/content/site-shell";
 import { TEMPORARY_IMAGE_HOSTS } from "./src/lib/temporary-image-hosts";
 
-// Academics and Admission were sub-route pages; each is now one page whose former
-// sub-routes are sections (/academics/syllabi -> /academics#syllabi). About's sections
-// were remapped in 017, so its four old routes come from legacyAboutRedirects below.
-// Only these known routes redirect; any other slug is a 404.
-const sectionRedirects = (["academics", "admission"] as const).flatMap((page) =>
+// Admission was a sub-route page; it is now one page whose former sub-routes are sections
+// (/admission/uniform -> /admission#uniform). About (017) and Academics (018) had their
+// sections remapped, so their old routes come from legacyAboutRedirects and
+// legacyAcademicsRedirects below. Only these known routes redirect; any other slug is a 404.
+const sectionRedirects = (["admission"] as const).flatMap((page) =>
   pageSections[page].map((section) => ({
     source: `/${page}/${section.id}`,
     destination: `/${page}#${section.id}`,
@@ -36,6 +36,7 @@ const nextConfig: NextConfig = {
     return [
       ...sectionRedirects,
       ...legacyAboutRedirects.map((redirect) => ({ ...redirect, permanent: true })),
+      ...legacyAcademicsRedirects.map((redirect) => ({ ...redirect, permanent: true })),
       // Hifz-e-Quran was a top-level page; it is now a section of Academics.
       { source: "/hifz-e-quran", destination: "/academics#hifz-e-quran", permanent: true },
       // 007: the gallery is the #photo-gallery section of /resources, not its

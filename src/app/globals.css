@@ -157,6 +157,9 @@
   --aspect-about-story: 4 / 3;
   /* An alias of an existing navy (--color-cta-hover), not a new colour. */
   --color-about-panel: var(--color-cta-hover);
+  /* Academics (018): no reference page; composed values, see research/design-tokens.md "Academics page". An alias of the About story ratio. */
+  --aspect-academics-overview: var(--aspect-about-story);
+  --aspect-academics-photo: 4 / 3;
   /* Asymmetric shorthand (30px 25px 20px), so it isn't named
      --spacing-news-*: Tailwind's --spacing-* namespace only makes
      sense for single-dimension scale steps. Applied via .news-card in

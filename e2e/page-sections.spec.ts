@@ -6,19 +6,24 @@ import { test, expect, type Page } from "@playwright/test";
 const PAGES: Record<string, string[]> = {
   // Team and Messages visibility is checked in about.spec.ts.
   "/about": ["our-story", "vision-mission", "core-values"],
-  "/academics": ["academics-overview", "syllabi", "examinations", "teachers-training", "hifz-e-quran"],
+  "/academics": ["academic-overview", "teachers-training", "hifz-e-quran"],
   "/admission": ["admission-procedure", "class-levels", "uniform"],
 };
 
 const REDIRECTS: [string, string][] = [
   ...Object.entries(PAGES)
-    .filter(([page]) => page !== "/about")
-    .flatMap(([page, ids]) => ids.filter((id) => id !== "hifz-e-quran").map((id): [string, string] => [`${page}/${id}`, `${page}#${id}`])),
+    .filter(([page]) => page === "/admission")
+    .flatMap(([page, ids]) => ids.map((id): [string, string] => [`${page}/${id}`, `${page}#${id}`])),
   // About was remapped in 017 (contracts/page-structure.md).
   ["/about/overview", "/about#our-story"],
   ["/about/salient-features", "/about"],
   ["/about/management", "/about#management-team"],
   ["/about/messages", "/about#messages"],
+  // Academics was remapped in 018 (contracts/page-structure.md).
+  ["/academics/academics-overview", "/academics#academic-overview"],
+  ["/academics/syllabi", "/academics"],
+  ["/academics/examinations", "/academics"],
+  ["/academics/teachers-training", "/academics#teachers-training"],
   ["/hifz-e-quran", "/academics#hifz-e-quran"],
   ["/resources/scarlet-mobile-apps", "/resources#mobile-apps"],
   ["/resources/photo-gallery", "/resources#photo-gallery"],
@@ -77,7 +82,7 @@ test.describe("single pages with anchored sections", () => {
 
   test("unknown sub-routes are 404s", async ({ request }) => {
     test.setTimeout(180_000);
-    for (const path of ["/about/unknown", "/academics/unknown", "/admission/unknown", "/resources/unknown"]) {
+    for (const path of ["/about/unknown", "/academics/unknown", "/academics/academic-overview", "/academics/syllabus", "/admission/unknown", "/resources/unknown"]) {
       expect((await request.get(path, { timeout: 90_000 })).status(), path).toBe(404);
     }
   });
@@ -111,10 +116,10 @@ test.describe("single pages with anchored sections", () => {
       await page.evaluate(() => { (window as unknown as { __kept: boolean }).__kept = true; });
       const nav = page.getByRole("navigation", { name: "Main menu" });
       await nav.getByRole("link", { name: "Academics", exact: true }).hover();
-      await nav.getByRole("link", { name: "Examinations" }).click();
-      await expect(page).toHaveURL("/academics#examinations");
+      await nav.getByRole("link", { name: "Hifz-e-Quran" }).click();
+      await expect(page).toHaveURL("/academics#hifz-e-quran");
       const header = await headerHeight(page);
-      await expect.poll(async () => Math.round(await top(page, "examinations"))).toBe(Math.round(header));
+      await expect.poll(async () => Math.round(await top(page, "hifz-e-quran"))).toBe(Math.round(header));
       expect(await page.evaluate(() => (window as unknown as { __kept?: boolean }).__kept)).toBe(true);
     });
 

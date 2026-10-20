@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { imageRef, itemId, longText, text, uniqueIds } from "@/lib/content/fields";
 
 /**
  * Shapes of the About page content (017). The values match the 005 Settings
@@ -6,21 +7,7 @@ import { z } from "zod";
  * specs/017-about/contracts/about-content.md.
  */
 
-const text = (max: number) => z.string().trim().min(1).max(max);
-const longText = (max: number) =>
-  z
-    .string()
-    .max(max)
-    .refine((s) => s === s.trim() && !/\n{3,}/.test(s), "paragraphs separated by one blank line");
-const imageRef = z.object({
-  url: z.string().url().or(z.string().startsWith("/")),
-  publicId: z.string(),
-  width: z.number().int().positive(),
-  height: z.number().int().positive(),
-});
 const image = imageRef.nullable();
-const itemId = z.string().regex(/^[a-z0-9]+(-[a-z0-9]+)*$/);
-const uniqueIds = <T extends { id: string }>(items: T[]) => new Set(items.map((i) => i.id)).size === items.length;
 
 export const ICON_KEYS = [
   "compass",

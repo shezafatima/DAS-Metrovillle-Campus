@@ -1,7 +1,8 @@
 import { homeContent } from "@/content/home";
 import type { PublicVideo } from "@/lib/settings/public";
 import { SectionHeading } from "./section-heading";
-import { YouTubeEmbed } from "./youtube-embed";
+import { VideoEmbed } from "@/components/media/video-embed";
+import { youTubeEmbedUrl } from "@/lib/video/embed";
 
 /**
  * The reference's row 2 (006 FR-009, FR-010): the "Inspired By Excellence &
@@ -34,7 +35,15 @@ export function InspirationWhyChoose({ video }: { video: PublicVideo }) {
           </ul>
           <p className="font-body text-body text-text">{whyChoose.closing}</p>
         </div>
-        {video.youtubeId && <YouTubeEmbed id={video.youtubeId} title={whyChoose.video.title} playLabel={whyChoose.video.play} />}
+        {video.youtubeId && (
+          <VideoEmbed
+            video={{ provider: "youtube", embedUrl: youTubeEmbedUrl(video.youtubeId) }}
+            title={whyChoose.video.title}
+            playLabel={whyChoose.video.play}
+            poster={{ src: `https://i.ytimg.com/vi/${video.youtubeId}/hqdefault.jpg`, remote: true }}
+            testId="why-choose-video"
+          />
+        )}
       </div>
       </div>
     </section>

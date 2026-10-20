@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { contactInfo, footerContent, legacyAboutRedirects, navigationItems, pageSections, portalLinks } from "./site-shell";
+import { contactInfo, footerContent, legacyAboutRedirects, legacyAcademicsRedirects, navigationItems, pageSections, portalLinks } from "./site-shell";
 
 describe("About sections (017)", () => {
   it("are the five anchored sections, in order", () => {
@@ -18,6 +18,35 @@ describe("About sections (017)", () => {
       { source: "/about/salient-features", destination: "/about" },
       { source: "/about/management", destination: "/about#management-team" },
       { source: "/about/messages", destination: "/about#messages" },
+    ]);
+  });
+});
+
+describe("Academics sections (018)", () => {
+  it("are the three anchored sections, in order", () => {
+    expect(pageSections.academics).toEqual([
+      { id: "academic-overview", label: "Academic Overview" },
+      { id: "teachers-training", label: "Teachers' Training" },
+      { id: "hifz-e-quran", label: "Hifz-e-Quran" },
+    ]);
+  });
+
+  it("drives the Academics dropdown, with no Syllabi or Examination entry", () => {
+    const academics = navigationItems.find((i) => i.label === "Academics")!;
+    expect(academics.children!.map((c) => c.href)).toEqual([
+      "/academics#academic-overview",
+      "/academics#teachers-training",
+      "/academics#hifz-e-quran",
+    ]);
+    expect(academics.children!.some((c) => /syllabi|examination/i.test(c.label))).toBe(false);
+  });
+
+  it("redirects the four old sub-routes", () => {
+    expect(legacyAcademicsRedirects).toEqual([
+      { source: "/academics/academics-overview", destination: "/academics#academic-overview" },
+      { source: "/academics/syllabi", destination: "/academics" },
+      { source: "/academics/examinations", destination: "/academics" },
+      { source: "/academics/teachers-training", destination: "/academics#teachers-training" },
     ]);
   });
 });

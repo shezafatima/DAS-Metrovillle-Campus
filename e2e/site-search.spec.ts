@@ -20,11 +20,20 @@ test.describe("Site search", () => {
   test("finds a dropdown sub-page by its own label", async ({ page }) => {
     await page.goto("/");
     await page.getByRole("button", { name: "Search" }).click();
-    await page.getByRole("combobox").fill("syllabi");
-    await expect(page.getByRole("link", { name: /Syllabi/ })).toHaveAttribute(
+    await page.getByRole("combobox").fill("Teachers");
+    await expect(page.getByRole("link", { name: /Teachers' Training/ })).toHaveAttribute(
       "href",
-      "/academics#syllabi"
+      "/academics#teachers-training"
     );
+  });
+
+  test("finds no Academics result for the removed Syllabi and Examination sections", async ({ page }) => {
+    await page.goto("/");
+    await page.getByRole("button", { name: "Search" }).click();
+    for (const query of ["syllabi", "examination"]) {
+      await page.getByRole("combobox").fill(query);
+      await expect(page.locator('[role="listbox"] a[href^="/academics"]')).toHaveCount(0);
+    }
   });
 
   test("shows a no-results message for an unmatched query", async ({

@@ -15,16 +15,7 @@ export interface AboutView {
   teamCards: TeamCard[];
 }
 
-/** Placeholders show only in `next dev`, never in a build, unless the test seam forces production. */
-export function showTeamPlaceholders({
-  nodeEnv,
-  forceProduction,
-}: {
-  nodeEnv: string | undefined;
-  forceProduction: boolean;
-}): boolean {
-  return nodeEnv === "development" && !forceProduction;
-}
+export { showPlaceholders as showTeamPlaceholders } from "@/lib/content/placeholders";
 
 /**
  * Which About sections, team cards and backgrounds are shown. The page, the

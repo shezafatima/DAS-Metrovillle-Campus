@@ -689,3 +689,16 @@ Reused: `bg-primary`, `bg-topbar` (accent only: icon discs and a top rule), `bg-
 Core Values glow (added after review): the ring is 3px in `--color-gold` (`#ffd700`, the same value as `--color-signup-highlight`, under a neutral name), and the halo is the pale `--color-topbar`. Pale yellow alone was about 1.1:1 against the section background; the gold is about 1.4:1.
 
 Deviation (flagged, Constitution I): every value above is composed, not extracted. If the client supplies a design, extract it here first.
+
+## Academics page (018 — no matching reference page)
+
+das.edu.pk has no single Academics page with these sections (its Teachers' Training page is text only), so the page is composed from existing tokens. Two values are added, each named here first.
+
+| Token | Value | Use |
+|---|---|---|
+| `--aspect-academics-overview` | `var(--aspect-about-story)` (4 / 3) | Academic Overview image slot. An alias of the About story ratio |
+| `--aspect-academics-photo` | `4 / 3` | Teachers' Training photo frames (an even row of equal frames; the staggered collage was dropped after review) |
+
+Reused: `bg-surface`, `--color-home-muted-band`, `bg-primary`, `max-w-prose`, `max-w-4xl`, `rounded-xl`, `--spacing-home-section-y`, `anchor-section`, the `SectionHeading` tokens.
+
+Deviation (flagged, Constitution I): every value above is composed, not extracted. If the client supplies a design, extract it here first.
