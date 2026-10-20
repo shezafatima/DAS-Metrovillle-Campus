@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { Newspaper } from "lucide-react";
 import { homeContent } from "@/content/home";
 import { getLatestPosts } from "@/lib/news/latest";
 import { Carousel } from "./carousel";
@@ -14,17 +13,12 @@ import { HomeNewsCard } from "./home-news-card";
 export async function LatestNews() {
   const posts = await getLatestPosts();
   if (posts.length === 0) return null;
-  const { heading, line, label, viewAll } = homeContent.latestNews;
+  const { heading, line, viewAll } = homeContent.latestNews;
   return (
     <section aria-labelledby="latest-news-heading" className="bg-(--color-home-muted-band) pb-(--spacing-home-band-y)" data-testid="latest-news">
       {/* A full-width yellow band: the heading centred, the supporting text centred below it, at every width. Navy text; the cards below keep their background. */}
-      <div className="bg-(--color-topbar) py-8 md:py-10" data-testid="latest-news-band">
-        <div className="mx-auto grid max-w-(--container-max-width) items-start gap-y-4 px-(--container-gutter-x)">
-          {/* A decorative pill (not a link or button): white, navy text and icon, a faint navy border. Left-aligned above the heading at every width. */}
-          <span className="inline-flex items-center gap-1.5 justify-self-start rounded-full border border-primary/25 bg-surface px-3 py-1 font-body text-xs leading-4 font-semibold text-primary">
-            <Newspaper aria-hidden="true" className="size-3.5" />
-            {label}
-          </span>
+      <div className="bg-(--color-topbar) py-4 md:py-5" data-testid="latest-news-band">
+        <div className="mx-auto grid max-w-(--container-max-width) items-start gap-y-2 px-(--container-gutter-x)">
           <h2
             id="latest-news-heading"
             className="text-balance mx-auto text-center font-bold font-heading text-primary text-(length:--text-home-heading-sm) leading-(--text-home-heading--line-height) md:text-(length:--text-home-heading-md) lg:max-w-[30ch] lg:text-(length:--text-home-heading)"

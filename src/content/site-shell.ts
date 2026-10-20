@@ -115,8 +115,7 @@ function anchors(path: string, sections: PageSection[]): NavigationItem[] {
 // Fixed render order (FR-001). Sections are grounded in the live reference
 // site (das.edu.pk), not docs/prd.md's rougher "TBD: subpages such as..."
 // guess. About, Academics, Admission and Resources are single pages whose
-// dropdown links are anchors to their sections; News keeps real sub-routes
-// (its categories hold data). Adding/removing a section later is a content
+// dropdown links are anchors to their sections; News is a plain link. Adding/removing a section later is a content
 // edit only (FR-004), never a code change.
 export const navigationItems: NavigationItem[] = [
   { label: "Home", href: "/" },
@@ -125,17 +124,7 @@ export const navigationItems: NavigationItem[] = [
   { label: "Academics", href: "/academics", children: anchors("/academics", pageSections.academics) },
   { label: "Admission", href: "/admission", children: anchors("/admission", pageSections.admission) },
   { label: "Resources", href: "/resources", children: anchors("/resources", pageSections.resources) },
-  {
-    label: "News",
-    href: "/news",
-    children: [
-      { label: "Head Office", href: "/news/head-office" },
-      { label: "Events", href: "/news/events" },
-      { label: "Activities", href: "/news/activities" },
-      { label: "Achievements", href: "/news/achievements" },
-      { label: "Announcements", href: "/news/announcements" },
-    ],
-  },
+  { label: "News", href: "/news" },
   { label: "Contact", href: "/contact" },
 ];
 

@@ -62,27 +62,12 @@ for (const width of [375, 768, 1024, 1440]) {
     expect(colour).toBe("rgb(18, 18, 145)");
     expect(lineColour).toBe("rgb(18, 18, 145)");
     await expect(band.getByTestId("heading-stroke")).toHaveCount(0);
-    // Only the decorative "News" pill: white, navy text and icon, a faint navy border, not a link or button, left of the heading.
-    await expect(band.locator("a, button, img")).toHaveCount(0);
-    const pill = band.locator("span").filter({ hasText: homeContent.latestNews.label });
-    await expect(pill).toHaveCount(1);
-    await expect(pill.locator("svg")).toHaveCount(1);
-    const pillStyle = await pill.evaluate((el) => ({ bg: getComputedStyle(el).backgroundColor, colour: getComputedStyle(el).color, border: getComputedStyle(el).borderTopColor, radius: getComputedStyle(el).borderTopLeftRadius }));
-    expect(pillStyle.bg).toBe("rgb(255, 255, 255)");
-    expect(pillStyle.colour).toBe("rgb(18, 18, 145)");
-    expect(pillStyle.border).toMatch(/\/ 0\.25\)$/); // navy at 25% opacity (Chrome prints the mix as lab(...))
-    expect(parseFloat(pillStyle.radius)).toBeGreaterThan(9000 / 1000); // fully rounded
-    const [pillBox, headingBoxForPill] = [await pill.boundingBox(), await heading.boundingBox()];
-    expect(pillBox!.y + pillBox!.height).toBeLessThanOrEqual(headingBoxForPill!.y + 1); // above the heading
-    const firstCard = await news.getByTestId("home-news-card").first().boundingBox();
-    expect(Math.abs(pillBox!.x - firstCard!.x)).toBeLessThanOrEqual(1); // on the left, in line with the cards, at every width
-    const pillRatio = contrast(pillStyle.colour, pillStyle.bg);
-    console.log(`CONTRAST ${width}px pill navy-on-white=${pillRatio.toFixed(2)}:1`);
-    expect(pillRatio).toBeGreaterThanOrEqual(7);
+    // No pill, link, button or image in the band.
+    await expect(band.locator("a, button, img, span")).toHaveCount(0);
     const [bandBox, headingBox, lineBox] = [await band.boundingBox(), await heading.boundingBox(), await line.boundingBox()];
     expect(Math.round(bandBox!.width)).toBe(width);
-    expect(headingBox!.y - bandBox!.y).toBeGreaterThanOrEqual(24);
-    expect(bandBox!.y + bandBox!.height - Math.max(headingBox!.y + headingBox!.height, lineBox!.y + lineBox!.height)).toBeGreaterThanOrEqual(24);
+    expect(headingBox!.y - bandBox!.y).toBeGreaterThanOrEqual(16);
+    expect(bandBox!.y + bandBox!.height - Math.max(headingBox!.y + headingBox!.height, lineBox!.y + lineBox!.height)).toBeGreaterThanOrEqual(16);
 
     // From 1024px the heading wraps to exactly two lines (a width limit on the column, with balanced wrapping).
     const headingLines = await heading.evaluate((el) => Math.round(el.getBoundingClientRect().height / parseFloat(getComputedStyle(el).lineHeight)));
@@ -94,7 +79,7 @@ for (const width of [375, 768, 1024, 1440]) {
     expect(lineBox!.y).toBeGreaterThanOrEqual(headingBox!.y + headingBox!.height - 1);
     expect(lineBox!.width).toBeLessThanOrEqual(60 * 12); // 60ch at the supporting text's size
 
-    // The heading and the supporting text are centred (the pill above keeps its left position).
+    // The heading and the supporting text are centred.
     expect(await heading.evaluate((el) => getComputedStyle(el).textAlign)).toBe("center");
     expect(await line.evaluate((el) => getComputedStyle(el).textAlign)).toBe("center");
     expect(Math.abs(lineBox!.x + lineBox!.width / 2 - width / 2)).toBeLessThanOrEqual(2);
@@ -159,23 +144,28 @@ for (const width of [375, 768, 1024, 1440]) {
     expect(await excerpt.evaluate((el) => el.scrollWidth > el.clientWidth)).toBe(true); // cut with an ellipsis (CSS only)
     expect(await excerpt.evaluate((el) => getComputedStyle(el).textOverflow)).toBe("ellipsis");
 
-    // Category as plain text, "Read More" as styled text with an arrow (neither is a link); the cover has a fixed 5:4 ratio.
+    // The category is a label over the cover's top-left corner (plain text, not a link), "Read More" is styled text with an arrow; the cover has a fixed 5:4 ratio.
     const first = cards.first();
-    await expect(first.locator("div[dir] > div:last-child")).toContainText("Events");
+    await expect(first.getByTestId("category-label")).toHaveText("Events");
+    await expect(first.locator("a a")).toHaveCount(0);
+    const [labelBox, coverBox] = [await first.getByTestId("category-label").boundingBox(), await first.locator(".aspect-home-news-card").first().boundingBox()];
+    expect(labelBox!.x - coverBox!.x).toBeLessThan(24);
+    expect(labelBox!.y - coverBox!.y).toBeLessThan(24);
     await expect(first.locator("div[dir] > div:last-child")).toContainText("Read More");
     const cover = await first.locator('[data-variant="home"], .aspect-home-news-card').first().boundingBox();
     expect(Math.abs(cover!.width / cover!.height - 5 / 4)).toBeLessThan(0.02);
 
-    // Urdu is mirrored: right-to-left text, the footer row flipped, the ellipsis on the left.
+    // Urdu is mirrored: right-to-left text, the label top-right, the ellipsis on the left.
     await expect(urduCard.locator("div[dir]").first()).toHaveAttribute("dir", "rtl");
     await urduCard.scrollIntoViewIfNeeded();
     const mirrored = await urduCard.evaluate((el) => {
-      const footer = el.querySelector("div[dir] > div:last-child") as HTMLElement;
-      const [cat, more] = Array.from(footer.children) as HTMLElement[];
+      const label = el.querySelector('[data-testid="category-label"]') as HTMLElement;
+      const cover = el.querySelector(".aspect-home-news-card") as HTMLElement;
       const ex = el.querySelector("div[dir] > p:nth-of-type(2)") as HTMLElement;
-      return { catRight: cat.getBoundingClientRect().left > more.getBoundingClientRect().left, direction: getComputedStyle(ex).direction, align: getComputedStyle(ex).textAlign };
+      return { labelRight: cover.getBoundingClientRect().right - label.getBoundingClientRect().right < 24, text: label.textContent, direction: getComputedStyle(ex).direction, align: getComputedStyle(ex).textAlign };
     });
-    expect(mirrored.catRight).toBe(true); // the category is on the right, "Read More" on the left
+    expect(mirrored.labelRight).toBe(true); // the label sits top-right on an Urdu card
+    expect(mirrored.text).toBe("Achievements"); // and stays in English
     expect(mirrored.direction).toBe("rtl");
 
     // The button below the cards is outlined and goes to /news.

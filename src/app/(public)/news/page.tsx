@@ -4,7 +4,6 @@ import { NewsBanner } from "@/components/news/news-banner";
 import { NewsGrid } from "@/components/news/news-grid";
 import { NewsEmptyState } from "@/components/news/news-empty-state";
 import { NewsPagination } from "@/components/news/news-pagination";
-import { CategoryFilter } from "@/components/news/category-filter";
 import { newsPublicCopy, pageTitle } from "@/content/news";
 
 // Reads on request so unpublish/publish/delete are reflected immediately
@@ -31,7 +30,6 @@ export default async function NewsListPage({ searchParams }: PageProps<"/news">)
     <>
       <NewsBanner title={newsPublicCopy.banner.title} trail={["News"]} />
       <div className="mx-auto max-w-(--container-max-width) px-(--container-gutter-x) py-section-gap-lg">
-        <CategoryFilter />
         {result.items.length === 0 ? (
           <NewsEmptyState />
         ) : (
