@@ -5,7 +5,7 @@ import { coreValues, messagesContent, ourStory, visionMission } from "./index";
 
 /** The client's documents as plain text (docs/content-source/about/README.md). */
 function lines(name: string): string[] {
-  return readFileSync(path.join(process.cwd(), "docs/content-source/about", `${name}.txt`), "utf8").split("\n");
+  return readFileSync(path.join(process.cwd(), "docs/content-source/about", `${name}.txt`), "utf8").split(/\r?\n/);
 }
 const isUrdu = (s: string) => /[؀-ۿ]/.test(s);
 const paragraphs = (text: string) => text.split("\n\n");
