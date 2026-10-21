@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { after } from "next/server";
 import { RegistrationClosed } from "@/components/registration/registration-closed";
 import { RegistrationForm } from "@/components/registration/registration-form";
-import { PageBanner } from "@/components/site-shell/page-banner";
+import { PageTitle } from "@/components/site-shell/page-title";
 import { registrationCopy } from "@/content/registration";
 import { getEnv } from "@/lib/env";
 import { getRegistrationAvailability } from "@/lib/registration/availability";
@@ -25,17 +25,9 @@ export default async function RegistrationPage() {
 
   return (
     <>
-      <PageBanner
-        title={copy.bannerTitle}
-        trail={[copy.breadcrumbAdmission, copy.bannerTitle]}
-        breadcrumbHome={copy.breadcrumbHome}
-        backgroundImage="/images/contact/banner.webp"
-      />
-      <section id="registration" aria-labelledby="registration-heading" className="bg-contact-form-band py-(--spacing-contact-form-band-y)">
+      <section id="registration" aria-labelledby="registration-heading" className="bg-contact-form-band pb-(--spacing-contact-form-band-y)">
         <div className="mx-auto max-w-(--container-max-width) px-(--container-gutter-x)">
-          <h2 id="registration-heading" className="sr-only">
-            {copy.bannerTitle}
-          </h2>
+          <PageTitle id="registration-heading">{copy.bannerTitle}</PageTitle>
           {availability.open ? (
             <>
               <p className="mb-(--spacing-registration-section-gap) font-body text-body text-foreground">{copy.intro}</p>

@@ -240,6 +240,8 @@
   --text-contact-column-subtitle--font-weight: 700;
   --text-contact-column-subtitle--letter-spacing: 3px;
   --spacing-contact-form-band-y: 30px;
+  /* Top of a bannerless page (Careers, Student Registration): the h1 starts this far below the sticky header. */
+  --spacing-page-title-top: 40px;
   --spacing-contact-textarea-height: 150px;
   --spacing-contact-form-gap-x: 51px;
   --spacing-contact-form-gap-y: 60px;

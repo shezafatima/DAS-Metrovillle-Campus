@@ -21,8 +21,6 @@ export const registrationCopy = {
     metaTitle: "Student Registration",
     bannerTitle: "Student Registration",
     intro: "Please fill in this form to register your child for admission. Fields marked * are required.",
-    breadcrumbHome: "Home",
-    breadcrumbAdmission: "Admission",
   },
   legends: {
     student: "Student",
