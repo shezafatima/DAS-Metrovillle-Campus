@@ -6,7 +6,8 @@ export const ourStory: OurStory = {
   subheading: "Building a Legacy of Excellence Since 2021",
   body: "Established in 2021, Metroville Campus was founded with a vision to provide quality education in SITE Town, rooted in Islamic values, academic excellence, and character development.\n\nAs a proud member of the Dar-e-Arqam Schools network, our campus is committed to creating a nurturing environment where every child is encouraged to learn, grow, and succeed.\n\nWe believe that education is more than academic achievement—it is about developing confident learners, responsible citizens, and individuals of strong moral character who are prepared for success in this world and the Hereafter.",
   // The real Our Story photo (owner, 2026-10-20), served from /public. Set to null to show the emblem.
-  image: { url: "/images/about/ourstory.png", publicId: "local-ourstory", width: 941, height: 1672 },
+  image: { url: "/images/about/ourstory.webp", publicId: "local-ourstory", width: 941, height: 1672 },
+  imageAlt: "The front of the Dar-e-Arqam Metroville Campus building: a white and blue two-storey school with a glass entrance, its logo on the wall, and trees and flower beds in the foreground under a blue sky.",
   urdu: {
     lang: "ur",
     heading: "ہماری کہانی",

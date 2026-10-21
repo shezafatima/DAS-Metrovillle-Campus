@@ -17,7 +17,7 @@ export function OurStorySection({ value, background }: { value: OurStory; backgr
             {value.image ? (
               <Image
                 src={value.image.url}
-                alt=""
+                alt={value.imageAlt ?? ""}
                 fill
                 sizes="(min-width: 1024px) 40vw, 100vw"
                 className="rounded-xl object-cover"
