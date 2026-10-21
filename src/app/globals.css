@@ -863,6 +863,19 @@
   }
 }
 
+/* Academics section rhythm (022). Only the Academics sections use AboutSection's compact and heading-band variants.
+   Before: section padding 32px (phone) / 40px (768px up), band-section content top 32 / 40. */
+:root {
+  --spacing-academics-section-y: 20px;
+  --spacing-academics-band-content-top: 20px;
+}
+@media (min-width: 48rem) {
+  :root {
+    --spacing-academics-section-y: 24px;
+    --spacing-academics-band-content-top: 24px;
+  }
+}
+
 /* Home section rhythm, larger from 1024px (see --spacing-home-section-y). */
 @media (min-width: 1024px) {
   :root {
