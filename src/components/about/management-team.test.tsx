@@ -39,8 +39,11 @@ describe("ManagementTeamSection", () => {
     expect(container.querySelector("li p")?.getAttribute("lang")).toBe("ur");
   });
 
-  it("uses 1 / 2 / 3 / 4 columns", () => {
+  it("lays cards out as 1 / 2 / 3 / 4 columns, centred when a row is short", () => {
     const { container } = render(<ManagementTeamSection heading="T" cards={real} background="surface" />);
-    expect(container.querySelector("ul")?.className).toMatch(/grid-cols-1.*md:grid-cols-2.*lg:grid-cols-3.*xl:grid-cols-4/);
+    const ul = container.querySelector("ul");
+    expect(ul?.className).toMatch(/flex-wrap.*justify-center/);
+    const li = ul?.querySelector("li")?.className ?? "";
+    for (const part of ["w-full", "md:w-[calc((100%-1.5rem)/2)]", "lg:w-[calc((100%-3rem)/3)]", "xl:w-[calc((100%-4.5rem)/4)]"]) expect(li).toContain(part);
   });
 });
