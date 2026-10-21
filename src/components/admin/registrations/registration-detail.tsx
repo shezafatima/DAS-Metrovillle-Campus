@@ -120,12 +120,14 @@ export function RegistrationDetail({ registration: r }: { registration: Detail }
             {r.email}
           </a>
         </Item>
-        <Item label={labels.emergencyName}>
-          <Text value={r.emergencyName} />
-        </Item>
         <Item label={labels.emergencyPhone}>
           <Phone e164={r.emergencyPhone} />
         </Item>
+        {r.emergencyLegacyName && (
+          <Item label={labels.emergencyLegacyName}>
+            <Text value={r.emergencyLegacyName} />
+          </Item>
+        )}
         <Item label={labels.address} wide>
           <Text value={r.address} />
         </Item>

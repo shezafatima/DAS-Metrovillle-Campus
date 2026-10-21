@@ -37,9 +37,15 @@ const studentRegistrationSchema = new Schema(
     fatherMobile: { type: String, default: null },
     motherMobile: { type: String, default: null },
     address: { type: String, required: true },
+    // E.164. Not `required` here: the zod schema guarantees it on every new record, and records from before
+    // 2026-10 hold it in `emergencyContact` until scripts/migrate-emergency-contact.ts has run.
+    emergencyPhone: { type: String, default: null },
+    // Before 2026-10 the form also asked for the contact's name. Kept for old records, never collected or shown on the form.
+    legacyEmergencyName: { type: String, default: null },
+    // Old shape (read only): `{ name, phone }`, replaced by the two fields above.
     emergencyContact: {
-      name: { type: String, required: true },
-      phone: { type: String, required: true },
+      type: new Schema({ name: { type: String }, phone: { type: String } }, { _id: false }),
+      default: undefined,
     },
     className: { type: String, required: true },
     motherTongue: { type: String, enum: MOTHER_TONGUES, required: true },

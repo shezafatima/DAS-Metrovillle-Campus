@@ -254,6 +254,8 @@
      "Registration form (013)"). */
   --spacing-registration-section-gap: 40px;
   --spacing-registration-field-gap-y: 24px;
+  /* The address box: two 13px rows with the box's own padding and border, instead of 150px. */
+  --spacing-registration-address-height: 64px;
 
   /* Home sections (006) — extracted per section from https://das.edu.pk/;
      see research/design-tokens.md "Home sections (006)". */

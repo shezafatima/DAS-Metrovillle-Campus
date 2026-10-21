@@ -56,7 +56,7 @@ export async function createRegistration(
         fatherMobile: input.fatherMobile,
         motherMobile: input.motherMobile,
         address: input.address,
-        emergencyContact: input.emergencyContact,
+        emergencyPhone: input.emergencyPhone,
         className: input.className,
         motherTongue: input.motherTongue,
         motherTongueOther: input.motherTongueOther,

@@ -17,7 +17,7 @@ export async function seedRegistration(overrides: Record<string, unknown> = {}):
     fatherMobile: `+92300${String(1000000 + counter)}`,
     motherMobile: null,
     address: "House 12, Street 4, Metroville",
-    emergencyContact: { name: "Uncle", phone: "+923011234567" },
+    emergencyPhone: "+923011234567",
     className: "Class 1",
     motherTongue: "urdu",
     motherTongueOther: null,
