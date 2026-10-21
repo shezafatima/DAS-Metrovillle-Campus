@@ -83,6 +83,7 @@ describe("Footer", () => {
       const credit = screen.getByRole("link", { name: footerContent.credit.name });
       expect(credit).toHaveAttribute("href", footerContent.credit.href);
       expect(credit).toHaveAttribute("rel", "noopener noreferrer");
+      expect(credit.parentElement?.textContent).toBe("Developed by Sheza Fatima");
     } finally {
       vi.useRealTimers();
     }

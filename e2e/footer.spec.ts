@@ -77,12 +77,26 @@ for (const width of [375, 768, 1024, 1440]) {
     expect(await socials.count()).toBeGreaterThan(0);
     for (const a of await socials.all()) expect(await a.getAttribute("rel")).toBe("noopener noreferrer");
 
-    // Bottom bar: a generated current year, centred, small, and the developer credit link.
+    // Bottom bar: a generated current year and the developer credit link. From 768px the copyright is on the left and
+    // "Developed by <name>" on the right of one row; on a phone they stack, centred, copyright first.
     const year = new Date().getFullYear();
     const copyright = footer.getByText(footerContent.copyright(year));
     await expect(copyright).toBeVisible();
-    expect(await copyright.evaluate((el) => getComputedStyle(el).textAlign)).toBe("center");
-    await expect(footer.getByRole("link", { name: footerContent.credit.name })).toHaveAttribute("href", footerContent.credit.href);
+    const creditLink = footer.getByRole("link", { name: footerContent.credit.name });
+    await expect(creditLink).toHaveAttribute("href", footerContent.credit.href);
+    await expect(footer.getByText(footerContent.credit.before)).toBeVisible();
+    const copyBox = (await copyright.boundingBox())!;
+    const creditBox = (await creditLink.boundingBox())!;
+    if (width >= 768) {
+      expect(Math.abs(copyBox.y - creditBox.y)).toBeLessThan(copyBox.height);
+      expect(copyBox.x).toBeLessThan(creditBox.x);
+      expect(copyBox.x).toBeLessThan(width / 4);
+      expect(creditBox.x + creditBox.width).toBeGreaterThan((width * 3) / 4);
+    } else {
+      expect(creditBox.y).toBeGreaterThan(copyBox.y + copyBox.height - 1);
+      expect(await copyright.evaluate((el) => getComputedStyle(el).textAlign)).toBe("center");
+      expect(Math.abs(copyBox.x + copyBox.width / 2 - width / 2)).toBeLessThan(2);
+    }
     // The thin divider above the bottom bar.
     expect(await copyright.evaluate((el) => getComputedStyle(el.parentElement!.parentElement!).borderTopWidth)).toBe("1px");
 
