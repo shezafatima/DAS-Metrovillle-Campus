@@ -18,4 +18,17 @@ describe("OurStorySection", () => {
     expect(img?.getAttribute("alt")).toBe("");
     expect(img?.parentElement?.className).toContain("aspect-about-story");
   });
+
+  it("puts one decorative icon beside each of the three paragraphs and leaves the text as it was", () => {
+    const { container } = render(<OurStorySection value={ourStory} background="surface" />);
+    expect(container.querySelectorAll("svg[aria-hidden='true']")).toHaveLength(3);
+    const paragraphs = [...container.querySelectorAll("p")].map((p) => p.textContent);
+    expect(paragraphs.slice(-3).join("\n\n")).toBe(ourStory.body);
+  });
+
+  it("describes the real photo with alt text", () => {
+    const { container } = render(<OurStorySection value={ourStory} background="surface" />);
+    expect(ourStory.imageAlt).toBeTruthy();
+    expect(container.querySelector("img")?.getAttribute("alt")).toBe(ourStory.imageAlt);
+  });
 });
