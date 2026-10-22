@@ -194,6 +194,9 @@
   --color-signup-highlight: #ffd700;
   /* A neutral name for the same deep yellow (#ffd700), for components that are not the signup band: About Core Values ring (017). */
   --color-gold: #ffd700;
+  /* Resources > School App (023): the CSS phone mockup and the QR code beside it. */
+  --spacing-app-phone-width: 260px;
+  --spacing-app-qr-size: 148px;
   --color-signup-supporting: #d3d3d3;
   --color-signup-input-bg: #ffffff;
   --color-signup-input-border: #d2d2d2;

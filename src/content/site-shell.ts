@@ -91,6 +91,7 @@ export const pageSections = {
   /** Photo Gallery is rendered by GallerySection (007, hidden when empty). The menu, search and the page all read this list. */
   resources: [
     { id: "photo-gallery", label: "Photo Gallery" },
+    { id: "mobile-apps", label: "School App" },
   ],
 } satisfies Record<string, PageSection[]>;
 

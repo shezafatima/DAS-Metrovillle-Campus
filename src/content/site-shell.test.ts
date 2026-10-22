@@ -83,19 +83,22 @@ describe("navigationItems", () => {
     }
   });
 
-  it("pageSections.resources is exactly Photo Gallery, and no nav link uses a removed anchor", () => {
+  it("pageSections.resources is Photo Gallery and School App, and no nav link uses a removed anchor", () => {
     expect(pageSections.resources).toEqual([
       { id: "photo-gallery", label: "Photo Gallery" },
+      { id: "mobile-apps", label: "School App" },
     ]);
     const hrefs = navigationItems.flatMap((i) => [i.href, ...(i.children ?? []).map((c) => c.href)]);
     for (const href of hrefs) expect(href).not.toMatch(/#(downloads|our-books)/);
   });
 
-  it("Resources shows only Photo Gallery", () => {
+  it("Resources shows Photo Gallery and School App (the old Mobile Apps label is gone; the anchor is unchanged)", () => {
     const resources = navigationItems.find((i) => i.label === "Resources");
     expect(resources?.children).toEqual([
       { label: "Photo Gallery", href: "/resources#photo-gallery" },
+      { label: "School App", href: "/resources#mobile-apps" },
     ]);
+    expect(JSON.stringify(navigationItems)).not.toContain("Mobile Apps");
   });
 
   it("has no taglines under the labels", () => {
