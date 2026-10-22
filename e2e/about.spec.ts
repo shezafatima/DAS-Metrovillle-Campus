@@ -196,11 +196,20 @@ test.describe("US4 messages", () => {
 });
 
 test.describe("US5 team", () => {
-  test("development shows three labelled placeholders with one photo ratio", async ({ page }) => {
+  test("shows the three management cards (the Messages authors), not placeholders, with one photo ratio", async ({ page }) => {
     await page.goto("/about");
-    const cards = page.locator('#management-team [data-placeholder="true"]');
+    const cards = page.locator("#management-team li");
     await expect(cards).toHaveCount(3);
-    for (let i = 0; i < 3; i++) await expect(cards.nth(i)).toContainText("Placeholder");
+    await expect(page.locator('#management-team [data-placeholder="true"]')).toHaveCount(0);
+    for (const [name, designation] of [
+      ["Khairullah Aziz", "Director – Academic & Training"],
+      ["Ijaz Afzal", "Director Administration & Finance"],
+      ["Faiza Zeeshan", "Principal"],
+    ]) {
+      const card = cards.filter({ hasText: name });
+      await expect(card.getByRole("heading", { level: 3, name })).toBeVisible();
+      await expect(card).toContainText(designation);
+    }
     const ratios = await cards.evaluateAll((els) =>
       els.map((e) => {
         const r = e.querySelector("div")!.getBoundingClientRect();
@@ -215,20 +224,15 @@ test.describe("US5 team", () => {
       await context.addCookies([PRODUCTION_COOKIE]);
     });
 
-    test("the team section, menu entries, search result and placeholder text are gone", async ({ page }) => {
+    test("the team section shows the three real members in production, with no placeholder text", async ({ page }) => {
       await page.setViewportSize({ width: 1440, height: 800 });
       await page.goto("/about");
-      await expect(page.locator("#management-team")).toHaveCount(0);
-      const bgs = await page.locator("main section").evaluateAll((els) => els.map((e) => e.getAttribute("data-background")));
-      expect(bgs).toEqual(["surface", "navy", "muted", "surface"]);
+      await expect(page.locator("#management-team li")).toHaveCount(3);
       const nav = page.getByRole("navigation", { name: "Main menu" });
       await nav.getByRole("link", { name: "About", exact: true }).hover();
-      expect(await aboutLinks(page)).toEqual(["Our Story", "Vision & Mission", "Core Values", "Messages"]);
-      await page.getByRole("button", { name: "Search" }).first().click();
-      await page.getByRole("combobox").fill("management");
-      await expect(page.getByText("No pages found")).toBeVisible();
-      const text = await page.locator("main").innerText();
-      for (const gone of ["Placeholder", "Short description", "Designation"]) expect(text).not.toContain(gone);
+      expect(await aboutLinks(page)).toEqual(["Our Story", "Vision & Mission", "Core Values", "Our Management Team", "Messages"]);
+      const text = await page.locator("#management-team").innerText();
+      for (const gone of ["Placeholder", "Short description"]) expect(text).not.toContain(gone);
     });
 
     test("/about#management-team loads without an error", async ({ page }) => {
@@ -236,13 +240,13 @@ test.describe("US5 team", () => {
       expect(res?.status()).toBe(200);
     });
 
-    test("the mobile About group has 4 links", async ({ page }) => {
+    test("the mobile About group has 5 links", async ({ page }) => {
       await page.setViewportSize({ width: 375, height: 700 });
       await page.goto("/about");
       await page.getByRole("button", { name: "Open menu" }).click();
       const menu = page.getByRole("navigation", { name: "Mobile menu" });
       await menu.getByRole("button", { name: "About" }).click();
-      await expect(menu.locator('a[href^="/about#"]')).toHaveCount(4);
+      await expect(menu.locator('a[href^="/about#"]')).toHaveCount(5);
     });
   });
 });

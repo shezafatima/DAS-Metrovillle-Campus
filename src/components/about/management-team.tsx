@@ -38,7 +38,7 @@ export function ManagementTeamSection({
             <p {...rtl(card.designation)} className="font-body text-body text-text">
               {card.designation}
             </p>
-            <p className="font-body text-body text-text">{card.description}</p>
+            {card.description && <p className="font-body text-body text-text">{card.description}</p>}
           </li>
         ))}
       </ul>

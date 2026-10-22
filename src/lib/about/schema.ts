@@ -78,7 +78,7 @@ export const teamMemberSchema = z.object({
   id: itemId,
   name: text(80),
   designation: text(80),
-  description: text(300),
+  description: text(300).optional(),
   photo: image,
 });
 export const managementTeamSchema = z.object({

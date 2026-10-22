@@ -64,6 +64,7 @@ describe("about schemas", () => {
 
   it("accepts an empty members list and an empty messages list", () => {
     expect(managementTeamSchema.safeParse({ heading: "Team", members: [] }).success).toBe(true);
+    expect(managementTeamSchema.safeParse({ heading: "Team", members: [{ id: "a-b", name: "Ali", designation: "Head", photo: null }] }).success).toBe(true);
     expect(messagesSchema.safeParse({ heading: "Messages", messages: [] }).success).toBe(true);
   });
 });
