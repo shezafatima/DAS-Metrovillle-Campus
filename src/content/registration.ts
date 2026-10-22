@@ -116,8 +116,8 @@ export const registrationCopy = {
     backLink: "Back to Admission",
   },
   privacy: {
-    // Pending client approval: blocks a production build (scripts/check-release-content.ts).
-    placeholder: true,
+    // Client approved this wording (2026-10-22). Set back to true to block a production build again.
+    placeholder: false,
     notice: (retentionMonths: number) =>
       "The information you provide on this form, including your child's health details and the details of any student you name as a reference, " +
       "is used only to process this admission registration. It can be seen only by the school's administration. " +
