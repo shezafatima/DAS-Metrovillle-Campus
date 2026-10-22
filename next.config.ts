@@ -44,7 +44,7 @@ const nextConfig: NextConfig = {
       // 007: the gallery is the #photo-gallery section of /resources, not its
       // own page (documented deviation from the reference's address).
       { source: "/resources/photo-gallery", destination: "/resources#photo-gallery", permanent: true },
-      { source: "/resources/scarlet-mobile-apps", destination: "/resources", permanent: true },
+      { source: "/resources/scarlet-mobile-apps", destination: "/resources#mobile-apps", permanent: true },
       // News categories are a label on each post now, not pages of their own.
       ...["head-office", "events", "activities", "achievements", "announcements"].map((key) => ({
         source: `/news/${key}`,
