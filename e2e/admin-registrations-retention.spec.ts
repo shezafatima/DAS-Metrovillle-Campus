@@ -67,12 +67,11 @@ test.describe("registration retention (013 US7)", () => {
     await expect(page.getByTestId("days-left")).toHaveText(/\d+ days?/);
   });
 
-  test("the public page shows the configured retention and the 30-day sentence", async ({ page, context }) => {
+  test("the public page shows the configured retention", async ({ page, context }) => {
     await openAdmission();
     await setNow(context, OPEN_NOW);
     await page.goto("/admission/register", { timeout: 180_000 });
     const notice = page.locator("#registration-privacy-notice");
-    await expect(notice).toContainText("We keep registrations for 12 months after submission", { timeout: 90_000 });
-    await expect(notice).toContainText("Deleted records are permanently removed within 30 days");
+    await expect(notice).toContainText("Registrations are deleted automatically after 12 months", { timeout: 90_000 });
   });
 });

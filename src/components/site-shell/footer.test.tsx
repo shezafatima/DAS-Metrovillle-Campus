@@ -23,6 +23,13 @@ describe("Footer", () => {
     expect(screen.getByText(footerContent.description)).toBeInTheDocument();
   });
 
+  it("lays the eight Quick Links out in two balanced columns", () => {
+    render(<Footer contact={contactInfo} />);
+    const list = screen.getByTestId("quick-links");
+    expect(list).toHaveClass("columns-2");
+    expect(list.querySelectorAll("li")).toHaveLength(8);
+  });
+
   it("has Quick Links: the main pages and Careers, no Campuses, each group in a named nav", () => {
     render(<Footer contact={contactInfo} />);
     const nav = screen.getByRole("navigation", { name: "Quick Links" });

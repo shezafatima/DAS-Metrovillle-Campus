@@ -90,6 +90,15 @@ for (const { w, h } of WIDTHS) {
 }
 
 // Constitution VIII "reference breakpoints": the halves split exactly at 1024px.
+test("on a 375px phone the form fields are at least 280px wide", async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 900 });
+  await page.goto("/contact");
+  await page.waitForLoadState("networkidle");
+  const field = page.getByPlaceholder("Name");
+  await expect(field).toBeVisible();
+  expect((await field.boundingBox())!.width).toBeGreaterThanOrEqual(280);
+});
+
 test("the card splits into two columns at 1024px and stacks below", async ({ page }) => {
   await page.setViewportSize({ width: 1023, height: 900 });
   await page.goto("/contact");

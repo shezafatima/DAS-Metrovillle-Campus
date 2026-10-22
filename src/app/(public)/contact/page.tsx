@@ -12,7 +12,7 @@ export default async function ContactPage() {
   return (
     <>
       <ContactBanner />
-      <div className="mx-auto max-w-(--container-max-width) px-(--container-gutter-x) py-12">
+      <div className="mx-auto max-w-(--container-max-width) px-3 py-12 sm:px-(--container-gutter-x)">
         <div className="grid grid-cols-1 overflow-hidden rounded-xl shadow-lg lg:grid-cols-2">
           <ContactDetails details={details} />
           <ContactFormSection />
