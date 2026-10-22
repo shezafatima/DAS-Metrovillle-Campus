@@ -363,3 +363,282 @@ describe("schemaFor: list rule uniqueText (013)", () => {
     });
   });
 });
+
+// ── 014b: URL options for the footer's portal links ──────────────────────
+
+describe("schemaFor: url options (014b)", () => {
+  const portalDef: GroupDefinition = {
+    key: "portalLinks",
+    label: "Portal",
+    fields: [
+      { type: "url", key: "strict", label: "Strict", maxLength: 100, required: true, rejectCredentials: true, warnInsecure: true, testLink: true },
+      { type: "url", key: "plain", label: "Plain", maxLength: 100 },
+    ],
+  };
+  const parse = (input: unknown) => {
+    const result = schemaFor(portalDef).safeParse(input);
+    return result.success ? { ok: true as const, data: result.data as Record<string, unknown> } : { ok: false as const, fields: fieldErrors(result.error) };
+  };
+
+  it.each([
+    "javascript:alert(1)",
+    "data:text/html,x",
+    "/portal/x",
+    "www.example.org",
+    "https//broken",
+    "ftp://x.org",
+    "https://",
+  ])("refuses %s", (value) => {
+    expect(parse({ strict: value, plain: "" })).toMatchObject({ ok: false, fields: { strict: settingsCopy.errors.url } });
+  });
+
+  it.each(["https://u:p@x.org", "https://u@x.org", "http://user:secret@203.0.113.5/login"])("refuses an address with credentials: %s", (value) => {
+    expect(parse({ strict: value, plain: "" })).toMatchObject({ ok: false, fields: { strict: settingsCopy.errors.urlCredentials } });
+  });
+
+  it("accepts an uppercase scheme and stores it in lower case", () => {
+    expect(parse({ strict: "HTTPS://Example.org/A", plain: "" })).toMatchObject({ ok: true, data: { strict: "https://Example.org/A" } });
+    expect(parse({ strict: "HTTP://203.0.113.5/login", plain: "" })).toMatchObject({ ok: true, data: { strict: "http://203.0.113.5/login" } });
+  });
+
+  it("accepts a plain http address (it only warns in the editor)", () => {
+    expect(parse({ strict: "http://203.0.113.5/login", plain: "" }).ok).toBe(true);
+  });
+
+  it("trims leading and trailing spaces", () => {
+    expect(parse({ strict: "  https://lms.example.org/  ", plain: "" })).toMatchObject({ ok: true, data: { strict: "https://lms.example.org/" } });
+  });
+
+  it("refuses an address with a space inside", () => {
+    expect(parse({ strict: "https://exa mple.org", plain: "" }).ok).toBe(false);
+  });
+
+  it("a required url that is empty or only spaces is refused", () => {
+    expect(parse({ strict: "", plain: "" }).ok).toBe(false);
+    expect(parse({ strict: "   ", plain: "" }).ok).toBe(false);
+  });
+
+  it("without the options a url keeps its old behaviour: credentials accepted, scheme not rewritten", () => {
+    expect(parse({ strict: "https://ok.org", plain: "https://u:p@x.org" })).toMatchObject({ ok: true, data: { plain: "https://u:p@x.org" } });
+    expect(parse({ strict: "https://ok.org", plain: "HTTPS://X.org" })).toMatchObject({ ok: true, data: { plain: "HTTPS://X.org" } });
+  });
+});
+
+// ── 014b: day-month field ────────────────────────────────────────────────
+
+describe("schemaFor: dayMonth (014b)", () => {
+  const dmDef: GroupDefinition = {
+    key: "classLevels",
+    label: "Test",
+    fields: [
+      { type: "dayMonth", key: "ref", label: "Reference", required: true, default: "07-31" },
+      { type: "dayMonth", key: "optional", label: "Optional" },
+    ],
+  };
+  const parse = (input: unknown) => {
+    const result = schemaFor(dmDef).safeParse(input);
+    return result.success ? { ok: true as const, data: result.data as Record<string, unknown> } : { ok: false as const, fields: fieldErrors(result.error) };
+  };
+
+  it.each(["07-31", "02-29", "12-01", "04-30"])("accepts %s", (value) => {
+    expect(parse({ ref: value, optional: "" })).toMatchObject({ ok: true, data: { ref: value } });
+  });
+
+  it.each(["04-31", "02-30", "13-01", "00-10", "7-31", "2026-07-31", "31 July", "abc"])("refuses %s", (value) => {
+    expect(parse({ ref: value, optional: "" })).toMatchObject({ ok: false, fields: { ref: settingsCopy.errors.dayMonth } });
+  });
+
+  it("a required value that is empty or only spaces is refused; an optional one may be empty", () => {
+    expect(parse({ ref: "", optional: "" }).ok).toBe(false);
+    expect(parse({ ref: "   ", optional: "" }).ok).toBe(false);
+    expect(parse({ ref: "07-31", optional: "" }).ok).toBe(true);
+    expect(parse({ ref: "07-31", optional: "13-40" })).toMatchObject({ ok: false, fields: { optional: settingsCopy.errors.dayMonth } });
+  });
+
+  it("starts from its default", () => {
+    expect(defaultsFor(dmDef)).toEqual({ ref: "07-31", optional: "" });
+  });
+});
+
+describe("schemaFor: uniqueText with a message that names the repeated text (014b)", () => {
+  const namedDef: GroupDefinition = {
+    key: "classLevels",
+    label: "Test",
+    fields: [
+      {
+        type: "list",
+        key: "levels",
+        label: "Levels",
+        itemLabel: "level",
+        maxItems: 5,
+        rules: [{ kind: "uniqueText", field: "name", message: (name: string) => `Another level is already called '${name}'.` }],
+        itemFields: [{ type: "text", key: "name", label: "Name", required: true, maxLength: 60 }],
+      },
+    ],
+  };
+  const parse = (names: string[]) => {
+    const result = schemaFor(namedDef).safeParse({ levels: names.map((name) => ({ id: randomUUID(), name })) });
+    return result.success ? { ok: true as const } : { ok: false as const, fields: fieldErrors(result.error) };
+  };
+
+  it("names the text as it was typed on the repeated row", () => {
+    expect(parse(["Class 1", " class  1 "])).toEqual({ ok: false, fields: { "levels.1.name": "Another level is already called 'class 1'." } });
+  });
+
+  it("accepts distinct names", () => {
+    expect(parse(["Class 1", "Class 2"]).ok).toBe(true);
+  });
+});
+
+// ── 014b: lines field, anyOf item rule, maxTotalLines group rule ─────────
+
+describe("schemaFor: lines (014b)", () => {
+  const linesDef: GroupDefinition = {
+    key: "syllabi",
+    label: "Test",
+    fields: [{ type: "lines", key: "topics", label: "Topics", maxItems: 3, maxLength: 10, default: [] }],
+  };
+  const parse = (input: unknown) => {
+    const result = schemaFor(linesDef).safeParse(input);
+    return result.success ? { ok: true as const, data: result.data as { topics: string[] } } : { ok: false as const, fields: fieldErrors(result.error) };
+  };
+
+  it("splits a string on line breaks, trims every line and drops blank ones", () => {
+    expect(parse({ topics: " a \n\n  b\r\n\t\nc " })).toEqual({ ok: true, data: { topics: ["a", "b", "c"] } });
+  });
+
+  it("takes an array as it is, trimmed and without blank entries", () => {
+    expect(parse({ topics: [" a ", "", "b"] })).toEqual({ ok: true, data: { topics: ["a", "b"] } });
+  });
+
+  it("reads nothing, an empty string and only blanks as no lines", () => {
+    expect(parse({})).toEqual({ ok: true, data: { topics: [] } });
+    expect(parse({ topics: null })).toEqual({ ok: true, data: { topics: [] } });
+    expect(parse({ topics: "  \n \n" })).toEqual({ ok: true, data: { topics: [] } });
+  });
+
+  it("refuses more lines than the limit, counting only non-blank lines", () => {
+    expect(parse({ topics: "a\n\nb\nc" }).ok).toBe(true);
+    expect(parse({ topics: "a\nb\nc\nd" })).toEqual({ ok: false, fields: { topics: settingsCopy.errors.tooManyLines(3) } });
+  });
+
+  it("refuses a line over the length limit, naming its line number among the kept lines", () => {
+    expect(parse({ topics: "a".repeat(10) }).ok).toBe(true);
+    expect(parse({ topics: `ok\n\n${"b".repeat(11)}` })).toEqual({ ok: false, fields: { topics: settingsCopy.errors.lineTooLong(2, 10) } });
+  });
+
+  it("refuses something that is not text", () => {
+    expect(parse({ topics: [1, 2] }).ok).toBe(false);
+    expect(parse({ topics: 5 }).ok).toBe(false);
+  });
+
+  it("starts from its default (an empty list)", () => {
+    expect(defaultsFor(linesDef)).toEqual({ topics: [] });
+  });
+});
+
+describe("schemaFor: the anyOf item rule (014b)", () => {
+  const groupDef: GroupDefinition = {
+    key: "syllabi",
+    label: "Test",
+    fields: [
+      {
+        type: "list",
+        key: "groups",
+        label: "Groups",
+        itemLabel: "group",
+        maxItems: 5,
+        rules: [{ kind: "anyOf", fields: ["intro", "topics"], message: "Add an intro or a topic." }],
+        itemFields: [
+          { type: "longText", key: "intro", label: "Intro", maxLength: 100 },
+          { type: "lines", key: "topics", label: "Topics", maxItems: 5, maxLength: 20 },
+        ],
+      },
+    ],
+  };
+  const parse = (groups: Record<string, unknown>[]) => {
+    const result = schemaFor(groupDef).safeParse({ groups: groups.map((group) => ({ id: randomUUID(), ...group })) });
+    return result.success ? { ok: true as const } : { ok: false as const, fields: fieldErrors(result.error) };
+  };
+
+  it("refuses an item with neither an intro nor a topic, on the first field", () => {
+    expect(parse([{ intro: "", topics: [] }])).toEqual({ ok: false, fields: { "groups.0.intro": "Add an intro or a topic." } });
+    expect(parse([{ intro: "   ", topics: "  \n " }])).toMatchObject({ ok: false, fields: { "groups.0.intro": "Add an intro or a topic." } });
+  });
+
+  it("accepts an intro alone, topics alone, or both", () => {
+    expect(parse([{ intro: "Only an intro", topics: [] }]).ok).toBe(true);
+    expect(parse([{ intro: "", topics: ["one"] }]).ok).toBe(true);
+    expect(parse([{ intro: "Both", topics: ["one"] }]).ok).toBe(true);
+  });
+
+  it("names the failing row", () => {
+    expect(parse([{ intro: "ok" }, { intro: "", topics: [] }])).toEqual({ ok: false, fields: { "groups.1.intro": "Add an intro or a topic." } });
+  });
+});
+
+describe("schemaFor: the maxTotalLines group rule (014b)", () => {
+  const nestedDef: GroupDefinition = {
+    key: "syllabi",
+    label: "Test",
+    fields: [
+      {
+        type: "list",
+        key: "levels",
+        label: "Levels",
+        itemLabel: "level",
+        maxItems: 10,
+        itemFields: [
+          { type: "text", key: "name", label: "Name", maxLength: 20 },
+          {
+            type: "list",
+            key: "subjects",
+            label: "Subjects",
+            itemLabel: "subject",
+            maxItems: 10,
+            itemFields: [
+              {
+                type: "list",
+                key: "groups",
+                label: "Groups",
+                itemLabel: "group",
+                maxItems: 10,
+                itemFields: [{ type: "lines", key: "topics", label: "Topics", maxItems: 100, maxLength: 20 }],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    rules: [{ kind: "maxTotalLines", path: "levels.subjects.groups.topics", max: 5, message: "Too many topics in all." }],
+  };
+  const topics = (n: number) => Array.from({ length: n }, (_, i) => `t${i}`);
+  const level = (...groupSizes: number[]) => ({
+    id: randomUUID(),
+    name: "L",
+    subjects: groupSizes.map((size) => ({ id: randomUUID(), groups: [{ id: randomUUID(), topics: topics(size) }] })),
+  });
+  const parse = (levels: unknown[]) => {
+    const result = schemaFor(nestedDef).safeParse({ levels });
+    return result.success ? { ok: true as const } : { ok: false as const, fields: fieldErrors(result.error) };
+  };
+
+  it("counts the lines through every level, subject and group", () => {
+    expect(parse([level(2, 1), level(2)]).ok).toBe(true);
+    expect(parse([level(2, 1), level(2, 1)])).toEqual({ ok: false, fields: { levels: "Too many topics in all." } });
+  });
+
+  it("allows exactly the maximum and refuses one more", () => {
+    expect(parse([level(5)]).ok).toBe(true);
+    expect(parse([level(6)]).ok).toBe(false);
+  });
+
+  it("an empty list of levels is within the limit", () => {
+    expect(parse([]).ok).toBe(true);
+  });
+
+  it("validates nested items too: a nested id must be a uuid, and a bad nested item is reported at its path", () => {
+    const bad = { id: randomUUID(), name: "L", subjects: [{ id: "not-a-uuid", groups: [] }] };
+    expect(parse([bad])).toMatchObject({ ok: false, fields: { "levels.0.subjects.0.id": settingsCopy.errors.unknownItem } });
+  });
+});

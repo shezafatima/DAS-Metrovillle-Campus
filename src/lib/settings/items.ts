@@ -1,4 +1,4 @@
-import type { GroupDefinition, GroupValue, ListItem } from "./types";
+import type { Field, GroupDefinition, GroupValue, ListItem } from "./types";
 
 /**
  * List-item helpers for Settings (005): live/deleted filtering, reordering,
@@ -37,7 +37,12 @@ function asDate(value: Date | string | null | undefined): Date | null {
  *  - an incoming id that matches a stored DELETED item is refused (a save
  *    cannot resurrect an item), as are duplicate incoming ids.
  */
-export function reconcileItems(stored: readonly ListItem[], incoming: readonly ListItem[], now: Date): ReconcileResult {
+export function reconcileItems(
+  stored: readonly ListItem[],
+  incoming: readonly ListItem[],
+  now: Date,
+  maxDeleted: number = MAX_DELETED_RETAINED,
+): ReconcileResult {
   const storedById = new Map(stored.map((item) => [item.id, item]));
   const seen = new Set<string>();
 
@@ -56,8 +61,8 @@ export function reconcileItems(stored: readonly ListItem[], incoming: readonly L
     .map((item) => ({ ...item, deletedAt: now }));
 
   let deleted = [...previouslyDeleted, ...newlyDeleted];
-  if (deleted.length > MAX_DELETED_RETAINED) {
-    const excess = deleted.length - MAX_DELETED_RETAINED;
+  if (deleted.length > maxDeleted) {
+    const excess = deleted.length - maxDeleted;
     const oldest = new Set(
       [...deleted]
         .sort((a, b) => (a.deletedAt?.getTime() ?? 0) - (b.deletedAt?.getTime() ?? 0))
@@ -85,24 +90,34 @@ export function reconcileGroupValue(
     if (field.type !== "list") continue;
     const storedItems = Array.isArray(stored?.[field.key]) ? (stored![field.key] as ListItem[]) : [];
     const incomingItems = Array.isArray(incoming[field.key]) ? (incoming[field.key] as ListItem[]) : [];
-    const result = reconcileItems(storedItems, incomingItems, now);
+    const result = reconcileItems(storedItems, incomingItems, now, field.maxDeletedRetained);
     if (!result.ok) return { ok: false, field: field.key };
     data[field.key] = result.items;
   }
   return { ok: true, data };
 }
 
-/** A stored group value as the admin and the site see it: list items live only, without the `deletedAt` marker. */
+/** A list item without its `deletedAt` marker, and (014b) the same for the items of any list nested inside it. */
+function liveItem(fields: readonly Field[], item: Record<string, unknown>): Record<string, unknown> {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { deletedAt, ...rest } = item;
+  for (const field of fields) {
+    if (field.type !== "list" || !Array.isArray(rest[field.key])) continue;
+    rest[field.key] = liveItems(rest[field.key] as ListItem[]).map((child) => liveItem(field.itemFields, child));
+  }
+  return rest;
+}
+
+/**
+ * A stored group value as the admin and the site see it: list items live only, without the `deletedAt` marker.
+ * Lists nested in an item (014b: a syllabus's subjects and groups) are cleaned the same way.
+ */
 export function toLiveValue(def: GroupDefinition, data: GroupValue): GroupValue {
   const out: GroupValue = { ...data };
   for (const field of def.fields) {
     if (field.type !== "list") continue;
     const items = Array.isArray(data[field.key]) ? (data[field.key] as ListItem[]) : [];
-    out[field.key] = liveItems(items).map((item) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { deletedAt, ...rest } = item;
-      return rest;
-    });
+    out[field.key] = liveItems(items).map((item) => liveItem(field.itemFields, item));
   }
   return out;
 }

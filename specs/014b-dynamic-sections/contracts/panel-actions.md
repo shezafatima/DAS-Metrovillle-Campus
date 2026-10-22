@@ -13,14 +13,15 @@ File: `src/app/admin/(dashboard)/settings/actions.ts` (`"use server"`). Extends 
 
 | # | Condition | Result | Side effects |
 |---|---|---|---|
-| 6a | any item's `levelId` ≠ `""` and not the id of a live `classLevels` level | `conflict` | none |
-| 6b | otherwise | continue | each linked item's `name` set to its level's current name |
+| 6a | a NEW item (its id is not stored yet) has `levelId` ≠ `""` and is not the id of a live `classLevels` level | `conflict` | none |
+| 6b | an item that is already stored has a `levelId` whose level has since been deleted (the removed-level warning's leftover) | continue | the item is dropped from the saved list: saving acknowledges the warning (spec FR-035) |
+| 6c | otherwise | continue | each linked item's `name` set to its level's current name |
 
 The input `data` for this panel is `{ classes: { id, name, levelId }[] }` (live items only). An item the admin ticks in the checklist is sent as a new uuid with that `levelId` and the level's name.
 
 ### Change record (all panels with a group source)
 
-On `success`, if the save removed any item (at any depth, matched by id), one `settingsChanges` entry is written after the write: `group`, `panel`, `actorEmail` (session), `at`, `removed: { path, label, value }[]`. If the insert fails twice, `settings_change_record_failed` is logged and the result is still `success`. Saves that only edit or reorder write no entry.
+On `success`, if the save removed any item (at any depth, matched by id), one `settingsChanges` entry is written after the write: `group`, `panel`, `actorEmail` (session), `at`, `removed: { path, label, value }[]`. If the insert fails twice, `settings_change_record_failed` is logged and the result is still `success`. Saves that only edit or reorder write no entry, and neither does the first save of a never-saved group (nothing was stored to lose).
 
 ### Revalidation (unchanged)
 

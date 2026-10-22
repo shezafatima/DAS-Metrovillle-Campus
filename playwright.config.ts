@@ -29,6 +29,8 @@ export default defineConfig({
         // 013 registration public specs share the form rate limit and the Settings
         // admission group, so they run serially in `forms` too.
         /registration-(public|window|protection)\.spec\.ts$/,
+        // 014b public sections read and seed Settings groups (syllabi, class levels, portal links), so they run serially in `forms` too.
+        /public-dynamic-sections\.spec\.ts$/,
       ],
       use: { ...devices["Desktop Chrome"], channel: "chrome" },
     },
@@ -60,6 +62,7 @@ export default defineConfig({
         /contact-(public|details|protection|visual)\.spec\.ts/,
         /(^|[\\/])careers-[^\\/]*\.spec\.ts$/,
         /registration-(public|window|protection)\.spec\.ts$/,
+        /public-dynamic-sections\.spec\.ts$/,
       ],
       fullyParallel: false,
       workers: 1,

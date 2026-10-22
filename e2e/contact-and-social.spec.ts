@@ -1,5 +1,6 @@
 import { test, expect } from "@playwright/test";
-import { contactInfo, portalLinks } from "../src/content/site-shell";
+import { contactInfo } from "../src/content/site-shell";
+import { PORTAL_LINKS_FIXTURE, seedPortalLinks } from "./helpers/settings";
 
 test.describe("Contact details and social links", () => {
   test("phone, email and address appear in the footer", async ({ page }) => {
@@ -25,10 +26,11 @@ test.describe("Contact details and social links", () => {
   });
 
   test("the footer shows every configured portal link, and the header none", async ({ page }) => {
+    await seedPortalLinks(PORTAL_LINKS_FIXTURE);
     await page.goto("/");
     const nav = page.getByRole("contentinfo").getByRole("navigation", { name: "Portal links" });
-    for (const link of portalLinks) {
-      await expect(nav.getByRole("link", { name: link.label })).toHaveAttribute("href", link.href);
+    for (const link of PORTAL_LINKS_FIXTURE) {
+      await expect(nav.getByRole("link", { name: new RegExp(`^${link.label}`) })).toHaveAttribute("href", link.url);
       await expect(page.getByRole("banner").getByRole("link", { name: link.label })).toHaveCount(0);
     }
   });

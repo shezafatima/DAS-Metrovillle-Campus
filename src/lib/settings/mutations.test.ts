@@ -1,8 +1,9 @@
 // @vitest-environment node
-import { beforeEach, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { randomUUID } from "node:crypto";
 import { describeWithDb } from "@/test/db";
 import { settingsCopy } from "@/content/admin";
+import { clearPanelCheckForTests, registerPanelCheckForTests } from "./panel-checks";
 import { defaultsFor, mergeWithDefaults } from "./defaults";
 import { panelFingerprint } from "./fingerprint";
 import { toLiveValue } from "./items";
@@ -89,7 +90,12 @@ async function doc(group: string) {
   return Settings.findById(group).lean();
 }
 
-describeWithDb("savePanel (014: partial saves, fingerprint check, group compare-and-set)", ["settings"], () => {
+async function changes(group?: string) {
+  const { SettingsChange } = await import("@/models/settings-change");
+  return SettingsChange.find(group ? { group } : {}).lean();
+}
+
+describeWithDb("savePanel (014: partial saves, fingerprint check, group compare-and-set)", ["settings", "settingsChanges"], () => {
   beforeEach(() => {
     vi.clearAllMocks();
     verifyUploadedImage.mockResolvedValue({ ok: true });
@@ -223,6 +229,142 @@ describeWithDb("savePanel (014: partial saves, fingerprint check, group compare-
     }
   });
 
+  // ── 014b: pending confirmation, panel checks, the removed-item change record ──
+
+  it("a save never changes pendingConfirmation (only the seed sets it and only the confirm actions clear it)", async () => {
+    const { Settings } = await import("@/models/settings");
+    const seededAt = new Date("2026-10-19T10:00:00Z");
+    await Settings.create({
+      _id: "stats",
+      data: statsData(1),
+      version: 1,
+      updatedBy: "seed@school.pk",
+      pendingConfirmation: { source: "das.edu.pk /x", seededAt },
+    });
+    const { getAdminPanels } = await import("./admin");
+    const loaded = await getAdminPanels("stats", ["stats"]);
+    await saveOk("stats", loaded.stats.fingerprint, statsData(2));
+    const stored = (await doc("stats")) as unknown as { version: number; pendingConfirmation: { source: string; seededAt: Date } | null };
+    expect(stored.version).toBe(2);
+    expect(stored.pendingConfirmation).toEqual({ source: "das.edu.pk /x", seededAt });
+  });
+
+  describe("panel checks", () => {
+    it("a check that refuses with conflict makes the save a conflict and writes nothing", async () => {
+      registerPanelCheckForTests("stats", async () => ({ ok: false, error: "conflict" }));
+      try {
+        expect(await save("stats", freshFingerprint("stats"), statsData(5))).toEqual({ ok: false, error: "conflict" });
+        expect(await doc("stats")).toBeNull();
+      } finally {
+        clearPanelCheckForTests("stats");
+      }
+    });
+
+    it("a check that refuses with invalid returns its field errors and writes nothing", async () => {
+      registerPanelCheckForTests("stats", async () => ({ ok: false, error: "invalid", fields: { students: "nope" } }));
+      try {
+        expect(await save("stats", freshFingerprint("stats"), statsData(5))).toEqual({ ok: false, error: "invalid", fields: { students: "nope" } });
+        expect(await doc("stats")).toBeNull();
+      } finally {
+        clearPanelCheckForTests("stats");
+      }
+    });
+
+    it("the data a passing check returns is what gets stored", async () => {
+      registerPanelCheckForTests("stats", async (incoming) => ({ ok: true, data: { ...incoming, students: 4242 } }));
+      try {
+        expect(await save("stats", freshFingerprint("stats"), statsData(5))).toMatchObject({ ok: true, data: { students: 4242 } });
+        expect(await doc("stats")).toMatchObject({ data: { students: 4242 } });
+      } finally {
+        clearPanelCheckForTests("stats");
+      }
+    });
+
+    it("cannot be registered outside tests", () => {
+      const previous = process.env.VITEST;
+      delete process.env.VITEST;
+      try {
+        expect(() => registerPanelCheckForTests("stats", async () => ({ ok: true, data: {} }))).toThrow();
+      } finally {
+        process.env.VITEST = previous;
+      }
+    });
+  });
+
+  describe("change record (spec FR-007)", () => {
+    it("a save that removes a slide writes one entry with the actor, the panel and the slide's full previous value", async () => {
+      const a = slide({ alt: "Front gate" });
+      const b = slide({ alt: "Library" });
+      const fp = await saveOk("hero", freshFingerprint("hero"), { displaySeconds: 5, slides: [a, b] });
+      expect(await changes("hero")).toHaveLength(0);
+
+      await saveOk("hero", fp, { displaySeconds: 5, slides: [a] }, "remover@school.pk");
+      const entries = await changes("hero");
+      expect(entries).toHaveLength(1);
+      expect(entries[0]).toMatchObject({ group: "hero", panel: "hero", actorEmail: "remover@school.pk" });
+      expect(entries[0].at).toBeInstanceOf(Date);
+      expect(entries[0].removed).toHaveLength(1);
+      expect(entries[0].removed[0]).toMatchObject({ path: "slides.1", label: "Library", value: expect.objectContaining({ id: b.id, alt: "Library" }) });
+    });
+
+    it("a save that only edits or reorders writes no entry", async () => {
+      const a = slide({ alt: "A" });
+      const b = slide({ alt: "B" });
+      const fp = await saveOk("hero", freshFingerprint("hero"), { displaySeconds: 5, slides: [a, b] });
+      const fp2 = await saveOk("hero", fp, { displaySeconds: 5, slides: [b, a] });
+      await saveOk("hero", fp2, { displaySeconds: 6, slides: [b, { ...a, alt: "A changed" }] });
+      expect(await changes()).toHaveLength(0);
+    });
+
+    it("a conflict or an invalid save writes no entry", async () => {
+      const a = slide();
+      const b = slide();
+      const fp = await saveOk("hero", freshFingerprint("hero"), { displaySeconds: 5, slides: [a, b] });
+      expect(await save("hero", "f".repeat(32), { displaySeconds: 5, slides: [a] })).toEqual({ ok: false, error: "conflict" });
+      expect(await save("hero", fp, { displaySeconds: 5, slides: [{ ...a, visible: false }] })).toMatchObject({ ok: false, error: "invalid" });
+      expect(await changes()).toHaveLength(0);
+    });
+
+    it("when the record cannot be written twice, the save still succeeds and the failure is logged without content", async () => {
+      const { SettingsChange } = await import("@/models/settings-change");
+      const logs = vi.spyOn(console, "info").mockImplementation(() => undefined);
+      const create = vi.spyOn(SettingsChange, "create").mockRejectedValue(new Error("db down") as never);
+      try {
+        const a = slide({ alt: "Secret caption" });
+        const b = slide();
+        const fp = await saveOk("hero", freshFingerprint("hero"), { displaySeconds: 5, slides: [a, b] });
+        const result = await save("hero", fp, { displaySeconds: 5, slides: [a] });
+        expect(result).toMatchObject({ ok: true });
+        expect(create).toHaveBeenCalledTimes(2);
+        const lines = logs.mock.calls.map((call) => String(call[0])).filter((line) => line.includes("settings_change_record_failed"));
+        expect(lines).toHaveLength(1);
+        expect(JSON.parse(lines[0])).toMatchObject({ type: "settings_change_record_failed", group: "hero", panel: "hero", counts: { removed: 1 } });
+        expect(lines[0]).not.toContain("Secret caption");
+      } finally {
+        create.mockRestore();
+        logs.mockRestore();
+      }
+    });
+
+    it("the record is retried once: a first failure followed by a success still writes one entry", async () => {
+      const { SettingsChange } = await import("@/models/settings-change");
+      const real = SettingsChange.create.bind(SettingsChange) as (...args: unknown[]) => Promise<unknown>;
+      const create = vi
+        .spyOn(SettingsChange, "create")
+        .mockRejectedValueOnce(new Error("blip") as never)
+        .mockImplementation(((...args: unknown[]) => real(...args)) as never);
+      try {
+        const a = slide();
+        const b = slide();
+        const fp = await saveOk("hero", freshFingerprint("hero"), { displaySeconds: 5, slides: [a, b] });
+        await saveOk("hero", fp, { displaySeconds: 5, slides: [a] });
+        expect(await changes("hero")).toHaveLength(1);
+      } finally {
+        create.mockRestore();
+      }
+    });
+  });
+
   // ── carried over from 005 (whole-group panels behave as groups did) ────
 
   it("only images that are new since the stored value are verified", async () => {
@@ -315,10 +457,10 @@ describeWithDb("savePanel (014: partial saves, fingerprint check, group compare-
 });
 
 describeWithDb("getAdminPanels (014)", ["settings"], () => {
-  it("a never-saved group loads defaults, the fresh fingerprint and no last save", async () => {
+  it("a never-saved group loads defaults, the fresh fingerprint, no last save and nothing pending", async () => {
     const { getAdminPanels } = await import("./admin");
     const panels = await getAdminPanels("admission", ["admission-window", "admission-messages"]);
-    expect(panels["admission-window"]).toEqual({ data: { opensOn: "", closesOn: "" }, fingerprint: freshFingerprint("admission-window"), lastSaved: null });
+    expect(panels["admission-window"]).toEqual({ data: { opensOn: "", closesOn: "" }, fingerprint: freshFingerprint("admission-window"), lastSaved: null, pending: null });
     expect(panels["admission-messages"].data).toEqual({ announcement: "", closedMessage: "" });
   });
 

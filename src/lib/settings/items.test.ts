@@ -1,8 +1,8 @@
 // @vitest-environment node
 import { describe, expect, it } from "vitest";
 import { randomUUID } from "node:crypto";
-import { MAX_DELETED_RETAINED, liveItems, moveItem, reconcileItems } from "./items";
-import type { ListItem } from "./types";
+import { MAX_DELETED_RETAINED, liveItems, moveItem, reconcileGroupValue, reconcileItems, toLiveValue } from "./items";
+import type { GroupDefinition, ListItem } from "./types";
 
 function live(title: string, id = randomUUID()): ListItem {
   return { id, deletedAt: null, title };
@@ -102,5 +102,98 @@ describe("reconcileItems", () => {
     expect(deleted).toHaveLength(MAX_DELETED_RETAINED);
     expect(deleted.some((i) => i.title === "d0")).toBe(false);
     expect(deleted.some((i) => i.title === `d${MAX_DELETED_RETAINED + 2}`)).toBe(true);
+  });
+});
+
+const now = new Date("2026-09-30T10:00:00Z");
+
+describe("a per-list cap on retained deleted items (014b)", () => {
+  it("reconcileItems keeps only the newest `maxDeleted` removed items when given one", () => {
+    const many = Array.from({ length: 13 }, (_, n) => gone(`d${n}`, new Date(2026, 0, 1, 0, n)));
+    const keep = live("keep");
+    const result = reconcileItems([keep, ...many], [keep], now, 10);
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    const deleted = result.items.filter((i) => i.deletedAt).map((i) => i.title);
+    expect(deleted).toHaveLength(10);
+    expect(deleted).not.toContain("d0");
+    expect(deleted).toContain("d12");
+  });
+
+  it("reconcileGroupValue uses the list's own maxDeletedRetained", () => {
+    const def: GroupDefinition = {
+      key: "syllabi",
+      label: "Test",
+      fields: [{ type: "list", key: "levels", label: "Levels", itemLabel: "level", maxItems: 20, maxDeletedRetained: 2, itemFields: [{ type: "text", key: "title", label: "T", maxLength: 10 }] }],
+    } as unknown as GroupDefinition;
+    const stored = { levels: [live("keep"), gone("d0", new Date(2026, 0, 1, 0, 0)), gone("d1", new Date(2026, 0, 1, 0, 1)), gone("d2", new Date(2026, 0, 1, 0, 2))] };
+    const result = reconcileGroupValue(def, stored, { levels: [stored.levels[0]] }, now);
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect((result.data.levels as ListItem[]).filter((i) => i.deletedAt).map((i) => i.title)).toEqual(["d1", "d2"]);
+  });
+
+  it("a removed top-level item keeps everything under it, while a removed nested item is simply absent from what is stored", () => {
+    const def: GroupDefinition = {
+      key: "syllabi",
+      label: "Test",
+      fields: [
+        {
+          type: "list",
+          key: "levels",
+          label: "Levels",
+          itemLabel: "level",
+          maxItems: 20,
+          itemFields: [
+            { type: "text", key: "title", label: "T", maxLength: 10 },
+            { type: "list", key: "subjects", label: "S", itemLabel: "subject", maxItems: 5, itemFields: [{ type: "text", key: "title", label: "T", maxLength: 10 }] },
+          ],
+        },
+      ],
+    } as unknown as GroupDefinition;
+    const level = (title: string, ...subjects: string[]) => ({ id: randomUUID(), deletedAt: null, title, subjects: subjects.map((t) => ({ id: randomUUID(), deletedAt: null, title: t })) });
+    const a = level("A", "a1", "a2");
+    const b = level("B", "b1");
+    const result = reconcileGroupValue(def, { levels: [a, b] }, { levels: [{ ...a, subjects: [a.subjects[0]] }] }, now);
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    const [kept, removed] = result.data.levels as (ListItem & { subjects: unknown[] })[];
+    expect(kept.subjects).toHaveLength(1);
+    expect(removed).toMatchObject({ title: "B", deletedAt: now });
+    expect(removed.subjects).toHaveLength(1);
+  });
+});
+
+describe("toLiveValue with lists nested in items (014b)", () => {
+  const def = {
+    key: "syllabi",
+    label: "Test",
+    fields: [
+      {
+        type: "list",
+        key: "levels",
+        label: "Levels",
+        itemLabel: "level",
+        maxItems: 20,
+        itemFields: [
+          { type: "text", key: "name", label: "N", maxLength: 10 },
+          { type: "list", key: "subjects", label: "S", itemLabel: "subject", maxItems: 5, itemFields: [{ type: "text", key: "name", label: "N", maxLength: 10 }] },
+        ],
+      },
+    ],
+  } as unknown as GroupDefinition;
+
+  it("drops removed levels and the deletedAt marker at every depth", () => {
+    const data = {
+      levels: [
+        { id: "l1", deletedAt: null, name: "One", subjects: [{ id: "s1", deletedAt: null, name: "Eng" }] },
+        { id: "l2", deletedAt: new Date(), name: "Gone", subjects: [] },
+      ],
+    };
+    expect(toLiveValue(def, data)).toEqual({ levels: [{ id: "l1", name: "One", subjects: [{ id: "s1", name: "Eng" }] }] });
+  });
+
+  it("leaves an item with no nested list as it is", () => {
+    expect(toLiveValue(def, { levels: [{ id: "l1", deletedAt: null, name: "One" }] })).toEqual({ levels: [{ id: "l1", name: "One" }] });
   });
 });

@@ -24,12 +24,21 @@ export const admissionDefinition: GroupDefinition = {
       label: labels.classes,
       hint: hints.classes,
       itemLabel: "class",
-      itemFields: [{ type: "text", key: "name", label: labels.className, required: true, maxLength: 50 }],
+      // 014b: an item is a ticked Class Level (`levelId` = that level's id, `name` = a snapshot of its name, refreshed by the
+      // server on every save) or, while `levelId` is empty, a typed name not linked to a level yet. Items stored before 014b
+      // have no `levelId`, so they read as not linked and are still offered. See ADR-0014.
+      itemFields: [
+        { type: "text", key: "name", label: labels.className, required: true, maxLength: 60 },
+        { type: "text", key: "levelId", label: labels.levelId, maxLength: 40 },
+      ],
       inlineFields: ["name"],
       layout: "cards",
       summary: { title: ["name"] },
       maxItems: 30,
-      rules: [{ kind: "uniqueText", field: "name", message: settingsCopy.errors.classDuplicate }],
+      rules: [
+        { kind: "uniqueText", field: "name", message: settingsCopy.errors.classDuplicate },
+        { kind: "uniqueText", field: "levelId", message: settingsCopy.errors.classLevelLinkDuplicate },
+      ],
       default: [],
     },
   ],

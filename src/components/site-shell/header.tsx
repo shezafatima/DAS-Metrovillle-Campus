@@ -6,6 +6,8 @@ import { SearchBox } from "./search-box";
 import { navigationItems } from "@/content/site-shell";
 import { resolveAboutView } from "@/lib/about/resolve-view";
 import { aboutNavChildren } from "@/lib/about/view";
+import { visibleSections } from "@/lib/page-sections/dynamic";
+import { resolveDynamicSections } from "@/lib/page-sections/dynamic-server";
 import { buildSearchIndex } from "@/lib/site-search";
 
 // Sticky at every width, one fixed height, transparent over the home hero
@@ -13,12 +15,18 @@ import { buildSearchIndex } from "@/lib/site-search";
 // a 1fr/auto/1fr grid so it is centred on the page, not between the logo and
 // the search icon.
 // The About entries come from the same view as the About page (017), so the
-// menu, the search and the page always agree on which sections exist.
+// menu, the search and the page always agree on which sections exist. The same goes for the
+// admin-managed sections (014b: Syllabi, Examination, Class Levels): each is listed only while it has content.
 export async function Header() {
-  const view = await resolveAboutView();
-  const items = navigationItems.map((item) =>
-    item.href === "/about" ? { ...item, children: aboutNavChildren(view) } : item,
-  );
+  const [view, presence] = await Promise.all([resolveAboutView(), resolveDynamicSections()]);
+  const dynamicChildren = (page: "academics" | "admission") =>
+    visibleSections(page, presence).map((section) => ({ label: section.label, href: `/${page}#${section.id}` }));
+  const items = navigationItems.map((item) => {
+    if (item.href === "/about") return { ...item, children: aboutNavChildren(view) };
+    if (item.href === "/academics") return { ...item, children: dynamicChildren("academics") };
+    if (item.href === "/admission") return { ...item, children: dynamicChildren("admission") };
+    return item;
+  });
   const index = buildSearchIndex(items);
   return (
     <HeaderFrame>

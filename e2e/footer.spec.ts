@@ -1,5 +1,6 @@
 import { test, expect } from "@playwright/test";
-import { contactInfo, footerContent, portalLinks } from "../src/content/site-shell";
+import { contactInfo, footerContent } from "../src/content/site-shell";
+import { PORTAL_LINKS_FIXTURE, seedPortalLinks } from "./helpers/settings";
 
 /**
  * The footer (001, redesigned 2026-10-08): white, four columns on desktop (two at tablet, one on a phone), a thin divider
@@ -23,6 +24,8 @@ function contrast(a: string, b: string): number {
 for (const width of [375, 768, 1024, 1440]) {
   test(`footer at ${width}px`, async ({ page }) => {
     test.setTimeout(300_000);
+    // The Portal Links column comes from Settings (014b): store the six, so the footer has its four columns.
+    await seedPortalLinks(PORTAL_LINKS_FIXTURE);
     await page.setViewportSize({ width, height: 900 });
     await page.goto("/about", { timeout: 120_000 });
     const footer = page.getByRole("contentinfo");
@@ -60,7 +63,9 @@ for (const width of [375, 768, 1024, 1440]) {
     // Quick Links (the main pages and Careers; no Campuses) and Portal Links (the six, with their targets).
     const quick = footer.getByRole("navigation", { name: "Quick Links" }).getByRole("link");
     expect(await quick.evaluateAll((els) => els.map((e) => [e.textContent, e.getAttribute("href")]))).toEqual(footerContent.quickLinks.map((l) => [l.label, l.href]));
-    for (const link of portalLinks) await expect(footer.getByRole("navigation", { name: "Portal Links" }).getByRole("link", { name: link.label })).toHaveAttribute("href", link.href);
+    for (const link of PORTAL_LINKS_FIXTURE) {
+      await expect(footer.getByRole("navigation", { name: "Portal Links" }).getByRole("link", { name: new RegExp(`^${link.label}`) })).toHaveAttribute("href", link.url);
+    }
 
     // Contact Us: address, a tel: link, a mailto: link, the timings, and Get directions.
     const contact = footer.getByRole("group", { name: "Contact Us" });

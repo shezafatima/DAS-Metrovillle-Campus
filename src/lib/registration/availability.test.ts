@@ -47,3 +47,69 @@ describe("registrationOpen at the Pakistan boundaries, whatever the process time
     expect(karachi.map(([open]) => open)).toEqual([false, true, true, false]);
   });
 });
+
+// ── 014b: the class list comes from the ticked Class Levels ───────────────
+
+const state = vi.hoisted(() => ({
+  admission: { opensOn: "2027-01-01", closesOn: "2027-03-31", announcement: "", closedMessage: "", classes: [] as { levelId: string; name: string }[] },
+  classLevels: { ageReferenceDate: "07-31", ageHeader: "31 July", levels: [] as { id: string; name: string; ageRule: string }[] },
+  now: new Date("2027-02-01T05:00:00Z"),
+}));
+
+vi.mock("next/server", () => ({ connection: async () => undefined }));
+vi.mock("@/lib/settings/public", () => ({
+  getPublicSettings: async (group: string) => (group === "admission" ? state.admission : state.classLevels),
+}));
+vi.mock("@/lib/admission/server", () => ({ currentTime: async () => state.now }));
+
+describe("getRegistrationAvailability: classes (014b)", () => {
+  const levels = [
+    { id: "a", name: "Playgroup", ageRule: "x" },
+    { id: "b", name: "Class 1", ageRule: "x" },
+  ];
+
+  afterEach(() => {
+    state.admission.classes = [];
+    state.classLevels.levels = [];
+    state.admission.opensOn = "2027-01-01";
+    state.now = new Date("2027-02-01T05:00:00Z");
+  });
+
+  it("offers the ticked levels in Class Levels order, and the form is open", async () => {
+    state.classLevels.levels = levels;
+    state.admission.classes = [
+      { levelId: "b", name: "Class 1" },
+      { levelId: "a", name: "Playgroup" },
+    ];
+    const { getRegistrationAvailability } = await import("./availability");
+    expect(await getRegistrationAvailability()).toMatchObject({ open: true, classes: ["Playgroup", "Class 1"] });
+  });
+
+  it("an open window with nothing ticked and nothing typed is closed, so the form shows the Closed message", async () => {
+    state.classLevels.levels = levels;
+    const { getRegistrationAvailability } = await import("./availability");
+    expect(await getRegistrationAvailability()).toMatchObject({ open: false, classes: [] });
+  });
+
+  it("a typed name not linked to a level is still offered, so the migration changes nothing for parents (Clarification 1)", async () => {
+    state.classLevels.levels = levels;
+    state.admission.classes = [{ levelId: "", name: "Grade 9" }];
+    const { getRegistrationAvailability } = await import("./availability");
+    expect(await getRegistrationAvailability()).toMatchObject({ open: true, classes: ["Grade 9"] });
+  });
+
+  it("a level that was ticked and then deleted is no longer offered", async () => {
+    state.classLevels.levels = [levels[0]];
+    state.admission.classes = [{ levelId: "b", name: "Class 1" }];
+    const { getRegistrationAvailability } = await import("./availability");
+    expect(await getRegistrationAvailability()).toMatchObject({ open: false, classes: [] });
+  });
+
+  it("a ticked level does not open the form outside the admission window", async () => {
+    state.classLevels.levels = levels;
+    state.admission.classes = [{ levelId: "a", name: "Playgroup" }];
+    state.now = new Date("2027-05-01T05:00:00Z");
+    const { getRegistrationAvailability } = await import("./availability");
+    expect(await getRegistrationAvailability()).toMatchObject({ open: false, classes: ["Playgroup"] });
+  });
+});

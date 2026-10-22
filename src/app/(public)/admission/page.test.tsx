@@ -6,6 +6,16 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 const connection = vi.fn(async () => undefined);
 const getAdmissionWindow = vi.fn();
 const isAdmissionApplyOpen = vi.fn();
+// 014b: Class Levels is admin-managed; the page shows it only while it has rows.
+const classLevels = vi.hoisted(() => ({
+  ageReferenceDate: "07-31",
+  ageHeader: "31 July",
+  levels: [] as { id: string; name: string; ageRule: string }[],
+}));
+vi.mock("@/lib/settings/public", () => ({ getPublicSettings: async () => classLevels }));
+vi.mock("@/lib/page-sections/dynamic-server", () => ({
+  resolveDynamicSections: async () => ({ syllabi: false, examination: false, "class-levels": classLevels.levels.length > 0 }),
+}));
 
 vi.mock("next/server", () => ({ connection: () => connection() }));
 vi.mock("@/lib/admission/server", () => ({
@@ -25,6 +35,41 @@ beforeEach(() => {
   connection.mockClear();
   getAdmissionWindow.mockReset().mockResolvedValue(OPEN);
   isAdmissionApplyOpen.mockReset();
+  classLevels.levels = [];
+  classLevels.ageHeader = "31 July";
+});
+
+describe("/admission Class Levels (014b)", () => {
+  it("has no Class Levels section while there are no rows", async () => {
+    isAdmissionApplyOpen.mockResolvedValue(false);
+    await renderPage();
+    expect(screen.queryByRole("heading", { level: 2, name: "Class Levels" })).toBeNull();
+    expect(document.getElementById("class-levels")).toBeNull();
+  });
+
+  it("shows it between the procedure and the uniform, with the age header naming the reference date", async () => {
+    isAdmissionApplyOpen.mockResolvedValue(false);
+    classLevels.ageHeader = "1 April";
+    classLevels.levels = [
+      { id: "a", name: "Playgroup", ageRule: "2½ to 3½ years" },
+      { id: "b", name: "Class 1", ageRule: "5½ to 6½ years" },
+    ];
+    await renderPage();
+    expect(screen.getAllByRole("heading", { level: 2 }).map((h) => h.textContent)).toEqual(["Admission Procedure", "Class Levels", "Uniform"]);
+    expect(document.querySelector("#class-levels table")).not.toBeNull();
+    expect(screen.getAllByText("Age on 1 April").length).toBeGreaterThan(0);
+  });
+
+  it("gives the Uniform section the other background so two muted bands never touch", async () => {
+    isAdmissionApplyOpen.mockResolvedValue(false);
+    await renderPage();
+    expect(document.getElementById("uniform")).toHaveAttribute("data-background", "muted");
+    classLevels.levels = [{ id: "a", name: "Playgroup", ageRule: "x" }];
+    document.body.innerHTML = "";
+    await renderPage();
+    expect(document.getElementById("class-levels")).toHaveAttribute("data-background", "muted");
+    expect(document.getElementById("uniform")).toHaveAttribute("data-background", "surface");
+  });
 });
 
 describe("/admission (020)", () => {

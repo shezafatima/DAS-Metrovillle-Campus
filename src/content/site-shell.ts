@@ -34,6 +34,8 @@ export interface FooterContent {
   description: string;
   logo: { src: string; alt: string; width: number; height: number };
   headings: { quickLinks: string; portalLinks: string; contact: string };
+  /** Said after an external link's label for assistive technology (014b): "LMS App (opens external site in a new tab)". The footer puts the space between them. */
+  externalLinkSuffix: string;
   /** The main pages (Campuses is deliberately not here; Careers is). */
   quickLinks: PortalLink[];
   /** "Get directions": goes to the Contact page. */
@@ -66,14 +68,24 @@ export const pageSections = {
     { id: "management-team", label: "Our Management Team" },
     { id: "messages", label: "Messages" },
   ],
+  /**
+   * Syllabi and Examination (014b) are admin-managed: each is listed, rendered and searchable only while it has
+   * content (src/lib/page-sections/dynamic.ts).
+   */
   academics: [
     { id: "academic-overview", label: "Academic Overview" },
+    { id: "syllabi", label: "Syllabi" },
+    { id: "examination", label: "Examination" },
     { id: "teachers-training", label: "Teachers' Training" },
     { id: "hifz-e-quran", label: "Hifz-e-Quran" },
   ],
-  /** 020: Class Levels is skipped until the client confirms it; /admission/class-levels redirects to /admission (next.config.ts). */
+  /**
+   * Class Levels (014b) is admin-managed: it is listed, rendered and searchable only while it has rows
+   * (src/lib/page-sections/dynamic.ts). /admission/class-levels redirects to /admission#class-levels, derived from this list.
+   */
   admission: [
     { id: "admission-procedure", label: "Admission Procedure" },
+    { id: "class-levels", label: "Class Levels" },
     { id: "uniform", label: "Uniform" },
   ],
   /** Photo Gallery is rendered by GallerySection (007, hidden when empty). The menu, search and the page all read this list. */
@@ -104,8 +116,9 @@ export const legacyAboutRedirects: { source: string; destination: string }[] = [
  */
 export const legacyAcademicsRedirects: { source: string; destination: string }[] = [
   { source: "/academics/academics-overview", destination: "/academics#academic-overview" },
-  { source: "/academics/syllabi", destination: "/academics" },
-  { source: "/academics/examinations", destination: "/academics" },
+  // 014b: Syllabi is a section again; with no content its anchor matches nothing and the page opens at the top.
+  { source: "/academics/syllabi", destination: "/academics#syllabi" },
+  { source: "/academics/examinations", destination: "/academics#examination" },
   { source: "/academics/teachers-training", destination: "/academics#teachers-training" },
 ];
 
@@ -129,21 +142,10 @@ export const navigationItems: NavigationItem[] = [
   { label: "Contact", href: "/contact" },
 ];
 
-// The reference's portal-login links (confirmed on the live site) point to
-// external student/parent/staff systems this project doesn't have yet (no
-// auth — Constitution III/out of scope). Rather than fabricate external URLs
-// that don't exist, each links to an internal placeholder page under
-// /portal/<slug>, consistent with every other not-yet-built page in this
-// feature (FR-017's pattern, extended here by content, not code). They are
-// utility links, so they sit in the footer (the yellow top bar is gone).
-export const portalLinks: PortalLink[] = [
-  { label: "DAS Portal", href: "/portal/das-portal" },
-  { label: "ePortal", href: "/portal/eportal" },
-  { label: "Student Login", href: "/portal/student-login" },
-  { label: "Mail Login", href: "/portal/mail-login" },
-  { label: "LMS App", href: "/portal/lms-app" },
-  { label: "Alumni Registration", href: "/portal/alumni-registration" },
-];
+// The footer's portal links (DAS Portal, ePortal, ...) are admin-managed since
+// 014b: Settings → Site-wide → Portal links, read by the shell from the
+// `portalLinks` settings group. The old placeholder pages for those links are
+// retired: their addresses redirect to the home page (next.config.ts).
 
 // Real Metroville phone/email/address are not yet supplied (PRD §5.3, Open
 // Question 8) — these are marked placeholders, not fabricated real values.
@@ -178,6 +180,7 @@ export const footerContent: FooterContent = {
     "Dar-e-Arqam School, Metroville Campus, offers quality education rooted in Islamic values, helping every student grow in knowledge, character and faith.",
   logo: { src: "/images/logo.svg", alt: "Dar-e-Arqam School Metroville Campus", width: 1974, height: 797 },
   headings: { quickLinks: "Quick Links", portalLinks: "Portal Links", contact: "Contact Us" },
+  externalLinkSuffix: "(opens external site in a new tab)",
   quickLinks: [
     { label: "Home", href: "/" },
     { label: "About", href: "/about" },

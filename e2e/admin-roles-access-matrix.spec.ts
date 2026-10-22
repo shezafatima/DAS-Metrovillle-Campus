@@ -32,6 +32,8 @@ const pages: PageCase[] = [
   // key and sends the user to their first tab (checked below, not here).
   { path: "/admin/settings/site-wide", access: "settings" },
   { path: "/admin/settings/home", access: "pages" },
+  // 014b: the Syllabi (and later Examination) sections of the Academics page.
+  { path: "/admin/settings/academics", access: "pages" },
   { path: "/admin/settings/admission", access: "settings_or_pages" },
   { path: "/admin/settings/resources", access: "pages" },
   // 007: an album screen (an unknown id: permitted users get the not-found state).

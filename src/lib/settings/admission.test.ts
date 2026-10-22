@@ -56,9 +56,13 @@ describe("toPublicShape('admission')", () => {
     expect(toPublicShape("admission", {})).toEqual({ opensOn: "", closesOn: "", announcement: "", closedMessage: "", classes: [] });
   });
 
-  it("lists the class names in saved order, trimmed, without empty ones", () => {
-    const classes = [{ name: "Playgroup" }, { name: " Nursery " }, { name: "" }, { name: "Class 1" }];
-    expect(toPublicShape("admission", { classes }).classes).toEqual(["Playgroup", "Nursery", "Class 1"]);
+  it("lists the classes in saved order, trimmed, without empty ones; an old item has no levelId, so it reads as not linked", () => {
+    const classes = [{ name: "Playgroup" }, { name: " Nursery " }, { name: "" }, { name: "Class 1", levelId: " lvl-1 " }];
+    expect(toPublicShape("admission", { classes }).classes).toEqual([
+      { levelId: "", name: "Playgroup" },
+      { levelId: "", name: "Nursery" },
+      { levelId: "lvl-1", name: "Class 1" },
+    ]);
   });
 
   it("leaves deleted items out (the live value has none)", () => {
@@ -70,6 +74,39 @@ describe("toPublicShape('admission')", () => {
         { id: "b", name: "Removed", deletedAt: new Date() },
       ],
     });
-    expect(toPublicShape("admission", live).classes).toEqual(["Playgroup"]);
+    expect(toPublicShape("admission", live).classes).toEqual([{ levelId: "", name: "Playgroup" }]);
+  });
+});
+
+describe("admission classes items (014b)", () => {
+  const item = (o: Record<string, unknown> = {}) => ({ id: crypto.randomUUID(), name: "Class 1", ...o });
+
+  it("an item stored before 014b has no levelId and reads as not linked (empty)", () => {
+    const r = parseGroup(def, valid({ classes: [item()] }));
+    expect(r).toMatchObject({ ok: true, data: { classes: [{ name: "Class 1", levelId: "" }] } });
+  });
+
+  it("keeps a levelId", () => {
+    expect(parseGroup(def, valid({ classes: [item({ levelId: "lvl-1" })] }))).toMatchObject({ ok: true, data: { classes: [{ levelId: "lvl-1" }] } });
+  });
+
+  it("refuses the same class level ticked twice, but allows many not-linked items", () => {
+    expect(parseGroup(def, valid({ classes: [item({ name: "A", levelId: "lvl-1" }), item({ name: "B", levelId: "lvl-1" })] }))).toMatchObject({
+      ok: false,
+      fields: { "classes.1.levelId": settingsCopy.errors.classLevelLinkDuplicate },
+    });
+    expect(parseGroup(def, valid({ classes: [item({ name: "A" }), item({ name: "B" })] })).ok).toBe(true);
+  });
+
+  it("accepts a name of 60 characters and refuses 61", () => {
+    expect(parseGroup(def, valid({ classes: [item({ name: "a".repeat(60) })] })).ok).toBe(true);
+    expect(parseGroup(def, valid({ classes: [item({ name: "a".repeat(61) })] }))).toMatchObject({ ok: false, fields: { "classes.0.name": settingsCopy.errors.maxLength(60) } });
+  });
+
+  it("still refuses a repeated class name", () => {
+    expect(parseGroup(def, valid({ classes: [item({ name: "Class 1" }), item({ name: " class 1 " })] }))).toMatchObject({
+      ok: false,
+      fields: { "classes.1.name": settingsCopy.errors.classDuplicate },
+    });
   });
 });

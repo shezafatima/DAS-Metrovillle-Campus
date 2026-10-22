@@ -7,8 +7,8 @@ vi.mock("@/app/admin/(dashboard)/settings/actions", () => ({ saveSettingsPanel: 
 vi.mock("@/components/ui/toaster", () => ({ toast: vi.fn() }));
 
 const FP = "a".repeat(32);
-const windowInitial = { data: { opensOn: "2027-01-01", closesOn: "2027-03-31" }, fingerprint: FP, lastSaved: null };
-const messagesInitial = { data: { announcement: "Open", closedMessage: "Soon" }, fingerprint: FP, lastSaved: null };
+const windowInitial = { data: { opensOn: "2027-01-01", closesOn: "2027-03-31" }, fingerprint: FP, lastSaved: null, pending: null };
+const messagesInitial = { data: { announcement: "Open", closedMessage: "Soon" }, fingerprint: FP, lastSaved: null, pending: null };
 
 beforeEach(() => {
   vi.mocked(saveSettingsPanel).mockReset();

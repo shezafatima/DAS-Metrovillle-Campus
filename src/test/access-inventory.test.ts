@@ -46,6 +46,8 @@ const EXPECTED: Record<string, Expected> = {
   "admin/(dashboard)/settings/page.tsx": { kind: "page", access: "settings_or_pages" },
   "admin/(dashboard)/settings/site-wide/page.tsx": { kind: "page", access: "settings" },
   "admin/(dashboard)/settings/home/page.tsx": { kind: "page", access: "pages" },
+  // 014b: the Syllabi and Examination sections of the Academics page.
+  "admin/(dashboard)/settings/academics/page.tsx": { kind: "page", access: "pages" },
   // Opens for either key; each panel's save checks its own permission (the window and classes: settings).
   "admin/(dashboard)/settings/admission/page.tsx": { kind: "page", access: "settings_or_pages" },
   // The 007 album list and one album's photos, under the Resources tab.
@@ -90,7 +92,7 @@ const EXPECTED: Record<string, Expected> = {
   },
   "admin/(dashboard)/users/actions.ts": { kind: "action", access: "main_admin" },
   // 014: one panel save per permission (contracts/panel-actions.md).
-  "admin/(dashboard)/settings/actions.ts": { kind: "action", access: "settings", perAccess: { settings: 1, pages: 1 } },
+  "admin/(dashboard)/settings/actions.ts": { kind: "action", access: "settings", perAccess: { settings: 2, pages: 2 } },
   // 007: the nine album and photo actions (Pages since 014).
   "admin/(dashboard)/settings/resources/gallery/actions.ts": { kind: "action", access: "pages" },
   "admin/login/actions.ts": { kind: "public" },

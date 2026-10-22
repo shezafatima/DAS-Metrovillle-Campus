@@ -63,6 +63,16 @@ const SEED: Record<string, Record<string, unknown>> = {
   },
 };
 
+/**
+ * 014b: an Admission class item stored before 014b has no `levelId`; the first save of the `admission-classes` panel
+ * writes its default, "" (014b data-model.md); a soft-deleted item is kept exactly as it was. That is the one intended change; every other stored value stays identical.
+ */
+const LEGACY_CLASS_PANEL = "admission-classes";
+const withLevelId = (data: Record<string, unknown>) => ({
+  ...data,
+  classes: (data.classes as Array<Record<string, unknown>>).map((item) => (item.deletedAt ? item : { ...item, levelId: item.levelId ?? "" })),
+});
+
 const collection = () => mongoose.connection.db!.collection("settings");
 
 /** A record without the fields a save is allowed to move. */
@@ -87,16 +97,19 @@ describeWithDb("SC-002: saving every panel unchanged leaves every stored value i
       const loaded = (await getAdminPanels(panel.source.group, [key]))[key];
       const result = await savePanel({ panel, expectedFingerprint: loaded.fingerprint, data: loaded.data, actorEmail: "roundtrip@school.pk" });
       expect(result, key).toMatchObject({ ok: true });
-      expect(result.ok && result.fingerprint, `${key} fingerprint`).toBe(loaded.fingerprint);
+      if (key !== LEGACY_CLASS_PANEL) expect(result.ok && result.fingerprint, `${key} fingerprint`).toBe(loaded.fingerprint);
     }
 
-    const after = await collection().find({}).toArray();
+    const all = await collection().find({}).toArray();
+    // 014b: saving every panel also creates the records of the groups added in 014b (they had none); nothing else appears.
+    expect(all.map((doc) => String(doc._id)).filter((id) => !(id in SEED)).sort()).toEqual(["classLevels", "examination", "portalLinks", "syllabi"]);
+    const after = all.filter((doc) => String(doc._id) in SEED);
     expect(after).toHaveLength(Object.keys(SEED).length);
     for (const doc of after) {
       const group = String(doc._id);
       const old = before[group];
       // The stored values, soft-deleted items included, are exactly as they were.
-      expect(doc.data, group).toEqual(old.data);
+      expect(doc.data, group).toEqual(group === "admission" ? withLevelId(old.data) : old.data);
       // Only the bookkeeping moved: one version per panel saved, the editor, the time and the per-panel marker.
       const savedPanels = PANEL_KEYS.filter((k) => PANELS[k].source.kind === "group" && (PANELS[k].source as { group: string }).group === group);
       expect(doc.version, group).toBe(old.version + savedPanels.length);

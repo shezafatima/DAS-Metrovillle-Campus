@@ -10,7 +10,14 @@ import { settingsCopy } from "../src/content/admin";
  */
 
 const TABS = [
-  { path: "/admin/settings/site-wide", label: "Site-wide", panels: [["contact", "Contact & social", "/contact"]] },
+  {
+    path: "/admin/settings/site-wide",
+    label: "Site-wide",
+    panels: [
+      ["contact", "Contact & social", "/contact"],
+      ["portal-links", "Portal links", "/#site-footer"],
+    ],
+  },
   {
     path: "/admin/settings/home",
     label: "Home",
@@ -20,12 +27,14 @@ const TABS = [
       ["stats", "Progress dashboard", "/#progress-dashboard"],
     ],
   },
+  { path: "/admin/settings/academics", label: "Academics", panels: [["syllabi", "Syllabi", "/academics#syllabi"]] },
   {
     path: "/admin/settings/admission",
     label: "Admission",
     panels: [
       ["admission-window", "Admission window", "/admission#admission-procedure"],
       ["admission-messages", "Admission messages", "/admission#admission-procedure"],
+      ["class-levels", "Class levels", "/admission#class-levels"],
       ["admission-classes", "Classes open for admission", "/admission/register"],
     ],
   },
@@ -37,7 +46,7 @@ test.describe("settings by page — tabs and panels (014 US1)", () => {
     await clearSettings();
   });
 
-  test("Settings opens on Site-wide; the tab bar lists the four tabs with panels, in order", async ({ browser }) => {
+  test("Settings opens on Site-wide; the tab bar lists the tabs with panels, in order", async ({ browser }) => {
     test.setTimeout(300_000);
     const { page } = await adminSession(browser);
     await page.goto("/admin/settings");
@@ -113,10 +122,10 @@ test.describe("settings by page — tabs and panels (014 US1)", () => {
     await expect(page.getByTestId("progress-dashboard")).toContainText(/321/, { timeout: 90_000 });
   });
 
-  test("About, Academics and Careers have no tab yet: their URLs are not found", async ({ browser }) => {
+  test("About and Careers have no tab yet: their URLs are not found", async ({ browser }) => {
     test.setTimeout(300_000);
     const { page } = await adminSession(browser);
-    for (const path of ["/admin/settings/about", "/admin/settings/academics", "/admin/settings/careers"]) {
+    for (const path of ["/admin/settings/about", "/admin/settings/careers"]) {
       // A request, not a navigation: the dev server's compile reload can abort a navigation.
       const response = await page.request.get(path, { maxRedirects: 0 });
       expect(response.status(), path).toBe(404);

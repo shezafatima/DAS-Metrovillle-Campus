@@ -38,6 +38,12 @@ export type SecurityEventType =
   | "password_set"
   | "settings_saved"
   | "settings_read_failed"
+  // 014b: a seeded section was confirmed by an admin; a seed script wrote a section; the class-link migration wrote;
+  // the removed-item change record could not be written (the save itself succeeded). `counts` and `actor` only, never content.
+  | "settings_confirmed"
+  | "settings_seeded"
+  | "classes_linked"
+  | "settings_change_record_failed"
   | "gallery_changed"
   | "gallery_migrated"
   | "gallery_read_failed"
@@ -68,6 +74,10 @@ export interface SecurityEvent {
   action?: string;
   /** The Settings panel key, for `settings_saved` and a panel refused by its save action's `access_denied` (014). Never field values. */
   panel?: string;
+  /** Plain counts for 014b events (`{ removed: 2 }`, `{ linked: 3, unmatched: 1 }`). Never names or content. */
+  counts?: Record<string, number>;
+  /** Who acted when it was not a signed-in admin: `system:014b-seed`, `system:014b-link-classes`. */
+  actor?: string;
 }
 
 export function logSecurityEvent(event: SecurityEvent): void {
@@ -83,6 +93,8 @@ export function logSecurityEvent(event: SecurityEvent): void {
     group: event.group ?? null,
     action: event.action ?? null,
     panel: event.panel ?? null,
+    counts: event.counts ?? null,
+    actor: event.actor ?? null,
   };
   console.info(JSON.stringify(line));
 }

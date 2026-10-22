@@ -620,6 +620,10 @@ export const settingsCopy = {
     "admission-messages": "Admission messages",
     "admission-classes": "Classes open for admission",
     "photo-gallery": "Photo gallery",
+    "portal-links": "Portal links",
+    "class-levels": "Class levels",
+    syllabi: "Syllabi",
+    examination: "Examination",
   },
   viewOnSite: "View on site",
   unsavedBadge: "Unsaved changes",
@@ -627,6 +631,9 @@ export const settingsCopy = {
   readOnly: {
     needs: (permission: string) => `You need the ${permission} permission to change this.`,
   },
+  /** The "Test link" button next to a web address that is being edited (014b). */
+  testLink: "Test link",
+  testLinkNeedsAddress: "Enter a valid address to test it",
   /** A Home panel whose group could not be read; the rest of the tab still works (014). */
   panelUnavailable: "This section couldn't be loaded. Reload to try again.",
   groups: {
@@ -639,6 +646,10 @@ export const settingsCopy = {
       description: "When admissions are open, and the messages shown on the Admission page. Dates are in Pakistan time.",
     },
     gallery: { title: "Photo gallery", description: "Pictures for the Photo Gallery page." },
+    examination: { title: "Examination", description: "How examinations work at each stage, as headed blocks of text. Shown as cards on the Academics page." },
+    syllabi: { title: "Syllabi", description: "The syllabus for each class: subjects, and the topics under each. Shown as tabs on the Academics page." },
+    classLevels: { title: "Class levels", description: "The table on the Admission page: each class level and the age a child must be. Registration offers the levels ticked as open." },
+    portalLinks: { title: "Portal links", description: "The links in the footer's Portal Links column. Each opens in a new tab. With no links, the column is hidden." },
   },
   fields: {
     contact: {
@@ -678,10 +689,31 @@ export const settingsCopy = {
       closedMessage: "Closed message",
       classes: "Classes open for admission",
       className: "Class name",
+      levelId: "Class level",
     },
     gallery: { images: "Images", image: "Image", caption: "Caption (optional)" },
+    portalLinks: { links: "Links", link: "Link", label: "Label", url: "Web address" },
+    examination: { blocks: "Blocks", block: "Block", heading: "Heading", body: "Text" },
+    syllabi: {
+      levels: "Levels",
+      levelName: "Level name",
+      subjects: "Subjects",
+      subjectName: "Subject name",
+      groups: "Groups",
+      heading: "Group heading (optional)",
+      intro: "Intro (optional)",
+      topics: "Topics",
+    },
+    classLevels: { ageReferenceDate: "Age reference date", day: "Day", month: "Month", levels: "Class levels", level: "Class level", name: "Class level", ageRule: "Age rule" },
   },
   hints: {
+    topics: "One topic per line. Blank lines are ignored and each line is trimmed.",
+    examinationBody: "Plain text. Leave a blank line between paragraphs.",
+    ageReferenceDate: "The age column on the Admission page reads \"Age on <this date>\". Defaults to 31 July.",
+    ageRule: "For example: 2½ to 3½ years.",
+    classLevelName: "Shown in the registration form's class list when this level is open, so use the name parents know.",
+    insecureUrl: "Visitors' browsers will mark this site as not secure.",
+    testLink: "Opens the address in a new tab. Nothing is saved.",
     optionalLink: "Leave empty to hide this icon.",
     officeHours: "For example: Monday to Saturday, 9am to 6pm.",
     displaySeconds: "Between 3 and 15.",
@@ -729,6 +761,84 @@ export const settingsCopy = {
     date: "Enter a real date.",
     closesBeforeOpens: "Closes on must be on or after Opens on.",
     classDuplicate: "This class is already in the list.",
+    urlCredentials: "Remove the username and password from the address.",
+    dayMonth: "Choose a real day and month.",
+    classLevelNameDuplicate: (name: string) =>
+      `Another class level is already called '${name}'. Class names must be unique, because registration matches classes by name.`,
+    classLevelLinkDuplicate: "This class level is already ticked.",
+    tooManyLines: (max: number) => `Use ${max} lines or fewer.`,
+    lineTooLong: (line: number, max: number) => `Line ${line} is longer than ${max} characters.`,
+    groupNeedsContent: "Add an intro or at least one topic.",
+    tooManyTopics: (max: number) => `A syllabus can hold at most ${max.toLocaleString("en-US")} topics in all.`,
+  },
+  /** The "pending client confirmation" notice on a seeded section, and its confirm action (014b). */
+  pending: {
+    notice: (source: string, date: string) =>
+      `Copied from ${source} on ${date}. It awaits the client's confirmation that it applies to this campus. Saving changes does not clear this notice.`,
+    confirmButton: "Mark as confirmed by client",
+    dialog: {
+      trigger: "Mark as confirmed by client",
+      title: "Mark this section as confirmed by the client?",
+      body: "Do this only when the client has confirmed that this content applies to this campus. The notice goes away, and who confirmed it and when is recorded.",
+      cancel: "Cancel",
+      confirm: "Mark as confirmed",
+    },
+    confirmed: (title: string) => `${title} marked as confirmed by the client`,
+    failed: "Couldn't mark it as confirmed. Please try again.",
+  },
+  /** The Syllabi editor (014b): levels, subjects and groups, one level open at a time. */
+  syllabus: {
+    addLevel: "Add level",
+    addSubject: "Add subject",
+    addGroup: "Add group",
+    preview: "Preview on the Academics page",
+    empty: "No levels yet. Add the first level, for example Class 1.",
+    noSubjects: "No subjects in this level yet.",
+    noGroups: "No groups in this subject yet.",
+    levelFallback: (n: number) => `Level ${n}`,
+    subjectFallback: (n: number) => `Subject ${n}`,
+    summary: (subjects: number, topics: number) => `${subjects} ${subjects === 1 ? "subject" : "subjects"}, ${topics} ${topics === 1 ? "topic" : "topics"}`,
+    topicCount: (n: number) => `${n} of 100 topics`,
+    duplicateName: (kind: "level" | "subject", name: string) => `Another ${kind} is also called "${name.trim()}". You can still save.`,
+    openLevel: (name: string) => `Open ${name}`,
+    removeLevel: (name: string, topics: number) => ({
+      trigger: "Remove level",
+      title: `Remove the level "${name}"?`,
+      body: `This removes ${topics} ${topics === 1 ? "topic" : "topics"}, with all its subjects. It leaves the site when you save this section. A record of what was removed is kept.`,
+      cancel: "Cancel",
+      confirm: "Remove",
+    }),
+    removeSubject: (name: string, topics: number) => ({
+      trigger: "Remove subject",
+      title: `Remove the subject "${name}"?`,
+      body: `This removes ${topics} ${topics === 1 ? "topic" : "topics"}. It leaves the site when you save this section. A record of what was removed is kept.`,
+      cancel: "Cancel",
+      confirm: "Remove",
+    }),
+    removeGroup: (topics: number) => ({
+      trigger: "Remove group",
+      title: "Remove this group?",
+      body: `This removes ${topics} ${topics === 1 ? "topic" : "topics"} and its intro. It leaves the site when you save this section. A record of what was removed is kept.`,
+      cancel: "Cancel",
+      confirm: "Remove",
+    }),
+    removeEmptyGroup: "Remove group",
+  },
+  /** "Classes open for admission" as a checklist of the Class Levels rows (014b). */
+  checklist: {
+    intro: "Tick the class levels that are open for admission. The registration form lists them in the same order as the Class levels table.",
+    noLevels: "There are no class levels yet. Add them in the Class levels panel, then tick the open ones here.",
+    goToLevels: "Go to Class levels",
+    notLinkedTitle: "Not linked to a class level",
+    notLinkedIntro:
+      "These names were typed before class levels existed. They are still offered in the registration form until you link each one to a class level or remove it.",
+    linkTo: (name: string) => `Link ${name} to a class level`,
+    linkPlaceholder: "Link to…",
+    remove: (name: string) => `Remove ${name}`,
+    removeButton: "Remove",
+    removedWarning: (names: string[]) =>
+      `${names.map((name) => `"${name}"`).join(", ")} ${names.length === 1 ? "was" : "were"} removed from Class levels and ${names.length === 1 ? "is" : "are"} no longer offered in the registration form. Clear this warning, then save.`,
+    clearWarning: "Clear this warning",
   },
   /** Warnings shown under the status line on a Settings group (013). */
   admissionWarnings: {
@@ -789,6 +899,14 @@ export const settingsCopy = {
     cancel: "Cancel",
     confirm: "Delete",
   },
+  /** Any other list item (014b: portal link, class level, examination block, ...), named by the list's item label. */
+  deleteItem: (label: string) => ({
+    trigger: `Delete ${label}`,
+    title: `Delete this ${label}?`,
+    body: "It will be removed from the list. It leaves the site when you save this section.",
+    cancel: "Cancel",
+    confirm: "Delete",
+  }),
 } as const;
 
 // Gallery albums (007) admin copy. Messages for the album and photo actions

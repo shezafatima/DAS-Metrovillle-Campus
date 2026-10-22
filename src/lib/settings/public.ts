@@ -5,6 +5,9 @@ import { connectDb } from "@/lib/db";
 import { freshReadsForTests } from "@/lib/e2e-fresh-reads";
 import { logSecurityEvent } from "@/lib/log";
 import { Settings } from "@/models/settings";
+import { levelSlugs } from "@/lib/syllabi/slug";
+import { formatDayMonth, isDayMonth } from "@/lib/text/day-month";
+import { toParagraphs } from "@/lib/text/paragraphs";
 import { defaultsFor, mergeWithDefaults } from "./defaults";
 import { toLiveValue } from "./items";
 import { GROUPS } from "./registry";
@@ -61,8 +64,74 @@ export interface PublicAdmission {
   /** "" when not set. */
   announcement: string;
   closedMessage: string;
-  /** Class names open for registration (013), live items only, in saved order. */
-  classes: string[];
+  /**
+   * The "Classes open for admission" list (013, 014b), live items only, in saved order. `levelId` is the id of the
+   * Class Level that was ticked, or "" for a typed name that is not linked to one yet. Whether the form offers an
+   * item is decided by `offeredClasses` (src/lib/registration/offered-classes.ts), never by reading this directly.
+   */
+  classes: PublicAdmissionClass[];
+}
+export interface PublicAdmissionClass {
+  levelId: string;
+  name: string;
+}
+
+/** Class Levels as the Admission page and the registration form see them (014b). */
+export interface PublicClassLevel {
+  id: string;
+  name: string;
+  ageRule: string;
+}
+export interface PublicClassLevels {
+  /** "MM-DD". */
+  ageReferenceDate: string;
+  /** The date as the age column header says it: "31 July". */
+  ageHeader: string;
+  levels: PublicClassLevel[];
+}
+
+/** One footer portal link (014b). `insecure` is true for an `http://` address; the site does not show it, the admin panel does. */
+export interface PublicPortalLink {
+  id: string;
+  label: string;
+  url: string;
+  insecure: boolean;
+}
+export interface PublicPortalLinks {
+  links: PublicPortalLink[];
+}
+
+/** One topic group of a syllabus subject (014b): an optional heading, intro paragraphs, and bulleted topics. */
+export interface PublicSyllabusGroup {
+  id: string;
+  heading: string;
+  paragraphs: string[];
+  topics: string[];
+}
+export interface PublicSyllabusSubject {
+  id: string;
+  name: string;
+  groups: PublicSyllabusGroup[];
+}
+export interface PublicSyllabusLevel {
+  id: string;
+  name: string;
+  /** The level's address fragment: `#syllabi-<slug>` (src/lib/syllabi/slug.ts). */
+  slug: string;
+  subjects: PublicSyllabusSubject[];
+}
+export interface PublicSyllabus {
+  levels: PublicSyllabusLevel[];
+}
+
+/** One Examination block (014b): a heading and the paragraphs of its body. */
+export interface PublicExaminationBlock {
+  id: string;
+  heading: string;
+  paragraphs: string[];
+}
+export interface PublicExamination {
+  blocks: PublicExaminationBlock[];
 }
 
 export interface PublicShapes {
@@ -71,6 +140,10 @@ export interface PublicShapes {
   stats: PublicStats;
   video: PublicVideo;
   admission: PublicAdmission;
+  portalLinks: PublicPortalLinks;
+  classLevels: PublicClassLevels;
+  syllabi: PublicSyllabus;
+  examination: PublicExamination;
 }
 
 // Same order as the content file and as SocialLinks' fixed order.
@@ -128,9 +201,57 @@ export function toPublicShape<G extends GroupKey>(group: G, value: GroupValue): 
           announcement: str(value.announcement),
           closedMessage: str(value.closedMessage),
           classes: records(value.classes)
-            .map((item) => str(item.name).trim())
-            .filter((name) => name !== ""),
+            .map((item) => ({ levelId: str(item.levelId).trim(), name: str(item.name).trim() }))
+            .filter((item) => item.name !== ""),
         } satisfies PublicAdmission;
+      case "examination":
+        return {
+          blocks: records(value.blocks)
+            .map((block) => ({ id: str(block.id), heading: str(block.heading).trim(), paragraphs: toParagraphs(str(block.body)) }))
+            .filter((block) => block.heading !== "" && block.paragraphs.length > 0),
+        } satisfies PublicExamination;
+      case "syllabi": {
+        const levels = records(value.levels)
+          .map((level) => ({
+            id: str(level.id),
+            name: str(level.name).trim(),
+            subjects: records(level.subjects)
+              .map((subject) => ({
+                id: str(subject.id),
+                name: str(subject.name).trim(),
+                groups: records(subject.groups)
+                  .map((group) => ({
+                    id: str(group.id),
+                    heading: str(group.heading).trim(),
+                    paragraphs: toParagraphs(str(group.intro)),
+                    topics: (Array.isArray(group.topics) ? group.topics : []).map((topic) => str(topic).trim()).filter((topic) => topic !== ""),
+                  }))
+                  .filter((group) => group.paragraphs.length > 0 || group.topics.length > 0),
+              }))
+              .filter((subject) => subject.name !== "" && subject.groups.length > 0),
+          }))
+          // A level with no subject has nothing to show, so it is not a tab.
+          .filter((level) => level.name !== "" && level.subjects.length > 0);
+        const slugs = levelSlugs(levels.map((level) => level.name));
+        return { levels: levels.map((level, index) => ({ ...level, slug: slugs[index] })) } satisfies PublicSyllabus;
+      }
+      case "classLevels": {
+        const date = isDayMonth(str(value.ageReferenceDate)) ? str(value.ageReferenceDate) : "07-31";
+        return {
+          ageReferenceDate: date,
+          ageHeader: formatDayMonth(date),
+          levels: records(value.levels)
+            .map((level) => ({ id: str(level.id), name: str(level.name).trim(), ageRule: str(level.ageRule).trim() }))
+            .filter((level) => level.id !== "" && level.name !== ""),
+        } satisfies PublicClassLevels;
+      }
+      case "portalLinks":
+        return {
+          links: records(value.links)
+            .map((link) => ({ id: str(link.id), label: str(link.label).trim(), url: str(link.url).trim() }))
+            .filter((link) => link.label !== "" && link.url !== "")
+            .map((link) => ({ ...link, insecure: /^http:\/\//i.test(link.url) })),
+        } satisfies PublicPortalLinks;
     }
   })();
   return shape as PublicShapes[G];

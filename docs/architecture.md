@@ -585,6 +585,96 @@
   with the message on `to`; it runs in the same group schema, so the browser
   and the server apply it alike.
 
+## Dynamic sections (014b, ADR-0014)
+- Four admin-managed parts of the public site are Settings groups edited by
+  014 panels and saved through `savePanel`, so they inherit its fingerprint
+  check, version compare-and-set, `settings_saved` line, read-only mode and
+  revalidation: `syllabi`, `examination` (Academics tab, `pages`),
+  `classLevels` (Admission tab, `pages`) and `portalLinks` (Site-wide tab,
+  `settings`). A never-saved group is empty, and an empty section is not
+  rendered, listed in the menu or found by search.
+- Removing is a normal save; there is no permanent delete. A save that removes
+  items (at any depth, matched by id; `removedItems` in
+  src/lib/settings/removed-items.ts) writes one `settingsChanges` entry after
+  the write: group, panel, actor, time and each removed item's full previous
+  value. It is retried once; if it still fails the save stays a success and
+  `settings_change_record_failed` is logged (counts only). Top-level removed
+  items also keep the engine's `deletedAt` marker in the record. Recovery:
+  re-enter the item from the entry in its panel, then save (never write the
+  settings record directly).
+  ```
+  db.settingsChanges.find({ group: "<group>" }).sort({ at: -1 }).limit(5)
+  ```
+- `pendingConfirmation` (optional, beside `data`, in no fingerprint) marks
+  content copied by a seed script as awaiting the client. Saves never touch it.
+- A panel may have a server check (src/lib/settings/panel-checks.ts) that runs
+  inside `savePanel` after the fingerprint check; it can refuse the save or
+  adjust the panel's fields. A panel may also name a custom `editor`
+  (src/components/admin/settings/panel-editor.tsx).
+- Portal links: an ordered list of label (40) + address (2048), at most 12.
+  The address must be absolute http or https with a host and no username or
+  password (field options `rejectCredentials`, `warnInsecure`, `testLink`);
+  an `http://` address is accepted and the editor warns that visitors'
+  browsers will mark the site as not secure. The footer column lists them in
+  order, each a plain `<a target="_blank" rel="noopener noreferrer">` whose
+  name ends "(opens external site in a new tab)"; with none, the column and its
+  heading are gone and the grid has three columns instead of four. The
+  `/portal/<slug>` placeholder pages are retired: `/portal` and `/portal/*`
+  redirect permanently to `/` (next.config.ts), and a test fails if any source
+  file links to a `/portal/` address.
+
+- Class Levels (`classLevels` group, Admission tab, `pages`): an age reference date
+  (`dayMonth` field, stored "MM-DD", default 31 July; a half-chosen date is kept as
+  "04-" or "-15" and refused on save) and up to 30 rows of name (60) + age rule (80).
+  Names are unique ignoring case and repeated spaces, and a duplicate blocks the save
+  with a message that says registration matches classes by name. The public table is
+  `/admission#class-levels`: a real table from tablet width, stacked label/value rows
+  below it.
+- "Classes open for admission" is a checklist of the Class Levels rows (`settings`
+  permission). Each admission `classes` item is `{ id, name, levelId }`: a non-empty
+  `levelId` is a ticked level (`name` is a snapshot, refreshed on every save); an empty one
+  is a typed name not linked yet (every item stored before 014b reads this way). The
+  registration form offers `offeredClasses()`: the ticked live levels in Class Levels
+  order under their current names, then the not-linked names, de-duplicated; empty means
+  the Closed message. Registrations still store the class as text. A server check inside
+  `savePanel` (src/lib/settings/panel-checks.ts) makes a NEW tick for a level that no
+  longer exists a `conflict`; an already-stored item whose level was deleted is dropped by
+  the next save (saving acknowledges the removed-level warning).
+- `npm run migrate:class-levels` (dry run; `-- --confirm` writes) links typed names to
+  Class Levels rows by name, ignoring case and spaces, in one version compare-and-set on
+  the admission record. It is optional (nothing depends on it) and idempotent; unmatched
+  names stay "not linked" and are reported, and are listed in the Admission tab.
+- Syllabi (`syllabi` group, Academics tab, `pages`): levels > subjects > groups (heading,
+  intro, topics). New engine pieces: a `lines` field (a `string[]` edited as one textarea,
+  one per line, trimmed, blanks dropped), the list rule `anyOf` (a group needs an intro or
+  a topic), the group rule `maxTotalLines` (3,000 topics in all, so the brief's per-level
+  limits cannot outgrow one 16 MB document) and `maxDeletedRetained` (10 removed levels).
+  `toLiveValue` strips the removal marker from nested lists too. The editor
+  (src/components/admin/settings/syllabus-editor.tsx) opens one level at a time and keeps
+  its handlers stable so typing in one box does not re-render the others.
+- The public Syllabi section renders every level on the server and hands the panels to a
+  small client island (syllabi-tabs.tsx): the ARIA tabs pattern from tablet width, a labelled
+  picker below it, and `#syllabi-<slug>` links (slug from the level name, repeats numbered)
+  that select a level; choosing one `replaceState`s the address, so no history entry.
+- Examination (`examination` group, Academics tab, `pages`): up to 20 blocks (heading 120,
+  body 3,000), shown as cards in a grid, one column on phones and two from tablet width.
+  This is a recorded deviation from the reference, which stacks them.
+- Hiding empty sections: `pageSections` lists Syllabi, Examination and Class Levels; the
+  header, the search index and the two pages all go through `visibleSections()`, fed by
+  `resolveDynamicSections()` (cached Settings reads), so a section with no content is not
+  rendered, listed or found. `/academics/syllabi`, `/academics/examinations` and
+  `/admission/class-levels` redirect to the section anchors.
+- Seeds: `npm run seed:sections -- <syllabi|examination|portal-links> [--confirm]` copies
+  the reference content from typed files in src/content/seed/ (captured once from
+  das.edu.pk, with an `adaptations` list the dry run prints). Dry run by default; it refuses
+  (exit 1) if the section has any live content; a write is one version compare-and-set, keeps
+  removed items already stored, sets `pendingConfirmation` and logs `settings_seeded`.
+  The pending notice is cleared only by `confirmSettingsPanel` / `confirmPagesPanel`
+  (one conditional update on that field, idempotent, logs `settings_confirmed`).
+- Release order for 014b: deploy (no data change needed; typed classes stay offered). Then,
+  when the owner decides: `migrate:class-levels` after Class Levels is filled in, and
+  `seed:sections` per section. Production runs of either script are never automatic.
+
 ## Admission (020)
 - Settings group `admission`: Opens on, Closes on (date fields, `dateOrder`),
   Announcement and Closed message (text, 160 characters). Empty dates mean

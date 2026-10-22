@@ -2,7 +2,9 @@
 
 import { FormControl, FormDescription, FormField, FormLabel, FormMessage } from "@/components/ui/form";
 import { settingsCopy } from "@/content/admin";
+import { urlFieldAccepts } from "@/lib/settings/schema";
 import type { Field, ImageRef } from "@/lib/settings/types";
+import { MONTH_NAMES, joinDayMonth, splitDayMonth } from "@/lib/text/day-month";
 import { ImageField } from "./image-field";
 import { ListEditor } from "./list-editor";
 
@@ -18,6 +20,104 @@ export interface FieldControlProps {
 }
 
 const COUNTER_LIMIT = 200;
+
+/**
+ * "Test link" (014b, spec FR-043): opens a valid address in a new tab and
+ * changes nothing in the form. Until the address is valid it is a disabled
+ * link with no destination, so it can never open something unsafe.
+ */
+function TestLink({ field, value }: { field: Extract<Field, { type: "url" }>; value: string }) {
+  const address = value.trim();
+  const valid = urlFieldAccepts(field, address);
+  const className = "w-fit font-light text-primary text-xs underline-offset-4";
+  if (!valid) {
+    return (
+      <span aria-disabled="true" title={settingsCopy.testLinkNeedsAddress} className={`${className} cursor-not-allowed opacity-60`}>
+        {settingsCopy.testLink}
+      </span>
+    );
+  }
+  return (
+    <a href={address} target="_blank" rel="noopener noreferrer" className={`${className} hover:underline`}>
+      {settingsCopy.testLink}
+      <span className="sr-only"> ({settingsCopy.hints.testLink})</span>
+    </a>
+  );
+}
+
+const selectClass = "h-9 rounded-md border border-input bg-background px-2 font-light text-foreground text-sm";
+const DAYS = Array.from({ length: 31 }, (_, i) => String(i + 1).padStart(2, "0"));
+
+/**
+ * A day and a month with no year (014b: the Class Levels age reference date):
+ * two labelled native selects inside one fieldset. The value is "MM-DD". A
+ * half-chosen date lives in the value too ("04-" or "-15") and an impossible one
+ * ("04-31") is kept as chosen, so the save shows "Choose a real day and month."
+ * on this field, and the selects always show exactly what the value holds.
+ */
+function DayMonthControl({
+  field,
+  path,
+  value,
+  onChange,
+  error,
+  clearError,
+}: {
+  field: Extract<Field, { type: "dayMonth" }>;
+  path: string;
+  value: string;
+  onChange: (value: string) => void;
+  error: string | undefined;
+  clearError: (path: string) => void;
+}) {
+  const draft = splitDayMonth(value);
+
+  function update(next: { month: string; day: string }) {
+    onChange(joinDayMonth(next.month, next.day));
+    if (error) clearError(path);
+  }
+
+  const describedBy = [field.hint ? `${path}-hint` : null, error ? `${path}-error` : null].filter(Boolean).join(" ") || undefined;
+  return (
+    <fieldset className="flex flex-col gap-2" aria-describedby={describedBy} aria-invalid={Boolean(error) || undefined}>
+      <legend className="font-bold text-foreground text-sm">{field.label}</legend>
+      <div className="flex flex-wrap gap-3">
+        <label className="flex items-center gap-2 font-light text-foreground text-sm">
+          {settingsCopy.fields.classLevels.day}
+          <select name={`${path}-day`} value={draft.day} onChange={(event) => update({ ...draft, day: event.target.value })} className={selectClass}>
+            <option value="">—</option>
+            {DAYS.map((day) => (
+              <option key={day} value={day}>
+                {Number(day)}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className="flex items-center gap-2 font-light text-foreground text-sm">
+          {settingsCopy.fields.classLevels.month}
+          <select name={`${path}-month`} value={draft.month} onChange={(event) => update({ ...draft, month: event.target.value })} className={selectClass}>
+            <option value="">—</option>
+            {MONTH_NAMES.map((name, index) => (
+              <option key={name} value={String(index + 1).padStart(2, "0")}>
+                {name}
+              </option>
+            ))}
+          </select>
+        </label>
+      </div>
+      {field.hint && (
+        <p id={`${path}-hint`} className="font-light text-muted-foreground text-xs">
+          {field.hint}
+        </p>
+      )}
+      {error && (
+        <p id={`${path}-error`} role="alert" className="font-light text-destructive text-sm">
+          {error}
+        </p>
+      )}
+    </fieldset>
+  );
+}
 
 /**
  * Maps one field definition to its control (contracts/field-definitions.md
@@ -52,6 +152,12 @@ export function FieldControl({ field, path, value, onChange, errors, clearError 
             }}
           />
           {field.hint && <FormDescription>{field.hint}</FormDescription>}
+          {field.type === "url" && field.warnInsecure && /^http:\/\//i.test(text.trim()) && (
+            <p data-testid="insecure-warning" className="font-semibold text-foreground text-xs">
+              {settingsCopy.hints.insecureUrl}
+            </p>
+          )}
+          {field.type === "url" && field.testLink && <TestLink field={field} value={text} />}
           {max !== undefined && max <= COUNTER_LIMIT && (
             <p className="font-light text-muted-foreground text-xs" aria-hidden="true">
               {settingsCopy.list.charCount(text.length, max)}
@@ -82,6 +188,18 @@ export function FieldControl({ field, path, value, onChange, errors, clearError 
         </FormField>
       );
     }
+
+    case "dayMonth":
+      return (
+        <DayMonthControl
+          field={field}
+          path={path}
+          value={typeof value === "string" ? value : ""}
+          onChange={onChange}
+          error={error}
+          clearError={clearError}
+        />
+      );
 
     case "boolean":
       return (

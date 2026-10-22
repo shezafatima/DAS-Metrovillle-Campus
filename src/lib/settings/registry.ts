@@ -1,7 +1,11 @@
 import { admissionDefinition } from "./groups/admission";
+import { classLevelsDefinition } from "./groups/class-levels";
 import { contactDefinition } from "./groups/contact";
+import { examinationDefinition } from "./groups/examination";
 import { heroDefinition } from "./groups/hero";
+import { portalLinksDefinition } from "./groups/portal-links";
 import { statsDefinition } from "./groups/stats";
+import { syllabiDefinition } from "./groups/syllabi";
 import { videoDefinition } from "./groups/video";
 import { GROUP_KEYS, type GroupDefinition, type GroupKey } from "./types";
 
@@ -17,6 +21,10 @@ export const GROUPS: Record<GroupKey, GroupDefinition> = {
   stats: statsDefinition,
   video: videoDefinition,
   admission: admissionDefinition,
+  portalLinks: portalLinksDefinition,
+  classLevels: classLevelsDefinition,
+  syllabi: syllabiDefinition,
+  examination: examinationDefinition,
 };
 
 export { GROUP_KEYS };

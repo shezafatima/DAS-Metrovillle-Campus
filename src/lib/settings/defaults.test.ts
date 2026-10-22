@@ -50,8 +50,9 @@ describe("starting values", () => {
 });
 
 describe("registry", () => {
-  it("knows exactly the five groups and refuses anything else (the gallery left the engine in 007; admission joined in 020)", () => {
-    expect(GROUP_KEYS).toEqual(["contact", "hero", "stats", "video", "admission"]);
+  it("knows exactly its groups and refuses anything else (the gallery left the engine in 007; admission joined in 020; 014b added portalLinks, classLevels, syllabi and examination)", () => {
+    expect(GROUP_KEYS).toEqual(["contact", "hero", "stats", "video", "admission", "portalLinks", "classLevels", "syllabi", "examination"]);
+    for (const key of GROUP_KEYS) expect(getDefinition(key)?.key).toBe(key);
     expect(isGroupKey("gallery")).toBe(false);
     expect(isGroupKey("hero")).toBe(true);
     expect(isGroupKey("users")).toBe(false);

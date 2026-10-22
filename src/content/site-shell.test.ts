@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { contactInfo, footerContent, legacyAboutRedirects, legacyAcademicsRedirects, navigationItems, pageSections, portalLinks } from "./site-shell";
+import { contactInfo, footerContent, legacyAboutRedirects, legacyAcademicsRedirects, navigationItems, pageSections } from "./site-shell";
 
 describe("About sections (017)", () => {
   it("are the five anchored sections, in order", () => {
@@ -22,30 +22,33 @@ describe("About sections (017)", () => {
   });
 });
 
-describe("Academics sections (018)", () => {
-  it("are the three anchored sections, in order", () => {
+describe("Academics sections (018, 014b)", () => {
+  it("are the anchored sections, in order; Syllabi and Examination are admin-managed and listed only while they have content", () => {
     expect(pageSections.academics).toEqual([
       { id: "academic-overview", label: "Academic Overview" },
+      { id: "syllabi", label: "Syllabi" },
+      { id: "examination", label: "Examination" },
       { id: "teachers-training", label: "Teachers' Training" },
       { id: "hifz-e-quran", label: "Hifz-e-Quran" },
     ]);
   });
 
-  it("drives the Academics dropdown, with no Syllabi or Examination entry", () => {
+  it("the static dropdown lists every section; the header drops the admin-managed ones that are empty", () => {
     const academics = navigationItems.find((i) => i.label === "Academics")!;
     expect(academics.children!.map((c) => c.href)).toEqual([
       "/academics#academic-overview",
+      "/academics#syllabi",
+      "/academics#examination",
       "/academics#teachers-training",
       "/academics#hifz-e-quran",
     ]);
-    expect(academics.children!.some((c) => /syllabi|examination/i.test(c.label))).toBe(false);
   });
 
-  it("redirects the four old sub-routes", () => {
+  it("redirects the four old sub-routes; Syllabi and Examination land on their sections, which open the page at the top while empty", () => {
     expect(legacyAcademicsRedirects).toEqual([
       { source: "/academics/academics-overview", destination: "/academics#academic-overview" },
-      { source: "/academics/syllabi", destination: "/academics" },
-      { source: "/academics/examinations", destination: "/academics" },
+      { source: "/academics/syllabi", destination: "/academics#syllabi" },
+      { source: "/academics/examinations", destination: "/academics#examination" },
       { source: "/academics/teachers-training", destination: "/academics#teachers-training" },
     ]);
   });
@@ -114,10 +117,6 @@ describe("Careers entry points (012)", () => {
   it("is no longer in the About dropdown", () => {
     const about = navigationItems.find((item) => item.label === "About");
     expect(about?.children?.some((child) => child.label === "Careers")).toBe(false);
-  });
-
-  it("is not among the portal links (those are footer utility links)", () => {
-    expect(portalLinks.some((link) => link.href === "/careers")).toBe(false);
   });
 
   it("is in the footer's Quick Links and points at /careers", () => {
