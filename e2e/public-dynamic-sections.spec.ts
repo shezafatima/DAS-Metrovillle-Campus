@@ -108,9 +108,11 @@ test.describe("Syllabi on /academics (014b US4)", () => {
     await page.goto("/academics#syllabi-nursery", { timeout: 180_000 });
     await expect(tab(page, "Nursery")).toHaveAttribute("aria-selected", "true", { timeout: 90_000 });
     await seedSyllabi(bulkSyllabus().slice(0, 2).map((level) => (level.name === "Nursery" ? { ...level, name: "Pre-Nursery" } : level)));
-    await page.goto("/academics#syllabi-nursery", { timeout: 180_000 });
+    // Same URL and hash as before: a goto would only be a same-page navigation and keep the old data, so reload.
+    await page.reload({ timeout: 180_000 });
     await expect(tab(page, "Play Group")).toHaveAttribute("aria-selected", "true", { timeout: 90_000 });
     await page.goto("/academics#syllabi-pre-nursery", { timeout: 180_000 });
+    await page.reload({ timeout: 180_000 });
     await expect(tab(page, "Pre-Nursery")).toHaveAttribute("aria-selected", "true", { timeout: 90_000 });
   });
 

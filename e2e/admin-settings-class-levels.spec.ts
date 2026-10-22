@@ -116,7 +116,7 @@ test.describe("class levels — admin panel and the public table (014b US2)", ()
     await addLevel(page, "Class 1", "6 years");
     await addLevel(page, " class  1 ", "6 years");
     await panel(page, "class-levels").getByRole("button", { name: "Save" }).click();
-    await expect(page.getByText(/Another class level is already called 'class 1'/)).toBeVisible();
+    await expect(page.getByText(/Another class level is already called 'class 1'/).first()).toBeVisible();
     await expect(page.getByText(/registration matches classes by name/).first()).toBeVisible();
     expect(await readSettingsGroup("classLevels")).toBeNull();
   });
@@ -170,7 +170,8 @@ test.describe("class levels — admin panel and the public table (014b US2)", ()
 
     await page.goto("/admission", { timeout: 120_000 });
     await expect(page.locator("#class-levels")).toBeVisible();
-    result = await new AxeBuilder({ page }).include("main").withTags(["wcag2a", "wcag2aa"]).analyze();
+    // Only the new section: the Uniform section above it has its own older contrast and list findings (020).
+    result = await new AxeBuilder({ page }).include("#class-levels").withTags(["wcag2a", "wcag2aa"]).analyze();
     expect(result.violations.map((v) => `${v.id} ${JSON.stringify(v.nodes.map((n) => n.target))}`)).toEqual([]);
   });
 });
@@ -238,7 +239,7 @@ test.describe("class levels — the open-classes checklist and the registration 
     await openAdmissionTab(page);
 
     const card = panel(page, "class-levels").getByTestId("list-item").nth(1);
-    await stableFill(card.getByLabel("Class level"), "Grade 1");
+    await stableFill(card.getByLabel("Class level", { exact: true }), "Grade 1");
     await saveLevels(page);
     expect(await formOptions(page)).toEqual(["Choose a class", "Playgroup", "Grade 1"]);
 

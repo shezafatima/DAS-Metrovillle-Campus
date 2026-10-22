@@ -96,7 +96,7 @@ test.describe("examination — admin panel (014b US5)", () => {
     });
     await stableFill(card.getByLabel("Text"), "b".repeat(3001));
     await section.getByRole("button", { name: "Save" }).click();
-    await expect(card.getByText(settingsCopy.errors.maxLength(3000))).toBeVisible();
+    await expect(card.getByText(settingsCopy.errors.maxLength(3000)).first()).toBeVisible();
     expect((await storedBlocks()).map((block) => block.heading)).toEqual(["Nursery, Prep"]);
   });
 
