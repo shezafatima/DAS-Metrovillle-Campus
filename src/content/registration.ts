@@ -21,8 +21,6 @@ export const registrationCopy = {
     metaTitle: "Student Registration",
     bannerTitle: "Student Registration",
     intro: "Please fill in this form to register your child for admission. Fields marked * are required.",
-    breadcrumbHome: "Home",
-    breadcrumbAdmission: "Admission",
   },
   legends: {
     student: "Student",
@@ -42,8 +40,7 @@ export const registrationCopy = {
     motherMobile: "Mother's mobile",
     email: "Email address",
     address: "Address",
-    emergencyName: "Emergency contact name",
-    emergencyPhone: "Emergency contact phone",
+    emergencyPhone: "Emergency contact number",
     vaccinated: "Is the student vaccinated?",
     medicalHistory: "Any medical history",
     motherTongue: "Mother tongue",
@@ -93,8 +90,6 @@ export const registrationCopy = {
     phone: "Enter a Pakistani mobile number, e.g. 03001234567.",
     parentMobile: "Enter at least one parent's mobile number.",
     address: "Enter the full address (10 to 300 characters).",
-    emergencyName: "Enter the emergency contact's name (2 to 100 characters).",
-    emergencyPhone: "Enter the emergency contact's mobile number, e.g. 03001234567.",
     className: "Please choose a class from the list.",
     motherTongue: "Choose the mother tongue.",
     motherTongueOther: "Write the mother tongue (2 to 50 characters).",
@@ -121,8 +116,8 @@ export const registrationCopy = {
     backLink: "Back to Admission",
   },
   privacy: {
-    // Pending client approval: blocks a production build (scripts/check-release-content.ts).
-    placeholder: true,
+    // Client approved this wording (2026-10-22). Set back to true to block a production build again.
+    placeholder: false,
     notice: (retentionMonths: number) =>
       "The information you provide on this form, including your child's health details and the details of any student you name as a reference, " +
       "is used only to process this admission registration. It can be seen only by the school's administration. " +

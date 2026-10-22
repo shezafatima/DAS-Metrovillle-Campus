@@ -31,7 +31,6 @@ export const REGISTRATION_FIELD_ORDER = [
   "motherMobile",
   "email",
   "address",
-  "emergencyName",
   "emergencyPhone",
   "vaccinated",
   "medicalHistory",
@@ -56,7 +55,6 @@ export interface RegistrationInput {
   fatherMobile: string;
   motherMobile: string;
   address: string;
-  emergencyName: string;
   emergencyPhone: string;
   className: string;
   motherTongue: string;
@@ -80,7 +78,7 @@ export interface RegistrationOutput {
   fatherMobile: string | null;
   motherMobile: string | null;
   address: string;
-  emergencyContact: { name: string; phone: string };
+  emergencyPhone: string;
   className: string;
   motherTongue: MotherTongue;
   motherTongueOther: string | null;
@@ -176,10 +174,9 @@ export function buildRegistrationSchema({ classes, today }: { classes: readonly 
       fatherMobile: cleaned,
       motherMobile: cleaned,
       address: area(10, 300, messages.address),
-      emergencyName: line(2, 100, messages.emergencyName),
       emergencyPhone: text
         .transform((value) => normalisePakistaniMobile(value.trim()))
-        .refine((value): value is string => value !== null, messages.emergencyPhone),
+        .refine((value): value is string => value !== null, messages.phone),
       className: text
         .transform((value) => classByCollapsed.get(collapseSpaces(value)) ?? null)
         .refine((value): value is string => value !== null, messages.className),
@@ -240,7 +237,7 @@ export function buildRegistrationSchema({ classes, today }: { classes: readonly 
         fatherMobile: value.fatherMobile === "" ? null : normalisePakistaniMobile(value.fatherMobile),
         motherMobile: value.motherMobile === "" ? null : normalisePakistaniMobile(value.motherMobile),
         address: value.address,
-        emergencyContact: { name: value.emergencyName, phone: value.emergencyPhone },
+        emergencyPhone: value.emergencyPhone,
         className: value.className,
         motherTongue: value.motherTongue,
         motherTongueOther: value.motherTongue === "other" ? value.motherTongueOther : null,

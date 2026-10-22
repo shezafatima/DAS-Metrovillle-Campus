@@ -18,12 +18,13 @@ export function ManagementTeamSection({
 }) {
   return (
     <AboutSection id="management-team" background={background} heading={heading} line={subheading}>
-      <ul className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      {/* Wrapped flex, not a grid, so a short last row (or fewer cards than columns) is centred. Widths are one column of 1 / 2 / 3 / 4. */}
+      <ul className="flex flex-wrap justify-center gap-6">
         {cards.map((card) => (
           <li
             key={card.id}
             data-placeholder={card.placeholder ? "true" : undefined}
-            className={`flex flex-col gap-3 rounded-xl p-4 ${card.placeholder ? "border border-dashed border-text-muted" : ""}`}
+            className={`flex w-full flex-col gap-3 rounded-xl p-4 md:w-[calc((100%-1.5rem)/2)] lg:w-[calc((100%-3rem)/3)] xl:w-[calc((100%-4.5rem)/4)] ${card.placeholder ? "border border-dashed border-text-muted" : ""}`}
           >
             <PersonPhoto photo={card.photo} name={card.name} />
             {card.placeholder && (

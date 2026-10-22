@@ -20,7 +20,6 @@ function valid(overrides: Record<string, unknown> = {}) {
     fatherMobile: "0300 1234567",
     motherMobile: "",
     address: "House 12, Street 4, Metroville",
-    emergencyName: "Uncle Testuncle",
     emergencyPhone: "03011234567",
     className: "Class 1",
     motherTongue: "urdu",
@@ -59,7 +58,7 @@ describe("buildRegistrationSchema: a valid submission", () => {
       fatherMobile: "+923001234567",
       motherMobile: null,
       address: "House 12, Street 4, Metroville",
-      emergencyContact: { name: "Uncle Testuncle", phone: "+923011234567" },
+      emergencyPhone: "+923011234567",
       className: "Class 1",
       motherTongue: "urdu",
       motherTongueOther: null,
@@ -97,8 +96,7 @@ describe("required fields", () => {
     ["email", messages.email],
     ["dateOfBirth", messages.dateOfBirth],
     ["address", messages.address],
-    ["emergencyName", messages.emergencyName],
-    ["emergencyPhone", messages.emergencyPhone],
+    ["emergencyPhone", messages.phone],
     ["className", messages.className],
     ["motherTongue", messages.motherTongue],
     ["vaccinated", messages.vaccinated],
@@ -112,7 +110,7 @@ describe("required fields", () => {
 });
 
 describe("text length boundaries", () => {
-  it.each(["studentName", "fatherName", "motherName", "emergencyName"])("%s: 1 char refused, 2 and 100 accepted, 101 refused", (key) => {
+  it.each(["studentName", "fatherName", "motherName"])("%s: 1 char refused, 2 and 100 accepted, 101 refused", (key) => {
     expect(errorsFor(valid({ [key]: "A" }))[key]).toBeDefined();
     expect(errorsFor(valid({ [key]: "Al" }))[key]).toBeUndefined();
     expect(errorsFor(valid({ [key]: "a".repeat(100) }))[key]).toBeUndefined();
@@ -198,7 +196,7 @@ describe("mobiles", () => {
 
   it("refuses a landline with the shared message, on the field", () => {
     expect(errorsFor(valid({ fatherMobile: "02112345678" })).fatherMobile).toBe(messages.phone);
-    expect(errorsFor(valid({ emergencyPhone: "02112345678" })).emergencyPhone).toBe(messages.emergencyPhone);
+    expect(errorsFor(valid({ emergencyPhone: "02112345678" })).emergencyPhone).toBe(messages.phone);
   });
 
   it("both parents' mobiles empty puts the message on both fields", () => {
@@ -326,7 +324,6 @@ describe("all errors at once", () => {
       "fatherMobile",
       "motherMobile",
       "address",
-      "emergencyName",
       "emergencyPhone",
       "className",
       "motherTongue",

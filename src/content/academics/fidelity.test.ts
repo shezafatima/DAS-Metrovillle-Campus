@@ -5,7 +5,7 @@ import { academicOverview, hifzEQuran, teachersTraining } from "./index";
 
 /** The client's documents as plain text (docs/content-source/academics/README.md). */
 function lines(name: string): string[] {
-  return readFileSync(path.join(process.cwd(), "docs/content-source/academics", `${name}.txt`), "utf8").split("\n");
+  return readFileSync(path.join(process.cwd(), "docs/content-source/academics", `${name}.txt`), "utf8").split(/\r?\n/);
 }
 const ARABIC_SCRIPT = /[؀-ۿݐ-ݿﭐ-﷿ﹰ-﻿]/;
 const isUrdu = (s: string) => ARABIC_SCRIPT.test(s);

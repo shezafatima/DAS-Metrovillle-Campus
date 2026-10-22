@@ -44,14 +44,14 @@ export function AboutSection({
         id={id}
         aria-labelledby={`${id}-heading`}
         data-background={background}
-        className={cn("anchor-section pb-8 md:pb-10", backgroundClass[background])}
+        className={cn("anchor-section pb-(--spacing-academics-section-y)", backgroundClass[background])}
       >
         <div className="bg-topbar px-(--container-gutter-x) py-6 md:py-8" data-testid="heading-band">
           <div className="mx-auto max-w-(--container-max-width)">
             <SectionHeading id={`${id}-heading`} heading={heading} line={line} tone="navy" boldLine={boldLine} />
           </div>
         </div>
-        <div className={cn(container, "pt-8 md:pt-10")}>{children}</div>
+        <div className={cn(container, "pt-(--spacing-academics-band-content-top)")}>{children}</div>
       </section>
     );
   }
@@ -60,7 +60,7 @@ export function AboutSection({
       id={id}
       aria-labelledby={`${id}-heading`}
       data-background={background}
-      className={cn("anchor-section", compact ? "py-8 md:py-10" : "py-(--spacing-home-section-y)", backgroundClass[background])}
+      className={cn("anchor-section", compact ? "py-(--spacing-academics-section-y)" : "py-(--spacing-home-section-y)", backgroundClass[background])}
     >
       <div className={container}>
         <SectionHeading

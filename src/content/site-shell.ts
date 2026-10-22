@@ -42,8 +42,8 @@ export interface FooterContent {
   directions: PortalLink;
   /** The copyright sentence for a year (the year is generated, never typed in). */
   copyright: (year: number) => string;
-  /** "Crafted Excellence with ❤ by <name>", the developer credit. */
-  credit: { before: string; by: string; name: string; href: string };
+  /** "Developed by <name>", the developer credit (the name is the link). */
+  credit: { before: string; name: string; href: string };
 }
 
 /**
@@ -192,7 +192,7 @@ export const footerContent: FooterContent = {
   ],
   directions: { label: "Get directions", href: "/contact" },
   copyright: (year) => `© ${year} Dar-e-Arqam School, Metroville Campus. All rights reserved.`,
-  credit: { before: "Crafted Excellence with", by: "by", name: "Sheza Fatima", href: "https://sheza-fatima.vercel.app/" },
+  credit: { before: "Developed by", name: "Sheza Fatima", href: "https://sheza-fatima.vercel.app/" },
 };
 
 // Fallback social-preview image for pages with no page-specific one (e.g.

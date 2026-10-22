@@ -28,6 +28,7 @@ export const ourStorySchema = z.object({
   subheading: text(160),
   body: longText(4000),
   image,
+  imageAlt: text(300).optional(),
   urdu: z
     .object({ lang: z.literal("ur"), heading: text(80), subheading: text(160), body: longText(4000) })
     .optional(),

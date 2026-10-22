@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { ContactBanner } from "@/components/contact/contact-banner";
 import { ContactDetails } from "@/components/contact/contact-details";
-import { ContactMap } from "@/components/contact/contact-map";
 import { ContactFormSection } from "@/components/contact/contact-form-section";
 import { getContactDetails } from "@/lib/contact-details";
 
@@ -13,9 +12,12 @@ export default async function ContactPage() {
   return (
     <>
       <ContactBanner />
-      <ContactDetails details={details} />
-      <ContactMap address={details.address} mapUrl={details.mapUrl} />
-      <ContactFormSection />
+      <div className="mx-auto max-w-(--container-max-width) px-(--container-gutter-x) py-12">
+        <div className="grid grid-cols-1 overflow-hidden rounded-xl shadow-lg lg:grid-cols-2">
+          <ContactDetails details={details} />
+          <ContactFormSection />
+        </div>
+      </div>
     </>
   );
 }

@@ -1,5 +1,6 @@
 import { AboutSection } from "./about-section";
 import { AboutGlowGrid } from "./glow-grid";
+import { GlowLayers } from "@/components/glow/glow-layers";
 import { Paragraphs } from "./paragraphs";
 import { valueIcons } from "./value-icons";
 import type { CoreValues } from "@/lib/about/schema";
@@ -22,12 +23,7 @@ export function CoreValuesSection({ value, background }: { value: CoreValues; ba
               style={{ "--about-glow-delay": `${-((index * 1.7) % 5).toFixed(1)}s` } as React.CSSProperties}
               className="about-value-card flex flex-col rounded-xl"
             >
-              <span aria-hidden="true" className="about-glow-halo">
-                <span className="about-glow-spin" />
-              </span>
-              <span aria-hidden="true" className="about-glow-ring">
-                <span className="about-glow-spin" />
-              </span>
+              <GlowLayers />
               <div className={`about-value-card-face flex flex-1 flex-col gap-3 p-6 ${tile}`}>
                 <Icon aria-hidden="true" focusable="false" className="size-8 text-primary" />
                 <h3 className="break-words font-bold font-heading text-h3 text-primary">{item.name}</h3>
