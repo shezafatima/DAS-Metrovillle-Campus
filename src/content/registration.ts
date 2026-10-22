@@ -119,12 +119,10 @@ export const registrationCopy = {
     // Client approved this wording (2026-10-22). Set back to true to block a production build again.
     placeholder: false,
     notice: (retentionMonths: number) =>
-      "The information you provide on this form, including your child's health details and the details of any student you name as a reference, " +
-      "is used only to process this admission registration. It can be seen only by the school's administration. " +
-      "It is never sold or shared with anyone else, apart from the service providers that host this website and its database on the school's behalf. " +
-      `We keep registrations for ${months(retentionMonths)} after submission, after which they are deleted automatically. ` +
-      "Deleted records are permanently removed within 30 days, although backup copies may be kept for a short time before they are overwritten. " +
-      "You will not receive an email or SMS; please note the reference number shown after you submit.",
+      "We use these details, including health information and any reference student's details, only to process this admission registration. " +
+      "Only the school's administration can see them, and we never sell or share them, except with the services that host this website. " +
+      `Registrations are deleted automatically after ${months(retentionMonths)}. ` +
+      "You will not receive an email or SMS, so please note the reference number shown after you submit.",
     consent: "I am the parent or guardian of this student and agree to the school using this information as described above.",
   },
 } as const;

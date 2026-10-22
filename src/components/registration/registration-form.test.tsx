@@ -135,11 +135,12 @@ describe("RegistrationForm", () => {
     await waitFor(() => expect(screen.getByText(registrationCopy.fieldErrors.className)).toBeInTheDocument());
   });
 
-  it("the privacy notice carries the retention months and the 30-day sentence", () => {
+  it("the privacy notice is short and carries the retention months and the reference-number note", () => {
     renderForm(6);
     const notice = document.getElementById("registration-privacy-notice");
-    expect(notice?.textContent).toContain("We keep registrations for 6 months after submission");
-    expect(notice?.textContent).toContain("Deleted records are permanently removed within 30 days");
+    expect(notice?.textContent).toContain("Registrations are deleted automatically after 6 months");
+    expect(notice?.textContent).toContain("note the reference number");
+    expect(notice?.textContent?.length).toBeLessThan(450);
   });
 
   it("includes the hidden spam-trap field", () => {

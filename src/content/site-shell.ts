@@ -177,7 +177,7 @@ export const contactInfo: ContactInfo = {
 export const footerContent: FooterContent = {
   // PENDING CLIENT APPROVAL: this description was supplied by the project owner and has not been approved by the client yet.
   description:
-    "Dar-e-Arqam School, Metroville Campus, offers quality education rooted in Islamic values, helping every student grow in knowledge, character and faith.",
+    "Quality education rooted in Islamic values, nurturing knowledge, character and faith.",
   logo: { src: "/images/logo.svg", alt: "Dar-e-Arqam School Metroville Campus", width: 1974, height: 797 },
   headings: { quickLinks: "Quick Links", portalLinks: "Portal Links", contact: "Contact Us" },
   externalLinkSuffix: "(opens external site in a new tab)",

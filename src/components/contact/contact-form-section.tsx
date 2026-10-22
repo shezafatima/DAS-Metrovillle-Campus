@@ -8,9 +8,9 @@ export function ContactFormSection() {
     <section
       id="contact-form"
       aria-labelledby="contact-form-heading"
-      className="anchor-section min-w-0 bg-(--color-home-muted-band) p-6 sm:p-8 lg:p-10"
+      className="anchor-section min-w-0 bg-(--color-home-muted-band) p-3 sm:p-8 lg:p-10"
     >
-      <GlowFrame faceClassName="bg-surface p-5 sm:p-6">
+      <GlowFrame faceClassName="bg-surface p-4 sm:p-6">
         <h2 id="contact-form-heading" className="mb-5 font-bold font-heading text-h2 text-primary">
           {contactCopy.form.heading}
         </h2>

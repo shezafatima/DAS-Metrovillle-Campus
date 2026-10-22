@@ -40,9 +40,9 @@ export function Footer({ contact, portalLinks = [] }: { contact: ContactInfo; po
           <p id="footer-quick-links" className={heading}>
             {headings.quickLinks}
           </p>
-          <ul className="flex flex-col gap-2.5 font-body text-sm">
+          <ul data-testid="quick-links" className="columns-2 gap-x-6 font-body text-sm">
             {quickLinks.map((item) => (
-              <li key={item.href}>
+              <li key={item.href} className="mb-2.5 break-inside-avoid">
                 <Link href={item.href} className={link}>
                   {item.label}
                 </Link>

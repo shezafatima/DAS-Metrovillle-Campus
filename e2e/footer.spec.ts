@@ -63,6 +63,15 @@ for (const width of [375, 768, 1024, 1440]) {
     // Quick Links (the main pages and Careers; no Campuses) and Portal Links (the six, with their targets).
     const quick = footer.getByRole("navigation", { name: "Quick Links" }).getByRole("link");
     expect(await quick.evaluateAll((els) => els.map((e) => [e.textContent, e.getAttribute("href")]))).toEqual(footerContent.quickLinks.map((l) => [l.label, l.href]));
+    // Eight links in two columns, four down each side, at every width.
+    const boxes = await quick.evaluateAll((els) => els.map((e) => { const r = e.getBoundingClientRect(); return { x: Math.round(r.x), y: Math.round(r.y) }; }));
+    const left = boxes.slice(0, 4);
+    const right = boxes.slice(4);
+    expect(new Set(left.map((b) => b.x)).size).toBe(1);
+    expect(new Set(right.map((b) => b.x)).size).toBe(1);
+    expect(right[0].x).toBeGreaterThan(left[0].x);
+    expect(left.map((b) => b.y)).toEqual([...left.map((b) => b.y)].sort((a, b) => a - b));
+    expect(Math.abs(left[0].y - right[0].y)).toBeLessThan(4);
     for (const link of PORTAL_LINKS_FIXTURE) {
       await expect(footer.getByRole("navigation", { name: "Portal Links" }).getByRole("link", { name: new RegExp(`^${link.label}`) })).toHaveAttribute("href", link.url);
     }
