@@ -12,7 +12,10 @@ describe("About content files", () => {
     expect(aboutPage.title).toBe("About Us");
     expect(ourStory.heading).toBe("Our Story");
     expect(visionMission.vision.heading).toBe("Vision");
-    expect(managementTeam.members).toEqual([]);
+    expect(managementTeam.members.map((member) => [member.name, member.designation])).toEqual(
+      messagesContent.messages.map((message) => [message.name, message.designation]),
+    );
+    expect(managementTeam.members).toHaveLength(3);
     expect(messagesContent.heading).toBe("Messages");
   });
 

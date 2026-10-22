@@ -22,6 +22,15 @@ describe("ManagementTeamSection", () => {
     });
   });
 
+  it("shows a member with no description as name and designation only", () => {
+    const { container } = render(
+      <ManagementTeamSection heading="T" cards={[{ id: "a-b", name: "Ali Khan", designation: "Head", photo: null, placeholder: false }]} background="surface" />,
+    );
+    expect(container.querySelector("h3")?.textContent).toBe("Ali Khan");
+    expect(container.querySelectorAll("li p")).toHaveLength(1);
+    expect(container.querySelector("li")?.textContent).not.toContain("undefined");
+  });
+
   it("renders real members with name, designation, description and photo alt = name", () => {
     const withPhoto = [{ ...real[0], photo: { url: "/p.jpg", publicId: "p", width: 80, height: 100 } }];
     const { container } = render(<ManagementTeamSection heading="T" cards={withPhoto} background="surface" />);
