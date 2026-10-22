@@ -10,6 +10,9 @@ export const INPUT_CLASS =
 export const TEXTAREA_CLASS =
   "h-(--spacing-contact-textarea-height) w-full resize-none rounded-signup-input border border-signup-input-border bg-signup-input-bg px-4 py-2 font-body text-(length:--text-signup-input) text-foreground outline-none placeholder:text-signup-input-text focus-visible:ring-2 focus-visible:ring-ring";
 
+/** The registration address box: about two rows, not the 150px contact-form message box. */
+export const TEXTAREA_COMPACT_CLASS = TEXTAREA_CLASS.replace("h-(--spacing-contact-textarea-height)", "h-(--spacing-registration-address-height)");
+
 export const SELECT_CLASS = `${INPUT_CLASS} appearance-auto`;
 
 /** Error text and banner use --color-error-strong: the reference --color-error is 3.68:1 on white (below WCAG AA). */

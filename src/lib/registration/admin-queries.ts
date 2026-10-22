@@ -49,7 +49,8 @@ export interface RegistrationDetail {
   motherMobile: string | null;
   email: string;
   address: string;
-  emergencyName: string;
+  /** The contact's name, only on records from before the form dropped it. */
+  emergencyLegacyName: string | null;
   emergencyPhone: string;
   motherTongue: MotherTongue;
   motherTongueOther: string | null;
@@ -185,8 +186,8 @@ function toDetail(doc: StudentRegistrationDoc, likelyDuplicate: boolean): Regist
     motherMobile: doc.motherMobile ?? null,
     email: doc.email,
     address: doc.address,
-    emergencyName: doc.emergencyContact?.name ?? "",
-    emergencyPhone: doc.emergencyContact?.phone ?? "",
+    emergencyLegacyName: doc.legacyEmergencyName ?? doc.emergencyContact?.name ?? null,
+    emergencyPhone: doc.emergencyPhone ?? doc.emergencyContact?.phone ?? "",
     motherTongue: doc.motherTongue as MotherTongue,
     motherTongueOther: doc.motherTongueOther ?? null,
     vaccinated: doc.vaccinated,

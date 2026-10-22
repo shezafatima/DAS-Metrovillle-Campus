@@ -23,8 +23,8 @@ export const REGISTRATION_CSV_HEADERS = [
   "Mother's mobile",
   "Email",
   "Address",
-  "Emergency contact name",
-  "Emergency contact phone",
+  "Emergency contact number",
+  "Emergency contact name (older records)",
   "Mother tongue",
   "Vaccinated",
   "Medical history",
@@ -70,8 +70,8 @@ export function registrationsToCsv(rows: readonly RegistrationDetail[]): string 
       local(row.motherMobile),
       row.email,
       row.address,
-      row.emergencyName,
       local(row.emergencyPhone),
+      row.emergencyLegacyName ?? "",
       row.motherTongue === "other" && row.motherTongueOther
         ? `${registrationCopy.motherTongueOptions.other}: ${row.motherTongueOther}`
         : registrationCopy.motherTongueOptions[row.motherTongue],

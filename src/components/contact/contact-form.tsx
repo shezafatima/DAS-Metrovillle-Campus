@@ -5,7 +5,7 @@ import { contactCopy } from "@/content/contact";
 import { messageInputSchema, MESSAGE_MAX_LENGTH } from "@/lib/validation/message";
 import { fieldErrors as extractFieldErrors } from "@/lib/validation/field-errors";
 import { HONEYPOT_FIELD } from "@/lib/honeypot";
-import { ERROR_CLASS, INPUT_CLASS, TEXTAREA_CLASS } from "@/components/forms/public-form-styles";
+import { ACCESSIBLE_SUBMIT_CLASS, ERROR_CLASS, INPUT_CLASS, TEXTAREA_CLASS } from "@/components/forms/public-form-styles";
 
 interface FormValues {
   name: string;
@@ -110,9 +110,9 @@ export function ContactForm() {
   const overLimit = messageLength > MESSAGE_MAX_LENGTH;
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="w-full">
+    <form onSubmit={handleSubmit} noValidate className="@container w-full">
       {status.kind === "error" && (
-        <p role="alert" className="mb-(--spacing-contact-form-gap-y) rounded-md bg-white px-3 py-2 text-center text-sm font-bold text-error-strong">
+        <p role="alert" className="mb-4 rounded-md bg-white px-3 py-2 text-center text-sm font-bold text-error-strong">
           {status.banner}
         </p>
       )}
@@ -130,7 +130,7 @@ export function ContactForm() {
         />
       </div>
 
-      <div className="grid grid-cols-1 gap-x-(--spacing-contact-form-gap-x) gap-y-(--spacing-contact-form-gap-y) md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-x-4 gap-y-4 @md:grid-cols-2">
         <Field
           id="contact-name"
           label={copy.placeholders.name}
@@ -173,7 +173,7 @@ export function ContactForm() {
           onChange={(value) => updateField("subject", value)}
         />
 
-        <div className="flex flex-col gap-1 md:col-span-2">
+        <div className="flex flex-col gap-1 @md:col-span-2">
           <label htmlFor="contact-message" className="sr-only">
             {copy.placeholders.message}
           </label>
@@ -205,7 +205,7 @@ export function ContactForm() {
         <button
           type="submit"
           disabled={submitting}
-          className="rounded-signup-button bg-cta px-6 py-3 font-button text-(length:--text-button) font-semibold text-white transition-colors duration-(--motion-fast) hover:bg-cta-hover disabled:opacity-70 md:col-span-2"
+          className={`${ACCESSIBLE_SUBMIT_CLASS} @md:col-span-2`}
         >
           {submitting ? copy.sending : copy.submit}
         </button>

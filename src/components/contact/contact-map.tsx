@@ -5,23 +5,22 @@ import { contactCopy } from "@/content/contact";
 export interface ContactMapProps {
   address: string;
   mapUrl: string;
+  linkClass: string;
 }
 
-export function ContactMap({ address, mapUrl }: ContactMapProps) {
+/** The map inside the navy half: a fixed-height lazy embed (no layout shift) and the "Open in Google Maps" fallback. */
+export function ContactMap({ address, mapUrl, linkClass }: ContactMapProps) {
   return (
-    <section className="mx-auto max-w-(--container-max-width) px-(--container-gutter-x) py-8 text-center">
-      <h2 className="font-heading text-(length:--text-contact-map-heading) font-(--text-contact-map-heading--font-weight) text-contact-map-heading">
-        {contactCopy.map.heading}
-      </h2>
-      <div className="relative mt-6 h-(--spacing-contact-map-height) w-full bg-surface">
+    <div>
+      <h3 className="sr-only">{contactCopy.map.heading}</h3>
+      <div id="contact-map" className="relative h-72 w-full overflow-hidden rounded-lg bg-surface sm:h-80">
         <LazyMapFrame src={mapEmbedSrc(address)} title={contactCopy.map.iframeTitle(address)} />
       </div>
-      <p className="mt-3 font-body text-body text-foreground">
-        <span data-placeholder>{address}</span> ·{" "}
-        <a href={mapUrl} target="_blank" rel="noopener noreferrer" className="text-primary underline underline-offset-4">
+      <p className="mt-3 font-body text-body">
+        <a href={mapUrl} target="_blank" rel="noopener noreferrer" className={`${linkClass} underline`}>
           {contactCopy.map.openInMaps}
         </a>
       </p>
-    </section>
+    </div>
   );
 }

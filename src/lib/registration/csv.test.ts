@@ -16,7 +16,7 @@ const ROW: RegistrationDetail = {
   motherMobile: null,
   email: "parent@example.com",
   address: "House 12",
-  emergencyName: "Uncle",
+  emergencyLegacyName: "Uncle",
   emergencyPhone: "+923011234567",
   motherTongue: "other",
   motherTongueOther: "Hindko",

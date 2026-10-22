@@ -4,16 +4,19 @@ import { contactInfo } from "../src/content/site-shell";
 // This file runs in the "forms" project. It never submits the contact
 // form, so it needs no rate-limit isolation (forwardedFor).
 
-test.describe("contact — details and map (US5)", () => {
-  test("shows the four column headings in order", async ({ page }) => {
+const DETAILS = "section[aria-labelledby='contact-details-heading']";
+
+test.describe("contact — details and map (US5, 021 card)", () => {
+  test("the Write Us column is gone; the details half has one heading", async ({ page }) => {
     await page.goto("/contact");
-    const headings = page.locator("section[aria-label='Contact details'] h3");
-    await expect(headings).toHaveText(["BY PHONE", "BY EMAIL", "VISIT US", "WRITE US"]);
+    await expect(page.getByText("WRITE US")).toHaveCount(0);
+    await expect(page.getByRole("link", { name: "Click this link to view inquiry form" })).toHaveCount(0);
+    await expect(page.locator(DETAILS).getByRole("heading", { level: 2 })).toHaveText("Get in touch");
   });
 
   test("the phone and email links have exact tel:/mailto: hrefs", async ({ page }) => {
     await page.goto("/contact");
-    const details = page.locator("section[aria-label='Contact details']");
+    const details = page.locator(DETAILS);
     await expect(details.getByRole("link", { name: contactInfo.phone })).toHaveAttribute(
       "href",
       `tel:${contactInfo.phone}`,
@@ -26,56 +29,46 @@ test.describe("contact — details and map (US5)", () => {
 
   test("office hours and address match contactInfo and carry data-placeholder", async ({ page }) => {
     await page.goto("/contact");
-    const details = page.locator("section[aria-label='Contact details']");
-    const officeHours = details.locator("[data-placeholder]", { hasText: contactInfo.officeHours });
-    await expect(officeHours).toBeVisible();
-    const address = details.locator("[data-placeholder]", { hasText: contactInfo.address });
-    await expect(address).toBeVisible();
+    const details = page.locator(DETAILS);
+    await expect(details.locator("[data-placeholder]", { hasText: contactInfo.officeHours })).toBeVisible();
+    await expect(details.locator("[data-placeholder]", { hasText: contactInfo.address })).toBeVisible();
+    // The address is shown once: the caption under the map is gone.
+    await expect(page.locator("main").getByText(contactInfo.address, { exact: true })).toHaveCount(1);
   });
 
-  test("the map heading is visible; scrolling into view sets the iframe src", async ({ page }) => {
+  test("the map is inside the details half; scrolling into view sets the iframe src", async ({ page }) => {
     await page.goto("/contact");
-    await expect(page.getByRole("heading", { name: "Locate Us on Google Maps" })).toBeVisible();
-
-    const mapArea = page.locator("h2", { hasText: "Locate Us on Google Maps" }).locator("xpath=following-sibling::div[1]");
+    const mapArea = page.locator(`${DETAILS} #contact-map`);
     await mapArea.scrollIntoViewIfNeeded();
     const iframe = mapArea.locator("iframe");
     await expect(iframe).toHaveAttribute("src", new RegExp(encodeURIComponent(contactInfo.address)), {
       timeout: 10000,
     });
     await expect(iframe).toHaveAttribute("src", /output=embed/);
+    await expect(iframe).toHaveAttribute("title", `Map showing ${contactInfo.address}`);
   });
 
   test("Open in Google Maps link is correct and visible even when the map provider is blocked", async ({ page }) => {
     await page.route("https://maps.google.com/**", (route) => route.abort());
     await page.goto("/contact");
-    const link = page.getByRole("link", { name: "Open in Google Maps" });
+    const link = page.locator(DETAILS).getByRole("link", { name: "Open in Google Maps" });
     await expect(link).toBeVisible();
     await expect(link).toHaveAttribute("href", contactInfo.mapUrl);
     await expect(link).toHaveAttribute("target", "_blank");
   });
 
-  test("Write Us link jumps to the form and focuses Name", async ({ page }) => {
-    await page.goto("/contact");
-    await page.getByRole("link", { name: "Click this link to view inquiry form" }).click();
-    await expect(page).toHaveURL(/#contact-form$/);
-    await expect(page.getByRole("textbox", { name: "Name" })).toBeFocused();
-  });
-
-  test("SC-012: the map is not requested until scrolled into view, at 1440x900", async ({ page }) => {
-    await page.setViewportSize({ width: 1440, height: 900 });
+  test("SC-012: the map is not requested until scrolled into view, at 375x400", async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 400 });
     const mapRequests: string[] = [];
     page.on("request", (request) => {
       if (request.url().startsWith("https://maps.google.com")) mapRequests.push(request.url());
     });
 
     await page.goto("/contact");
-    const mapArea = page
-      .locator("h2", { hasText: "Locate Us on Google Maps" })
-      .locator("xpath=following-sibling::div[1]");
+    const mapArea = page.locator("#contact-map");
     const box = await mapArea.boundingBox();
-    if (!box || box.y <= 900) {
-      throw new Error("map area is visible on first load at 1440×900 — lazy-load test needs a taller page or a shorter viewport");
+    if (!box || box.y <= 400) {
+      throw new Error("map area is visible on first load at 375x400 — lazy-load test needs a shorter viewport");
     }
 
     expect(mapRequests).toHaveLength(0);
@@ -86,17 +79,15 @@ test.describe("contact — details and map (US5)", () => {
     await expect.poll(() => mapRequests.length, { timeout: 5000 }).toBeGreaterThan(0);
   });
 
-  test("SC-012: scrolling the map into view causes no layout shift, at 1440x900", async ({ page }) => {
-    await page.setViewportSize({ width: 1440, height: 900 });
+  test("SC-012: scrolling the map into view causes no layout shift, at 375x700", async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 400 });
     await page.addInitScript(() => {
-      (window as unknown as { __cls: number }).__cls = 0;
-      (window as unknown as { __measureCls: boolean }).__measureCls = false;
+      const w = window as unknown as { __cls: number; __measureCls: boolean };
+      w.__cls = 0;
+      w.__measureCls = false;
       new PerformanceObserver((list) => {
         for (const entry of list.getEntries() as unknown as Array<{ hadRecentInput: boolean; value: number }>) {
-          if (entry.hadRecentInput) continue;
-          if ((window as unknown as { __measureCls: boolean }).__measureCls) {
-            (window as unknown as { __cls: number }).__cls += entry.value;
-          }
+          if (!entry.hadRecentInput && w.__measureCls) w.__cls += entry.value;
         }
       }).observe({ type: "layout-shift", buffered: false });
     });
@@ -104,58 +95,33 @@ test.describe("contact — details and map (US5)", () => {
     await page.goto("/contact");
     await page.evaluate(() => document.fonts.ready);
     await page.waitForLoadState("networkidle");
-    // A brief settle window past networkidle — hydration/font-metric
-    // settling can still shift layout for a moment after both fonts.ready
-    // and the network-idle event fire.
     await page.waitForTimeout(500);
-
-    // The site header shrinks/grows based on live scroll position (sticky
-    // shrink-on-scroll, FR-016 / header-scroll.spec.ts) — a real,
-    // pre-existing reflow unrelated to the map. Scroll past its threshold
-    // and take every measurement (including "before") while it stays
-    // scrolled, so this test isolates the map's own contribution instead
-    // of also capturing the header's unrelated, position-linked resize.
+    // The sticky header resizes with scroll position (header-scroll.spec.ts); scroll past its threshold first so
+    // the measurement isolates the map's own contribution.
     await page.mouse.wheel(0, 200);
     await page.waitForTimeout(500);
 
-    const mapArea = page
-      .locator("h2", { hasText: "Locate Us on Google Maps" })
-      .locator("xpath=following-sibling::div[1]");
-    const formBand = page.locator("#contact-form");
-
-    // Reconstructing a document-relative Y from rect.top + window.scrollY
-    // is only valid if `window` is the element that actually scrolled;
-    // comparing the document's total height is a simpler, scroll-container
-    // agnostic invariant — if nothing anywhere reflowed, this cannot change.
-    function snapshot() {
-      return page.evaluate(() => {
-        const h2 = Array.from(document.querySelectorAll("h2")).find((h) => h.textContent?.includes("Locate Us"));
-        const mapEl = h2?.nextElementSibling as HTMLElement | null;
-        return {
-          mapHeight: mapEl?.getBoundingClientRect().height ?? null,
-          docHeight: document.documentElement.scrollHeight,
-        };
-      });
-    }
-
+    const snapshot = () =>
+      page.evaluate(() => ({
+        mapHeight: document.getElementById("contact-map")?.getBoundingClientRect().height ?? null,
+        docHeight: document.documentElement.scrollHeight,
+      }));
     const before = await snapshot();
 
     await page.evaluate(() => {
-      (window as unknown as { __cls: number }).__cls = 0;
-      (window as unknown as { __measureCls: boolean }).__measureCls = true;
+      const w = window as unknown as { __cls: number; __measureCls: boolean };
+      w.__cls = 0;
+      w.__measureCls = true;
     });
-
-    await mapArea.scrollIntoViewIfNeeded();
-    await page.locator("iframe").first().waitFor({ state: "attached" });
+    await page.locator("#contact-map").scrollIntoViewIfNeeded();
+    await page.locator("#contact-map iframe").waitFor({ state: "attached" });
     await page.waitForTimeout(1000);
-
     await page.evaluate(() => {
       (window as unknown as { __measureCls: boolean }).__measureCls = false;
     });
 
     const after = await snapshot();
     const cls = await page.evaluate(() => (window as unknown as { __cls: number }).__cls);
-
     expect(after.mapHeight).toBe(before.mapHeight);
     expect(after.docHeight).toBe(before.docHeight);
     expect(cls).toBe(0);

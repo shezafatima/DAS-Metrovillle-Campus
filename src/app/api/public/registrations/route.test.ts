@@ -42,7 +42,6 @@ const VALID = {
   fatherMobile: "03001234567",
   motherMobile: "",
   address: "House 12, Street 4, Metroville",
-  emergencyName: "Uncle Testuncle",
   emergencyPhone: "03011234567",
   className: "Class 1",
   motherTongue: "urdu",

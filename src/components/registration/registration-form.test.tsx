@@ -24,8 +24,7 @@ function fillValid() {
   type(/Father's mobile/, "03001234567");
   type(/^Email address/, "parent@example.com");
   type(/^Address/, "House 12, Street 4, Metroville");
-  type(/Emergency contact name/, "Uncle Testuncle");
-  type(/Emergency contact phone/, "03011234567");
+  type(/Emergency contact number/, "03011234567");
   fireEvent.click(screen.getByLabelText("Yes"));
   type(/Mother tongue/, "urdu");
   fireEvent.click(screen.getByLabelText(registrationCopy.privacy.consent));

@@ -240,6 +240,8 @@
   --text-contact-column-subtitle--font-weight: 700;
   --text-contact-column-subtitle--letter-spacing: 3px;
   --spacing-contact-form-band-y: 30px;
+  /* Top of a bannerless page (Careers, Student Registration): the h1 starts this far below the sticky header. */
+  --spacing-page-title-top: 40px;
   --spacing-contact-textarea-height: 150px;
   --spacing-contact-form-gap-x: 51px;
   --spacing-contact-form-gap-y: 60px;
@@ -252,6 +254,8 @@
      "Registration form (013)"). */
   --spacing-registration-section-gap: 40px;
   --spacing-registration-field-gap-y: 24px;
+  /* The address box: two 13px rows with the box's own padding and border, instead of 150px. */
+  --spacing-registration-address-height: 64px;
 
   /* Home sections (006) — extracted per section from https://das.edu.pk/;
      see research/design-tokens.md "Home sections (006)". */
@@ -859,6 +863,19 @@
   }
 }
 
+/* Academics section rhythm (022). Only the Academics sections use AboutSection's compact and heading-band variants.
+   Before: section padding 32px (phone) / 40px (768px up), band-section content top 32 / 40. */
+:root {
+  --spacing-academics-section-y: 20px;
+  --spacing-academics-band-content-top: 20px;
+}
+@media (min-width: 48rem) {
+  :root {
+    --spacing-academics-section-y: 24px;
+    --spacing-academics-band-content-top: 24px;
+  }
+}
+
 /* Home section rhythm, larger from 1024px (see --spacing-home-section-y). */
 @media (min-width: 1024px) {
   :root {
@@ -944,8 +961,10 @@
   opacity: 0.85;
 }
 
-/* Paused while the grid is off screen (AboutGlowGrid sets data-offscreen). */
-[data-offscreen="true"] .about-glow-spin {
+/* Paused while the grid is off screen (AboutGlowGrid sets data-offscreen), and for GlowFrame (Contact form)
+   while a control inside has focus or the pointer is over it (data-glow-paused). */
+[data-offscreen="true"] .about-glow-spin,
+[data-glow-paused="true"] .about-glow-spin {
   animation-play-state: paused;
 }
 

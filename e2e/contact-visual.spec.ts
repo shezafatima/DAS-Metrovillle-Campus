@@ -1,16 +1,14 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, type Page } from "@playwright/test";
+import AxeBuilder from "@axe-core/playwright";
 import * as fs from "node:fs";
 import * as path from "node:path";
 
+// 021: the contact page is one card, two halves: details + map on navy (left), the form inside the gold travelling
+// border (right). From 1024px they sit side by side; below that the details and map come first, then the form.
+
 interface ContactTokens {
-  columns: Array<{
-    headingStyle: { "font-size": string };
-    subtitleStyle: { "font-size": string; "letter-spacing": string } | null;
-  }>;
   form: {
-    bandStyle: { "background-color": string };
     inputStyle: { height: string; border: string };
-    buttonStyle: { "background-color": string };
   };
 }
 
@@ -21,13 +19,17 @@ function loadTokens(width: number): ContactTokens {
 
 const WIDTHS: Array<{ w: number; h: number }> = [
   { w: 375, h: 900 },
+  { w: 640, h: 900 },
   { w: 768, h: 1024 },
   { w: 1024, h: 900 },
   { w: 1440, h: 900 },
 ];
 
+const details = (page: Page) => page.locator("section[aria-labelledby='contact-details-heading']");
+const formHalf = (page: Page) => page.locator("#contact-form");
+
 for (const { w, h } of WIDTHS) {
-  test(`contact page at ${w}px — no horizontal scroll, layout, tokens`, async ({ page }) => {
+  test(`contact page at ${w}px — no horizontal scroll, order, map contained`, async ({ page }) => {
     await page.setViewportSize({ width: w, height: h });
     await page.goto("/contact");
     await page.waitForLoadState("networkidle");
@@ -37,92 +39,145 @@ for (const { w, h } of WIDTHS) {
     );
     expect(overflowing).toBe(false);
 
-    // Detail columns: 4 side by side at >=1024, stacked at 768/375.
-    const headings = page.locator("section[aria-label='Contact details'] h3");
-    const boxes = await headings.evaluateAll((els) => els.map((el) => el.getBoundingClientRect().top));
+    const left = (await details(page).boundingBox())!;
+    const right = (await formHalf(page).boundingBox())!;
     if (w >= 1024) {
-      for (const top of boxes) expect(Math.abs(top - boxes[0]!)).toBeLessThan(2);
+      // Side by side: details on the left, form on the right, same top, equal columns.
+      expect(right.x).toBeGreaterThan(left.x + left.width - 2);
+      expect(Math.abs(left.y - right.y)).toBeLessThan(2);
+      expect(Math.abs(left.width - right.width)).toBeLessThan(2);
     } else {
-      expect(boxes[1]).toBeGreaterThan(boxes[0]!);
-      expect(boxes[2]).toBeGreaterThan(boxes[1]!);
-      expect(boxes[3]).toBeGreaterThan(boxes[2]!);
+      // Stacked: details (with the map) first, then the form, both full width.
+      expect(right.y).toBeGreaterThanOrEqual(left.y + left.height - 2);
+      expect(Math.abs(left.x - right.x)).toBeLessThan(2);
+      expect(Math.abs(left.width - right.width)).toBeLessThan(2);
     }
 
-    // Form: Name/Email share a row, Phone/Subject share a row, at >=768; stacked at 375.
-    const nameBox = await page.locator("#contact-name").boundingBox();
-    const emailBox = await page.locator("#contact-email").boundingBox();
-    const phoneBox = await page.locator("#contact-phone").boundingBox();
-    const subjectBox = await page.locator("#contact-subject").boundingBox();
-    const sendBox = await page.getByRole("button", { name: "Send" }).boundingBox();
+    // The map sits inside the navy half and never overflows it.
+    const map = (await page.locator("#contact-map").boundingBox())!;
+    expect(map.x).toBeGreaterThanOrEqual(left.x);
+    expect(map.x + map.width).toBeLessThanOrEqual(left.x + left.width + 1);
+    expect(map.y).toBeGreaterThan(left.y);
+    expect(map.y + map.height).toBeLessThanOrEqual(left.y + left.height + 1);
 
-    if (w >= 768) {
-      expect(Math.abs(nameBox!.y - emailBox!.y)).toBeLessThan(2);
-      expect(Math.abs(phoneBox!.y - subjectBox!.y)).toBeLessThan(2);
-      expect(phoneBox!.y).toBeGreaterThan(nameBox!.y);
-    } else {
-      expect(emailBox!.y).toBeGreaterThan(nameBox!.y);
-      expect(phoneBox!.y).toBeGreaterThan(emailBox!.y);
-      expect(subjectBox!.y).toBeGreaterThan(phoneBox!.y);
-    }
+    // The form: every control stays inside the right half; Send spans the message field's width.
+    const messageBox = (await page.locator("#contact-message").boundingBox())!;
+    const sendBox = (await page.getByRole("button", { name: "Send" }).boundingBox())!;
+    expect(messageBox.x + messageBox.width).toBeLessThanOrEqual(right.x + right.width + 1);
+    expect(Math.abs(sendBox.width - messageBox.width)).toBeLessThan(2);
 
-    // Send is full width at every size — matches the message textarea's
-    // width, which already spans the full form grid at every breakpoint.
-    const messageBox = await page.locator("#contact-message").boundingBox();
-    expect(Math.abs(sendBox!.width - messageBox!.width)).toBeLessThan(2);
+    // Name/Email share a row once the form itself is wide enough (container query, 448px).
+    const nameBox = (await page.locator("#contact-name").boundingBox())!;
+    const emailBox = (await page.locator("#contact-email").boundingBox())!;
+    if (messageBox.width >= 448) expect(Math.abs(nameBox.y - emailBox.y)).toBeLessThan(2);
+    else expect(emailBox.y).toBeGreaterThan(nameBox.y);
 
-    // Computed styles match the extraction tokens.
-    const tokens = loadTokens(w);
-    const bandBg = await page.locator("#contact-form").evaluate((el) => getComputedStyle(el).backgroundColor);
-    expect(bandBg).toBe(tokens.form.bandStyle["background-color"]);
-
+    // The form itself is unchanged: input and button styles still match the 008 extraction.
+    const tokens = loadTokens(w >= 1024 ? 1440 : w >= 768 ? 768 : 375);
     const inputHeight = await page.locator("#contact-name").evaluate((el) => getComputedStyle(el).height);
     expect(inputHeight).toBe(tokens.form.inputStyle.height);
-    const inputBorder = await page
-      .locator("#contact-name")
-      .evaluate((el) => getComputedStyle(el).borderTop);
+    const inputBorder = await page.locator("#contact-name").evaluate((el) => getComputedStyle(el).borderTop);
     expect(inputBorder).toBe(tokens.form.inputStyle.border);
-
+    // The Send button uses the navy --color-cta-hover (ACCESSIBLE_SUBMIT_CLASS): white on the reference red is 3.68:1,
+    // which axe fails on this page.
     const buttonBg = await page
       .getByRole("button", { name: "Send" })
       .evaluate((el) => getComputedStyle(el).backgroundColor);
-    expect(buttonBg).toBe(tokens.form.buttonStyle["background-color"]);
-
-    const firstHeadingSize = await headings.first().evaluate((el) => getComputedStyle(el).fontSize);
-    expect(firstHeadingSize).toBe(tokens.columns[0]!.headingStyle["font-size"]);
-
-    const subtitle = page.locator("section[aria-label='Contact details'] h5").first();
-    if ((await subtitle.count()) > 0) {
-      const subtitleSize = await subtitle.evaluate((el) => getComputedStyle(el).fontSize);
-      const subtitleLetterSpacing = await subtitle.evaluate((el) => getComputedStyle(el).letterSpacing);
-      const tokenSubtitle = tokens.columns.find((c) => c.subtitleStyle)?.subtitleStyle;
-      if (tokenSubtitle) {
-        expect(subtitleSize).toBe(tokenSubtitle["font-size"]);
-        expect(subtitleLetterSpacing).toBe(tokenSubtitle["letter-spacing"]);
-      }
-    }
-
-    // Map space reserved before scroll (FR-024a).
-    const mapArea = page
-      .locator("h2", { hasText: "Locate Us on Google Maps" })
-      .locator("xpath=following-sibling::div[1]");
-    const mapHeight = await mapArea.evaluate((el) => getComputedStyle(el).height);
-    expect(mapHeight).toBe("552px");
+    expect(buttonBg).toBe("rgb(25, 25, 144)");
 
     await page.screenshot({ path: `test-results/contact-${w}.png`, fullPage: true });
   });
 }
 
-// Constitution VIII "reference breakpoints": around the ~1024px collapse.
-test("contact details columns collapse exactly around 1024px", async ({ page }) => {
+// Constitution VIII "reference breakpoints": the halves split exactly at 1024px.
+test("the card splits into two columns at 1024px and stacks below", async ({ page }) => {
   await page.setViewportSize({ width: 1023, height: 900 });
   await page.goto("/contact");
-  const headings1023 = page.locator("section[aria-label='Contact details'] h3");
-  const tops1023 = await headings1023.evaluateAll((els) => els.map((el) => el.getBoundingClientRect().top));
-  expect(tops1023[1]).toBeGreaterThan(tops1023[0]!);
+  const stacked = (await formHalf(page).boundingBox())!.y > (await details(page).boundingBox())!.y + 10;
+  expect(stacked).toBe(true);
 
   await page.setViewportSize({ width: 1025, height: 900 });
   await page.reload();
-  const headings1025 = page.locator("section[aria-label='Contact details'] h3");
-  const tops1025 = await headings1025.evaluateAll((els) => els.map((el) => el.getBoundingClientRect().top));
-  for (const top of tops1025) expect(Math.abs(top - tops1025[0]!)).toBeLessThan(2);
+  const tops = [(await details(page).boundingBox())!.y, (await formHalf(page).boundingBox())!.y];
+  expect(Math.abs(tops[0]! - tops[1]!)).toBeLessThan(2);
+});
+
+test.describe("contact card — details half", () => {
+  test("navy background, white text, decorative yellow icon circles", async ({ page }) => {
+    await page.goto("/contact");
+    const half = details(page);
+    expect(await half.evaluate((el) => getComputedStyle(el).backgroundColor)).toBe("rgb(18, 18, 145)");
+    expect(await half.evaluate((el) => getComputedStyle(el).color)).toBe("rgb(255, 255, 255)");
+    const circles = half.locator("li > span[aria-hidden='true']");
+    await expect(circles).toHaveCount(4);
+    for (const circle of await circles.all()) {
+      expect(await circle.evaluate((el) => getComputedStyle(el).backgroundColor)).toBe("rgb(255, 255, 0)");
+      await expect(circle.locator("svg")).toHaveCount(1);
+    }
+  });
+
+  test("every social link has an accessible name", async ({ page }) => {
+    await page.goto("/contact");
+    const links = details(page).locator("ul.mt-auto a");
+    expect(await links.count()).toBeGreaterThan(0);
+    for (const link of await links.all()) {
+      expect(((await link.textContent()) ?? "").trim()).not.toBe("");
+    }
+  });
+});
+
+test.describe("contact card — glowing form border", () => {
+  const frame = (page: Page) => page.locator("#contact-form .about-value-card");
+  const spin = (page: Page) => frame(page).locator(".about-glow-ring .about-glow-spin");
+  const playState = (page: Page) => spin(page).evaluate((el) => getComputedStyle(el).animationPlayState);
+
+  test("runs, then pauses on pointer over and on focus, and resumes", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 1000 });
+    await page.goto("/contact");
+    await expect(frame(page)).toHaveAttribute("data-glow-paused", "false");
+    expect(await playState(page)).toBe("running");
+
+    await frame(page).hover();
+    await expect(frame(page)).toHaveAttribute("data-glow-paused", "true");
+    expect(await playState(page)).toBe("paused");
+
+    await page.mouse.move(2, 2);
+    await expect(frame(page)).toHaveAttribute("data-glow-paused", "false");
+    expect(await playState(page)).toBe("running");
+
+    await page.locator("#contact-name").focus();
+    await expect(frame(page)).toHaveAttribute("data-glow-paused", "true");
+    expect(await playState(page)).toBe("paused");
+
+    await page.locator("#contact-name").blur();
+    await expect(frame(page)).toHaveAttribute("data-glow-paused", "false");
+  });
+
+  test("pauses while off screen", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 300 });
+    await page.goto("/contact");
+    await frame(page).scrollIntoViewIfNeeded();
+    await expect(frame(page)).toHaveAttribute("data-offscreen", "false");
+    await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+    await expect(frame(page)).toHaveAttribute("data-offscreen", "true");
+    expect(await playState(page)).toBe("paused");
+  });
+
+  test("reduced motion: no movement, a static gold border", async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto("/contact");
+    const ring = frame(page).locator(".about-glow-ring");
+    expect(await ring.evaluate((el) => getComputedStyle(el).backgroundColor)).toBe("rgb(255, 215, 0)");
+    expect(await spin(page).evaluate((el) => getComputedStyle(el).display)).toBe("none");
+  });
+});
+
+test("axe finds no violations on /contact (at 375 and 1440)", async ({ page }) => {
+  for (const width of [375, 1440]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto("/contact");
+    await page.waitForLoadState("networkidle");
+    const results = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa"]).analyze();
+    expect(results.violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(" ")).join(", ")}`)).toEqual([]);
+  }
 });

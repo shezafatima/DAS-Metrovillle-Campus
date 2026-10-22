@@ -99,11 +99,11 @@ export function Footer({ contact }: { contact: ContactInfo }) {
       </div>
 
       <div className="border-t border-neutral-100">
-        <div className="mx-auto max-w-(--container-max-width) px-(--container-gutter-x) py-5 text-center font-body text-sm text-text-muted">
+        <div className="mx-auto flex max-w-(--container-max-width) flex-col items-center gap-1 px-(--container-gutter-x) py-5 text-center font-body text-sm text-text-muted md:flex-row md:justify-between md:text-left">
           <p>{footerContent.copyright(year)}</p>
-          <p className="mt-1">
-            {credit.before} <span aria-hidden="true">❤️</span> {credit.by}{" "}
-            <a href={credit.href} target="_blank" rel="noopener noreferrer" className={link}>
+          <p>
+            {credit.before}{" "}
+            <a href={credit.href} target="_blank" rel="noopener noreferrer" className={`${link} underline underline-offset-2`}>
               {credit.name}
             </a>
           </p>

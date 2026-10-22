@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ACCESSIBLE_SUBMIT_CLASS, BANNER_CLASS, ERROR_CLASS, INPUT_CLASS, SELECT_CLASS, TEXTAREA_CLASS } from "@/components/forms/public-form-styles";
+import { ACCESSIBLE_SUBMIT_CLASS, BANNER_CLASS, ERROR_CLASS, INPUT_CLASS, SELECT_CLASS, TEXTAREA_CLASS, TEXTAREA_COMPACT_CLASS } from "@/components/forms/public-form-styles";
 import { registrationCopy } from "@/content/registration";
 import { HONEYPOT_FIELD } from "@/lib/honeypot";
 import { MOTHER_TONGUES } from "@/lib/registration/rules";
@@ -23,7 +23,6 @@ const EMPTY_VALUES: Values = {
   motherMobile: "",
   email: "",
   address: "",
-  emergencyName: "",
   emergencyPhone: "",
   vaccinated: "",
   medicalHistory: "",
@@ -207,9 +206,8 @@ export function RegistrationForm({ classes, today, retentionMonths }: Props) {
 
         <Section legend={copy.legends.contact}>
           <TextField {...field("email")} label={copy.labels.email} type="email" autoComplete="email" maxLength={254} dir="ltr" required />
-          <TextField {...field("emergencyName")} label={copy.labels.emergencyName} autoComplete="off" maxLength={100} dir="auto" required />
           <TextField {...field("emergencyPhone")} label={copy.labels.emergencyPhone} type="tel" autoComplete="off" maxLength={32} dir="ltr" hint={copy.hints.phone} required />
-          <TextAreaField {...field("address")} label={copy.labels.address} maxLength={300} required wide />
+          <TextAreaField {...field("address")} label={copy.labels.address} maxLength={300} required wide compact />
         </Section>
 
         <Section legend={copy.legends.health}>
@@ -359,7 +357,7 @@ function TextField({
   );
 }
 
-function TextAreaField({ maxLength, wide, ...base }: BaseProps & { maxLength: number; wide?: boolean }) {
+function TextAreaField({ maxLength, wide, compact, ...base }: BaseProps & { maxLength: number; wide?: boolean; compact?: boolean }) {
   return (
     <Wrapper {...base} wide={wide}>
       <textarea
@@ -371,7 +369,7 @@ function TextAreaField({ maxLength, wide, ...base }: BaseProps & { maxLength: nu
         onChange={(event) => base.onChange(event.target.value)}
         aria-invalid={base.error ? true : undefined}
         aria-describedby={describedBy(base.id, base.error, base.hint)}
-        className={TEXTAREA_CLASS}
+        className={compact ? TEXTAREA_COMPACT_CLASS : TEXTAREA_CLASS}
       />
     </Wrapper>
   );

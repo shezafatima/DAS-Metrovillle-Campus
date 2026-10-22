@@ -183,9 +183,10 @@
   005 settings, reorganised by page in 014.
   AdminConfirmDeleteDialog (admin-delete-dialog.tsx) is the confirm step
   on its own; AdminDeleteDialog is built on it
-- src/components/contact/   public Contact page UI (ContactBanner,
-  ContactDetails/ContactDetailColumn, ContactMap/LazyMapFrame,
-  ContactFormSection/ContactForm, WriteUsLink) — 008 contact-messages
+- src/components/contact/   public Contact page UI (ContactBanner, ContactDetails + ContactMap/LazyMapFrame
+  on the navy half, ContactFormSection/ContactForm on the right) — 008 contact-messages, 021 one card, two halves
+- src/components/glow/   the travelling gold border: GlowLayers (halo + ring; About Core Values and the Contact form
+  share it) and GlowFrame (a face inside the border that pauses on focus, hover and off screen) — 021
 - src/components/admin/messages/   admin inbox/detail UI (MessagesTable,
   MessageDetail, MessageStatusControl, MarkReadOnOpen,
   DeleteMessageDialog) — 008 contact-messages
