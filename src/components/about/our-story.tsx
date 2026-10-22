@@ -14,7 +14,7 @@ export function OurStorySection({ value, background }: { value: OurStory; backgr
       <div className="grid gap-10 lg:grid-cols-12 lg:items-center lg:gap-12">
         <div className="flex max-w-prose flex-col gap-4 lg:col-span-7">
           {value.body.split("\n\n").map((paragraph, index) => {
-            const Icon = paragraphIcons[index];
+            const Icon = paragraphIcons[index] as LucideIcon | undefined;
             return (
               <div key={index} className="flex items-start gap-4">
                 {Icon && <Icon aria-hidden="true" focusable="false" className="mt-1 size-6 shrink-0 text-primary" />}
