@@ -25,12 +25,12 @@ export default async function RegistrationPage() {
 
   return (
     <>
-      <section id="registration" aria-labelledby="registration-heading" className="bg-contact-form-band pb-(--spacing-contact-form-band-y)">
+      <section id="registration" aria-labelledby="registration-heading" className="bg-primary/5 pb-(--spacing-contact-form-band-y)">
         <div className="mx-auto max-w-(--container-max-width) px-(--container-gutter-x)">
           <PageTitle id="registration-heading">{copy.bannerTitle}</PageTitle>
           {availability.open ? (
             <>
-              <p className="mb-(--spacing-registration-section-gap) font-body text-body text-foreground">{copy.intro}</p>
+              <p className="mb-(--spacing-registration-section-gap) rounded-xl border border-neutral-100 bg-white px-5 py-4 font-body text-body text-foreground shadow-sm">{copy.intro}</p>
               <RegistrationForm
                 classes={availability.classes}
                 today={availability.today}

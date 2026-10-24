@@ -1,12 +1,25 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { Mail, Phone, type LucideIcon } from "lucide-react";
 import { careersCopy } from "@/content/careers";
 import { precheckCv, type CvFailure } from "@/lib/careers/cv-limits";
 import { careerApplicationFieldsSchema } from "@/lib/validation/career-application";
 import { fieldErrors as extractFieldErrors } from "@/lib/validation/field-errors";
 import { HONEYPOT_FIELD } from "@/lib/honeypot";
-import { ERROR_CLASS, INPUT_CLASS } from "@/components/forms/public-form-styles";
+import { ErrorSummary, type ErrorSummaryItem } from "@/components/forms/error-summary";
+import { FileDropZone } from "@/components/forms/file-drop-zone";
+import { IconInput } from "@/components/forms/icon-input";
+import {
+  BANNER_CLASS,
+  ERROR_CLASS,
+  FORM_CHOICE_INPUT_CLASS,
+  FORM_CHOICE_LABEL_CLASS,
+  FORM_INPUT_CLASS,
+  FORM_INPUT_ICON_CLASS,
+  FORM_LABEL_CLASS,
+} from "@/components/forms/public-form-styles";
+import { SubmitButton } from "@/components/forms/submit-button";
 
 interface FormValues {
   name: string;
@@ -34,6 +47,10 @@ const CV_MESSAGES: Record<CvFailure, string> = {
  * values; the server normalises and stores. The chosen `File` lives in
  * component state, so every failure keeps the typed details AND the file
  * and a retry resends it without re-attaching.
+ *
+ * 026: visible labels above the fields, icons on the email and mobile fields, a CV drop zone, an error summary
+ * after a failed submit, and a submit button that cannot be sent twice. Fields, validation and the request are
+ * unchanged.
  */
 export function CareersForm() {
   const [values, setValues] = useState<FormValues>(EMPTY_VALUES);
@@ -41,11 +58,21 @@ export function CareersForm() {
   const [consent, setConsent] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [status, setStatus] = useState<Status>({ kind: "idle" });
+  // Bumped on every failed submit: moves focus to the error summary.
+  const [summarySignal, setSummarySignal] = useState(0);
   // Hidden spam-trap: stays empty for real visitors.
   const [website, setWebsite] = useState("");
+  // Set the instant a send starts, so a second click before the button re-renders as disabled cannot send twice.
+  const inFlight = useRef(false);
 
   const submitting = status.kind === "submitting";
   const copy = careersCopy.form;
+
+  const summaryItems: ErrorSummaryItem[] = FIELD_ORDER.filter((key) => key in fieldErrors).map((key) => ({
+    field: key,
+    targetId: `careers-${key}`,
+    message: fieldErrors[key],
+  }));
 
   function clearError(field: string) {
     setFieldErrors((prev) => {
@@ -61,41 +88,44 @@ export function CareersForm() {
     clearError(field);
   }
 
-  function focusFirstInvalid(errors: Record<string, string>) {
-    const first = FIELD_ORDER.find((field) => field in errors);
-    if (first) document.getElementById(`careers-${first}`)?.focus();
+  function showProblems(errors: Record<string, string>) {
+    setFieldErrors(errors);
+    setStatus({ kind: "idle" });
+    setSummarySignal((count) => count + 1);
   }
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-
-    const check = careerApplicationFieldsSchema.safeParse({ ...values, consent });
-    const errors: Record<string, string> = check.success ? {} : extractFieldErrors(check.error);
-    if (!file) {
-      errors.cv = careersCopy.fieldErrors.cv.missing;
-    } else {
-      const failure = await precheckCv(file);
-      if (failure) errors.cv = CV_MESSAGES[failure];
-    }
-    if (Object.keys(errors).length > 0) {
-      setFieldErrors(errors);
-      focusFirstInvalid(errors);
-      return;
-    }
-
-    setFieldErrors({});
-    setStatus({ kind: "submitting" });
-
-    const body = new FormData();
-    body.set("name", values.name);
-    body.set("email", values.email);
-    body.set("phone", values.phone);
-    body.set("qualification", values.qualification);
-    body.set("consent", "true");
-    body.set(HONEYPOT_FIELD, website);
-    body.set("cv", file as File);
+    if (inFlight.current) return;
+    // Taken before the CV pre-check (which awaits), so a second click during it cannot start a second send.
+    inFlight.current = true;
 
     try {
+      const check = careerApplicationFieldsSchema.safeParse({ ...values, consent });
+      const errors: Record<string, string> = check.success ? {} : extractFieldErrors(check.error);
+      if (!file) {
+        errors.cv = careersCopy.fieldErrors.cv.missing;
+      } else {
+        const failure = await precheckCv(file);
+        if (failure) errors.cv = CV_MESSAGES[failure];
+      }
+      if (Object.keys(errors).length > 0) {
+        showProblems(errors);
+        return;
+      }
+
+      setFieldErrors({});
+      setStatus({ kind: "submitting" });
+
+      const body = new FormData();
+      body.set("name", values.name);
+      body.set("email", values.email);
+      body.set("phone", values.phone);
+      body.set("qualification", values.qualification);
+      body.set("consent", "true");
+      body.set(HONEYPOT_FIELD, website);
+      body.set("cv", file as File);
+
       const response = await fetch("/api/public/careers", { method: "POST", body });
 
       if (response.status === 200) {
@@ -108,10 +138,7 @@ export function CareersForm() {
 
       if (response.status === 400) {
         const data = await response.json().catch(() => ({}));
-        const errors = (data.fields ?? {}) as Record<string, string>;
-        setFieldErrors(errors);
-        setStatus({ kind: "idle" });
-        focusFirstInvalid(errors);
+        showProblems((data.fields ?? {}) as Record<string, string>);
         return;
       }
 
@@ -122,8 +149,7 @@ export function CareersForm() {
       }
 
       if (response.status === 413) {
-        setFieldErrors({ cv: careersCopy.fieldErrors.cv.tooLarge });
-        setStatus({ kind: "idle" });
+        showProblems({ cv: careersCopy.fieldErrors.cv.tooLarge });
         return;
       }
 
@@ -135,6 +161,8 @@ export function CareersForm() {
       setStatus({ kind: "error", banner: careersCopy.errors.tryAgain });
     } catch {
       setStatus({ kind: "error", banner: careersCopy.errors.tryAgain });
+    } finally {
+      inFlight.current = false;
     }
   }
 
@@ -148,9 +176,11 @@ export function CareersForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="w-full">
+    <form onSubmit={handleSubmit} noValidate className="flex w-full flex-col gap-5">
+      <ErrorSummary items={summaryItems} focusSignal={summarySignal} />
+
       {status.kind === "error" && (
-        <p role="alert" className="mb-(--spacing-contact-form-gap-y) rounded-md bg-white px-3 py-2 text-center text-sm font-bold text-error-strong">
+        <p role="alert" className={BANNER_CLASS}>
           {status.banner}
         </p>
       )}
@@ -168,7 +198,7 @@ export function CareersForm() {
         />
       </div>
 
-      <div className="grid grid-cols-1 gap-x-(--spacing-contact-form-gap-x) gap-y-(--spacing-contact-form-gap-y) md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-x-6 gap-y-(--spacing-registration-field-gap-y) md:grid-cols-2 lg:grid-cols-1">
         <Field
           id="careers-name"
           label={copy.placeholders.name}
@@ -183,8 +213,10 @@ export function CareersForm() {
           id="careers-email"
           label={copy.placeholders.email}
           type="email"
+          inputMode="email"
           autoComplete="email"
           maxLength={254}
+          icon={Mail}
           value={values.email}
           error={fieldErrors.email}
           onChange={(value) => updateField("email", value)}
@@ -193,8 +225,10 @@ export function CareersForm() {
           id="careers-phone"
           label={copy.placeholders.phone}
           type="tel"
+          inputMode="tel"
           autoComplete="tel"
           maxLength={32}
+          icon={Phone}
           value={values.phone}
           error={fieldErrors.phone}
           onChange={(value) => updateField("phone", value)}
@@ -210,71 +244,55 @@ export function CareersForm() {
           onChange={(value) => updateField("qualification", value)}
         />
 
-        <div className="flex flex-col gap-1 md:col-span-2">
-          <input
+        <div className="flex flex-col gap-1.5 md:col-span-2 lg:col-span-1">
+          <FileDropZone
             id="careers-cv"
             name="cv"
-            type="file"
             accept="application/pdf,.pdf"
-            required
-            className="peer sr-only"
-            aria-invalid={fieldErrors.cv ? true : undefined}
-            aria-describedby={fieldErrors.cv ? "careers-cv-error" : undefined}
-            onChange={(event) => {
-              setFile(event.target.files?.[0] ?? null);
+            file={file}
+            onFile={(chosen) => {
+              setFile(chosen);
               clearError("cv");
             }}
+            error={fieldErrors.cv}
+            labels={copy.cv}
           />
-          <label
-            htmlFor="careers-cv"
-            className={`flex h-(--spacing-signup-input-height) w-full cursor-pointer items-center rounded-signup-input border border-signup-input-border bg-signup-input-bg px-4 font-body text-(length:--text-signup-input) peer-focus-visible:ring-2 peer-focus-visible:ring-ring ${file ? "text-foreground" : "text-signup-input-text"}`}
-          >
-            <span dir="auto" className="truncate">
-              {file ? copy.cvChosen(file.name) : copy.cvLabel}
-            </span>
-          </label>
           {fieldErrors.cv && (
             <p id="careers-cv-error" className={ERROR_CLASS}>
               {fieldErrors.cv}
             </p>
           )}
         </div>
-
-        <div className="flex flex-col gap-2 md:col-span-2">
-          <p id="careers-privacy-notice" data-placeholder={careersCopy.privacy.placeholder || undefined} className="font-body text-sm text-foreground">
-            {careersCopy.privacy.notice}
-          </p>
-          <label htmlFor="careers-consent" className="flex items-start gap-3 font-body text-sm text-foreground">
-            <input
-              id="careers-consent"
-              name="consent"
-              type="checkbox"
-              checked={consent}
-              onChange={(event) => {
-                setConsent(event.target.checked);
-                clearError("consent");
-              }}
-              aria-invalid={fieldErrors.consent ? true : undefined}
-              aria-describedby={fieldErrors.consent ? "careers-consent-error careers-privacy-notice" : "careers-privacy-notice"}
-              className="mt-1 accent-cta"
-            />
-            <span>{careersCopy.privacy.consentLabel}</span>
-          </label>
-          {fieldErrors.consent && (
-            <p id="careers-consent-error" className={ERROR_CLASS}>
-              {fieldErrors.consent}
-            </p>
-          )}
-        </div>
-
-        <button
-          type="submit"
-          disabled={submitting}
-          className="rounded-signup-button bg-cta px-6 py-3 font-button text-(length:--text-button) font-semibold text-white transition-colors duration-(--motion-fast) hover:bg-cta-hover disabled:opacity-70 md:col-span-2"
-        >
-          {submitting ? copy.sending : copy.submit}
-        </button>
       </div>
+
+      <div className="flex flex-col gap-2">
+        <p id="careers-privacy-notice" data-placeholder={careersCopy.privacy.placeholder || undefined} className="font-body text-sm text-foreground">
+          {careersCopy.privacy.notice}
+        </p>
+        <label htmlFor="careers-consent" className={FORM_CHOICE_LABEL_CLASS}>
+          <input
+            id="careers-consent"
+            name="consent"
+            type="checkbox"
+            checked={consent}
+            onChange={(event) => {
+              setConsent(event.target.checked);
+              clearError("consent");
+            }}
+            aria-invalid={fieldErrors.consent ? true : undefined}
+            aria-describedby={fieldErrors.consent ? "careers-consent-error careers-privacy-notice" : "careers-privacy-notice"}
+            className={`${FORM_CHOICE_INPUT_CLASS} scroll-mt-(--form-scroll-offset)`}
+          />
+          <span>{careersCopy.privacy.consentLabel}</span>
+        </label>
+        {fieldErrors.consent && (
+          <p id="careers-consent-error" className={ERROR_CLASS}>
+            {fieldErrors.consent}
+          </p>
+        )}
+      </div>
+
+      <SubmitButton submitting={submitting} label={copy.submit} submittingLabel={copy.sending} />
     </form>
   );
 }
@@ -283,38 +301,44 @@ interface FieldProps {
   id: string;
   label: string;
   type: "text" | "email" | "tel";
+  inputMode?: "email" | "tel";
   autoComplete: string;
   maxLength: number;
+  icon?: LucideIcon;
   value: string;
   error: string | undefined;
   onChange: (value: string) => void;
 }
 
-function Field({ id, label, type, autoComplete, maxLength, value, error, onChange }: FieldProps) {
+function Field({ id, label, type, inputMode, autoComplete, maxLength, icon, value, error, onChange }: FieldProps) {
   const errorId = `${id}-error`;
   // Names and qualifications may be Urdu (right-to-left); email and phone are always left-to-right.
   const dir = type === "text" ? "auto" : "ltr";
 
+  const input = (
+    <input
+      id={id}
+      name={id.replace("careers-", "")}
+      type={type}
+      inputMode={inputMode}
+      dir={dir}
+      autoComplete={autoComplete}
+      required
+      maxLength={maxLength}
+      value={value}
+      onChange={(event) => onChange(event.target.value)}
+      aria-invalid={error ? true : undefined}
+      aria-describedby={error ? errorId : undefined}
+      className={icon ? FORM_INPUT_ICON_CLASS : FORM_INPUT_CLASS}
+    />
+  );
+
   return (
-    <div className="flex flex-col gap-1">
-      <label htmlFor={id} className="sr-only">
+    <div className="flex flex-col gap-1.5">
+      <label htmlFor={id} className={FORM_LABEL_CLASS}>
         {label}
       </label>
-      <input
-        id={id}
-        name={id.replace("careers-", "")}
-        type={type}
-        dir={dir}
-        autoComplete={autoComplete}
-        required
-        maxLength={maxLength}
-        placeholder={label}
-        value={value}
-        onChange={(event) => onChange(event.target.value)}
-        aria-invalid={error ? true : undefined}
-        aria-describedby={error ? errorId : undefined}
-        className={INPUT_CLASS}
-      />
+      {icon ? <IconInput icon={icon}>{input}</IconInput> : input}
       {error && (
         <p id={errorId} className={ERROR_CLASS}>
           {error}

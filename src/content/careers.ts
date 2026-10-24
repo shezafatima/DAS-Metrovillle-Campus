@@ -27,24 +27,40 @@ export const careersCopy = {
   },
   intro: {
     placeholder: true,
-    heading: "Join Dar-e-Arqam Schools, Metroville Campus",
+    // The navy panel's "Why join us" (026). PENDING CLIENT APPROVAL, like the paragraphs.
+    heading: "Why join us",
     paragraphs: [
       "We are always glad to hear from committed teachers and staff who want to help our students learn and grow.",
       "Tell us a little about yourself and attach your CV. Our team will review every application.",
     ],
   },
+  // PENDING CLIENT APPROVAL. Deliberately generic: no response times, interviews or process steps, because the
+  // school has not confirmed any.
+  whatNext: {
+    placeholder: true,
+    heading: "What happens next",
+    paragraphs: [
+      "Your application is received by the school's administration.",
+      "The school will share more details here once they are confirmed.",
+    ],
+  },
   form: {
     heading: "Apply now",
+    // The visible labels above the fields (they used to be placeholders only).
     placeholders: {
       name: "Full name",
       email: "Email",
       phone: "Mobile number",
       qualification: "Highest qualification",
     },
-    cvLabel: `Choose your CV (PDF, max ${CV_MAX_LABEL})`,
-    cvChosen: (fileName: string) => `Selected: ${fileName}`,
+    cv: {
+      prompt: "Drag and drop your CV here, or click to choose",
+      hint: `PDF only, max ${CV_MAX_LABEL}`,
+      remove: "Remove",
+      removeNamed: (fileName: string) => `Remove ${fileName}`,
+    },
     submit: "Apply",
-    sending: "Sending…",
+    sending: "Submitting…",
   },
   privacy: {
     // Approved by the client on 2026-10-09 (the wording below, unchanged).

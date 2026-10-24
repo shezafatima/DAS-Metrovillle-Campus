@@ -983,3 +983,26 @@
     opacity: 1;
   }
 }
+
+/* Shared form UI (026): student registration and careers. A focused control scrolls clear of the sticky header;
+   on the registration form below 1024px it also clears the fixed progress bar. */
+:root {
+  --spacing-registration-progress-bar: 48px;
+  --form-scroll-offset: calc(var(--header-h) + 1rem);
+}
+.registration-root {
+  --form-scroll-offset: calc(var(--header-h) + var(--spacing-registration-progress-bar) + 1rem);
+}
+@media (min-width: 64rem) {
+  .registration-root {
+    --form-scroll-offset: calc(var(--header-h) + 1rem);
+  }
+}
+/* The numbered badge in each section header is drawn by CSS, so the legend's text is only the section title. */
+.registration-sections {
+  counter-reset: registration-section;
+}
+.registration-badge::before {
+  counter-increment: registration-section;
+  content: counter(registration-section);
+}

@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { registrationCopy } from "@/content/registration";
 import { RegistrationForm } from "./registration-form";
 
@@ -14,6 +14,9 @@ function renderForm(months = 12) {
 function type(label: string | RegExp, value: string) {
   fireEvent.change(screen.getByLabelText(label), { target: { value } });
 }
+
+/** The message shown next to a field (the error summary repeats it, so getByText would match both). */
+const inlineError = (key: string) => document.getElementById("registration-" + key + "-error");
 
 function fillValid() {
   type(/Student's name/, "Zartasha Testchild");
@@ -72,9 +75,9 @@ describe("RegistrationForm", () => {
     renderForm();
     type(/Student's name/, "Zartasha Testchild");
     fireEvent.click(screen.getByRole("button", { name: registrationCopy.submit }));
-    await waitFor(() => expect(screen.getByText(registrationCopy.fieldErrors.fatherName)).toBeInTheDocument());
-    expect(screen.getByText(registrationCopy.fieldErrors.email)).toBeInTheDocument();
-    expect(screen.getByText(registrationCopy.fieldErrors.consent)).toBeInTheDocument();
+    await waitFor(() => expect(inlineError("fatherName")).toHaveTextContent(registrationCopy.fieldErrors.fatherName));
+    expect(inlineError("email")).toHaveTextContent(registrationCopy.fieldErrors.email);
+    expect(inlineError("consent")).toHaveTextContent(registrationCopy.fieldErrors.consent);
     expect((screen.getByLabelText(/Student's name/) as HTMLInputElement).value).toBe("Zartasha Testchild");
     expect(fetchMock).not.toHaveBeenCalled();
   });
@@ -82,7 +85,8 @@ describe("RegistrationForm", () => {
   it("both parents' mobiles empty marks both fields", async () => {
     renderForm();
     fireEvent.click(screen.getByRole("button", { name: registrationCopy.submit }));
-    await waitFor(() => expect(screen.getAllByText(registrationCopy.fieldErrors.parentMobile).length).toBe(2));
+    await waitFor(() => expect(inlineError("fatherMobile")).toHaveTextContent(registrationCopy.fieldErrors.parentMobile));
+    expect(inlineError("motherMobile")).toHaveTextContent(registrationCopy.fieldErrors.parentMobile);
     expect(screen.getByLabelText(/Father's mobile/)).toHaveAttribute("aria-invalid", "true");
     expect(screen.getByLabelText(/Mother's mobile/)).toHaveAttribute("aria-invalid", "true");
   });
@@ -90,8 +94,8 @@ describe("RegistrationForm", () => {
   it("error messages use the body font", async () => {
     renderForm();
     fireEvent.click(screen.getByRole("button", { name: registrationCopy.submit }));
-    const message = await screen.findByText(registrationCopy.fieldErrors.fatherName);
-    expect(message.className).toContain("font-body");
+    await waitFor(() => expect(inlineError("fatherName")).not.toBeNull());
+    expect(inlineError("fatherName")?.className).toContain("font-body");
   });
 
   it("a 200 resets the form and shows the reference", async () => {
@@ -132,7 +136,138 @@ describe("RegistrationForm", () => {
     renderForm();
     fillValid();
     fireEvent.click(screen.getByRole("button", { name: registrationCopy.submit }));
-    await waitFor(() => expect(screen.getByText(registrationCopy.fieldErrors.className)).toBeInTheDocument());
+    await waitFor(() => expect(inlineError("className")).toHaveTextContent(registrationCopy.fieldErrors.className));
+  });
+
+  describe("error summary (026)", () => {
+    it("after a failed submit lists each problem as a link, takes focus itself, and a link moves focus to its field", async () => {
+      renderForm();
+      fireEvent.click(screen.getByRole("button", { name: registrationCopy.submit }));
+      const summary = await screen.findByTestId("error-summary");
+      expect(summary).toHaveAccessibleName("Please fix the following");
+      await waitFor(() => expect(document.activeElement).toBe(summary));
+      const link = within(summary).getByRole("link", { name: registrationCopy.fieldErrors.fatherName });
+      expect(link).toHaveAttribute("href", "#registration-fatherName");
+      // In page order: the student's name comes before the father's.
+      const hrefs = within(summary).getAllByRole("link").map((a) => a.getAttribute("href"));
+      expect(hrefs.indexOf("#registration-studentName")).toBeLessThan(hrefs.indexOf("#registration-fatherName"));
+      fireEvent.click(link);
+      expect(document.activeElement).toBe(document.getElementById("registration-fatherName"));
+    });
+
+    it("shows nothing before a submit, is not a role=alert (the banner is the only alert), and disappears as problems are fixed", async () => {
+      renderForm();
+      expect(screen.queryByTestId("error-summary")).toBeNull();
+      fireEvent.click(screen.getByRole("button", { name: registrationCopy.submit }));
+      const summary = await screen.findByTestId("error-summary");
+      expect(summary).not.toHaveAttribute("role", "alert");
+      type(/Student's name/, "Zartasha Testchild");
+      expect(within(screen.getByTestId("error-summary")).queryByRole("link", { name: registrationCopy.fieldErrors.studentName })).toBeNull();
+    });
+  });
+
+  describe("double submit (026)", () => {
+    it("sends once however fast the button is clicked, shows Submitting with a spinner, and is disabled", async () => {
+      let finish: (response: Response) => void = () => {};
+      fetchMock.mockReturnValue(new Promise<Response>((resolve) => { finish = resolve; }));
+      renderForm();
+      fillValid();
+      const form = document.querySelector("form") as HTMLFormElement;
+      fireEvent.submit(form);
+      fireEvent.submit(form);
+      fireEvent.submit(form);
+      const button = await screen.findByRole("button", { name: "Submitting…" });
+      expect(button).toBeDisabled();
+      expect(button.querySelector("svg[aria-hidden='true']")).not.toBeNull();
+      expect(fetchMock).toHaveBeenCalledTimes(1);
+      finish(new Response(JSON.stringify({ ok: true, reference: "K7MQ2XRT" }), { status: 200 }));
+      await waitFor(() => expect(screen.getByText("K7MQ2XRT")).toBeInTheDocument());
+    });
+
+    it("can be sent again after a failure", async () => {
+      fetchMock.mockResolvedValue(new Response("{}", { status: 503 }));
+      renderForm();
+      fillValid();
+      fireEvent.click(screen.getByRole("button", { name: registrationCopy.submit }));
+      await waitFor(() => expect(document.querySelector('p[role="alert"]')).toHaveTextContent(registrationCopy.banners.unavailable));
+      fetchMock.mockResolvedValue(new Response("{}", { status: 503 }));
+      fireEvent.click(screen.getByRole("button", { name: registrationCopy.submit }));
+      await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(2));
+    });
+  });
+
+  describe("progress (026)", () => {
+    const status = (title: string) => within(screen.getByRole("navigation", { name: "Registration progress" })).getByRole("link", { name: new RegExp("^" + title) }).getAttribute("data-status");
+
+    it("counts required sections only, and marks Reference and Remarks Optional", () => {
+      renderForm();
+      const nav = screen.getByRole("navigation", { name: "Registration progress" });
+      expect(within(nav).getByText("0 of 4 sections complete")).toBeInTheDocument();
+      expect(within(nav).getAllByText("Optional")).toHaveLength(2);
+      expect(within(nav).getAllByRole("link")).toHaveLength(6);
+      expect(within(nav).getByRole("link", { name: /^Parents/ })).toHaveAttribute("href", "#registration-section-parents");
+    });
+
+    it("a section turns done once all its required fields are valid", () => {
+      renderForm();
+      expect(status("Student")).not.toBe("done");
+      type(/Student's name/, "Zartasha Testchild");
+      type(/Date of birth/, "2020-05-01");
+      expect(status("Student")).not.toBe("done");
+      type(/Admission for class/, "Class 1");
+      expect(status("Student")).toBe("done");
+      expect(within(screen.getByRole("navigation", { name: "Registration progress" })).getByText("1 of 4 sections complete")).toBeInTheDocument();
+    });
+
+    it("an optional section is done only once it is filled in validly, and does not count towards the total", () => {
+      renderForm();
+      expect(status("Reference")).not.toBe("done");
+      type(/Reference student's name/, "Ali Khan");
+      // All three or none: one field alone is not valid yet.
+      expect(status("Reference")).not.toBe("done");
+      type(/Reference student's class/, "Class 2");
+      type(/Relation to the student/, "Cousin");
+      expect(status("Reference")).toBe("done");
+      expect(within(screen.getByRole("navigation", { name: "Registration progress" })).getByText("0 of 4 sections complete")).toBeInTheDocument();
+    });
+
+    it("the phone bar reads Section N of 6 with the section's title", () => {
+      renderForm();
+      const bar = screen.getByTestId("progress-bar");
+      expect(bar.textContent).toMatch(/^Section \d of 6 · /);
+      expect(within(bar).getByRole("progressbar")).toHaveAttribute("aria-valuemax", "6");
+    });
+  });
+
+  describe("fields (026)", () => {
+    it("has the right input types, keypads and autofill hints, and none for the child's name or birth date", () => {
+      renderForm();
+      const get = (label: RegExp) => screen.getByLabelText(label);
+      expect(get(/^Email address/)).toHaveAttribute("type", "email");
+      expect(get(/^Email address/)).toHaveAttribute("autocomplete", "email");
+      expect(get(/Father's mobile/)).toHaveAttribute("inputmode", "tel");
+      expect(get(/Father's mobile/)).toHaveAttribute("autocomplete", "tel");
+      expect(get(/Emergency contact number/)).toHaveAttribute("autocomplete", "off");
+      expect(get(/^Address/)).toHaveAttribute("autocomplete", "street-address");
+      expect(get(/Date of birth/)).toHaveAttribute("type", "date");
+      expect(get(/Date of birth/)).toHaveAttribute("autocomplete", "off");
+      expect(get(/Student's name/)).toHaveAttribute("autocomplete", "off");
+    });
+
+    it("puts a decorative icon only on email, the mobile numbers and the date of birth, and pads the text clear of it", () => {
+      renderForm();
+      const iconFields = [/^Email address/, /Father's mobile/, /Mother's mobile/, /Emergency contact number/, /Date of birth/];
+      for (const label of iconFields) {
+        const input = screen.getByLabelText(label);
+        const icon = input.parentElement?.querySelector("svg[aria-hidden='true']");
+        expect(icon, String(label)).not.toBeNull();
+        expect(icon?.getAttribute("class")).toContain("pointer-events-none");
+        expect(input.className).toContain("pl-11");
+      }
+      for (const label of [/Student's name/, /Father's name/, /^Address/, /Remarks/]) {
+        expect(screen.getByLabelText(label).parentElement?.querySelector("svg"), String(label)).toBeNull();
+      }
+    });
   });
 
   it("the privacy notice is short and carries the retention months and the reference-number note", () => {
