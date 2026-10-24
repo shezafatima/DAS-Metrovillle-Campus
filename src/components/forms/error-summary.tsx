@@ -26,7 +26,6 @@ export function ErrorSummary({ items, focusSignal }: { items: ErrorSummaryItem[]
   useEffect(() => {
     if (focusSignal > 0) ref.current?.focus();
     // Only a new failed submit moves focus, not every change to the list while the visitor fixes fields.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [focusSignal]);
 
   if (items.length === 0) return null;
@@ -37,7 +36,7 @@ export function ErrorSummary({ items, focusSignal }: { items: ErrorSummaryItem[]
       tabIndex={-1}
       aria-labelledby={titleId}
       data-testid="error-summary"
-      className="scroll-mt-(--form-scroll-offset) rounded-xl border-2 border-error-strong bg-white p-4 outline-none focus-visible:ring-4 focus-visible:ring-gold/40"
+      className="scroll-mt-(--form-scroll-offset) rounded-xl border-2 border-error-strong bg-white p-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary focus-visible:ring-4 focus-visible:ring-gold/40"
     >
       <h2 id={titleId} className="font-bold font-heading text-error-strong text-h3">
         {formsCopy.errorSummary.title}

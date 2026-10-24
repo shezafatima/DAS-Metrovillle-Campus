@@ -25,6 +25,9 @@ async function fillApplication(page: Page, overrides: Partial<Record<"name" | "e
   await page.getByRole("textbox", { name: "Highest qualification" }).fill(overrides.qualification ?? "M.Ed");
 }
 
+/** The message next to a field (the error summary repeats it, so getByText would match both). */
+const inlineError = (page: Page, key: string) => page.locator("#careers-" + key + "-error");
+
 async function attach(page: Page, file: string | { name: string; mimeType: string; buffer: Buffer }) {
   await page.locator("#careers-cv").setInputFiles(file);
 }
@@ -81,12 +84,12 @@ test.describe("careers — validation messages", () => {
     await page.goto("/careers");
     await page.getByRole("button", { name: "Apply" }).click();
 
-    await expect(page.getByText("Enter your full name.")).toBeVisible();
-    await expect(page.getByText("Enter a valid email address.")).toBeVisible();
-    await expect(page.getByText("Enter a Pakistani mobile number, e.g. 03001234567.")).toBeVisible();
-    await expect(page.getByText("Enter your highest qualification.")).toBeVisible();
-    await expect(page.getByText("Choose your CV as a PDF file.")).toBeVisible();
-    await expect(page.getByText("Please tick the box to agree before applying.")).toBeVisible();
+    await expect(inlineError(page, "name")).toContainText("Enter your full name.");
+    await expect(inlineError(page, "email")).toContainText("Enter a valid email address.");
+    await expect(inlineError(page, "phone")).toContainText("Enter a Pakistani mobile number, e.g. 03001234567.");
+    await expect(inlineError(page, "qualification")).toContainText("Enter your highest qualification.");
+    await expect(inlineError(page, "cv")).toContainText("Choose your CV as a PDF file.");
+    await expect(inlineError(page, "consent")).toContainText("Please tick the box to agree before applying.");
     expect(await findCareerApplications()).toHaveLength(0);
   });
 
@@ -96,7 +99,7 @@ test.describe("careers — validation messages", () => {
     await attach(page, FIXTURE_RENAMED);
     await consentAndSubmit(page);
 
-    await expect(page.getByText("Your CV must be a PDF file.")).toBeVisible();
+    await expect(inlineError(page, "cv")).toContainText("Your CV must be a PDF file.");
     expect(await findCareerApplications()).toHaveLength(0);
   });
 
@@ -106,7 +109,7 @@ test.describe("careers — validation messages", () => {
     await attach(page, { name: "big.pdf", mimeType: "application/pdf", buffer: oversizedPdf() });
     await consentAndSubmit(page);
 
-    await expect(page.getByText("Your CV must be 4 MB or smaller.")).toBeVisible();
+    await expect(inlineError(page, "cv")).toContainText("Your CV must be 4 MB or smaller.");
     expect(await findCareerApplications()).toHaveLength(0);
   });
 
@@ -117,9 +120,9 @@ test.describe("careers — validation messages", () => {
     // Consent left unticked: the form refuses locally and keeps everything.
     await page.getByRole("button", { name: "Apply" }).click();
 
-    await expect(page.getByText("Please tick the box to agree before applying.")).toBeVisible();
+    await expect(inlineError(page, "consent")).toContainText("Please tick the box to agree before applying.");
     await expect(page.getByRole("textbox", { name: "Full name" })).toHaveValue("Ayesha Khan");
-    await expect(page.getByText("Selected: cv-valid.pdf")).toBeVisible();
+    await expect(page.getByTestId("chosen-file")).toContainText("cv-valid.pdf");
   });
 });
 
@@ -142,7 +145,7 @@ test.describe("careers — document store unavailable", () => {
     await expect(page.locator('p[role="alert"]')).toContainText("We couldn't save your application just now", { timeout: 15000 });
     await expect(page.getByRole("textbox", { name: "Full name" })).toHaveValue("Ayesha Khan");
     await expect(page.getByRole("textbox", { name: "Email" })).toHaveValue("ayesha@example.com");
-    await expect(page.getByText("Selected: cv-valid.pdf")).toBeVisible();
+    await expect(page.getByTestId("chosen-file")).toContainText("cv-valid.pdf");
     expect(await findCareerApplications()).toHaveLength(0);
 
     await setStoreUnavailable(false);
@@ -188,7 +191,7 @@ test.describe("careers — one application per person per 30 days", () => {
     await consentAndSubmit(page);
     await expect(alert).toHaveText(expected, { timeout: 15000 });
     await expect(page.getByRole("textbox", { name: "Email" })).toHaveValue("ayesha@example.com");
-    await expect(page.getByText("Selected: cv-valid.pdf")).toBeVisible();
+    await expect(page.getByTestId("chosen-file")).toContainText("cv-valid.pdf");
 
     // Same phone, different email: the identical message (it never says which field matched).
     await page.goto("/careers");
@@ -275,8 +278,8 @@ for (const { w, h } of WIDTHS) {
       const cv = await box('label[for="careers-cv"]');
       const button = await box('button[type="submit"]');
 
-      if (w >= 768) {
-        // Two columns: name|email and phone|qualification share rows and edges; CV and button span both.
+      if (w >= 768 && w < 1024) {
+        // Two columns (768px to 1023px): name|email and phone|qualification share rows and edges; CV and button span both.
         expect(Math.abs(name.y - email.y)).toBeLessThan(2);
         expect(Math.abs(phone.y - qualification.y)).toBeLessThan(2);
         expect(Math.abs(name.x - phone.x)).toBeLessThan(2);
@@ -286,7 +289,7 @@ for (const { w, h } of WIDTHS) {
         expect(Math.abs(cv.x - name.x)).toBeLessThan(2);
         expect(Math.abs(button.width - cv.width)).toBeLessThan(2);
       } else {
-        // One column: every control has the same left edge and width.
+        // One column (phones, and the split card from 1024px): every control has the same left edge and width.
         for (const rect of [email, phone, qualification, cv, button]) {
           expect(Math.abs(rect.x - name.x)).toBeLessThan(2);
           expect(Math.abs(rect.width - name.width)).toBeLessThan(2);

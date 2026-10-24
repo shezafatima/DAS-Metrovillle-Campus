@@ -89,7 +89,7 @@ export function ProgressList({ sections, current }: { sections: ProgressSection[
                   href={`#${section.id}`}
                   aria-current={isCurrent ? "step" : undefined}
                   data-status={section.done ? "done" : isCurrent ? "current" : "todo"}
-                  className={`flex min-h-11 items-center gap-3 rounded-lg px-2 py-2 font-body text-sm text-foreground outline-none transition-colors duration-(--motion-fast) hover:bg-primary/10 focus-visible:outline-2 focus-visible:outline-primary focus-visible:ring-4 focus-visible:ring-gold/40 ${isCurrent ? "bg-primary/10 font-bold" : ""}`}
+                  className={`flex min-h-11 items-center gap-3 rounded-lg px-2 py-2 font-body text-sm text-foreground transition-colors duration-(--motion-fast) hover:bg-primary/10 focus-visible:outline-2 focus-visible:outline-primary focus-visible:ring-4 focus-visible:ring-gold/40 ${isCurrent ? "bg-primary/10 font-bold" : ""}`}
                 >
                   <span
                     aria-hidden="true"

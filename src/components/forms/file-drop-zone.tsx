@@ -128,7 +128,7 @@ export function FileDropZone({
             type="button"
             onClick={remove}
             aria-label={labels.removeNamed(file.name)}
-            className="min-h-11 shrink-0 rounded-lg border-2 border-primary px-4 font-button font-semibold text-primary text-sm outline-none transition-colors duration-(--motion-fast) hover:bg-primary hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary focus-visible:ring-4 focus-visible:ring-gold/40"
+            className="min-h-11 shrink-0 rounded-lg border-2 border-primary px-4 font-button font-semibold text-primary text-sm transition-colors duration-(--motion-fast) hover:bg-primary hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary focus-visible:ring-4 focus-visible:ring-gold/40"
           >
             {labels.remove}
           </button>

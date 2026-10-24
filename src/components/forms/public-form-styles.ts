@@ -43,7 +43,7 @@ export const SUBMIT_CLASS =
  *   (and the registration progress bar) through --form-scroll-offset.
  */
 const FORM_FIELD_BASE =
-  "min-h-11 w-full scroll-mt-(--form-scroll-offset) rounded-lg border border-text-muted bg-signup-input-bg font-body text-(length:--text-signup-input) text-foreground outline-none transition-shadow duration-(--motion-fast) placeholder:text-text-muted focus-visible:outline-2 focus-visible:outline-primary focus-visible:ring-4 focus-visible:ring-gold/40 aria-invalid:border-error-strong aria-invalid:outline-error-strong";
+  "min-h-11 w-full scroll-mt-(--form-scroll-offset) rounded-lg border border-text-muted bg-signup-input-bg font-body text-(length:--text-signup-input) text-foreground transition-shadow duration-(--motion-fast) placeholder:text-text-muted focus-visible:outline-2 focus-visible:outline-primary focus-visible:ring-4 focus-visible:ring-gold/40 aria-invalid:border-error-strong aria-invalid:outline-error-strong";
 
 export const FORM_INPUT_CLASS = `${FORM_FIELD_BASE} h-(--spacing-signup-input-height) px-4`;
 /** For a field with a decorative icon on its left: the text starts after the icon, never under it. */
@@ -67,4 +67,4 @@ export const FORM_CHOICE_INPUT_CLASS = "size-5 shrink-0 accent-primary focus-vis
  * submitting, so it cannot be sent twice.
  */
 export const FORM_SUBMIT_CLASS =
-  "inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-cta-hover px-6 py-3 font-button text-(length:--text-button) font-semibold text-white outline-none transition-colors duration-(--motion-fast) hover:bg-gold hover:text-primary focus-visible:bg-gold focus-visible:text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:bg-cta-hover disabled:hover:text-white";
+  "inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-cta-hover px-6 py-3 font-button text-(length:--text-button) font-semibold text-white transition-colors duration-(--motion-fast) hover:bg-gold hover:text-primary focus-visible:bg-gold focus-visible:text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:bg-cta-hover disabled:hover:text-white";
