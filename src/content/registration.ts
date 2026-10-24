@@ -108,7 +108,17 @@ export const registrationCopy = {
   closedDefault: "Admissions are currently closed.",
   closedLink: "Back to Admission",
   submit: "Submit registration",
-  sending: "Sending…",
+  sending: "Submitting…",
+  /** The progress indicator (026): a list beside the form from 1024px, a slim bar under the header below it. */
+  progress: {
+    navLabel: "Registration progress",
+    optional: "Optional",
+    statusDone: "complete",
+    statusCurrent: "current section",
+    statusTodo: "not started",
+    completeOf: (done: number, total: number) => `${done} of ${total} sections complete`,
+    barText: (position: number, total: number, title: string) => `Section ${position} of ${total} · ${title}`,
+  },
   confirmation: {
     title: "Registration received",
     lead: "Your reference number is",

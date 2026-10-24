@@ -30,7 +30,7 @@ export default async function RegistrationPage() {
           <PageTitle id="registration-heading">{copy.bannerTitle}</PageTitle>
           {availability.open ? (
             <>
-              <p className="mb-(--spacing-registration-section-gap) font-body text-body text-foreground">{copy.intro}</p>
+              <p className="mb-(--spacing-registration-section-gap) rounded-xl border border-neutral-100 bg-white px-5 py-4 font-body text-body text-foreground shadow-sm">{copy.intro}</p>
               <RegistrationForm
                 classes={availability.classes}
                 today={availability.today}

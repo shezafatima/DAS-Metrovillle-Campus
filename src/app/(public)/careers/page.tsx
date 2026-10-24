@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { CareersFormSection } from "@/components/careers/careers-form-section";
-import { CareersIntro } from "@/components/careers/careers-intro";
 import { PageTitle } from "@/components/site-shell/page-title";
 import { careersCopy } from "@/content/careers";
 
@@ -16,7 +15,6 @@ export default function CareersPage() {
       <div className="mx-auto w-full max-w-(--container-max-width) px-(--container-gutter-x)">
         <PageTitle>{careersCopy.banner.title}</PageTitle>
       </div>
-      <CareersIntro />
       <CareersFormSection />
     </>
   );
