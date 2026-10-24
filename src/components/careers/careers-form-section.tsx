@@ -9,7 +9,7 @@ import { careersCopy } from "@/content/careers";
  */
 export function CareersFormSection() {
   return (
-    <section id="apply" aria-labelledby="careers-form-heading" className="bg-contact-form-band py-(--spacing-contact-form-band-y)">
+    <section id="apply" aria-labelledby="careers-form-heading" className="bg-surface py-(--spacing-contact-form-band-y)">
       <div className="mx-auto max-w-(--container-max-width) px-3 sm:px-(--container-gutter-x)">
         <div className="grid grid-cols-1 overflow-hidden rounded-xl shadow-lg lg:grid-cols-2">
           <CareersPanel className="order-2 lg:order-1" />
