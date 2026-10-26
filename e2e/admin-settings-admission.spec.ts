@@ -33,9 +33,12 @@ test.describe("settings — admission (020 US2)", () => {
     const { page } = await adminSession(browser);
     await openGroup(page, "admission");
     await expect(status(page)).toHaveText(settingsCopy.admissionStatus.closed);
+    // 027: with nothing saved, both pickers start at today.
+    await expect(page.getByLabel("Opens on")).toHaveAttribute("min", today);
+    await expect(page.getByLabel("Closes on")).toHaveAttribute("min", today);
 
     const closes = shift(today, 30);
-    await fillStable(page, "Opens on", shift(today, -1));
+    await fillStable(page, "Opens on", today); // 027: not an earlier day, the picker and the server both refuse that
     await fillStable(page, "Closes on", closes);
     await save(page, "admission-window");
     await expect(savedToast(page, WINDOW)).toBeVisible({ timeout: 60_000 });
@@ -43,7 +46,7 @@ test.describe("settings — admission (020 US2)", () => {
     await save(page, "admission-messages");
     await expect(savedToast(page, MESSAGES)).toBeVisible({ timeout: 60_000 });
     expect((await readSettingsGroup("admission"))?.data).toEqual({
-      opensOn: shift(today, -1),
+      opensOn: today,
       closesOn: closes,
       announcement: "Admissions are now open for Playgroup, Nursery, Class 1 and Class 2",
       closedMessage: "",
@@ -74,6 +77,34 @@ test.describe("settings — admission (020 US2)", () => {
     await save(page, "admission-window");
     await expect(page.getByText(settingsCopy.errors.closesBeforeOpens)).toBeVisible({ timeout: 60_000 });
     expect(await readSettingsGroup("admission")).toBeNull();
+  });
+
+  test("the date pickers start at today; a typed past date is refused under its field; a past opening date already saved does not block other edits (027)", async ({ browser }) => {
+    test.setTimeout(300_000);
+    await seedSettingsGroup("admission", { opensOn: shift(today, -9), closesOn: shift(today, 7), announcement: "", closedMessage: "" });
+    const { page } = await adminSession(browser);
+    await openGroup(page, "admission");
+    // The saved opening date is in the past, so that field has no minimum (a value below it would stop the panel saving); Closes on does.
+    await expect(page.getByLabel("Opens on")).not.toHaveAttribute("min", /.+/);
+    await expect(page.getByLabel("Closes on")).toHaveAttribute("min", today);
+
+    // The window opened nine days ago: that stays, and the closing date can still be moved.
+    await fillStable(page, "Closes on", shift(today, 40));
+    await save(page, "admission-window");
+    await expect(savedToast(page, WINDOW)).toBeVisible({ timeout: 60_000 });
+    expect((await readSettingsGroup("admission"))?.data).toMatchObject({ opensOn: shift(today, -9), closesOn: shift(today, 40) });
+
+    // A past date typed in by hand is refused under its own field, and the stored date is not changed.
+    await fillStable(page, "Closes on", shift(today, -2));
+    await save(page, "admission-window");
+    await expect(page.getByText(settingsCopy.errors.dateInPast).first()).toBeVisible({ timeout: 60_000 });
+    expect((await readSettingsGroup("admission"))?.data).toMatchObject({ closesOn: shift(today, 40) });
+
+    // Today itself is fine.
+    await fillStable(page, "Closes on", today);
+    await save(page, "admission-window");
+    await expect(savedToast(page, WINDOW)).toBeVisible({ timeout: 60_000 });
+    expect((await readSettingsGroup("admission"))?.data).toMatchObject({ closesOn: today });
   });
 
   test("the dates can be typed from the keyboard, and the page has no axe violations", async ({ browser }) => {

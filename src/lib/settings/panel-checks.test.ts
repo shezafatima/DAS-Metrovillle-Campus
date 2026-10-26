@@ -1,6 +1,8 @@
 // @vitest-environment node
 import { randomUUID } from "node:crypto";
 import { beforeEach, expect, it, vi } from "vitest";
+import { settingsCopy } from "@/content/admin";
+import { karachiToday } from "@/lib/admission/window";
 import { describeWithDb } from "@/test/db";
 import { defaultsFor, mergeWithDefaults } from "./defaults";
 import { panelFingerprint } from "./fingerprint";
@@ -39,9 +41,9 @@ describeWithDb("the admission-classes panel check (014b: ticked Class Levels)", 
     vi.clearAllMocks();
   });
 
-  it("is registered for the classes panel only", async () => {
+  it("is registered for the classes and window panels only", async () => {
     const { PANEL_CHECKS } = await import("./panel-checks");
-    expect(Object.keys(PANEL_CHECKS)).toEqual(["admission-classes"]);
+    expect(Object.keys(PANEL_CHECKS)).toEqual(["admission-classes", "admission-window"]);
   });
 
   it("ticks that name a live level are saved, and the stored name is the level's current name", async () => {
@@ -133,5 +135,74 @@ describeWithDb("the admission-classes panel check (014b: ticked Class Levels)", 
     expect(second).toMatchObject({ ok: true });
     const stored = (await admissionDoc())?.data.classes as { name: string; deletedAt: Date | null }[];
     expect(stored.filter((item) => !item.deletedAt).map((item) => item.name)).toEqual(["Grade 1"]);
+  });
+});
+
+// 027: the admission window's dates may not be moved to a day that has already passed.
+function shiftDay(iso: string, days: number): string {
+  const [y, m, d] = iso.split("-").map(Number);
+  return new Date(Date.UTC(y, m - 1, d + days)).toISOString().slice(0, 10);
+}
+
+function windowFingerprint(stored: Record<string, unknown> = {}): string {
+  const def = GROUPS.admission;
+  return panelFingerprint(["opensOn", "closesOn"], toLiveValue(def, mergeWithDefaults(def, { ...defaultsFor(def), ...stored })));
+}
+
+async function saveWindow(data: { opensOn: string; closesOn: string }, stored?: Record<string, unknown>) {
+  const { savePanel } = await import("./mutations");
+  return savePanel({ panel: PANELS["admission-window"], expectedFingerprint: windowFingerprint(stored), data, actorEmail: ACTOR });
+}
+
+async function seedWindow(opensOn: string, closesOn: string) {
+  const { Settings } = await import("@/models/settings");
+  await Settings.create({ _id: "admission", data: { opensOn, closesOn, announcement: "", closedMessage: "", classes: [] }, version: 1, updatedBy: ACTOR });
+}
+
+describeWithDb("the admission-window panel check (027: no past dates)", ["settings", "settingsChanges"], () => {
+  const today = karachiToday(new Date());
+
+  it("a past opening date is refused on its own field, and nothing is written", async () => {
+    const result = await saveWindow({ opensOn: shiftDay(today, -1), closesOn: shiftDay(today, 30) });
+    expect(result).toEqual({ ok: false, error: "invalid", fields: { opensOn: settingsCopy.errors.dateInPast } });
+    expect(await admissionDoc()).toBeNull();
+  });
+
+  it("a past closing date is refused too, and both are named when both are past", async () => {
+    const result = await saveWindow({ opensOn: shiftDay(today, -5), closesOn: shiftDay(today, -2) });
+    expect(result).toEqual({ ok: false, error: "invalid", fields: { opensOn: settingsCopy.errors.dateInPast, closesOn: settingsCopy.errors.dateInPast } });
+  });
+
+  it("today and later days are saved", async () => {
+    const result = await saveWindow({ opensOn: today, closesOn: shiftDay(today, 30) });
+    expect(result).toMatchObject({ ok: true });
+    expect((await admissionDoc())?.data).toMatchObject({ opensOn: today, closesOn: shiftDay(today, 30) });
+  });
+
+  it("a window that opened on a past day keeps that date while the closing date is moved", async () => {
+    const opened = shiftDay(today, -9);
+    await seedWindow(opened, shiftDay(today, 7));
+    const stored = { opensOn: opened, closesOn: shiftDay(today, 7) };
+    const result = await saveWindow({ opensOn: opened, closesOn: shiftDay(today, 40) }, stored);
+    expect(result).toMatchObject({ ok: true });
+    expect((await admissionDoc())?.data).toMatchObject({ opensOn: opened, closesOn: shiftDay(today, 40) });
+  });
+
+  it("moving the closing date of that window to a past day is refused", async () => {
+    const opened = shiftDay(today, -9);
+    await seedWindow(opened, shiftDay(today, 7));
+    const stored = { opensOn: opened, closesOn: shiftDay(today, 7) };
+    const result = await saveWindow({ opensOn: opened, closesOn: shiftDay(today, -3) }, stored);
+    expect(result).toEqual({ ok: false, error: "invalid", fields: { closesOn: settingsCopy.errors.dateInPast } });
+    expect((await admissionDoc())?.data).toMatchObject({ closesOn: shiftDay(today, 7) });
+  });
+
+  it("clearing a date is allowed (it closes admissions)", async () => {
+    const opened = shiftDay(today, -9);
+    await seedWindow(opened, shiftDay(today, 7));
+    const stored = { opensOn: opened, closesOn: shiftDay(today, 7) };
+    const result = await saveWindow({ opensOn: "", closesOn: "" }, stored);
+    expect(result).toMatchObject({ ok: true });
+    expect((await admissionDoc())?.data).toMatchObject({ opensOn: "", closesOn: "" });
   });
 });

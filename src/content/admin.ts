@@ -760,6 +760,7 @@ export const settingsCopy = {
     unknownItem: "This item can no longer be saved. Reload and try again.",
     date: "Enter a real date.",
     closesBeforeOpens: "Closes on must be on or after Opens on.",
+    dateInPast: "Choose today or a later date.",
     classDuplicate: "This class is already in the list.",
     urlCredentials: "Remove the username and password from the address.",
     dayMonth: "Choose a real day and month.",
