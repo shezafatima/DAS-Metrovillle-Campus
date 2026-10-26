@@ -44,7 +44,7 @@ jobs:
     timeout-minutes: 30
     services:
       mongo:
-        image: mongo:8.0
+        image: mongo:7.0
         ports: ["27017:27017"]
         options: >-
           --health-cmd "mongosh --quiet --eval 'db.runCommand({ ping: 1 })'"
@@ -83,7 +83,7 @@ jobs:
           - { project: chromium, workers: 2, timeout: 60 }
     services:
       mongo:
-        image: mongo:8.0
+        image: mongo:7.0
         ports: ["27017:27017"]
         options: >-
           --health-cmd "mongosh --quiet --eval 'db.runCommand({ ping: 1 })'"
