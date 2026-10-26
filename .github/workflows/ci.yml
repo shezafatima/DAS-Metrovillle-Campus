@@ -44,6 +44,8 @@ jobs:
     timeout-minutes: 30
     services:
       mongo:
+        # mongo:8.0 (what Atlas runs) fails to start on runner kernels 6.19+: https://jira.mongodb.org/browse/SERVER-121912
+        # Return to mongo:8.0 once that is fixed.
         image: mongo:7.0
         ports: ["27017:27017"]
         options: >-
@@ -85,6 +87,8 @@ jobs:
           - { project: chromium, workers: 2, timeout: 60 }
     services:
       mongo:
+        # mongo:8.0 (what Atlas runs) fails to start on runner kernels 6.19+: https://jira.mongodb.org/browse/SERVER-121912
+        # Return to mongo:8.0 once that is fixed.
         image: mongo:7.0
         ports: ["27017:27017"]
         options: >-
