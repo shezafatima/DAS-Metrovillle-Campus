@@ -30,8 +30,6 @@ env:
   CLOUDINARY_API_KEY: "000000000000000"
   CLOUDINARY_API_SECRET: ci-test-secret-not-real-000000
   NEWS_COVER_VERIFY: skip
-  DOCUMENT_STORE_DRIVER: local
-  DOCUMENT_STORE_LOCAL_DIR: .data/e2e-documents
 
 jobs:
   checks:
@@ -67,6 +65,9 @@ jobs:
       - name: Build
         if: github.event_name != 'push'
         run: npm run build
+        env:
+          # A production build refuses DOCUMENT_STORE_DRIVER=local and defaults to Vercel Blob, which wants a token. Not a real one.
+          BLOB_READ_WRITE_TOKEN: ci-build-token-not-real
 
   playwright:
     name: Playwright (${{ matrix.project }})
@@ -78,6 +79,8 @@ jobs:
     env:
       # Playwright only: these switch the app (and Vitest tests) into E2E-only code paths, so they must not leak
       # into the checks job.
+      DOCUMENT_STORE_DRIVER: local
+      DOCUMENT_STORE_LOCAL_DIR: .data/e2e-documents
       E2E_FRESH_READS: "1"
       NEXT_PUBLIC_NOTIFICATIONS_POLL_MS: "3000"
     strategy:
