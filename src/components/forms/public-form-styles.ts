@@ -35,7 +35,7 @@ export const SUBMIT_CLASS =
  * Shared form UI (026): the student registration form and the careers form. These are NEW exports so the
  * contact form, which still uses the classes above, is unchanged until it adopts them.
  *
- * - Outline is --color-text-muted (#747474, 4.7:1 on white) so the field boundary passes 3:1.
+ * - Outline is --color-text-muted (#707070, 4.95:1 on white) so the field boundary passes 3:1.
  * - Focus: a 2px navy outline plus a soft gold ring (the ring is decoration; the navy outline is 13.8:1).
  * - An invalid field keeps its message colour, --color-error-strong, on its outline.
  * - Every control is at least 44px tall (min-h-11); focused controls scroll clear of the sticky header
