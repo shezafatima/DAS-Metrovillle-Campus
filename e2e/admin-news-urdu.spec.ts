@@ -78,7 +78,7 @@ test.describe("Urdu support (US5)", () => {
     const address = await page.getByLabel("Address").inputValue();
     expect(/[؀-ۿ]/.test(address)).toBe(true);
 
-    await page.getByRole("button", { name: "Publish" }).click();
+    await page.getByRole("button", { name: "Publish", exact: true }).click();
     await expect(page.getByText("Published.")).toBeVisible();
 
     await page.goto(`/news/${address}`);

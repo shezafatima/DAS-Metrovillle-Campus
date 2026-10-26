@@ -54,13 +54,13 @@ test.describe("admin login and logout (US2)", () => {
     await page.getByLabel("Email").fill(E2E_ADMIN.email);
     await page.getByLabel("Password", { exact: true }).fill("definitely-the-wrong-password");
     await page.getByRole("button", { name: "Sign in" }).click();
-    const wrongPasswordText = await page.getByRole("alert").textContent();
+    const wrongPasswordText = await page.locator('p[role="alert"]').textContent();
 
     await page.getByLabel("Email").fill("");
     await page.getByLabel("Email").fill("no-such-admin@example.com");
     await page.getByLabel("Password", { exact: true }).fill("also-does-not-matter-12345");
     await page.getByRole("button", { name: "Sign in" }).click();
-    const unknownEmailText = await page.getByRole("alert").textContent();
+    const unknownEmailText = await page.locator('p[role="alert"]').textContent();
 
     expect(wrongPasswordText).toBe(unknownEmailText);
     expect(wrongPasswordText).toBe("The email or password is incorrect.");

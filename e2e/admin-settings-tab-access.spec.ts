@@ -23,14 +23,14 @@ async function tabLabels(page: Page): Promise<string[]> {
 async function expectReadOnly(page: Page, key: string, permission: string) {
   const section = panel(page, key);
   // Playwright's toBeDisabled ignores a fieldset's own disabled attribute, so check the attribute.
-  await expect(section.locator("fieldset"), key).toHaveAttribute("disabled", "");
+  await expect(section.locator("form > fieldset"), key).toHaveAttribute("disabled", "");
   await expect(section.getByRole("button", { name: "Save" }), key).toHaveCount(0);
   await expect(section.getByTestId("panel-read-only"), key).toHaveText(`You need the ${permission} permission to change this.`);
 }
 
 async function expectEditable(page: Page, key: string) {
   const section = panel(page, key);
-  await expect(section.locator("fieldset"), key).not.toHaveAttribute("disabled");
+  await expect(section.locator("form > fieldset"), key).not.toHaveAttribute("disabled");
   await expect(section.getByRole("button", { name: "Save" }), key).toBeVisible();
 }
 

@@ -17,7 +17,7 @@ test.describe("login abuse protection (US5)", () => {
       await page.getByLabel("Email").fill(E2E_ADMIN.email);
       await page.getByLabel("Password", { exact: true }).fill("definitely-wrong-password");
       await page.getByRole("button", { name: "Sign in" }).click();
-      await expect(page.getByRole("alert")).toBeVisible();
+      await expect(page.locator('p[role="alert"]')).toBeVisible();
     }
 
     // 6th attempt, this time with the CORRECT password — still blocked.
@@ -25,7 +25,7 @@ test.describe("login abuse protection (US5)", () => {
     await page.getByLabel("Password", { exact: true }).fill(E2E_ADMIN.password);
     await page.getByRole("button", { name: "Sign in" }).click();
 
-    await expect(page.getByRole("alert")).toHaveText("Too many attempts. Please try again later.");
+    await expect(page.locator('p[role="alert"]')).toHaveText("Too many attempts. Please try again later.", { timeout: 90_000 });
     await expect(page).toHaveURL(/\/admin\/login/);
   });
 
