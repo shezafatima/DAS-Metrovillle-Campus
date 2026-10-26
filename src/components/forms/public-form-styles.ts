@@ -21,16 +21,15 @@ export const ERROR_CLASS = "rounded-signup-input bg-signup-input-bg px-2 py-1 te
 export const BANNER_CLASS = "rounded-md bg-white px-3 py-2 text-center font-body text-sm font-bold text-error-strong";
 
 /**
- * The red call-to-action button (white on --color-cta) measures 3.68:1, below the 4.5:1 that axe
- * requires for 14px text (013 FR-010). The registration form therefore uses the navy
- * --color-cta-hover for the idle state and --color-primary on hover; the contact and careers forms keep
- * the reference red. Recorded in research/design-tokens.md "Registration form (013)".
+ * The reference red call-to-action button (white on red) measured 3.68:1, below the 4.5:1 that axe
+ * requires for 14px text (013 FR-010), so it is gone: every call-to-action button is navy (--color-cta-hover)
+ * with a gold hover. The registration form keeps --color-primary on hover (see FORM_SUBMIT_CLASS for the gold).
  */
 export const ACCESSIBLE_SUBMIT_CLASS =
   "rounded-signup-button bg-cta-hover px-6 py-3 font-button text-(length:--text-button) font-semibold text-white transition-colors duration-(--motion-fast) hover:bg-primary disabled:opacity-70";
 
 export const SUBMIT_CLASS =
-  "rounded-signup-button bg-cta px-6 py-3 font-button text-(length:--text-button) font-semibold text-white transition-colors duration-(--motion-fast) hover:bg-cta-hover disabled:opacity-70";
+  "rounded-signup-button bg-cta-hover px-6 py-3 font-button text-(length:--text-button) font-semibold text-white transition-colors duration-(--motion-fast) hover:bg-gold hover:text-primary focus-visible:bg-gold focus-visible:text-primary disabled:opacity-70 disabled:hover:bg-cta-hover disabled:hover:text-white";
 
 /*
  * Shared form UI (026): the student registration form and the careers form. These are NEW exports so the
