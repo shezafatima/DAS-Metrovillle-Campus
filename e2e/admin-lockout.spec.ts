@@ -21,6 +21,12 @@ test.describe("login abuse protection (US5)", () => {
     await clearThrottle();
   });
 
+  // This spec locks the e2e admin on purpose (and, now that its five failures are really recorded, the lock holds for 15 minutes).
+  // Leave the throttle empty so the specs that sign in after it are not refused.
+  test.afterAll(async () => {
+    await clearThrottle();
+  });
+
   test("after 5 failed attempts, even the correct password is refused as blocked", async ({ page }) => {
     test.setTimeout(240_000); // six sign-ins, each waited for, on a slow `next dev`
     await page.goto("/admin/login");
