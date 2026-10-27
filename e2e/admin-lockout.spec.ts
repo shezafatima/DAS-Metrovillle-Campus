@@ -11,6 +11,7 @@ test.describe("login abuse protection (US5)", () => {
   });
 
   test("after 5 failed attempts, even the correct password is refused as blocked", async ({ page }) => {
+    test.setTimeout(240_000); // the 6th sign-in is slow on `next dev`; its 90s wait must fit inside the test's own limit
     await page.goto("/admin/login");
 
     for (let i = 0; i < 5; i++) {
