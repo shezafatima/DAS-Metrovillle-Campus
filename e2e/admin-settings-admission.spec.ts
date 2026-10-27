@@ -104,7 +104,8 @@ test.describe("settings — admission (020 US2)", () => {
     await fillStable(page, "Closes on", today);
     await save(page, "admission-window");
     await expect(savedToast(page, WINDOW)).toBeVisible({ timeout: 60_000 });
-    expect((await readSettingsGroup("admission"))?.data).toMatchObject({ closesOn: today });
+    // The toast from the first save can still be on screen, so it does not prove this save finished: wait for the stored value.
+    await expect.poll(async () => (await readSettingsGroup("admission"))?.data, { timeout: 60_000 }).toMatchObject({ closesOn: today });
   });
 
   test("the dates can be typed from the keyboard, and the page has no axe violations", async ({ browser }) => {
