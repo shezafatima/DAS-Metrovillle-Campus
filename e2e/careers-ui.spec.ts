@@ -142,6 +142,35 @@ test.describe("careers form shared UI (026)", () => {
     });
   }
 
+  for (const width of FORM_UI_WIDTHS) {
+    test(`the panel picture is above the text on a phone or tablet, and below it filling the panel from 1024px, at ${width}px`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 900 });
+      await openCareers(page);
+      const image = page.getByTestId("careers-panel-image");
+      const img = image.getByRole("img");
+      await expect(img).toHaveAttribute("alt", /graduation cap on a stack of books/);
+      await expect.poll(() => img.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0)).toBe(true);
+      expect(await img.evaluate((el) => getComputedStyle(el).objectFit)).toBe("cover");
+
+      const box = async (locator: import("@playwright/test").Locator) => (await locator.boundingBox())!;
+      const imageBox = await box(image);
+      const why = await box(page.getByRole("heading", { level: 2, name: "Why join us" }));
+      const next = await box(page.getByRole("heading", { level: 2, name: "What happens next" }));
+      const [panel, form] = [await box(page.locator("#apply .grid > div").nth(0)), await box(page.locator("#apply .grid > div").nth(1))];
+      expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(0);
+
+      if (width >= 1024) {
+        expect(imageBox.y).toBeGreaterThan(next.y); // below the text
+        expect(Math.abs(panel.height - form.height)).toBeLessThanOrEqual(1); // the picture does not make the panel taller than the form
+        expect(panel.y + panel.height - (imageBox.y + imageBox.height)).toBeLessThanOrEqual(48); // it fills down to the panel's padding
+        expect(imageBox.height).toBeGreaterThan(200);
+      } else {
+        expect(imageBox.y + imageBox.height).toBeLessThanOrEqual(why.y); // above the text
+        expect(imageBox.height).toBeLessThanOrEqual(220); // and smaller
+      }
+    });
+  }
+
   test("the drop zone works from the keyboard, takes a dropped file, and Remove returns focus to the input", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await openCareers(page);
