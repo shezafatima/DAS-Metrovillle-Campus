@@ -34,8 +34,11 @@ test.describe("careers form shared UI (026)", () => {
       await openCareers(page);
       expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(0);
 
-      // The h1 stays above the card; the navy panel and the form sit side by side from 1024px, the form first on a phone.
-      await expect(page.getByRole("heading", { level: 1, name: "Careers" })).toBeVisible();
+      // The page title is the shared banner (the only h1, with the breadcrumb) above the card; the navy panel and the form sit side by side from 1024px, the form first on a phone.
+      await expect(page.getByRole("heading", { level: 1 })).toHaveCount(1);
+      await expect(page.getByRole("navigation", { name: "Breadcrumb" })).toHaveText("Home » Careers");
+      const [h1Box, cardBox] = [(await page.getByRole("heading", { level: 1 }).boundingBox())!, (await page.locator("#apply").boundingBox())!];
+      expect(h1Box.y + h1Box.height).toBeLessThanOrEqual(cardBox.y);
       const why = page.getByRole("heading", { level: 2, name: "Why join us" });
       const next = page.getByRole("heading", { level: 2, name: "What happens next" });
       const apply = page.getByRole("heading", { level: 2, name: "Apply now" });

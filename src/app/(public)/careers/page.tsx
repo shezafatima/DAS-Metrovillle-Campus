@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { CareersFormSection } from "@/components/careers/careers-form-section";
-import { PageTitle } from "@/components/site-shell/page-title";
+import { PageBanner } from "@/components/site-shell/page-banner";
 import { careersCopy } from "@/content/careers";
 
 export const metadata: Metadata = {
@@ -12,9 +12,7 @@ export const metadata: Metadata = {
 export default function CareersPage() {
   return (
     <>
-      <div className="mx-auto w-full max-w-(--container-max-width) px-(--container-gutter-x)">
-        <PageTitle>{careersCopy.banner.title}</PageTitle>
-      </div>
+      <PageBanner title={careersCopy.banner.title} trail={["Careers"]} breadcrumbHome={careersCopy.banner.breadcrumbHome} />
       <CareersFormSection />
     </>
   );
