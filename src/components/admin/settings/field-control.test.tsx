@@ -85,3 +85,47 @@ describe("FieldControl: url with warnInsecure and testLink (014b)", () => {
     expect(screen.queryByText("Test link")).not.toBeInTheDocument();
   });
 });
+
+describe("FieldControl: date with notBeforeToday (027)", () => {
+  const dateField = (notBeforeToday?: boolean): Field => ({ type: "date", key: "opensOn", label: "Opens on", ...(notBeforeToday ? { notBeforeToday } : {}) });
+  const picker = () => screen.getByLabelText("Opens on") as HTMLInputElement;
+
+  it("starts the picker at today in Pakistan, not at the visitor's own day", () => {
+    vi.useFakeTimers();
+    try {
+      // 20:30 UTC on the 24th is 01:30 on the 25th in Pakistan (UTC+5).
+      vi.setSystemTime(new Date("2026-10-24T20:30:00Z"));
+      renderUrl("", vi.fn(), dateField(true));
+      expect(picker().type).toBe("date");
+      expect(picker().min).toBe("2026-10-25");
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("has no minimum on a date that is not marked", () => {
+    renderUrl("", vi.fn(), dateField());
+    expect(picker().min).toBe("");
+  });
+
+  it("has no minimum while the field holds a past date, so the panel can still be saved, and has one again for today or later", () => {
+    vi.useFakeTimers();
+    try {
+      vi.setSystemTime(new Date("2026-10-24T10:00:00Z"));
+      const { unmount } = render(<FieldControl field={dateField(true)} path="opensOn" value="2026-10-15" onChange={vi.fn()} errors={{}} clearError={() => undefined} />);
+      expect(picker().min).toBe("");
+      unmount();
+      render(<FieldControl field={dateField(true)} path="opensOn" value="2026-10-24" onChange={vi.fn()} errors={{}} clearError={() => undefined} />);
+      expect(picker().min).toBe("2026-10-24");
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("keeps a past value that is already there, and still reports a typed change", () => {
+    const onChange = renderUrl("2026-10-15", vi.fn(), dateField(true));
+    expect(picker().value).toBe("2026-10-15");
+    fireEvent.change(picker(), { target: { value: "2026-12-01" } });
+    expect(onChange).toHaveBeenCalledWith("2026-12-01");
+  });
+});
