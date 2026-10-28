@@ -152,12 +152,14 @@ export function Sidebar({ collapsible = "icon", className, children, ...props }:
           <Drawer.Backdrop className="fixed inset-0 z-40 bg-black/40 motion-safe:transition-opacity motion-safe:duration-(--motion-medium) data-starting-style:opacity-0 data-ending-style:opacity-0" />
           <Drawer.Viewport className="fixed inset-0 z-50 flex">
             <Drawer.Popup
-              render={<nav aria-label="Admin" />}
               className="admin-theme flex h-full w-(--spacing-admin-sidebar-mobile) flex-col bg-sidebar text-sidebar-foreground outline-none motion-safe:transition-transform motion-safe:duration-(--motion-medium) data-starting-style:-translate-x-full data-ending-style:-translate-x-full"
               data-slot="sidebar"
             >
               <Drawer.Title className="sr-only">Admin navigation</Drawer.Title>
-              {children}
+              {/* The popup is a dialog, which overrides a nav role on the same element, so the landmark sits inside it (as on the desktop sidebar). */}
+              <nav aria-label="Admin" className="flex min-h-0 flex-1 flex-col">
+                {children}
+              </nav>
             </Drawer.Popup>
           </Drawer.Viewport>
         </Drawer.Portal>
