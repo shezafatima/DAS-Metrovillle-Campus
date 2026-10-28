@@ -45,7 +45,7 @@ test.describe("admin news cover images (US4)", () => {
     await page.getByRole("button", { name: "Save draft" }).click();
     await expect(page.getByText("Saved as draft.")).toBeVisible();
 
-    await page.getByRole("button", { name: "Publish" }).click();
+    await page.getByRole("button", { name: "Publish", exact: true }).click();
     await expect(page.getByText("Published.")).toBeVisible();
 
     await page.goto("/admin/news");

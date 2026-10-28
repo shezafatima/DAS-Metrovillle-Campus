@@ -1,6 +1,6 @@
 import { test, expect, type Page } from "@playwright/test";
 import { adminSession } from "./helpers/users";
-import { clearSettings, openGroup, readSettingsGroup, savedToast } from "./helpers/settings";
+import { clearSettings, openGroup, panel, readSettingsGroup, savedToast } from "./helpers/settings";
 import { contactInfo } from "../src/content/site-shell";
 import { settingsCopy } from "../src/content/admin";
 
@@ -58,7 +58,7 @@ test.describe("settings — contact & social (005 US2)", () => {
     await page.getByLabel("Office timings").fill("Monday to Friday, 8am to 2pm");
     await page.getByLabel("Map location (Google Maps link)").fill("https://maps.google.com/?q=Example+Road+Metroville");
     await page.getByLabel("TikTok").fill("");
-    await page.getByRole("button", { name: "Save" }).click();
+    await panel(page, "contact").getByRole("button", { name: "Save" }).click();
     await expect(savedToast(page, TITLE)).toBeVisible({ timeout: 60_000 });
 
     const stored = await readSettingsGroup("contact");
@@ -95,7 +95,7 @@ test.describe("settings — contact & social (005 US2)", () => {
     await page.getByLabel("Email", { exact: true }).fill("not-an-email");
     await page.getByLabel("Map location (Google Maps link)").fill("ftp://example.com");
     await page.getByLabel("Address").fill("Kept while I fix the rest");
-    await page.getByRole("button", { name: "Save" }).click();
+    await panel(page, "contact").getByRole("button", { name: "Save" }).click();
 
     await expect(page.getByText(settingsCopy.errors.required)).toBeVisible();
     await expect(page.getByText(settingsCopy.errors.email)).toBeVisible();
@@ -109,7 +109,7 @@ test.describe("settings — contact & social (005 US2)", () => {
     const { page } = await adminSession(browser);
     await openGroup(page, "contact");
     await page.getByLabel("Phone").fill("+92-300-0000001");
-    await page.getByRole("button", { name: "Save" }).click();
+    await panel(page, "contact").getByRole("button", { name: "Save" }).click();
     await expect(savedToast(page, TITLE)).toBeVisible({ timeout: 60_000 });
 
     await page.goto("/contact");

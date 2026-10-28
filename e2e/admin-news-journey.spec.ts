@@ -32,7 +32,7 @@ test.describe("news end-to-end journey (US1-US3 Acceptance)", () => {
 
     // Publish -> visible on the list and its own detail page.
     await page.goto(editUrl);
-    await page.getByRole("button", { name: "Publish" }).click();
+    await page.getByRole("button", { name: "Publish", exact: true }).click();
     await expect(page.getByText("Published.")).toBeVisible();
 
     await page.goto("/news");
