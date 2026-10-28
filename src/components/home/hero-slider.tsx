@@ -155,7 +155,7 @@ export function HeroSlider({ hero }: { hero: PublicHero }) {
                   <Link
                     href={slide.button.href}
                     tabIndex={active ? undefined : -1}
-                    className="bg-cta px-(--spacing-home-read-more-x) py-(--spacing-home-read-more-y) font-button text-(length:--text-button) font-semibold text-white uppercase transition-colors duration-(--motion-fast) hover:bg-cta-hover"
+                    className="bg-cta-hover px-(--spacing-home-read-more-x) py-(--spacing-home-read-more-y) font-button text-(length:--text-button) font-semibold text-white uppercase transition-colors duration-(--motion-fast) hover:bg-gold hover:text-primary focus-visible:bg-gold focus-visible:text-primary"
                   >
                     {slide.button.label}
                   </Link>

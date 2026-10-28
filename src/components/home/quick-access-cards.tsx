@@ -57,7 +57,7 @@ export function QuickAccessCards() {
                 data-testid="quick-access-link"
                 aria-label={`${readMore}: ${card.title}`}
                 tabIndex={centre ? 0 : -1}
-                className="bg-cta px-(--spacing-home-read-more-x) py-(--spacing-home-read-more-y) font-button text-(length:--text-button) font-semibold text-white outline-none focus-visible:ring-2 focus-visible:ring-white"
+                className="bg-cta-hover px-(--spacing-home-read-more-x) py-(--spacing-home-read-more-y) font-button text-(length:--text-button) font-semibold text-white outline-none transition-colors duration-(--motion-fast) hover:bg-gold hover:text-primary focus-visible:bg-gold focus-visible:text-primary focus-visible:ring-2 focus-visible:ring-white"
               >
                 {readMore}
               </Link>

@@ -51,7 +51,7 @@ export function VideoEmbed({
           ) : (
             <Image src={poster.src} alt="" fill sizes="(min-width: 896px) 896px, 100vw" className="object-cover" />
           )}
-          <span className="absolute inset-0 m-auto flex size-16 items-center justify-center rounded-full bg-cta text-white shadow-lg group-hover:bg-cta-hover">
+          <span className="absolute inset-0 m-auto flex size-16 items-center justify-center rounded-full border-2 border-primary bg-gold text-primary shadow-lg ring-4 ring-white transition-colors duration-(--motion-fast) group-hover:bg-white">
             <Play aria-hidden="true" className="size-7 translate-x-0.5" />
           </span>
         </button>

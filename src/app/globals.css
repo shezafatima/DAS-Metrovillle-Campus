@@ -55,9 +55,8 @@
      custom breakpoint token is added — `lg:` *is* that token. */
   --color-primary: #121291;
   --color-accent: #00bcd4;
-  --color-cta: #f44336;
   --color-text: #000000;
-  --color-text-muted: #747474;
+  --color-text-muted: #707070;
   --color-text-muted-2: #999999;
   --color-surface: #ffffff;
   --color-neutral-100: #d7d6d6;
@@ -175,7 +174,7 @@
 
   /* Semantic colours (general — 004 signup, sp.analyze finding U1). The
      reference has no error/success UI to extract; these are assigned
-     from already-confirmed reference colours (color-cta, color-accent)
+     from already-confirmed reference colours (the reference red, color-accent)
      rather than invented, and are reusable by any form's state, not
      just the signup band — see research/design-tokens.md "Semantic
      colours". */
@@ -187,9 +186,9 @@
   /* Signup band (004 signup) — extracted per-element from
      https://das.edu.pk/'s signup form, not the page-level aggregate
      scan; see research/design-tokens.md "Signup band". Identical at
-     all four reference widths. --color-cta-hover is general (any
-     color-cta button), named here first because this is the first
-     component to need a hover state for it. */
+     all four reference widths. --color-cta-hover is general (the navy
+     of every call-to-action button; its hover is --color-gold), named here
+     first because this is the first component to need it. */
   --color-signup-band: #1e294b;
   --color-signup-highlight: #ffd700;
   /* A neutral name for the same deep yellow (#ffd700), for components that are not the signup band: About Core Values ring (017). */
@@ -232,7 +231,7 @@
      and --text-body/--color-text; the input/textarea/button chrome reuse
      --spacing-signup-input-height, --color-signup-input-border,
      --color-signup-input-text, --text-signup-input,
-     --radius-signup-input/-button and --color-cta/-hover/--text-button.
+     --radius-signup-input/-button and --color-cta-hover/--text-button.
      Only the values below have no existing equivalent. */
   --color-contact-form-band: #fff4a8;
   --color-contact-map-heading: #223355;
@@ -412,7 +411,7 @@
    so the public site's existing neutral shadcn theme is untouched.
    Values reused from the site-shell tokens above where they already
    exist (Constitution V — no new raw values without a named token):
-   navy = --color-primary, yellow = --color-topbar, red = --color-cta,
+   navy = --color-primary, yellow = --color-topbar,
    neutral-100/text/text-muted/surface as already defined. Yellow is
    deliberately wired only into --sidebar-accent (the active nav item)
    and the two --color-admin-highlight-* tokens (Badge "highlight"
