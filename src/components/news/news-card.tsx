@@ -28,7 +28,7 @@ export function NewsCard({ post }: { post: PublicPostSummary }) {
         <CategoryLabel category={post.category} dir={dir} overlay />
       </div>
       <div className="news-card-padding flex flex-1 flex-col gap-2">
-        <h2 className={`font-heading text-(length:--text-news-card-title) leading-(--text-news-card-title--line-height) font-bold ${urduFont}`}>
+        <h2 dir={dir} className={`font-heading text-(length:--text-news-card-title) leading-(--text-news-card-title--line-height) font-bold ${urduFont}`}>
           <Link href={`/news/${post.slug}`} dir={dir} className="text-primary hover:underline">
             {post.title}
           </Link>

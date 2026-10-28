@@ -1,5 +1,6 @@
 import { test, expect, type Page } from "@playwright/test";
 import { homeContent } from "../src/content/home";
+import { waitForLayoutSettled } from "./helpers/scroll";
 
 /**
  * The Salient Features section (006 FR-012): the heading, a paragraph and a "Read more" button (left-aligned) beside the
@@ -11,6 +12,7 @@ const { heading, paragraph, readMore, items } = homeContent.salientFeatures;
 async function openSection(page: Page) {
   await page.goto("/", { timeout: 120_000 });
   await page.locator("#salient-heading").evaluate((el) => el.scrollIntoView({ block: "center" }));
+  await waitForLayoutSettled(page); // the site scrolls smoothly: measure only once it has stopped and the fonts are in
 }
 
 /** Freeze the turning at a point of its cycle (a fraction of one turn). */

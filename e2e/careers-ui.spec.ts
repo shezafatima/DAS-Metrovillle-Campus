@@ -34,8 +34,11 @@ test.describe("careers form shared UI (026)", () => {
       await openCareers(page);
       expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(0);
 
-      // The h1 stays above the card; the navy panel and the form sit side by side from 1024px, the form first on a phone.
-      await expect(page.getByRole("heading", { level: 1, name: "Careers" })).toBeVisible();
+      // The page title is the shared banner (the only h1, with the breadcrumb) above the card; the navy panel and the form sit side by side from 1024px, the form first on a phone.
+      await expect(page.getByRole("heading", { level: 1 })).toHaveCount(1);
+      await expect(page.getByRole("navigation", { name: "Breadcrumb" })).toHaveText("Home » Careers");
+      const [h1Box, cardBox] = [(await page.getByRole("heading", { level: 1 }).boundingBox())!, (await page.locator("#apply").boundingBox())!];
+      expect(h1Box.y + h1Box.height).toBeLessThanOrEqual(cardBox.y);
       const why = page.getByRole("heading", { level: 2, name: "Why join us" });
       const next = page.getByRole("heading", { level: 2, name: "What happens next" });
       const apply = page.getByRole("heading", { level: 2, name: "Apply now" });
@@ -136,6 +139,35 @@ test.describe("careers form shared UI (026)", () => {
       await page.screenshot({ path: shot(`careers-submitting-${width}`) });
       await expect(page.getByRole("status")).toContainText("Thank you for applying", { timeout: 30_000 });
       expect(requests).toBe(1);
+    });
+  }
+
+  for (const width of FORM_UI_WIDTHS) {
+    test(`the panel picture is above the text on a phone or tablet, and below it filling the panel from 1024px, at ${width}px`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 900 });
+      await openCareers(page);
+      const image = page.getByTestId("careers-panel-image");
+      const img = image.getByRole("img");
+      await expect(img).toHaveAttribute("alt", /graduation cap on a stack of books/);
+      await expect.poll(() => img.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0)).toBe(true);
+      expect(await img.evaluate((el) => getComputedStyle(el).objectFit)).toBe("cover");
+
+      const box = async (locator: import("@playwright/test").Locator) => (await locator.boundingBox())!;
+      const imageBox = await box(image);
+      const why = await box(page.getByRole("heading", { level: 2, name: "Why join us" }));
+      const next = await box(page.getByRole("heading", { level: 2, name: "What happens next" }));
+      const [panel, form] = [await box(page.locator("#apply .grid > div").nth(0)), await box(page.locator("#apply .grid > div").nth(1))];
+      expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(0);
+
+      if (width >= 1024) {
+        expect(imageBox.y).toBeGreaterThan(next.y); // below the text
+        expect(Math.abs(panel.height - form.height)).toBeLessThanOrEqual(1); // the picture does not make the panel taller than the form
+        expect(panel.y + panel.height - (imageBox.y + imageBox.height)).toBeLessThanOrEqual(48); // it fills down to the panel's padding
+        expect(imageBox.height).toBeGreaterThan(200);
+      } else {
+        expect(imageBox.y + imageBox.height).toBeLessThanOrEqual(why.y); // above the text
+        expect(imageBox.height).toBeLessThanOrEqual(220); // and smaller
+      }
     });
   }
 

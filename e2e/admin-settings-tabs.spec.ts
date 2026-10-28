@@ -27,7 +27,14 @@ const TABS = [
       ["stats", "Progress dashboard", "/#progress-dashboard"],
     ],
   },
-  { path: "/admin/settings/academics", label: "Academics", panels: [["syllabi", "Syllabi", "/academics#syllabi"]] },
+  {
+    path: "/admin/settings/academics",
+    label: "Academics",
+    panels: [
+      ["syllabi", "Syllabi", "/academics#syllabi"],
+      ["examination", "Examination", "/academics#examination"],
+    ],
+  },
   {
     path: "/admin/settings/admission",
     label: "Admission",
