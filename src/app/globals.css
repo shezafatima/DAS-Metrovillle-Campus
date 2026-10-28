@@ -774,6 +774,15 @@
   .qa-card[data-flipped="true"] .qa-front {
     pointer-events: none;
   }
+  /* The turned-away back is invisible (backface-visibility), but a contrast check cannot tell, and it reads the card's own
+     opacity (side cards are 0.55) as washed-out text. So it is also transparent while it faces away: at once when the card
+     turns over, and only after the turn has finished when it turns back, so the animation looks the same. */
+  @media (prefers-reduced-motion: no-preference) {
+    .qa-card:not([data-flipped="true"]) .qa-back {
+      opacity: 0;
+      transition: opacity 0s linear var(--motion-medium);
+    }
+  }
   @media (prefers-reduced-motion: reduce) {
     /* No turning over: the back cross-fades in over the front, and cards change places without sliding. */
     .qa-card {
