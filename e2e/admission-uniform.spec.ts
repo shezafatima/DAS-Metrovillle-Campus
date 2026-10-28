@@ -25,6 +25,52 @@ async function centreOf(page: Page, i: number) {
   return { x: box.x + box.width / 2, y: box.y + box.height / 2 };
 }
 
+/** Waits until card `i` has stopped moving (the same position for 10 frames in a row), i.e. its slide has finished. */
+async function waitForCardSettled(page: Page, i: number) {
+  await card(page, i).evaluate(
+    (el) =>
+      new Promise<void>((resolve) => {
+        const key = () => {
+          const r = el.getBoundingClientRect();
+          return `${r.x.toFixed(1)},${r.y.toFixed(1)},${r.width.toFixed(1)}`;
+        };
+        let last = key();
+        let still = 0;
+        const tick = () => {
+          const now = key();
+          still = now === last ? still + 1 : 0;
+          last = now;
+          if (still >= 10) resolve();
+          else requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+      }),
+  );
+}
+
+/**
+ * Brings the next card to the centre the way a person would. With room, they click the part of it they can see (not
+ * the card's own centre, which can be off screen). Where the carousel clips the neighbour so a mouse cannot reach it
+ * (375px), a person uses the keyboard instead: the arrow key moves it, as the keyboard test shows.
+ */
+async function bringToCentre(page: Page, i: number) {
+  const target = card(page, i);
+  const nb = (await target.boundingBox())!;
+  const centre = (await section(page).locator('[data-centre="true"]').boundingBox())!;
+  const left = Math.max(nb.x, centre.x + centre.width);
+  const right = Math.min(nb.x + nb.width, page.viewportSize()!.width);
+  const at = { x: (left + right) / 2, y: nb.y + nb.height / 2 };
+  const reachable =
+    right - left > 8 &&
+    (await page.evaluate(({ x, y, i }) => document.elementFromPoint(x, y)?.closest("#uniform [data-qa-index]")?.getAttribute("data-qa-index") === String(i), { ...at, i }));
+  if (reachable) {
+    await target.getByTestId("uniform-flip").click({ position: { x: at.x - nb.x, y: nb.height / 2 } });
+  } else {
+    await section(page).locator('[data-centre="true"]').getByTestId("uniform-flip").focus();
+    await page.keyboard.press("ArrowRight");
+  }
+}
+
 async function touch(page: Page, from: { x: number; y: number }, dx: number, steps = 6) {
   const cdp = await page.context().newCDPSession(page);
   await cdp.send("Input.dispatchTouchEvent", { type: "touchStart", touchPoints: [from] });
@@ -149,6 +195,8 @@ test.describe("uniform cards on touch", () => {
     await touch(page, c, -140);
     await expect.poll(() => centreIndex(page)).toBe(1);
     for (let i = 0; i < groups.length; i++) await expect(card(page, i)).toHaveAttribute("data-flipped", "false");
+    await waitForCardSettled(page, 1); // a person taps once the card has stopped sliding into place...
+    await page.waitForTimeout(500); // ...and not in the same instant as the swipe ends: Chrome drops a tap that lands right after a swipe
 
     c = await centreOf(page, 1);
     await page.touchscreen.tap(c.x, c.y);
@@ -169,7 +217,7 @@ for (const width of [375, 480, 640, 768, 782, 1023, 1024, 1025, 1280, 1440]) {
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
     for (let i = 0; i < groups.length; i++) {
       if (i > 0) {
-        await card(page, i).getByTestId("uniform-flip").click(); // brings a side card to the centre
+        await bringToCentre(page, i);
         await expect(card(page, i)).toHaveAttribute("data-centre", "true");
       }
       await card(page, i).hover();
