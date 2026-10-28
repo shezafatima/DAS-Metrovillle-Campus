@@ -25,6 +25,13 @@ export const careersCopy = {
     title: "Careers",
     breadcrumbHome: "Home",
   },
+  // The picture in the navy panel (033): a desk scene with no people. Its alt text names the words on the books, since they are part of the picture.
+  panelImage: {
+    src: "/images/careers/careers.webp",
+    alt: "A graduation cap on a stack of books labelled Knowledge, Skills, Confidence and A Brighter Future, on a desk with a laptop and a pen holder carrying the school emblem; the school building is visible through the window.",
+    width: 1200,
+    height: 1200,
+  },
   intro: {
     placeholder: true,
     // The navy panel's "Why join us" (026). PENDING CLIENT APPROVAL, like the paragraphs.

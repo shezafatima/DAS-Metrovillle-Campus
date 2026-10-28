@@ -23,8 +23,9 @@ const REDIRECTS: [string, string][] = [
   ["/about/messages", "/about#messages"],
   // Academics was remapped in 018 (contracts/page-structure.md).
   ["/academics/academics-overview", "/academics#academic-overview"],
-  ["/academics/syllabi", "/academics"],
-  ["/academics/examinations", "/academics"],
+  // 014b: Syllabi and Examination are sections again (legacyAcademicsRedirects).
+  ["/academics/syllabi", "/academics#syllabi"],
+  ["/academics/examinations", "/academics#examination"],
   ["/academics/teachers-training", "/academics#teachers-training"],
   ["/hifz-e-quran", "/academics#hifz-e-quran"],
   ["/resources/scarlet-mobile-apps", "/resources#mobile-apps"],

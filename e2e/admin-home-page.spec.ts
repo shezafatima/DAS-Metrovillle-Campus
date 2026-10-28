@@ -202,7 +202,9 @@ test.describe("home — sections, news, books, stats, links (006 US2–US9)", ()
     await expect(news).toBeVisible();
     const titles = news.getByTestId("home-news-card").locator("h3");
     await expect(titles).toHaveText(["فکر اقبال اور تعلیمی نظام", "Older post"]);
-    await expect(news.getByTestId("home-news-card").first().locator("[dir]").first()).toHaveAttribute("dir", "rtl");
+    // The text block is right-to-left; the category label stays English (left-to-right) on an Urdu card.
+    await expect(news.getByTestId("home-news-card").first().locator("div[dir]").first()).toHaveAttribute("dir", "rtl");
+    await expect(news.getByTestId("home-news-card").first().getByTestId("category-label")).toHaveAttribute("dir", "ltr");
     await expect(news.getByText("A draft")).toHaveCount(0);
     await expect(news.locator('[aria-hidden="true"][data-variant="home"]').first()).toBeAttached(); // cover placeholder
     await expect(news.getByRole("link", { name: /View all news/ })).toHaveAttribute("href", "/news");

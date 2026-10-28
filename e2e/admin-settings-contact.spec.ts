@@ -3,11 +3,13 @@ import { adminSession } from "./helpers/users";
 import { clearSettings, openGroup, panel, readSettingsGroup, savedToast } from "./helpers/settings";
 import { contactInfo } from "../src/content/site-shell";
 import { settingsCopy } from "../src/content/admin";
+import { contactCopy } from "../src/content/contact";
 
 const TITLE = settingsCopy.groups.contact.title;
 
+/** The navy half of the Contact card (the details, the map and the social links). */
 function contactSection(page: Page) {
-  return page.locator("section[aria-label='Contact details']");
+  return page.locator("section[aria-labelledby='contact-details-heading']");
 }
 
 test.describe("settings — contact & social (005 US2)", () => {
@@ -19,21 +21,23 @@ test.describe("settings — contact & social (005 US2)", () => {
     await clearSettings();
   });
 
-  test("nothing has been saved: the top bar, footer and Contact page show the content-file values (SC-001)", async ({ page }) => {
+  test("nothing has been saved: the footer and the Contact card show the content-file values, and the top bar carries no social icons (SC-001)", async ({ page }) => {
     test.setTimeout(240_000); // the first visit compiles the page
     await page.goto("/contact");
 
+    const details = contactSection(page);
     for (const [platform, label] of [
       ["facebook", "Facebook"],
       ["youtube", "YouTube"],
       ["instagram", "Instagram"],
       ["tiktok", "TikTok"],
     ] as const) {
-      await expect(page.locator("header").getByRole("link", { name: label })).toHaveAttribute("href", contactInfo.social[platform]!);
+      // The icons are in the footer and on the Contact card; the top bar has none.
+      await expect(page.locator("header").getByRole("link", { name: label })).toHaveCount(0);
       await expect(page.locator("footer").getByRole("link", { name: label })).toHaveAttribute("href", contactInfo.social[platform]!);
+      await expect(details.getByRole("link", { name: label })).toHaveAttribute("href", contactInfo.social[platform]!);
     }
 
-    const details = contactSection(page);
     await expect(details.getByRole("link", { name: contactInfo.phone })).toHaveAttribute("href", `tel:${contactInfo.phone}`);
     await expect(details.getByRole("link", { name: contactInfo.email })).toHaveAttribute("href", `mailto:${contactInfo.email}`);
     await expect(details.locator("[data-placeholder]", { hasText: contactInfo.officeHours })).toBeVisible();
@@ -41,7 +45,7 @@ test.describe("settings — contact & social (005 US2)", () => {
     await expect(page.getByRole("link", { name: "Open in Google Maps" })).toHaveAttribute("href", contactInfo.mapUrl);
   });
 
-  test("the admin edits the details and the Contact page, top bar and footer show them; a cleared link hides its icon", async ({
+  test("the admin edits the details and the Contact card and footer show them; a cleared link hides its icon", async ({
     browser,
   }) => {
     test.setTimeout(300_000);
@@ -75,15 +79,17 @@ test.describe("settings — contact & social (005 US2)", () => {
       "https://maps.google.com/?q=Example+Road+Metroville",
     );
 
-    // The cleared platform has no icon anywhere; the others stay.
+    // The cleared platform has no icon anywhere (the top bar has none at all); the others stay.
     await expect(page.locator("header").getByRole("link", { name: "TikTok" })).toHaveCount(0);
     await expect(page.locator("footer").getByRole("link", { name: "TikTok" })).toHaveCount(0);
-    await expect(page.locator("header").getByRole("link", { name: "Facebook" })).toBeVisible();
+    await expect(details.getByRole("link", { name: "TikTok" })).toHaveCount(0);
+    await expect(details.getByRole("link", { name: "Facebook" })).toBeVisible();
     await expect(page.locator("footer").getByRole("link", { name: "Instagram" })).toBeVisible();
 
-    // The header shows it too, on a page other than Contact.
+    // The footer shows the change on a page other than Contact, too.
     await page.goto("/news");
-    await expect(page.locator("header").getByRole("link", { name: "TikTok" })).toHaveCount(0);
+    await expect(page.locator("footer").getByRole("link", { name: "TikTok" })).toHaveCount(0);
+    await expect(page.locator("footer").getByRole("link", { name: "Facebook" })).toBeVisible();
   });
 
   test("invalid values are refused with a message under each field, nothing is saved, and what was typed stays", async ({ browser }) => {
@@ -104,7 +110,7 @@ test.describe("settings — contact & social (005 US2)", () => {
     expect(await readSettingsGroup("contact")).toBeNull();
   });
 
-  test("the Contact page keeps its layout: four columns in order and the map section", async ({ browser }) => {
+  test("the Contact page keeps its layout: one card with the details first and the form beside it, the labelled rows in order, and the map", async ({ browser }) => {
     test.setTimeout(300_000);
     const { page } = await adminSession(browser);
     await openGroup(page, "contact");
@@ -113,7 +119,17 @@ test.describe("settings — contact & social (005 US2)", () => {
     await expect(savedToast(page, TITLE)).toBeVisible({ timeout: 60_000 });
 
     await page.goto("/contact");
-    await expect(page.locator("section[aria-label='Contact details'] h3")).toHaveText(["BY PHONE", "BY EMAIL", "VISIT US", "WRITE US"]);
-    await expect(page.getByRole("heading", { name: "Locate Us on Google Maps" })).toBeVisible();
+    const details = contactSection(page);
+    const form = page.locator("section[aria-labelledby='contact-form-heading']");
+    await expect(details.getByRole("heading", { level: 2 })).toHaveText(contactCopy.details.heading);
+    await expect(details.locator("li p")).toHaveText([contactCopy.details.address, contactCopy.details.phone, contactCopy.details.email, contactCopy.details.timings]);
+    await expect(form.getByRole("heading", { level: 2 })).toHaveText(contactCopy.form.heading);
+    // Side by side from 1024px (the default desktop viewport): the details on the left, the form on the right.
+    const [detailsBox, formBox] = [(await details.boundingBox())!, (await form.boundingBox())!];
+    expect(detailsBox.x + detailsBox.width).toBeLessThanOrEqual(formBox.x + 1);
+    expect(Math.abs(detailsBox.y - formBox.y)).toBeLessThanOrEqual(1);
+    // The map: its screen-reader heading and the "Open in Google Maps" link.
+    await expect(details.getByRole("heading", { level: 3, name: contactCopy.map.heading })).toBeAttached();
+    await expect(details.getByRole("link", { name: contactCopy.map.openInMaps })).toBeVisible();
   });
 });
