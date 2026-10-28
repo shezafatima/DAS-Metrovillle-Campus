@@ -286,6 +286,8 @@ export function FlipCoverflow({
                   } as React.CSSProperties
                 }
                 onPointerEnter={(event) => event.pointerType === "mouse" && centre && setHovered(i)}
+                // A side card that a click brings to the centre is already under the mouse, so no pointer-enter follows: the first move over it flips it.
+                onPointerMove={(event) => event.pointerType === "mouse" && centre && setHovered(i)}
                 onPointerLeave={(event) => event.pointerType === "mouse" && setHovered((h) => (h === i ? null : h))}
                 onFocus={(event) => {
                   if (centre && event.target.matches(":focus-visible")) setFocused(i);
