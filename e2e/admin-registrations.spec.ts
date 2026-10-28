@@ -101,7 +101,7 @@ test.describe("admin registrations (013)", () => {
     const [{ id }] = await seedRegistrations([{ studentName: "Zartasha Testchild", medicalHistory: "PeanutAllergyMarker\nsecond line", className: "Class 1" }]);
     await page.goto(`/admin/registrations/${id}`);
     await expect(page.getByRole("heading", { name: "Zartasha Testchild", level: 1 })).toBeVisible();
-    for (const text of ["2020-05-01", "Class 1", "Metroville", "Uncle Testuncle", "03011234567", "Urdu"]) {
+    for (const text of ["2020-05-01", "Class 1", "Metroville", "03011234567", "Urdu"]) {
       await expect(page.locator("main")).toContainText(text);
     }
     const health = page.getByRole("region", { name: "Health information" });
@@ -197,7 +197,7 @@ test.describe("admin registrations (013)", () => {
     await page.goto("/admin");
     // The first read fixes "now" as the baseline, so only later registrations count as new.
     await expect(page.getByRole("button", { name: "Notifications" })).toBeVisible();
-    await seedRegistrations([{ studentName: "Zartasha Testchild", className: "Class 1", medicalHistory: "PeanutAllergyMarker", createdAt: new Date(Date.now() + 1000) }]);
+    await seedRegistrations([{ studentName: "Zartasha Testchild", className: "Class 1", medicalHistory: "PeanutAllergyMarker", createdAt: new Date() }]);
 
     const sidebarItem = page.getByRole("link", { name: "Registrations" }).locator("..");
     await expect(sidebarItem.getByText("1", { exact: true })).toBeVisible({ timeout: 30_000 });

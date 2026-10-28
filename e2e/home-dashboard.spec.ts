@@ -1,5 +1,6 @@
 import { test, expect } from "@playwright/test";
 import { homeContent } from "../src/content/home";
+import { waitForLayoutSettled } from "./helpers/scroll";
 
 /**
  * The Progress Dashboard (006 US5): a full-width yellow band, no background photo, with the heading, the four numbers and
@@ -27,6 +28,7 @@ for (const width of [375, 768, 1024, 1440]) {
     await page.goto("/", { timeout: 120_000 });
     const section = page.getByTestId("progress-dashboard");
     await section.evaluate((el) => el.scrollIntoView({ block: "center" }));
+    await waitForLayoutSettled(page); // the site scrolls smoothly: measure only once it has stopped
 
     // Yellow, full width, and no photo.
     const bg = await section.evaluate((el) => getComputedStyle(el).backgroundColor);
@@ -91,9 +93,12 @@ for (const width of [375, 768, 1024, 1440]) {
     expect(cardRatio).toBeGreaterThanOrEqual(7);
 
     // The partners section below has room above its heading and below its logos.
-    const partners = page.getByTestId("partners");
-    const [partnersHeading, strip, box] = [await partners.getByRole("heading", { level: 2 }).boundingBox(), await partners.getByTestId("partner-roll").boundingBox(), await partners.boundingBox()];
-    expect(partnersHeading!.y - box!.y).toBeGreaterThanOrEqual(44);
-    expect(box!.y + box!.height - (strip!.y + strip!.height)).toBeGreaterThanOrEqual(44);
+    // Read in one go: three separate reads are each relative to the viewport at that moment.
+    const room = await page.getByTestId("partners").evaluate((el) => {
+      const [box, heading, strip] = [el.getBoundingClientRect(), el.querySelector("h2")!.getBoundingClientRect(), el.querySelector("[data-testid='partner-roll']")!.getBoundingClientRect()];
+      return { above: heading.y - box.y, below: box.y + box.height - (strip.y + strip.height) };
+    });
+    expect(room.above).toBeGreaterThanOrEqual(44);
+    expect(room.below).toBeGreaterThanOrEqual(44);
   });
 }
