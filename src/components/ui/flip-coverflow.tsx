@@ -256,7 +256,8 @@ export function FlipCoverflow({
         onPointerUp={(event) => endGesture(event, false)}
         onPointerCancel={(event) => endGesture(event, true)}
       >
-        <ul className="contents">
+        {/* Slides are role="group" (the ARIA carousel pattern), so they are not list items: a <ul> of groups is invalid. */}
+        <div className="contents">
           {items.map((item, i) => {
             const offset = offsetOf(i, index);
             const far = Math.abs(offset) > 1;
@@ -265,7 +266,7 @@ export function FlipCoverflow({
             const flipped = centre && (tapped === i || hovered === i || focused === i);
             const key = far ? "far" : (Math.abs(offset) as 0 | 1);
             return (
-              <li
+              <div
                 key={item.id}
                 data-qa-index={i}
                 data-testid={`${testIdPrefix}-card`}
@@ -285,6 +286,8 @@ export function FlipCoverflow({
                   } as React.CSSProperties
                 }
                 onPointerEnter={(event) => event.pointerType === "mouse" && centre && setHovered(i)}
+                // A side card that a click brings to the centre is already under the mouse, so no pointer-enter follows: the first move over it flips it.
+                onPointerMove={(event) => event.pointerType === "mouse" && centre && setHovered(i)}
                 onPointerLeave={(event) => event.pointerType === "mouse" && setHovered((h) => (h === i ? null : h))}
                 onFocus={(event) => {
                   if (centre && event.target.matches(":focus-visible")) setFocused(i);
@@ -322,10 +325,10 @@ export function FlipCoverflow({
                     {typeof item.back === "function" ? item.back({ centre }) : item.back}
                   </div>
                 </div>
-              </li>
+              </div>
             );
           })}
-        </ul>
+        </div>
       </div>
     </Root>
   );

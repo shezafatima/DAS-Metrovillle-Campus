@@ -3,13 +3,23 @@ import { defineConfig, devices } from "@playwright/test";
 const PORT = 3100;
 const baseURL = `http://localhost:${PORT}`;
 
+// CI runs the bundled Chromium (installed with `playwright install --with-deps chromium`); locally the
+// system Google Chrome is used (see the note on the projects below).
+const browser = { ...devices["Desktop Chrome"], channel: process.env.CI ? undefined : "chrome" };
+
 export default defineConfig({
   testDir: "./e2e",
   globalSetup: "./e2e/global-setup.ts",
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
-  reporter: "list",
+  // CI: two workers for the parallel project; the admin and forms projects stay serial (their own
+  // settings and the CI workflow's --workers=1). The JSON report feeds scripts/ci-flaky-summary.mjs,
+  // so a test that only passed on a retry is listed as flaky instead of hiding behind the retry.
+  workers: process.env.CI ? 2 : undefined,
+  reporter: process.env.CI
+    ? [["list"], ["html", { open: "never" }], ["json", { outputFile: "playwright-json/results.json" }]]
+    : "list",
   use: {
     baseURL,
     trace: "on-first-retry",
@@ -32,7 +42,7 @@ export default defineConfig({
         // 014b public sections read and seed Settings groups (syllabi, class levels, portal links), so they run serially in `forms` too.
         /public-dynamic-sections\.spec\.ts$/,
       ],
-      use: { ...devices["Desktop Chrome"], channel: "chrome" },
+      use: browser,
     },
     {
       // Admin specs share one persisted MongoDB `throttle` collection
@@ -45,7 +55,7 @@ export default defineConfig({
       testMatch: /admin-.*\.spec\.ts/,
       fullyParallel: false,
       workers: 1,
-      use: { ...devices["Desktop Chrome"], channel: "chrome" },
+      use: browser,
     },
     {
       // Every Playwright worker shares one source IP (127.0.0.1), so
@@ -66,14 +76,15 @@ export default defineConfig({
       ],
       fullyParallel: false,
       workers: 1,
-      use: { ...devices["Desktop Chrome"], channel: "chrome" },
+      use: browser,
     },
   ],
   webServer: {
     command: `npm run dev -- --port ${PORT}`,
     url: baseURL,
-    reuseExistingServer: !process.env.CI,
-    timeout: 120_000,
+    // CI starts and warms the dev server itself (scripts/warm-routes.mjs) and Playwright reuses it.
+    reuseExistingServer: true,
+    timeout: process.env.CI ? 300_000 : 120_000,
     env: {
       MONGODB_DB_NAME: "dar_e_arqam_test",
       // e2e specs stub the Cloudinary upload itself (page.route), so the

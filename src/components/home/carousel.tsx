@@ -35,7 +35,7 @@ function prefersReducedMotion(): boolean {
  * FR-036). No library (Constitution II).
  */
 export function Carousel({ label, children, perViewClass, autoplayMs, tone = "light", className }: CarouselProps) {
-  const track = useRef<HTMLUListElement>(null);
+  const track = useRef<HTMLDivElement>(null);
   const [overflows, setOverflows] = useState(false);
   const [paused, setPaused] = useState(false);
   const items = Children.toArray(children);
@@ -96,7 +96,8 @@ export function Carousel({ label, children, perViewClass, autoplayMs, tone = "li
         if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setPaused(false);
       }}
     >
-      <ul
+      {/* Slides are role="group" (the ARIA carousel pattern), so they are not list items: a <ul> of groups is invalid. */}
+      <div
         ref={track}
         className={cn(
           "flex snap-x snap-mandatory gap-(--spacing-home-carousel-gap) overflow-x-auto overscroll-x-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
@@ -104,7 +105,7 @@ export function Carousel({ label, children, perViewClass, autoplayMs, tone = "li
         )}
       >
         {items.map((child, index) => (
-          <li
+          <div
             key={index}
             role="group"
             aria-roledescription="slide"
@@ -112,9 +113,9 @@ export function Carousel({ label, children, perViewClass, autoplayMs, tone = "li
             className="flex-none snap-start [width:calc((100%-(var(--pv)-1)*var(--spacing-home-carousel-gap))/var(--pv))]"
           >
             {child}
-          </li>
+          </div>
         ))}
-      </ul>
+      </div>
       {overflows && (
         <>
           <button type="button" className={cn(arrow, "left-1")} aria-label={homeContent.carousel.previous(label)} onClick={() => go(-1)}>

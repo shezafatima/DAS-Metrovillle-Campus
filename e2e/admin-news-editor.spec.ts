@@ -40,7 +40,7 @@ test.describe("admin news editor (US1)", () => {
     await expect(page.getByText("Saved as draft.")).toBeVisible();
     await expect(page.getByText("Draft", { exact: true })).toBeVisible();
 
-    await page.getByRole("button", { name: "Publish" }).click();
+    await page.getByRole("button", { name: "Publish", exact: true }).click();
     await expect(page.getByText("Published.")).toBeVisible();
     await expect(page.getByText("Published", { exact: true })).toBeVisible();
 
