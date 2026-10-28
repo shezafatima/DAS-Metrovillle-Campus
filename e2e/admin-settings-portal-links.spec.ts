@@ -122,11 +122,16 @@ test.describe("portal links — admin panel and footer (014b US1)", () => {
       await dialog.getByRole("button", { name: "Done" }).click();
       await expect(dialog.getByText(/web address|username and password/i).first()).toBeVisible();
       await expect(dialog).toBeVisible();
+      // Leaving a panel with edits asks first, with the browser's own confirm(). It blocks the page until answered (so the
+      // click cannot return first): answer it from a listener, and check what it said afterwards.
+      let asked = "";
+      page.once("dialog", async (confirm) => {
+        asked = confirm.message();
+        await confirm.accept();
+      });
       await dialog.getByRole("button", { name: "Cancel" }).click();
-      // Leaving a panel with edits asks first.
-      const discard = page.getByRole("button", { name: /discard|leave|yes/i }).first();
-      if (await discard.isVisible().catch(() => false)) await discard.click();
       await expect(dialog).toBeHidden();
+      expect(asked).toBe(settingsCopy.list.panelUnsaved);
     }
 
     // Nothing was added to the form, so there is nothing to save.
