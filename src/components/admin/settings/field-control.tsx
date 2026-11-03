@@ -1,7 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import { FormControl, FormDescription, FormField, FormLabel, FormMessage } from "@/components/ui/form";
 import { settingsCopy } from "@/content/admin";
+import { karachiToday } from "@/lib/admission/window";
 import { urlFieldAccepts } from "@/lib/settings/schema";
 import type { Field, ImageRef } from "@/lib/settings/types";
 import { MONTH_NAMES, joinDayMonth, splitDayMonth } from "@/lib/text/day-month";
@@ -120,6 +122,56 @@ function DayMonthControl({
 }
 
 /**
+ * A native date input (020). Marked `notBeforeToday` (027), its picker starts at today, Pakistan time.
+ *
+ * The minimum is decided ONCE, from the value the field starts with, and then stays put:
+ *  - changing `min` while someone types a year makes Chrome drop the half-typed date;
+ *  - a field that starts on a past date (a window that opened last week) gets no minimum, because a value below `min`
+ *    is invalid to the form library, which then cancels the whole submit without calling our handler;
+ *  - a date typed below the minimum is shown its own message (`rangeUnderflow`) instead of failing silently.
+ * The server refuses a changed past date as well (`changedPastDates`), for requests that do not come from this control.
+ */
+function DateControl({
+  field,
+  path,
+  value,
+  onChange,
+  error,
+  clearError,
+}: {
+  field: Extract<Field, { type: "date" }>;
+  path: string;
+  value: string;
+  onChange: (value: string) => void;
+  error: string | undefined;
+  clearError: (path: string) => void;
+}) {
+  const [min] = useState(() => {
+    if (!field.notBeforeToday) return undefined;
+    const today = karachiToday(new Date());
+    return value === "" || value >= today ? today : undefined;
+  });
+  return (
+    <FormField name={path} invalid={Boolean(error)}>
+      <FormLabel>{field.label}</FormLabel>
+      <FormControl
+        type="date"
+        className="w-fit"
+        min={min}
+        value={value}
+        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+          onChange(event.target.value);
+          if (error) clearError(path);
+        }}
+      />
+      {field.hint && <FormDescription>{field.hint}</FormDescription>}
+      {min && <FormMessage match="rangeUnderflow">{settingsCopy.errors.dateInPast}</FormMessage>}
+      {error && <FormMessage match>{error}</FormMessage>}
+    </FormField>
+  );
+}
+
+/**
  * Maps one field definition to its control (contracts/field-definitions.md
  * "Form rendering"). Every text-like control sits inside the shared
  * `ui/form.tsx` primitives; there is no per-group form component.
@@ -168,26 +220,8 @@ export function FieldControl({ field, path, value, onChange, errors, clearError 
       );
     }
 
-    case "date": {
-      // A native date input (020): keyboard entry and a picker on every browser and phone. Its value is "YYYY-MM-DD" or "".
-      const text = typeof value === "string" ? value : "";
-      return (
-        <FormField name={path} invalid={Boolean(error)}>
-          <FormLabel>{field.label}</FormLabel>
-          <FormControl
-            type="date"
-            className="w-fit"
-            value={text}
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-              onChange(event.target.value);
-              if (error) clearError(path);
-            }}
-          />
-          {field.hint && <FormDescription>{field.hint}</FormDescription>}
-          {error && <FormMessage match>{error}</FormMessage>}
-        </FormField>
-      );
-    }
+    case "date":
+      return <DateControl field={field} path={path} value={typeof value === "string" ? value : ""} onChange={onChange} error={error} clearError={clearError} />;
 
     case "dayMonth":
       return (

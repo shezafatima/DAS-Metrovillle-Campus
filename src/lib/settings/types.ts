@@ -82,6 +82,11 @@ export type BooleanField = FieldBase & {
 export type DateField = FieldBase & {
   type: "date";
   default?: string;
+  /**
+   * 027: the picker starts at today (Pakistan time), and a panel check refuses a CHANGED value earlier than today
+   * (see `changedPastDates`). An unchanged stored date, even a past one, is left alone.
+   */
+  notBeforeToday?: boolean;
 };
 
 /**

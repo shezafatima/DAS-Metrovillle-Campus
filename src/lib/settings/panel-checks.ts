@@ -1,8 +1,11 @@
 import "server-only";
+import { settingsCopy } from "@/content/admin";
+import { karachiToday } from "@/lib/admission/window";
 import { connectDb } from "@/lib/db";
 import { Settings } from "@/models/settings";
 import { mergeWithDefaults } from "./defaults";
 import { toLiveValue } from "./items";
+import { changedPastDates } from "./past-dates";
 import type { PanelKey } from "./panels";
 import { GROUPS } from "./registry";
 import type { GroupValue } from "./types";
@@ -82,8 +85,22 @@ const checkAdmissionClasses: PanelCheck = async (incoming) => {
   return { ok: true, data: { ...incoming, classes: next } };
 };
 
+/**
+ * "Admission window" (027): Opens on and Closes on may not be moved to a day that has already passed. The
+ * picker starts at today, and this stops a typed or scripted past date. A date left as it is (even a past one, as
+ * when the window opened last week) and a cleared date are fine, so the rest of the panel can still be saved.
+ */
+const checkAdmissionWindow: PanelCheck = async (incoming) => {
+  await connectDb();
+  const stored = (await Settings.findById("admission").lean())?.data ?? {};
+  const keys = changedPastDates(GROUPS.admission.fields, incoming, stored, karachiToday(new Date()));
+  if (keys.length === 0) return { ok: true, data: incoming };
+  return { ok: false, error: "invalid", fields: Object.fromEntries(keys.map((key) => [key, settingsCopy.errors.dateInPast])) };
+};
+
 export const PANEL_CHECKS: Partial<Record<PanelKey, PanelCheck>> = {
   "admission-classes": checkAdmissionClasses,
+  "admission-window": checkAdmissionWindow,
 };
 
 function assertTestEnvironment(): void {

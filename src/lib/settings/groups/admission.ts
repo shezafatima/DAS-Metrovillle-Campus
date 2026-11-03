@@ -13,8 +13,8 @@ export const admissionDefinition: GroupDefinition = {
   key: "admission",
   label: settingsCopy.groups.admission.title,
   fields: [
-    { type: "date", key: "opensOn", label: labels.opensOn, hint: hints.opensOn },
-    { type: "date", key: "closesOn", label: labels.closesOn, hint: hints.closesOn },
+    { type: "date", key: "opensOn", label: labels.opensOn, hint: hints.opensOn, notBeforeToday: true },
+    { type: "date", key: "closesOn", label: labels.closesOn, hint: hints.closesOn, notBeforeToday: true },
     { type: "text", key: "announcement", label: labels.announcement, hint: hints.announcement, maxLength: 160 },
     { type: "text", key: "closedMessage", label: labels.closedMessage, hint: hints.closedMessage, maxLength: 160 },
     // 013: the class list of the registration form, in saved order. An empty list keeps the form closed.
