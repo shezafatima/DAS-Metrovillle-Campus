@@ -29,7 +29,7 @@ export function CareersCta() {
         </p>
         <Link
           href={button.href}
-          className="rounded-(--radius-home-careers-button) bg-cta px-(--spacing-home-read-more-x) py-(--spacing-home-read-more-y) font-button text-(length:--text-button) font-semibold text-white transition-colors duration-(--motion-fast) hover:bg-(--color-home-careers-button-hover) hover:text-(--color-home-dark-text)"
+          className="rounded-(--radius-home-careers-button) border border-white bg-cta-hover px-(--spacing-home-read-more-x) py-(--spacing-home-read-more-y) font-button text-(length:--text-button) font-semibold text-white transition-colors duration-(--motion-fast) hover:bg-gold hover:text-primary focus-visible:bg-gold focus-visible:text-primary"
         >
           {button.label}
         </Link>

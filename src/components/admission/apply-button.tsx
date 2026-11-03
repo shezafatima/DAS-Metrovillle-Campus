@@ -11,7 +11,7 @@ export function ApplyButton({ label, href }: { label: string; href: string }) {
       <Link
         href={href}
         data-testid="admission-apply"
-        className="rounded-(--radius-home-careers-button) bg-cta px-(--spacing-home-read-more-x) py-(--spacing-home-read-more-y) font-button text-(length:--text-button) font-semibold text-white outline-none transition-colors duration-(--motion-fast) hover:bg-(--color-home-careers-button-hover) hover:text-(--color-home-dark-text) focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+        className="rounded-(--radius-home-careers-button) bg-cta-hover px-(--spacing-home-read-more-x) py-(--spacing-home-read-more-y) font-button text-(length:--text-button) font-semibold text-white outline-none transition-colors duration-(--motion-fast) hover:bg-gold hover:text-primary focus-visible:bg-gold focus-visible:text-primary focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
       >
         {label}
       </Link>

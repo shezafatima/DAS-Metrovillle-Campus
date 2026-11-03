@@ -52,7 +52,7 @@ for (const width of [375, 768, 1024, 1440]) {
     expect(Math.abs(textBox!.x - h2Box!.x)).toBeLessThanOrEqual(1);
     expect(Math.abs(buttonBox!.x - h2Box!.x)).toBeLessThanOrEqual(1);
     expect(textBox!.width).toBeLessThanOrEqual(60 * 12);
-    expect(await button.evaluate((el) => getComputedStyle(el).backgroundColor)).toBe("rgb(244, 67, 54)"); // the site's red button
+    expect(await button.evaluate((el) => getComputedStyle(el).backgroundColor)).toBe("rgb(25, 25, 144)"); // the site's call-to-action navy (--color-cta-hover); the red token is gone (032)
 
     // The old one-line text and the descriptions are gone; only icon and heading remain on each feature.
     await expect(section.getByText(/reflect the goods/)).toHaveCount(0);
