@@ -36,7 +36,8 @@ test.describe("admin news cover images (US4)", () => {
 
     await page.getByRole("button", { name: "Choose image" }).click();
     await page.locator('input[type="file"]').setInputFiles(FIXTURE);
-    await expect(page.getByRole("img").first()).toBeVisible();
+    // The alt-text field only appears once the upload has finished and the cover is set (any <img> on the page could match sooner).
+    await expect(page.getByLabel("Alternative text")).toBeVisible();
 
     await page.getByRole("button", { name: "Save draft" }).click();
     await expect(page.getByText("Alternative text is required.")).toBeVisible();

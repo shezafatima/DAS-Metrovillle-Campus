@@ -41,6 +41,9 @@ export default defineConfig({
         /registration-(public|window|protection)\.spec\.ts$/,
         // 014b public sections read and seed Settings groups (syllabi, class levels, portal links), so they run serially in `forms` too.
         /public-dynamic-sections\.spec\.ts$/,
+        // The public news specs seed and clear the one `news` collection (the same slugs), so two of them in parallel workers
+        // clash (duplicate keys, wrong counts): they run serially in `forms` too.
+        /news-(public|detail|category-label)\.spec\.ts$/,
       ],
       use: browser,
     },
@@ -73,6 +76,7 @@ export default defineConfig({
         /(^|[\\/])careers-[^\\/]*\.spec\.ts$/,
         /registration-(public|window|protection)\.spec\.ts$/,
         /public-dynamic-sections\.spec\.ts$/,
+        /news-(public|detail|category-label)\.spec\.ts$/,
       ],
       fullyParallel: false,
       workers: 1,

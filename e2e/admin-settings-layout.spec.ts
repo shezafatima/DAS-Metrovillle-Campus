@@ -2,6 +2,7 @@ import { test, expect, type Page } from "@playwright/test";
 import { adminSession } from "./helpers/users";
 import { clearSettings, openGroup, type SettingsGroupKey } from "./helpers/settings";
 import { settingsCopy } from "../src/content/admin";
+import { waitForLayoutSettled } from "./helpers/scroll";
 
 /**
  * FR-035 / Constitution XI: every Settings screen, and the slide panel, work
@@ -17,6 +18,8 @@ async function noSidewaysScroll(page: Page) {
 }
 
 async function boxesDoNotOverlap(page: Page, selectors: string[]) {
+  // Each box is read relative to the viewport, so let the smooth scroll to the opened panel finish first.
+  await waitForLayoutSettled(page);
   const boxes = [];
   for (const selector of selectors) {
     const box = await page.locator(selector).first().boundingBox();
