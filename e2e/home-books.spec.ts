@@ -45,6 +45,9 @@ async function openBooks(page: Page) {
   await waitForScrollSettled(page);
 }
 
+// Some cases move the cover files out of public/ and every case puts them back, so two cases at once (parallel workers) would
+// render the page with a different number of covers than they expect.
+test.describe.configure({ mode: "serial" });
 test.beforeEach(() => restore());
 test.afterEach(() => restore());
 

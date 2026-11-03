@@ -148,7 +148,13 @@ test("a footer link turns yellow behind navy text on hover and shows a visible o
   await page.goto("/about", { timeout: 120_000 });
   const link = page.getByRole("contentinfo").getByRole("navigation", { name: "Quick Links" }).getByRole("link", { name: "News" });
   await link.scrollIntoViewIfNeeded();
-  const style = () => link.evaluate((el) => ({ bg: getComputedStyle(el).backgroundColor, colour: getComputedStyle(el).color, outline: getComputedStyle(el).outlineStyle, outlineWidth: getComputedStyle(el).outlineWidth, outlineColour: getComputedStyle(el).outlineColor }));
+  // getAnimations() includes running CSS transitions: wait for them, so a colour is never read mid-blend (rgba(255, 255, 0, 0.984)).
+  const settled = () => link.evaluate((el) => Promise.all(el.getAnimations().map((a) => a.finished.catch(() => undefined))).then(() => undefined));
+  const readStyle = () => link.evaluate((el) => ({ bg: getComputedStyle(el).backgroundColor, colour: getComputedStyle(el).color, outline: getComputedStyle(el).outlineStyle, outlineWidth: getComputedStyle(el).outlineWidth, outlineColour: getComputedStyle(el).outlineColor }));
+  const style = async () => {
+    await settled();
+    return readStyle();
+  };
   const rest = await style();
   expect(rest.bg).toBe("rgba(0, 0, 0, 0)");
   await link.hover();
