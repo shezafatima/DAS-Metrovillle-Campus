@@ -66,10 +66,10 @@ for (const { w, h } of WIDTHS) {
     expect(messageBox.x + messageBox.width).toBeLessThanOrEqual(right.x + right.width + 1);
     expect(Math.abs(sendBox.width - messageBox.width)).toBeLessThan(2);
 
-    // Name/Email share a row once the form itself is wide enough (container query, 448px).
+    // Name/Email share a row once the form itself is wide enough (container query, 672px; in the half-width card from 1024px it stays one column).
     const nameBox = (await page.locator("#contact-name").boundingBox())!;
     const emailBox = (await page.locator("#contact-email").boundingBox())!;
-    if (messageBox.width >= 448) expect(Math.abs(nameBox.y - emailBox.y)).toBeLessThan(2);
+    if (messageBox.width >= 672) expect(Math.abs(nameBox.y - emailBox.y)).toBeLessThan(2);
     else expect(emailBox.y).toBeGreaterThan(nameBox.y);
 
     // The form itself is unchanged: input and button styles still match the 008 extraction.
@@ -98,6 +98,24 @@ test("on a 375px phone the form fields are at least 280px wide", async ({ page }
   await expect(field).toBeVisible();
   expect((await field.boundingBox())!.width).toBeGreaterThanOrEqual(280);
 });
+
+// The Contact card is as wide and as tall as the Careers card from 1024px (it used to shrink to its content: the wrapper is a
+// direct child of the flex-column <main>). Phones are not part of this: the cards differ in height there.
+for (const width of [1024, 1280, 1440]) {
+  test(`at ${width}px the contact card is the same size as the careers card`, async ({ page }) => {
+    test.setTimeout(240_000);
+    await page.setViewportSize({ width, height: 900 });
+    const sizeOf = async (path: string, selector: string) => {
+      await page.goto(path, { timeout: 120_000 });
+      await page.evaluate(() => document.fonts.ready);
+      return (await page.locator(selector).first().boundingBox())!;
+    };
+    const contact = await sizeOf("/contact", "main .grid.overflow-hidden");
+    const careers = await sizeOf("/careers", "#apply .grid");
+    expect(Math.abs(contact.width - careers.width), "width").toBeLessThanOrEqual(1);
+    expect(Math.abs(contact.height - careers.height), "height").toBeLessThanOrEqual(1);
+  });
+}
 
 test("the card splits into two columns at 1024px and stacks below", async ({ page }) => {
   await page.setViewportSize({ width: 1023, height: 900 });

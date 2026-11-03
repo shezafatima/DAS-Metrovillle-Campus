@@ -130,7 +130,8 @@ export function ContactForm() {
         />
       </div>
 
-      <div className="grid grid-cols-1 gap-x-4 gap-y-4 @md:grid-cols-2">
+      {/* Two columns of fields only when the form itself is wide (672px). In the half-width card from 1024px it stays one column, like the Careers form. */}
+      <div className="grid grid-cols-1 gap-x-4 gap-y-4 @2xl:grid-cols-2">
         <Field
           id="contact-name"
           label={copy.placeholders.name}
@@ -173,7 +174,7 @@ export function ContactForm() {
           onChange={(value) => updateField("subject", value)}
         />
 
-        <div className="flex flex-col gap-1 @md:col-span-2">
+        <div className="flex flex-col gap-1 @2xl:col-span-2">
           <label htmlFor="contact-message" className="sr-only">
             {copy.placeholders.message}
           </label>
@@ -205,7 +206,7 @@ export function ContactForm() {
         <button
           type="submit"
           disabled={submitting}
-          className={`${ACCESSIBLE_SUBMIT_CLASS} @md:col-span-2`}
+          className={`${ACCESSIBLE_SUBMIT_CLASS} @2xl:col-span-2`}
         >
           {submitting ? copy.sending : copy.submit}
         </button>
