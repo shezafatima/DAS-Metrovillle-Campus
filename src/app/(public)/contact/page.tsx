@@ -12,8 +12,9 @@ export default async function ContactPage() {
   return (
     <>
       <ContactBanner />
-      <div className="mx-auto max-w-(--container-max-width) px-3 py-12 sm:px-(--container-gutter-x)">
-        <div className="grid grid-cols-1 overflow-hidden rounded-xl shadow-lg lg:grid-cols-2">
+      {/* w-full: this wrapper is a direct child of the flex-column <main>, where auto side margins would shrink it to its content. */}
+      <div className="mx-auto w-full max-w-(--container-max-width) px-3 py-12 sm:px-(--container-gutter-x)">
+        <div className="grid grid-cols-1 overflow-hidden rounded-xl shadow-lg lg:min-h-(--spacing-contact-card-min-h) lg:grid-cols-2 xl:min-h-(--spacing-contact-card-min-h-xl)">
           <ContactDetails details={details} />
           <ContactFormSection />
         </div>

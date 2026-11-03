@@ -250,6 +250,9 @@
   --spacing-contact-icon: 200px;
   --spacing-contact-columns-gap: 51px;
   --spacing-contact-map-height: 552px;
+  /* The Contact card is as tall as the Careers card from 1024px (measured: 929px at 1024-1279px, 889px from 1280px). */
+  --spacing-contact-card-min-h: 929px;
+  --spacing-contact-card-min-h-xl: 889px;
 
   /* Student registration form (013): a long form on the contact band. Reuses the signup/contact-form
      input, textarea, button and gap tokens; only these two are new (research/design-tokens.md
